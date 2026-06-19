@@ -1,0 +1,26 @@
+@media print {
+    @page {
+        margin: 10mm;
+    }
+
+    body {
+        background: #fff !important;
+    }
+
+    nav,
+    header,
+    button,
+    a {
+        display: none !important;
+    }
+
+    section {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
