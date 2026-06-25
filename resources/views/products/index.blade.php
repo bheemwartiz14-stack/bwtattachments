@@ -15,7 +15,7 @@
                     <strong>Category</strong><br><br>
                     @foreach($categories ?? [] as $id => $name)
                         <label>
-                            <input type="checkbox" name="category[]" value="{{ $id }}" class="category-checkbox" {{ in_array($id, (array)request('category', [])) ? 'checked' : '' }}>
+                            <input type="radio" name="category" value="{{ $id }}" class="category-radio" {{ (string)request('category') === (string)$id ? 'checked' : '' }}>
                             {{ $name }}
                         </label>
                     @endforeach
@@ -127,22 +127,22 @@
 
 <script>
 (function() {
-    var categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+    var categoryRadios = document.querySelectorAll('.category-radio');
     var subcategoryItems = document.querySelectorAll('.subcategory-item');
 
     function filterSubcategories() {
-        var selected = [];
-        categoryCheckboxes.forEach(function(cb) {
-            if (cb.checked) selected.push(cb.value);
+        var selected = null;
+        categoryRadios.forEach(function(rb) {
+            if (rb.checked) selected = rb.value;
         });
 
         subcategoryItems.forEach(function(item) {
             var catId = item.getAttribute('data-category-id');
-            if (selected.length === 0) {
+            if (selected === null) {
                 item.style.display = '';
             } else {
-                item.style.display = selected.indexOf(catId) !== -1 ? '' : 'none';
-                if (selected.indexOf(catId) === -1) {
+                item.style.display = selected === catId ? '' : 'none';
+                if (selected !== catId) {
                     var checkbox = item.querySelector('input[type="checkbox"]');
                     if (checkbox) checkbox.checked = false;
                 }
@@ -150,8 +150,8 @@
         });
     }
 
-    categoryCheckboxes.forEach(function(cb) {
-        cb.addEventListener('change', filterSubcategories);
+    categoryRadios.forEach(function(rb) {
+        rb.addEventListener('change', filterSubcategories);
     });
 
     filterSubcategories();
