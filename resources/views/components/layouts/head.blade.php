@@ -6,5 +6,17 @@
 <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 <link rel="stylesheet" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
-   @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+@php
+    $buildDir = config('vite.build_directory', 'build');
+    $manifestPath = public_path($buildDir.'/manifest.json');
+    $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : null;
+@endphp
+
+@if (config('vite.enabled') && $manifest)
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@elseif ($manifest)
+    <link rel="stylesheet" href="{{ asset($buildDir.'/'.$manifest['resources/css/app.css']['file']) }}">
+    <script defer src="{{ asset($buildDir.'/'.$manifest['resources/js/app.js']['file']) }}"></script>
+@endif
 @stack('styles')

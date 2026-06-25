@@ -36,6 +36,9 @@
 
         <x-toast />
         <script src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+        <script>
+            window.BASE_URL = "{{ url('/') }}";
+            </script>
         @stack('scripts')
 
     </body>
