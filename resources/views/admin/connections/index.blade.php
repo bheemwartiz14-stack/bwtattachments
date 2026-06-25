@@ -35,7 +35,6 @@
                     <thead>
                         <tr class="border-b border-slate-100 bg-slate-50/50 dark:border-neutral-800 dark:bg-neutral-900/50">
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Name</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Slug</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Status</th>
                             <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
                         </tr>
@@ -51,9 +50,7 @@
                                         <span class="font-medium text-slate-900 dark:text-white">{{ $connection->name }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-4">
-                                    <code class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-600 dark:bg-neutral-800 dark:text-neutral-300">{{ $connection->slug }}</code>
-                                </td>
+               
                                 <td class="px-5 py-4">
                                     @if($connection->status === false || $connection->status === 0)
                                         <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-neutral-800 dark:text-neutral-300">Inactive</span>
