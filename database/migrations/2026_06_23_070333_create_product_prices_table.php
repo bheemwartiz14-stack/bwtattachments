@@ -10,11 +10,15 @@ return new class extends Migration
     {
         Schema::create('product_prices', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('product_id') ->constrained()->onDelete('cascade');
-            $table->foreignId('user_id') ->constrained() ->onDelete('cascade');
-            $table->decimal('price', 10, 2)->nullable(); 
+            $table->foreignUuid('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('assigned_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('type')->default('wholesale_purchase');
+            $table->decimal('price', 12, 2)->nullable();
+            $table->decimal('margin', 5, 2)->nullable();
             $table->timestamps();
-            $table->unique(['product_id', 'user_id']);
+
+            $table->unique(['product_id', 'user_id', 'type']);
         });
     }
 

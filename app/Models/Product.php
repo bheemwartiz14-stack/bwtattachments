@@ -9,9 +9,6 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Activitylog\Support\LogOptions;
-use Spatie\Activitylog\Models\Concerns\LogsActivity;
-
 #[Fillable([
     'category_id',
     'subcategory_id',
@@ -42,16 +39,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 ])]
 class Product extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, HasUuids, LogsActivity;
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logAll()
-            ->logExcept(['created_at', 'updated_at'])
-            ->logOnlyDirty()
-            ->dontLogEmptyChanges();
-    }
-
+    use HasFactory, InteractsWithMedia, HasUuids;
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')

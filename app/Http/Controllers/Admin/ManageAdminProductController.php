@@ -29,7 +29,7 @@ class ManageAdminProductController extends Controller
         return [
             'categories' => $this->categoryService->getAll(),
             'connectionTypes' => $this->connectionService->getAll(),
-            'wholesaleClients' => $this->userService->getByRole('Wholesale Client'),
+
         ];
     }
 

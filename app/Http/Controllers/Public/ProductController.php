@@ -30,7 +30,7 @@ class ProductController extends Controller
 
         $products = $this->productService->paginate(12, $filters);
         $categories = $this->categoryService->getAll();
-        $subcategories = $this->subcategoryService->getAll();
+        $subcategories = $this->subcategoryService->getAllWithCategory();
         $connections = $this->connectionService->getAll();
 
         return view('products.index', compact('products', 'categories', 'subcategories', 'connections'));

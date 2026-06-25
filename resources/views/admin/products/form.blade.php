@@ -58,8 +58,8 @@
                             :options="$connectionTypes ?? []" :value="$product->connection_id ?? ''"
                             placeholder="Select Connection" />
                     </div>
-                    <x-forms.trix name="product_description" label="Product Description" required
-                        :value="$product->product_description ?? ''" />
+                    <x-forms.textarea name="product_description" label="Product Description" required rows="5"
+                        :value="$product->product_description ?? ''" placeholder="Enter product description" />
                     <x-forms.textarea name="internal_notes" label="Additional Info" rows="3"
                         :value="$product->internal_notes ?? ''" placeholder="Internal notes for admin reference"
                         hint="Admin only" />
@@ -152,74 +152,6 @@
                 </div>
             </div>
 
-            {{-- WHOLESALE CLIENT PRICING --}}
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900" x-data="clientPricing(@js($wholesaleClients), {{ $isEdit ? json_encode($product->productPrices->map(fn($p) => ['user_id' => $p->user_id, 'price' => $p->price, 'user_name' => $p->user?->name ?? ''])) : '[]' }})">
-                <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
-                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesale Client Pricing</h2>
-                </div>
-                <div class="p-8">
-                    <template x-if="prices.length === 0">
-                        <p class="text-sm text-slate-400 dark:text-neutral-500">No client-specific prices set.</p>
-                    </template>
-                    <table x-show="prices.length > 0" class="mb-4 w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-slate-200 dark:border-neutral-800 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                <th class="pb-2 pr-4">Client</th>
-                                <th class="pb-2 pr-4">Price (EUR)</th>
-                                <th class="pb-2"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template x-for="(item, index) in prices" :key="index">
-                                <tr class="border-b border-slate-100 dark:border-neutral-800">
-                                    <td class="py-2 pr-4 text-sm text-slate-900 dark:text-white" x-text="item.user_name"></td>
-                                    <td class="py-2 pr-4 text-sm font-medium text-slate-900 dark:text-white" x-text="'{{ config('app.currency_symbol') }}' + parseFloat(item.price).toFixed(2)"></td>
-                                    <td class="py-2 text-right">
-                                        <button type="button" @click="removePrice(index)" class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">Remove</button>
-                                    </td>
-                                    <input type="hidden" :name="'product_prices[' + index + '][user_id]'" x-model="item.user_id">
-                                    <input type="hidden" :name="'product_prices[' + index + '][price]'" x-model="item.price">
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                    <button type="button" @click="showModal = true"
-                        class="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        Add Client Price
-                    </button>
-                </div>
-
-                {{-- MODAL --}}
-                <div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" x-cloak>
-                    <div @click.away="showModal = false" class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-neutral-950">
-                        <h3 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Add Client Price</h3>
-                        <div class="mb-4">
-                            <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-neutral-300">Select Wholesale Client</label>
-                            <select x-model="form.user_id"
-                                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white">
-                                <option value="">-- Select Client --</option>
-                                <template x-for="client in clients" :key="client.id">
-                                    <option :value="client.id" x-text="client.name" :disabled="selectedClientIds.includes(client.id)"></option>
-                                </template>
-                            </select>
-                        </div>
-                        <div class="mb-6">
-                            <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-neutral-300">Price (EUR)</label>
-                            <input type="number" step="0.01" min="0" x-model="form.price"
-                                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
-                                placeholder="0.00">
-                        </div>
-                        <div class="flex justify-end gap-3">
-                            <button type="button" @click="showModal = false"
-                                class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Cancel</button>
-                            <button type="button" @click="addPrice()"
-                                class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">Add</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {{-- FOOTER --}}
             <div class="flex items-center justify-end gap-3">
                 <a href="{{ route('admin.products.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Cancel</a>
@@ -231,42 +163,8 @@
         </form>
     </div>
 
-    @push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/product.css') }}">
-    <style>
-    [x-cloak] { display: none !important; }
-    </style>
-    @endpush
-
     @push('scripts')
     <script src="{{ asset('assets/js/product.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script>
-    function clientPricing(clients, existingPrices) {
-        return {
-            clients: clients,
-            prices: existingPrices || [],
-            showModal: false,
-            form: { user_id: '', price: '' },
-            get selectedClientIds() {
-                return this.prices.map(p => p.user_id);
-            },
-            addPrice() {
-                if (!this.form.user_id || !this.form.price) return;
-                var client = this.clients.find(c => c.id === this.form.user_id);
-                this.prices.push({
-                    user_id: this.form.user_id,
-                    price: this.form.price,
-                    user_name: client ? client.name : 'Unknown'
-                });
-                this.form = { user_id: '', price: '' };
-                this.showModal = false;
-            },
-            removePrice(index) {
-                this.prices.splice(index, 1);
-            }
-        };
-    }
-    </script>
     @endpush
 </x-layouts.app>

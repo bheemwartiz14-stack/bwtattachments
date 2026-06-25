@@ -47,4 +47,9 @@ class SubcategoryService
     {
         return $this->subcategoryRepository->getByCategory($categoryId);
     }
+
+    public function getAllWithCategory(): Collection
+    {
+        return $this->subcategoryRepository->getAllWithCategory();
+    }
 }

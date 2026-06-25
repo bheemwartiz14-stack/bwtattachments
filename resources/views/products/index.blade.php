@@ -10,12 +10,12 @@
         <aside class="sidebar">
             <h3>Filters</h3>
 
-            <form method="GET" action="{{ route('public.products.index') }}">
+            <form method="GET" action="{{ route('public.products.index') }}" id="filter-form">
                 <div class="filter-group">
                     <strong>Category</strong><br><br>
                     @foreach($categories ?? [] as $id => $name)
                         <label>
-                            <input type="checkbox" name="category[]" value="{{ $id }}" {{ in_array($id, (array)request('category', [])) ? 'checked' : '' }}>
+                            <input type="checkbox" name="category[]" value="{{ $id }}" class="category-checkbox" {{ in_array($id, (array)request('category', [])) ? 'checked' : '' }}>
                             {{ $name }}
                         </label>
                     @endforeach
@@ -23,12 +23,14 @@
 
                 <div class="filter-group">
                     <strong>Sub Category</strong><br><br>
-                    @foreach($subcategories ?? [] as $id => $name)
-                        <label>
-                            <input type="checkbox" name="subcategory[]" value="{{ $id }}" {{ in_array($id, (array)request('subcategory', [])) ? 'checked' : '' }}>
-                            {{ $name }}
-                        </label>
-                    @endforeach
+                    <div id="subcategory-list">
+                        @foreach($subcategories ?? [] as $subcategory)
+                            <label class="subcategory-item" data-category-id="{{ $subcategory->category_id }}">
+                                <input type="checkbox" name="subcategory[]" value="{{ $subcategory->id }}" {{ in_array((string)$subcategory->id, (array)request('subcategory', [])) ? 'checked' : '' }}>
+                                {{ $subcategory->name }}
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
 
                 <div class="filter-group">
@@ -122,3 +124,36 @@
         </main>
     </div>
 </x-layouts.public>
+
+<script>
+(function() {
+    var categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+    var subcategoryItems = document.querySelectorAll('.subcategory-item');
+
+    function filterSubcategories() {
+        var selected = [];
+        categoryCheckboxes.forEach(function(cb) {
+            if (cb.checked) selected.push(cb.value);
+        });
+
+        subcategoryItems.forEach(function(item) {
+            var catId = item.getAttribute('data-category-id');
+            if (selected.length === 0) {
+                item.style.display = '';
+            } else {
+                item.style.display = selected.indexOf(catId) !== -1 ? '' : 'none';
+                if (selected.indexOf(catId) === -1) {
+                    var checkbox = item.querySelector('input[type="checkbox"]');
+                    if (checkbox) checkbox.checked = false;
+                }
+            }
+        });
+    }
+
+    categoryCheckboxes.forEach(function(cb) {
+        cb.addEventListener('change', filterSubcategories);
+    });
+
+    filterSubcategories();
+})();
+</script>

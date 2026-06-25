@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Subcategory;
+use Illuminate\Database\Eloquent\Collection;
 
 class SubcategoryRepository
 {
@@ -31,6 +32,14 @@ class SubcategoryRepository
             ->orderBy('name')
             ->pluck('name', 'id')
             ->toArray();
+    }
+
+    public function getAllWithCategory(): Collection
+    {
+        return $this->model->query()
+            ->with('category:id,name')
+            ->orderBy('name')
+            ->get(['id', 'name', 'category_id']);
     }
 
     /**

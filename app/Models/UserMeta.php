@@ -6,22 +6,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Activitylog\Support\LogOptions;
-use Spatie\Activitylog\Models\Concerns\LogsActivity;
-
 class UserMeta extends Model implements HasMedia
 {
-    use HasUuids, InteractsWithMedia, LogsActivity;
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logAll()
-            ->logExcept(['created_at', 'updated_at'])
-            ->logOnlyDirty()
-            ->dontLogEmptyChanges();
-    }
-
+    use HasUuids, InteractsWithMedia;
     protected $guarded = [];
 
     protected function casts(): array

@@ -107,11 +107,11 @@
                                 <td class="px-5 py-4 text-right">
                                     @if(isset($user->roles[0]) && $user->roles[0]->name === 'Wholesale Client')
                                         <div class="flex items-center justify-end gap-1">
-                                            <a href="{{ route('client.retailer-users.edit', $user) }}" title="Edit"
+                                            <a href="{{ route('admin.wholesale-client-users.edit', $user) }}" title="Edit"
                                                 class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                                             </a>
-                                            <form action="{{ route('client.retailer-users.destroy', $user) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                            <form action="{{ route('admin.wholesale-client-users.destroy', $user) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" title="Delete"

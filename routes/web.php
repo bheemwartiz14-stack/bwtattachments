@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ConnectionController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
+use App\Http\Controllers\Admin\ProductWholesalePriceController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
@@ -23,9 +24,7 @@ use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardContro
 use Illuminate\Support\Facades\Route;
 
 // Public routes (guest + authenticated)
-Route::get('/', function () {
-    return app(\App\Livewire\PublicProductCatalog::class)();
-})->name('public.products.index');
+Route::get('/', [PublicProductController::class, 'index'])->name('public.products.index');
 Route::get('/products/{product}', [PublicProductController::class, 'show'])->name('public.products.show');
 Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories.index');
 Route::get('/categories/{category}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
@@ -58,6 +57,9 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
         Route::resource('connections', ConnectionController::class)->except(['show']);
         Route::resource('products', AdminProductController::class);
+        Route::get('/product-pricing/preview/product/{id}', [ProductWholesalePriceController::class, 'getProductPreview'])->name('product-pricing.preview.product');
+        Route::get('/product-pricing/preview/user/{id}', [ProductWholesalePriceController::class, 'getUserPreview'])->name('product-pricing.preview.user');
+        Route::resource('product-pricing', ProductWholesalePriceController::class);
         Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [AdminProfileController::class, 'changePassword'])->name('profile.password');

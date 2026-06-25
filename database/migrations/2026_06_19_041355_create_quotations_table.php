@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('quotations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->string('quotation_number')->unique();
             $table->decimal('margin_percentage', 5, 2)->default(0);
             $table->string('pdf_file')->nullable();

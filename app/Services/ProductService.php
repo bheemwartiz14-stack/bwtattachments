@@ -13,7 +13,6 @@ class ProductService
     public function __construct(
         protected ProductRepository $productRepository,
         protected ProductMediaService $productMediaService,
-        protected ProductPricingService $productPricingService,
     ) {}
 
     public function getAll(): Collection
@@ -38,9 +37,8 @@ class ProductService
             unset($data['product_feature_image'], $data['product_pdf'],$data['product_gallery_images']);
             $product = $this->productRepository->create($data);
             $this->handleMedia($product, $media);
-            $this->productPricingService->syncPrices($product, $media['prices']);
             
-            return $product->load(['media', 'productPrices']);
+            return $product->load('media');
         });
     }
 
@@ -51,8 +49,7 @@ class ProductService
             unset($data['product_feature_image'], $data['product_pdf'],$data['product_gallery_images']);
             $product = $this->productRepository->update($id, $data);
             $this->handleMedia($product, $media);
-            $this->productPricingService->syncPrices($product, $media['prices']);
-            return $product->load(['media', 'productPrices']);
+            return $product->load('media');
         });
     }
 
@@ -65,7 +62,6 @@ class ProductService
         }
 
         return DB::transaction(function () use ($product) {
-            $product->productPrices()->delete();
             return (bool) $product->delete();
         });
     }
@@ -96,7 +92,6 @@ class ProductService
             'feature' => $data['product_feature_image'] ?? null,
             'gallery' => $data['product_gallery_images'] ?? [],
             'pdf' => $data['product_pdf'] ?? null,
-            'prices' => $data['product_prices'] ?? [],
         ];
     }
 

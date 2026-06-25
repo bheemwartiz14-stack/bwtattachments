@@ -15,9 +15,9 @@ return new class extends Migration
             $table->string('product_description');
             $table->decimal('weight', 10, 2)->nullable();
             $table->decimal('machine_weight', 10, 2)->nullable();
-            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('subcategory_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('connection_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('category_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('subcategory_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('connection_id')->nullable()->constrained()->nullOnDelete();
             $table->string('hinges')->nullable();
             $table->decimal('width', 10, 2)->nullable();
             $table->decimal('volume', 10, 2)->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->decimal('stick_width', 10, 2)->nullable();
             $table->decimal('pin_center', 10, 2)->nullable();
             $table->decimal('pin_hole', 10, 2)->nullable();
-             $table->decimal('ddp_price', 12, 2)->nullable()->after('base_price');
+             $table->decimal('ddp_price', 12, 2)->nullable();
             $table->text('internal_notes')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();

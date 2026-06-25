@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_metas', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
-            $table->foreignId('user_id') ->constrained()  ->onDelete('cascade');
+            $table->foreignUuid('user_id') ->constrained()  ->onDelete('cascade');
             $table->json('metadata')->nullable();
             $table->timestamps();
 

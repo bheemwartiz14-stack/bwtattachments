@@ -5,23 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Support\LogOptions;
-use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 #[Fillable(['user_id', 'quotation_number', 'margin_percentage', 'pdf_file', 'status'])]
 class Quotation extends Model
 {
-    use HasFactory, LogsActivity;
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logAll()
-            ->logExcept(['created_at', 'updated_at'])
-            ->logOnlyDirty()
-            ->dontLogEmptyChanges();
-    }
-
+    use HasFactory;
     protected function casts(): array
     {
         return [
