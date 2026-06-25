@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<script>window.BASE_URL = "{{ url('') }}";</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ isset($title) ? str_replace('Attachment Portal', config('app.name'), $title) : config('app.name') }}</title>

@@ -29,7 +29,8 @@ function initCategorySubcategory() {
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/admin/categories/' + id + '/subcategories');
+        var base = window.BASE_URL || '';
+        xhr.open('GET', base + '/admin/categories/' + id + '/subcategories');
         xhr.onload = function () {
             if (xhr.status === 200) {
                 var res = JSON.parse(xhr.responseText);
