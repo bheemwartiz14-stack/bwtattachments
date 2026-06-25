@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignId('parent_id') ->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('username', 50)->unique()->nullable()->after('name');
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('is_first_time')->default(true)->after('status');
             $table->string('password');
             $table->string('phone', 30)->nullable();
             $table->boolean('status')->default(true);

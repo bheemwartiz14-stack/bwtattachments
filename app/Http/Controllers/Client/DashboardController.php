@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Quotation;
 use App\Services\QuotationService;
 use Illuminate\View\View;
 
@@ -12,8 +13,17 @@ class DashboardController extends Controller
 
     public function index(): View
     {
-        $quotations = $this->quotationService->findByUser(auth()->id());
+        $userId = auth()->id();
+        $quotations = $this->quotationService->findByUser($userId);
 
-        return view('client.dashboard', compact('quotations'));
+        $stats = [
+            'total_quotations' => $quotations->count(),
+            'pending_quotations' => $quotations->where('status', 'pending')->count(),
+            'total_products_viewed' => 0,
+        ];
+
+        $recentQuotations = $quotations->sortByDesc('created_at')->take(5);
+
+        return view('client.dashboard', compact('quotations', 'stats', 'recentQuotations'));
     }
 }

@@ -7,6 +7,8 @@ use App\Services\CategoryService;
 use App\Services\ConnectionService;
 use App\Services\ProductService;
 use App\Services\SubcategoryService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -28,11 +30,26 @@ class ProductController extends Controller
         return view('client.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
-    public function show(int $id): View
+    public function show(string $id): View
     {
         $product = $this->productService->findById($id);
-        $product->load('category', 'subcategory', 'connection', 'images');
+        $product->load('category', 'subcategory', 'connection');
 
         return view('client.products.show', compact('product'));
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $term = $request->input('q', '');
+        $products = $this->productService->search($term);
+
+        return response()->json($products->map(fn ($p) => [
+            'id' => $p->id,
+            'product_code' => $p->product_code,
+            'product_description' => $p->product_description,
+            'ddp_price' => $p->ddp_price,
+            'image' => $p->getFirstMediaUrl('images', 'thumb'),
+            'category' => $p->category?->name,
+        ]));
     }
 }

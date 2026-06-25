@@ -28,10 +28,12 @@ class FirstTimePasswordController extends Controller
             'is_first_time' => false,
         ]);
 
-        return redirect()->intended(
-            $user->hasRole('Super Admin')
-                ? route('admin.dashboard')
-                : route('client.dashboard')
-        );
+        $redirectRoute = match (true) {
+            $user->hasRole('Super Admin') => route('admin.dashboard'),
+            $user->hasRole('Retailer') => route('retailer.dashboard'),
+            default => route('client.dashboard'),
+        };
+
+        return redirect()->intended($redirectRoute);
     }
 }

@@ -6,10 +6,22 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-#[Fillable(['category_id', 'name', 'slug', 'status'])]
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+
+#[Fillable(['category_id', 'name'])]
 class Subcategory extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['created_at', 'updated_at'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
+    }
 
 
     protected function casts(): array

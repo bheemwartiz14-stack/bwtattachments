@@ -1,148 +1,183 @@
-import Alpine from 'alpinejs';
+import $ from 'jquery';
 
-window.Alpine = Alpine;
+window.$ = window.jQuery = $;
 
-document.addEventListener('alpine:init', () => {
-    Alpine.data('sidebar', () => ({
-        sidebarOpen: false,
-        init() {
-            this.sidebarOpen = window.innerWidth >= 1024;
-            this.$el.addEventListener('toggle-sidebar', () => {
-                this.sidebarOpen = !this.sidebarOpen;
-            });
-        },
-    }));
+// Dark Mode
+function initDarkMode() {
+    const dark = localStorage.getItem('dark') === 'true' ||
+        (!localStorage.getItem('dark') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (dark) document.documentElement.classList.add('dark');
+}
 
-    Alpine.data('dropdown', () => ({
-        open: false,
-        toggle() {
-            this.open = !this.open;
-        },
-        close() {
-            this.open = false;
-        },
-    }));
+function toggleDarkMode() {
+    const dark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('dark', dark);
+}
 
-    Alpine.data('notifications', () => ({
-        open: false,
-        items: [
-            { id: 1, title: 'New product added', description: 'Bucket GP-12 has been added', time: '2m ago', unread: true },
-            { id: 2, title: 'Quotation generated', description: 'Q-2024-0042 was created', time: '15m ago', unread: true },
-            { id: 3, title: 'Client registered', description: 'ABC Construction joined', time: '1h ago', unread: false },
-        ],
-        unreadCount() {
-            return this.items.filter(i => i.unread).length;
-        },
-        toggle() {
-            this.open = !this.open;
-        },
-        close() {
-            this.open = false;
-        },
-        markAllRead() {
-            this.items.forEach(i => i.unread = false);
-        },
-    }));
+$(document).on('click', '[data-toggle-dark]', toggleDarkMode);
+$(document).on('toggle-dark-mode', toggleDarkMode);
 
-    Alpine.data('darkMode', () => ({
-        dark: false,
-        init() {
-            this.dark = localStorage.getItem('dark') === 'true' ||
-                (!localStorage.getItem('dark') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            if (this.dark) {
-                document.documentElement.classList.add('dark');
-            }
-            this.$el.addEventListener('toggle-dark-mode', () => this.toggle());
-        },
-        toggle() {
-            this.dark = !this.dark;
-            localStorage.setItem('dark', this.dark);
-            document.documentElement.classList.toggle('dark', this.dark);
-        },
-    }));
-
-    Alpine.data('viewToggle', () => ({
-        view: 'grid',
-        setView(v) { this.view = v; },
-    }));
-
-    Alpine.data('productFilters', () => ({
-        search: '',
-        category: '',
-        subcategory: '',
-        connectionType: '',
-        weightMin: 0,
-        weightMax: 50000,
-        showFilters: true,
-        toggleFilters() {
-            this.showFilters = !this.showFilters;
-        },
-        clearFilters() {
-            this.search = '';
-            this.category = '';
-            this.subcategory = '';
-            this.connectionType = '';
-            this.weightMin = 0;
-            this.weightMax = 50000;
-        },
-    }));
-
-    Alpine.data('quotation', () => ({
-        items: [
-            { id: 1, code: 'BKT-GP-12', name: 'Bucket GP-12', weight: '1200kg', width: '1800mm', price: 4500, margin: 15, qty: 1 },
-            { id: 2, code: 'BKT-HD-08', name: 'Bucket HD-08', weight: '850kg', width: '1500mm', price: 3200, margin: 12, qty: 2 },
-        ],
-        margin: 15,
-        addItem(product) {
-            this.items.push({ ...product, id: Date.now(), qty: 1, margin: this.margin });
-        },
-        removeItem(id) {
-            this.items = this.items.filter(i => i.id !== id);
-        },
-        updateMargin(margin) {
-            this.margin = margin;
-            this.items.forEach(i => i.margin = margin);
-        },
-        calculateFinalPrice(item) {
-            return item.price * (1 + item.margin / 100) * item.qty;
-        },
-        total() {
-            return this.items.reduce((sum, i) => sum + this.calculateFinalPrice(i), 0);
-        },
-        totalWithoutMargin() {
-            return this.items.reduce((sum, i) => sum + i.price * i.qty, 0);
-        },
-    }));
-
-    Alpine.data('multiStepForm', () => ({
-        step: 1,
-        totalSteps: 5,
-        next() { if (this.step < this.totalSteps) this.step++; },
-        prev() { if (this.step > 1) this.step--; },
-        isFirst() { return this.step === 1; },
-        isLast() { return this.step === this.totalSteps; },
-    }));
-
-    Alpine.data('toast', () => ({
-        visible: false,
-        message: '',
-        type: 'success',
-        show(msg, type = 'success') {
-            this.message = msg;
-            this.type = type;
-            this.visible = true;
-            setTimeout(() => { this.visible = false; }, 4000);
-        },
-        hide() {
-            this.visible = false;
-        },
-    }));
-
-    Alpine.data('modal', () => ({
-        open: false,
-        show() { this.open = true; },
-        hide() { this.open = false; },
-    }));
+// Sidebar
+$(document).on('click', '[data-toggle-sidebar]', function() {
+    const sidebar = document.querySelector('[data-sidebar]');
+    if (sidebar) {
+        const isOpen = sidebar.classList.toggle('open');
+        sidebar.style.display = isOpen ? 'block' : '';
+    }
 });
 
-Alpine.start();
+$(document).on('toggle-sidebar', function() {
+    const sidebar = document.querySelector('[data-sidebar]');
+    if (sidebar) {
+        const isOpen = sidebar.classList.toggle('open');
+        sidebar.style.display = isOpen ? 'block' : '';
+    }
+});
+
+$(function() {
+    initDarkMode();
+    const sidebar = document.querySelector('[data-sidebar]');
+    if (sidebar && window.innerWidth >= 1024) {
+        sidebar.classList.add('open');
+        sidebar.style.display = 'block';
+    }
+});
+
+// Sidebar backdrop click to close on mobile
+$(document).on('click', '[data-sidebar-backdrop]', function() {
+    const sidebar = document.querySelector('[data-sidebar]');
+    if (sidebar) {
+        sidebar.classList.remove('open');
+        sidebar.style.display = 'none';
+    }
+    $(this).addClass('hidden');
+});
+
+// Dropdown
+$(document).on('click', '[data-dropdown-toggle]', function(e) {
+    e.stopPropagation();
+    const target = $(this).attr('data-dropdown-toggle');
+    $('#' + target).toggleClass('hidden');
+});
+
+$(document).on('click', function(e) {
+    if (!$(e.target).closest('[data-dropdown-toggle], [data-dropdown-menu]').length) {
+        $('[data-dropdown-menu]').addClass('hidden');
+    }
+});
+
+// Modal
+window.openModal = function(id) {
+    $('#' + id).removeClass('hidden').hide().fadeIn(200);
+    $('#' + id + '-backdrop').removeClass('hidden').hide().fadeIn(200);
+};
+
+window.closeModal = function(id) {
+    $('#' + id).fadeOut(200, function() { $(this).addClass('hidden'); });
+    $('#' + id + '-backdrop').fadeOut(200, function() { $(this).addClass('hidden'); });
+};
+
+$(document).on('click', '[data-modal-show]', function() {
+    openModal($(this).attr('data-modal-show'));
+});
+$(document).on('click', '[data-modal-hide]', function() {
+    closeModal($(this).attr('data-modal-hide'));
+});
+$(document).on('click', '[data-modal-backdrop]', function() {
+    closeModal($(this).attr('data-modal-backdrop'));
+});
+
+// Toast
+window.showToast = function(message, type) {
+    type = type || 'success';
+    const toast = $('#toast');
+    if (!toast.length) return;
+    toast.find('[data-toast-message]').text(message);
+    toast.removeClass('hidden').attr('data-toast-type', type);
+    toast.css({ opacity: 0, transform: 'translateY(-10px)' }).animate({ opacity: 1, transform: 'translateY(0)' }, 300);
+    setTimeout(function() {
+        toast.animate({ opacity: 0, transform: 'translateY(-10px)' }, 300, function() {
+            toast.addClass('hidden');
+        });
+    }, 4000);
+};
+
+$(document).on('click', '[data-toast-close]', function() {
+    const toast = $('#toast');
+    toast.animate({ opacity: 0 }, 200, function() { toast.addClass('hidden'); });
+});
+
+// Password Generator
+$(document).on('click', '[data-generate-password]', function() {
+    const input = $(this).closest('[data-password-wrapper]').find('[data-password-input]');
+    if (!input.length) return;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
+    let pwd = '';
+    for (let i = 0; i < 10; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+    input.val(pwd);
+});
+
+$(document).on('click', '[data-toggle-password]', function() {
+    const input = $(this).closest('[data-password-wrapper]').find('[data-password-input]');
+    if (!input.length) return;
+    const type = input.attr('type') === 'password' ? 'text' : 'password';
+    input.attr('type', type);
+    $(this).find('[data-show-icon], [data-hide-icon]').toggleClass('hidden');
+});
+
+$(document).on('click', '[data-copy-password]', function() {
+    const input = $(this).closest('[data-password-wrapper]').find('[data-password-input]');
+    if (!input.length) return;
+    navigator.clipboard.writeText(input.val()).then(function() {
+        const copied = $(this).closest('[data-password-wrapper]').find('[data-copied]');
+        if (copied.length) {
+            copied.removeClass('hidden');
+            setTimeout(function() { copied.addClass('hidden'); }, 2000);
+        }
+    }.bind(this));
+});
+
+
+
+// File Upload Preview
+$(document).on('change', '[data-file-preview]', function() {
+    const previewTarget = $(this).attr('data-file-preview');
+    const file = this.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+        alert('File size must be less than 2MB');
+        $(this).val('');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        $(previewTarget).attr('src', e.target.result).removeClass('hidden');
+        var placeholder = $(previewTarget).parent().find('[id$="-placeholder"]');
+        if (!placeholder.length) placeholder = $(previewTarget + '-placeholder');
+        placeholder.addClass('hidden');
+        $(previewTarget).parent().find('[id="existing-logo"]').addClass('hidden');
+    };
+    reader.readAsDataURL(file);
+});
+
+// Slug Generator
+$(document).on('input', '[data-slug-source]', function() {
+    const target = $(this).attr('data-slug-source');
+    if ($(target).attr('data-slug-locked')) return;
+    $(target).val($(this).val().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
+});
+
+// View Toggle
+$(document).on('click', '[data-view-toggle]', function() {
+    const target = $(this).attr('data-view-toggle');
+    const view = $(this).attr('data-view');
+    $('[data-view]').removeClass('active');
+    $(this).addClass('active');
+    $(target).addClass('hidden');
+    $(target + '-' + view).removeClass('hidden');
+});
+
+// Select All text on focus
+$(document).on('focus', 'input[data-select-all]', function() {
+    $(this).select();
+});

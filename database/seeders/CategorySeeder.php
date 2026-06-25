@@ -14,8 +14,7 @@ class CategorySeeder extends Seeder
 
         foreach ($categories as $name) {
             Category::firstOrCreate(
-                ['slug' => Str::slug($name)],
-                ['name' => $name, 'status' => true]
+                ['name' => $name]
             );
         }
     }

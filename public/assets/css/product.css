@@ -1,0 +1,44 @@
+trix-editor {
+    min-height: 200px;
+    color: #374151;
+}
+
+trix-editor:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+trix-editor [contenteditable] {
+    color: #374151 !important;
+}
+
+.dark trix-editor {
+    background-color: #171717 !important;
+    border-color: #262626 !important;
+}
+
+.dark trix-editor,
+.dark trix-editor [contenteditable],
+.dark trix-editor trix-content {
+    color: #e5e5e5 !important;
+}
+
+.dark trix-toolbar .trix-button-group {
+    border-color: #262626;
+}
+
+.dark trix-toolbar .trix-button {
+    color: #a3a3a3;
+    border-color: #262626;
+}
+
+.dark trix-toolbar .trix-button:hover {
+    color: #f5f5f5;
+    background-color: #262626;
+}
+
+.dark trix-toolbar .trix-button.trix-active {
+    color: #6366f1;
+    background-color: #1e1b4b;
+}

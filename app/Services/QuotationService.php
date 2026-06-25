@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Events\QuotationCreated;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
-use App\Repositories\Interfaces\QuotationRepositoryInterface;
+use App\Repositories\QuotationRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 class QuotationService
 {
-    public function __construct(protected QuotationRepositoryInterface $quotationRepository)
+    public function __construct(protected QuotationRepository $quotationRepository)
     {
     }
 
@@ -49,11 +49,6 @@ class QuotationService
     public function delete(int $id): bool
     {
         return $this->quotationRepository->delete($id);
-    }
-
-    public function restore(int $id): Model
-    {
-        return $this->quotationRepository->restore($id);
     }
 
     public function findByUser(string $userId): Collection
@@ -104,7 +99,7 @@ class QuotationService
 
     public function generatePdf(Quotation $quotation): Quotation
     {
-        $quotation->load('items.product', 'user.company');
+        $quotation->load('items.product');
 
         $pdf = Pdf::loadView('pdfs.quotation', compact('quotation'));
         $filename = "quotations/{$quotation->quotation_number}.pdf";

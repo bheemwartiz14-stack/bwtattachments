@@ -33,6 +33,8 @@ class AuthService
         $user->password = Hash::make($newPassword);
         $user->save();
 
+        Auth::login($user);
+
         return true;
     }
 }

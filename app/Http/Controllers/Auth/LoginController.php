@@ -49,7 +49,12 @@ class LoginController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        // Client Dashboard
+        // Retailer Dashboard
+        if ($user->hasRole('Retailer')) {
+            return redirect()->route('retailer.dashboard');
+        }
+
+        // Client Dashboard (Wholesale Client and others)
         return redirect()->route('client.dashboard');
     }
 

@@ -1,70 +1,47 @@
 <x-layouts.app>
-    <x-slot:title>{{ isset($category) ? 'Edit Category' : 'Add Category' }} - Attachment Portal</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Categories', 'url' => route('admin.categories.index')], ['label' => isset($category) ? 'Edit' : 'New Category']]" />
+    @php $isEdit = isset($category); @endphp
 
-    <div class="max-w-2xl mx-auto space-y-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-slate-100">{{ isset($category) ? 'Edit Category' : 'New Category' }}</h1>
-                <p class="text-sm text-gray-700 mt-1">{{ isset($category) ? 'Update category details' : 'Create a new product category' }}</p>
-            </div>
-        </div>
+    <x-slot:title>{{ $isEdit ? 'Edit Category' : 'Add Category' }} - Attachment Portal</x-slot:title>
 
-        @if($errors->any())
-            <div class="rounded-lg bg-red-50 border border-red-200 p-4 dark:bg-red-900/30 dark:border-red-800">
-                <div class="flex items-center gap-2 text-sm text-red-800 dark:text-red-300 mb-2">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span class="font-medium">Please fix the following errors:</span>
-                </div>
-                <ul class="list-disc list-inside text-sm text-red-700 dark:text-red-300 space-y-1">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <x-breadcrumb :items="[
+        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Categories', 'url' => route('admin.categories.index')],
+        ['label' => $isEdit ? 'Edit Category' : 'New Category']
+    ]" />
 
-        <form action="{{ isset($category) ? route('admin.categories.update', $category) : route('admin.categories.store') }}" method="POST">
+    <div class="space-y-6">
+        <x-ui.hero title="{{ $isEdit ? 'Edit Category' : 'Add Category' }}" subtitle="{{ $isEdit ? 'Update category details' : 'Create a new category for the system' }}">
+            <x-slot:icon>
+                <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L12 3l9 4.5M4.5 10.5V19A1.5 1.5 0 006 20.5h12A1.5 1.5 0 0019.5 19v-8.5M9 20.5v-6h6v6" /></svg>
+            </x-slot:icon>
+        </x-ui.hero>
+
+        {{-- Errors --}}
+        <x-ui.error-alert />
+
+        {{-- Form --}}
+        <form action="{{ $isEdit ? route('admin.categories.update', $category) : route('admin.categories.store') }}" method="POST">
             @csrf
-            @isset($category)
-                @method('PUT')
-            @endisset
+            @if($isEdit) @method('PUT') @endif
 
-            <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 space-y-5">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Category Name <span class="text-red-500">*</span></label>
-                    <input type="text" id="name" name="name" value="{{ old('name', $category->name ?? '') }}" placeholder="e.g. Buckets" x-on:input="slug = $el.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:placeholder-slate-500 @error('name') border-red-300 @enderror">
-                    @error('name')
-                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                    @enderror
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
+                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">Category Details</h2>
                 </div>
-
-                <div x-data="{ slug: '{{ old('slug', $category->slug ?? '') }}' }">
-                    <label for="slug" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Slug</label>
-                    <input type="text" id="slug" name="slug" x-model="slug" placeholder="auto-generated" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:placeholder-slate-500 @error('slug') border-red-300 @enderror">
-                    @error('slug')
-                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                    @enderror
-                    <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">Auto-generated from name. Change if needed.</p>
+                <div class="p-8 space-y-6">
+                    <x-forms.input
+                        name="name"
+                        label="Category Name"
+                        placeholder="Enter category name"
+                        :value="old('name', $category->name ?? '')"
+                    />
                 </div>
-
-                <div>
-                    <label for="status" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Status</label>
-                    <select id="status" name="status" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100">
-                        <option value="active" @selected(old('status', $category->status ?? 'active') === 'active')>Active</option>
-                        <option value="inactive" @selected(old('status', $category->status ?? '') === 'inactive')>Inactive</option>
-                    </select>
+                <div class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/50 px-8 py-5 dark:border-neutral-800 dark:bg-black/50">
+                    <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Cancel</a>
+                    <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">
+                        {{ $isEdit ? 'Update Category' : 'Create Category' }}
+                    </button>
                 </div>
-            </div>
-
-            <div class="flex items-center justify-between">
-                <a href="{{ route('admin.categories.index') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-normal text-black shadow-sm transition-colors hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:hover:bg-slate-700">
-                    Cancel
-                </a>
-                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    {{ isset($category) ? 'Update Category' : 'Create Category' }}
-                </button>
             </div>
         </form>
     </div>

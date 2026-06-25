@@ -24,6 +24,6 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        $admin->assignRole(Role::whereName('Super Admin')->first());
+        $admin->syncRoles(['Super Admin']);
     }
 }

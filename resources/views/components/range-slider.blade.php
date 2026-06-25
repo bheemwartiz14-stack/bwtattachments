@@ -1,19 +1,18 @@
-@props(['min' => 0, 'max' => 100, 'step' => 1, 'value' => null, 'label' => '', 'unit' => ''])
+@props(['name' => '', 'value' => 0, 'min' => 0, 'max' => 100, 'step' => 1, 'unit' => '', 'label' => '', 'id' => null])
 
-<div x-data="{
-    min: {{ $min }},
-    max: {{ $max }},
-    val: {{ $value ?? $min }},
-    updateVal(event) {
-        this.val = event.target.value;
-    }
-}" class="space-y-2">
-    <div class="flex items-center justify-between">
-        <label class="mb-0 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ $label }}</label>
-        <span class="text-sm font-medium text-black dark:text-gray-100" x-text="val + ' {{ $unit }}'"></span>
-    </div>
-    <input type="range" :min="min" :max="max" step="{{ $step }}"
-        x-model="val"
-        @@input="updateVal"
-        class="h-2 w-full appearance-none cursor-pointer rounded-full bg-slate-100 accent-emerald-600 dark:bg-slate-700">
+@php
+    $inputId = $id ?? $name ?? 'range-' . uniqid();
+    $currentVal = old($name, $value);
+@endphp
+
+<div class="space-y-2">
+    @if($label)
+        <div class="flex items-center justify-between">
+            <label for="{{ $inputId }}" class="text-sm font-medium text-gray-700 dark:text-neutral-300">{{ $label }}</label>
+            <span class="text-sm text-gray-500 dark:text-neutral-400" data-range-value="{{ $inputId }}">{{ $currentVal }} {{ $unit }}</span>
+        </div>
+    @endif
+    <input type="range" name="{{ $name }}" id="{{ $inputId }}" value="{{ $currentVal }}" min="{{ $min }}" max="{{ $max }}" step="{{ $step }}"
+        class="w-full h-2 bg-gray-200 dark:bg-neutral-800 rounded-full appearance-none cursor-pointer accent-neutral-600"
+        oninput="var target = this.closest('.space-y-2').querySelector('[data-range-value]'); if(target) target.textContent = this.value + ' {{ $unit }}';">
 </div>

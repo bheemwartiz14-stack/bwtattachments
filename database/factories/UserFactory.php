@@ -31,4 +31,10 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+      public function withRole(string $role)
+    {
+        return $this->afterCreating(function ($user) use ($role) {
+            $user->assignRole($role);
+        });
+    }
 }

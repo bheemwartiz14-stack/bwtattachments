@@ -10,7 +10,6 @@ beforeEach(function () {
     Permission::create(['name' => 'product.view', 'guard_name' => 'web']);
     Permission::create(['name' => 'product.update', 'guard_name' => 'web']);
     Permission::create(['name' => 'product.delete', 'guard_name' => 'web']);
-    Permission::create(['name' => 'product.restore', 'guard_name' => 'web']);
 });
 
 test('admin can list products', function () {
@@ -61,7 +60,7 @@ test('admin can store product', function () {
     ]);
 });
 
-test('admin can soft delete product', function () {
+test('admin can delete product', function () {
     $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
     $role->givePermissionTo(Permission::all());
 
@@ -74,21 +73,4 @@ test('admin can soft delete product', function () {
 
     $response->assertRedirect();
     expect(\App\Models\Product::find($product->id))->toBeNull();
-    expect(\App\Models\Product::withTrashed()->find($product->id))->not->toBeNull();
-});
-
-test('admin can restore product', function () {
-    $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
-    $role->givePermissionTo(Permission::all());
-
-    $user = User::factory()->create();
-    $user->assignRole('Super Admin');
-
-    $product = \App\Models\Product::factory()->create();
-    $product->delete();
-
-    $response = $this->actingAs($user)->post(route('admin.products.restore', $product));
-
-    $response->assertRedirect();
-    expect(\App\Models\Product::find($product->id))->not->toBeNull();
 });

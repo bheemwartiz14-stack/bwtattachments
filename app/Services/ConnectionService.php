@@ -2,18 +2,17 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\ConnectionRepositoryInterface;
+use App\Repositories\ConnectionRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class ConnectionService
 {
-    public function __construct(protected ConnectionRepositoryInterface $connectionRepository)
+    public function __construct(protected ConnectionRepository $connectionRepository)
     {
     }
 
-    public function getAll(): Collection
+    public function getAll(): array
     {
         return $this->connectionRepository->getAll();
     }
@@ -23,7 +22,7 @@ class ConnectionService
         return $this->connectionRepository->paginate($perPage);
     }
 
-    public function findById(int $id): Model
+    public function findById(string $id): Model
     {
         return $this->connectionRepository->findById($id);
     }
@@ -33,18 +32,13 @@ class ConnectionService
         return $this->connectionRepository->create($data);
     }
 
-    public function update(int $id, array $data): Model
+    public function update(string $id, array $data): Model
     {
         return $this->connectionRepository->update($id, $data);
     }
 
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
         return $this->connectionRepository->delete($id);
-    }
-
-    public function restore(int $id): Model
-    {
-        return $this->connectionRepository->restore($id);
     }
 }

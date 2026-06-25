@@ -5,39 +5,64 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 #[Fillable([
     'category_id',
     'subcategory_id',
     'connection_id',
     'product_code',
+    'product_title',
     'product_description',
     'weight',
     'machine_weight',
+    'machine_class',
     'hinges',
     'width',
     'volume',
+    'thickness',
     'cutting_edge_thickness',
+    'reach',
     'teeth',
     'stick_width',
     'pin_center',
     'pin_hole',
     'ddp_price',
-    'pdf_file',
     'internal_notes',
+    'material',
     'status',
+    'product_feature_image',
+    'product_gallery_images',
+    'product_pdf',
 ])]
 class Product extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, HasUuids, LogsActivity;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['created_at', 'updated_at'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+            ->singleFile();
+
+        $this->addMediaCollection('gallery')
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+        $this->addMediaCollection('pdfs')
+            ->acceptsMimeTypes(['application/pdf']);
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -85,13 +110,13 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(Connection::class);
     }
 
-    public function images()
-    {
-        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
-    }
-
     public function quotationItems()
     {
         return $this->hasMany(QuotationItem::class);
+    }
+
+    public function productPrices()
+    {
+        return $this->hasMany(ProductPrices::class);
     }
 }

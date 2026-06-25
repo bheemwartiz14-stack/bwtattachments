@@ -1,17 +1,17 @@
 @props(['headers' => [], 'rows' => [], 'sortable' => true])
 
-<div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+<div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
     @if(isset($header))
-        <div class="border-b border-slate-100 px-6 py-4 dark:border-slate-700">
+        <div class="border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
             {{ $header }}
         </div>
     @endif
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
-                <tr class="border-b border-slate-100 bg-white dark:border-slate-700 dark:bg-slate-800/50">
+                <tr class="border-b border-slate-100 bg-white dark:border-neutral-800 dark:bg-neutral-900/50">
                     @foreach($headers as $header)
-                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 {{ $sortable ? 'cursor-pointer hover:text-gray-700 dark:hover:text-slate-300' : '' }}">
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500 {{ $sortable ? 'cursor-pointer hover:text-gray-700 dark:hover:text-slate-300' : '' }}">
                             <div class="flex items-center gap-1">
                                 {{ $header }}
                                 @if($sortable)
@@ -24,13 +24,13 @@
                     @endforeach
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
                 {{ $slot }}
             </tbody>
         </table>
     </div>
     @if(isset($footer))
-        <div class="border-t border-slate-100 bg-white px-6 py-3 dark:border-slate-700 dark:bg-slate-800/50">
+        <div class="border-t border-slate-100 bg-white px-6 py-3 dark:border-neutral-800 dark:bg-neutral-900/50">
             {{ $footer }}
         </div>
     @endif

@@ -13,15 +13,18 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 
 #[Fillable([
     'name',
     'username',
     'email',
+    'phone',
     'password',
-    'company_id',
-    'is_first_time'
+    'is_first_time',
+    'parent_id',
 ])]
 #[Hidden([
     'password',
@@ -34,6 +37,16 @@ class User extends Authenticatable implements HasMedia
     use HasUuids;
     use Notifiable;
     use InteractsWithMedia;
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['created_at', 'updated_at', 'password', 'remember_token'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
+    }
 
     public function registerMediaCollections(): void
     {
@@ -45,6 +58,7 @@ class User extends Authenticatable implements HasMedia
                 'image/png',
                 'image/webp',
             ]);
+        $this->addMediaCollection('image') ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])->singleFile();
     }
 
     protected function casts(): array
@@ -57,14 +71,29 @@ class User extends Authenticatable implements HasMedia
         ];
     }
 
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
-
     public function quotations()
     {
         return $this->hasMany(Quotation::class);
+    }
+
+     public function parent()
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(User::class, 'parent_id');
+    }
+
+    public function userMeta()
+    {
+        return $this->hasOne(UserMeta::class);
+    }
+
+    public function productPrices()
+    {
+        return $this->hasMany(ProductPrices::class);
     }
 
 }

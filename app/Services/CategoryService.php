@@ -2,18 +2,20 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Repositories\CategoryRepository;
+use App\Repositories\SubcategoryRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class CategoryService
 {
-    public function __construct(protected CategoryRepositoryInterface $categoryRepository)
-    {
-    }
+    public function __construct(
+        protected CategoryRepository $categoryRepository,
+        protected SubcategoryRepository $subcategoryRepository,
+    ) {}
 
-    public function getAll(): Collection
+    public function getAll(): array
     {
         return $this->categoryRepository->getAll();
     }
@@ -23,29 +25,36 @@ class CategoryService
         return $this->categoryRepository->paginate($perPage);
     }
 
-    public function findById(string $id): Model
+    public function findById(string|int $id): Model
     {
         return $this->categoryRepository->findById($id);
     }
 
     public function create(array $data): Model
     {
-        if (empty($data['slug'])) {
-            $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+        if (empty($data['slug']) && !empty($data['name'])) {
+            $data['slug'] = Str::slug($data['name']);
         }
+
         return $this->categoryRepository->create($data);
     }
 
-    public function update(string $id, array $data): Model
+    public function update(string|int $id, array $data): Model
     {
         if (empty($data['slug']) && isset($data['name'])) {
-            $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            $data['slug'] = Str::slug($data['name']);
         }
+
         return $this->categoryRepository->update($id, $data);
     }
 
-    public function delete(string $id): bool
+    public function delete(string|int $id): bool
     {
         return $this->categoryRepository->delete($id);
+    }
+
+    public function getSubcategories(string|int $id)
+    {
+        return $this->subcategoryRepository->getByCategory($id);
     }
 }

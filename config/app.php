@@ -95,6 +95,8 @@ return [
     |
     */
 
+    'currency_symbol' => env('CURRENCY_SYMBOL', '€'),
+
     'cipher' => 'AES-256-CBC',
 
     'key' => env('APP_KEY'),

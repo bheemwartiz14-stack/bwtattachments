@@ -25,7 +25,7 @@ class QuotationController extends Controller
 
     public function create(): View
     {
-        return view('client.quotations.builder');
+        return view('client.quotations.create');
     }
 
     public function store(StoreQuotationRequest $request): RedirectResponse
@@ -51,7 +51,7 @@ class QuotationController extends Controller
     public function show(int $id): View
     {
         $quotation = $this->quotationService->findById($id);
-        $quotation->load('items.product', 'user.company');
+        $quotation->load('items.product');
 
         return view('client.quotations.show', compact('quotation'));
     }

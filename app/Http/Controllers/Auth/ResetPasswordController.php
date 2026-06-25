@@ -10,9 +10,12 @@ use Illuminate\View\View;
 
 class ResetPasswordController extends Controller
 {
-    public function showResetForm(string $token): View
+    public function showResetForm(string $token, Request $request): View
     {
-        return view('auth.reset-password', ['token' => $token]);
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->query('email'),
+        ]);
     }
 
     public function reset(Request $request): RedirectResponse
@@ -31,7 +34,7 @@ class ResetPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('success', __($status))
+            ? redirect()->route('login')->with('status', __($status))
             : back()->withErrors(['email' => __($status)]);
     }
 }

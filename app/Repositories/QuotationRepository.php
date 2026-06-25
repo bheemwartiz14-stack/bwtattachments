@@ -3,13 +3,44 @@
 namespace App\Repositories;
 
 use App\Models\Quotation;
-use App\Repositories\Interfaces\QuotationRepositoryInterface;
 
-class QuotationRepository extends BaseRepository implements QuotationRepositoryInterface
+class QuotationRepository
 {
-    public function __construct(Quotation $model)
+    public function __construct(protected Quotation $model)
     {
-        parent::__construct($model);
+    }
+
+    public function getAll()
+    {
+        return $this->model->all();
+    }
+
+    public function paginate(int $perPage = 10)
+    {
+        return $this->model->query()->paginate($perPage);
+    }
+
+    public function findById(string|int $id)
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function create(array $data)
+    {
+        return $this->model->create($data);
+    }
+
+    public function update(string|int $id, array $data)
+    {
+        $record = $this->findById($id);
+        $record->update($data);
+        return $record;
+    }
+
+    public function delete(string|int $id)
+    {
+        $record = $this->findById($id);
+        return $record->delete();
     }
 
     public function findByUser(string $userId)

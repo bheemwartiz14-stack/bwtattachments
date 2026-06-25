@@ -14,8 +14,7 @@ class ConnectionSeeder extends Seeder
 
         foreach ($connections as $name) {
             Connection::firstOrCreate(
-                ['slug' => Str::slug($name)],
-                ['name' => $name, 'status' => true]
+                ['name' => $name]
             );
         }
     }

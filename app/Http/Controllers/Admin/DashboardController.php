@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\Company;
 use App\Models\Product;
 use App\Models\Quotation;
 use App\Models\Subcategory;
@@ -22,7 +21,6 @@ class DashboardController extends Controller
         $totalClients = User::role('Wholesale Client')->count();
         $totalQuotations = Quotation::count();
         $totalUsers = User::count();
-        $totalCompanies = Company::count();
 
         $stats = [
             'total_products' => $totalProducts,
@@ -39,7 +37,6 @@ class DashboardController extends Controller
             'quotation_target' => 50,
             'total_users' => $totalUsers,
             'active_users' => User::where('status', true)->count(),
-            'total_companies' => $totalCompanies,
         ];
 
         $recentProducts = Product::latest()->take(5)->get();

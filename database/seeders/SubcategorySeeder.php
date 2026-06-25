@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Subcategory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class SubcategorySeeder extends Seeder
 {
@@ -19,19 +18,22 @@ class SubcategorySeeder extends Seeder
         ];
 
         foreach ($subcategories as $categoryName => $items) {
-            $category = Category::whereSlug(Str::slug($categoryName))->first();
 
-            if ($category) {
-                foreach ($items as $name) {
-                    Subcategory::firstOrCreate(
-                        ['slug' => Str::slug($name)],
-                        [
-                            'category_id' => $category->id,
-                            'name' => $name,
-                            'status' => true,
-                        ]
-                    );
-                }
+            $category = Category::where('name', $categoryName)->first();
+
+            if (! $category) {
+                continue;
+            }
+
+            foreach ($items as $name) {
+
+                Subcategory::updateOrCreate(
+                    [
+                        'name' => $name,
+                        'category_id' => $category->id,
+                    ],
+                    []
+                );
             }
         }
     }

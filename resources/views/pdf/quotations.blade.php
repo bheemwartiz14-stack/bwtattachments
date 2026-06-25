@@ -245,8 +245,8 @@
                     </div>
                 </td>
                 <td>{{ $item->quantity ?? $item->qty ?? 1 }}</td>
-                <td>${{ number_format($item->unit_price ?? $item->price ?? 0, 2) }}</td>
-                <td>${{ number_format(($item->unit_price ?? $item->price ?? 0) * ($item->quantity ?? $item->qty ?? 1), 2) }}</td>
+                <td>{{ config('app.currency_symbol') }}{{ number_format($item->unit_price ?? $item->price ?? 0, 2) }}</td>
+                <td>{{ config('app.currency_symbol') }}{{ number_format(($item->unit_price ?? $item->price ?? 0) * ($item->quantity ?? $item->qty ?? 1), 2) }}</td>
             </tr>
             @empty
             <tr>
@@ -287,11 +287,11 @@
         <table>
             <tr class="subtotal">
                 <td>Subtotal</td>
-                <td>${{ number_format($quotation->subtotal ?? ($quotation->total ?? 14400), 2) }}</td>
+                <td>{{ config('app.currency_symbol') }}{{ number_format($quotation->subtotal ?? ($quotation->total ?? 14400), 2) }}</td>
             </tr>
             <tr class="grand-total">
                 <td>Grand Total</td>
-                <td>${{ number_format($quotation->total ?? ($quotation->grand_total ?? 14400), 2) }}</td>
+                <td>{{ config('app.currency_symbol') }}{{ number_format($quotation->total ?? ($quotation->grand_total ?? 14400), 2) }}</td>
             </tr>
         </table>
     </div>

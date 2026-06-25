@@ -1,137 +1,127 @@
 <x-layouts.public>
-    <x-slot:title>{{ $product->description ?? $product->title ?? 'Product Detail' }} - Attachment Portal</x-slot:title>
+    <x-slot:title>{{ $product->product_title ?? 'Product Detail' }} - Attachment Portal</x-slot:title>
 
-    <div class="bg-slate-50">
-        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <div class="mb-6">
-                <a href="{{ route('public.products.index') }}" class="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-700">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Back to Products
-                </a>
-            </div>
+    <div class="container">
+        <main class="content">
+            <a href="{{ route('public.products.index') }}" style="display:inline-flex;align-items:center;gap:5px;margin-bottom:15px;color:#1d2939;text-decoration:none;font-size:14px;">
+                &larr; Back to Products
+            </a>
 
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
-                <div class="space-y-6 lg:col-span-3">
-                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                        <div class="relative aspect-[16/10] bg-slate-100">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="text-center">
-                                    <svg class="mx-auto h-20 w-20 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <p class="mt-2 text-sm text-slate-400">Product Image</p>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-4 left-4 flex gap-2">
-                                @foreach(range(1, 3) as $i)
-                                    <div class="h-16 w-16 rounded-lg border-2 {{ $i === 1 ? 'border-emerald-500 bg-white' : 'border-transparent bg-white/80 opacity-60 hover:opacity-100' }} cursor-pointer transition-opacity"></div>
-                                @endforeach
-                            </div>
+            <div class="detail-page">
+                <div class="detail-layout">
+                    <div class="gallery">
+                        <div class="main-image">
+                            @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
+                            @if($featureImage)
+                                <img src="{{ $featureImage }}" alt="{{ $product->product_title }}" id="mainProductImage">
+                            @else
+                                Main Product Image
+                            @endif
                         </div>
-                    </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h2 class="mb-4 text-2xl font-bold tracking-tight text-slate-950">Technical Specifications</h2>
-                        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                            @forelse(($product->specifications ?? $product->specs ?? []) as $spec)
-                                <div class="rounded-lg bg-slate-50 p-3">
-                                    <p class="text-xs text-slate-500">{{ $spec['label'] ?? $spec->label ?? $spec->name ?? $spec }}</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-slate-950">{{ $spec['value'] ?? $spec->value ?? '-' }}</p>
-                                </div>
-                            @empty
-                                @foreach([
-                                    ['label' => 'Weight', 'value' => $product->weight ?? '-'],
-                                    ['label' => 'Width', 'value' => $product->width ?? '-'],
-                                    ['label' => 'Connection Type', 'value' => $product->connection_type ?? $product->connectionType ?? '-'],
-                                    ['label' => 'Machine Class', 'value' => $product->machine_class ?? $product->machineClass ?? '-'],
-                                    ['label' => 'Subcategory', 'value' => $product->subcategory ?? '-'],
-                                ] as $spec)
-                                    <div class="rounded-lg bg-slate-50 p-3">
-                                        <p class="text-xs text-slate-500">{{ $spec['label'] }}</p>
-                                        <p class="mt-0.5 text-sm font-semibold text-slate-950">{{ $spec['value'] }}</p>
+                        @php $gallery = $product->getMedia('gallery'); @endphp
+                        @if($gallery->count() > 0)
+                            <div class="thumbs">
+                                @foreach($gallery as $media)
+                                    <div class="thumb {{ $loop->first ? 'active' : '' }}" onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl('large') ?? $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active');">
+                                        <img src="{{ $media->getUrl('thumb') ?? $media->getUrl() }}" alt="">
                                     </div>
                                 @endforeach
-                            @endforelse
-                        </div>
+                            </div>
+                        @endif
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h2 class="mb-3 text-2xl font-bold tracking-tight text-slate-950">Description</h2>
-                        <p class="text-sm leading-relaxed text-slate-700">
-                            {{ $product->long_description ?? $product->description ?? $product->title ?? 'No description available.' }}
-                        </p>
-                    </div>
-                </div>
+                    <div class="product-info">
+                        <p style="font-size:13px;color:#0f766e;font-weight:600;margin-bottom:5px;">{{ $product->product_code ?? 'N/A' }}</p>
+                        <h2>{{ $product->product_title ?? 'Product' }}</h2>
 
-                <div class="space-y-6 lg:col-span-2">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <p class="font-mono text-xs font-medium text-emerald-600">{{ $product->product_code ?? $product->code ?? 'CODE-001' }}</p>
-                        <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-950">{{ $product->description ?? $product->title ?? 'Product Name' }}</h1>
+                        @if($product->product_description)
+                            <div class="desc">{!! $product->product_description !!}</div>
+                        @endif
 
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            @if($product->category ?? false)
-                                <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">{{ $product->category->name ?? $product->category }}</span>
-                            @endif
-                            @if($product->subcategory ?? false)
-                                <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">{{ $product->subcategory }}</span>
-                            @endif
-                            @if($product->connection_type ?? $product->connectionType ?? false)
-                                <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">{{ $product->connection_type ?? $product->connectionType }}</span>
-                            @endif
-                        </div>
+                        @if($product->category || $product->subcategory || $product->connection)
+                            <div style="margin-bottom:15px;">
+                                @if($product->category)
+                                    <span class="category-tag">{{ $product->category->name }}</span>
+                                @endif
+                                @if($product->subcategory)
+                                    <span class="category-tag" style="background:#e6f7ed;">{{ $product->subcategory->name }}</span>
+                                @endif
+                                @if($product->connection)
+                                    <span class="category-tag" style="background:#fef3c7;">{{ $product->connection->name }}</span>
+                                @endif
+                            </div>
+                        @endif
 
-                        <div class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-                            <p class="text-sm font-medium text-emerald-700">Wholesale pricing available</p>
-                            <p class="mt-2 text-sm text-emerald-600">Log in to your account to view pricing, request quotations, and download product documents.</p>
-                            <a href="{{ route('login') }}" class="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                                </svg>
-                                Login to View Pricing
-                            </a>
-                        </div>
+                        @php
+                            $specRows = [
+                                'Product Code' => $product->product_code,
+                                'Weight' => $product->weight ? $product->weight . ' kg' : null,
+                                'Machine Weight' => $product->machine_weight ? $product->machine_weight . ' t' : null,
+                                'Machine Class' => $product->machine_class ? $product->machine_class . ' t' : null,
+                                'Hinges' => $product->hinges,
+                                'Width' => $product->width ? $product->width . ' mm' : null,
+                                'Volume' => $product->volume ? $product->volume . ' L' : null,
+                                'Thickness' => $product->thickness ? $product->thickness . ' mm' : null,
+                                'Cutting Edge Thickness' => $product->cutting_edge_thickness ? $product->cutting_edge_thickness . ' mm' : null,
+                                'Teeth' => $product->teeth,
+                                'Stick Width' => $product->stick_width ? $product->stick_width . ' mm' : null,
+                                'Pin Center' => $product->pin_center ? $product->pin_center . ' mm' : null,
+                                'Pin Hole' => $product->pin_hole ? $product->pin_hole . ' mm' : null,
+                                'Reach' => $product->reach ? $product->reach . ' mm' : null,
+                                'Material' => $product->material,
+                            ];
+                            $hasSpecs = collect($specRows)->filter()->isNotEmpty();
+                        @endphp
 
-                        @auth
-                            @if(auth()->user()->isAdmin())
-                                <div class="mt-6 border-t border-slate-100 pt-6">
-                                    <div class="mb-3 flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                        <h3 class="text-sm font-semibold text-slate-950">Internal Notes</h3>
+                        @if($hasSpecs)
+                            <table class="spec-table">
+                                @foreach($specRows as $label => $value)
+                                    @if($value)
+                                        <tr>
+                                            <td>{{ $label }}</td>
+                                            <td>{{ $value }}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </table>
+                        @endif
+
+                        <div class="client-box">
+                            <h3>
+                                @auth Wholesale Client Area @else Wholesale Client Area &mdash; Login Required @endauth
+                            </h3>
+
+                            @auth
+                                @php
+                                    $userPrice = $product->productPrices->firstWhere('user_id', auth()->id());
+                                @endphp
+                                @if($userPrice || $product->ddp_price)
+                                    <div class="price">
+                                        {{ config('app.currency_symbol') }} {{ number_format($userPrice->final_price ?? $product->ddp_price, 2) }}
                                     </div>
-                                    <textarea class="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-sm placeholder-slate-400 shadow-sm transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500" rows="3" placeholder="Add internal notes..."></textarea>
-                                    <button class="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">Save Note</button>
-                                </div>
-                            @endif
-                        @endauth
-                    </div>
+                                @endif
+                            @else
+                                <p style="font-size:14px;color:#555;margin-bottom:15px;">
+                                    Log in to view wholesale pricing, request quotations, and download product documents.
+                                </p>
+                            @endauth
 
-                    @if(($product->documents ?? $product->files ?? false) || true)
-                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                            <h3 class="mb-3 text-sm font-semibold text-slate-950">Related Documents</h3>
-                            <div class="space-y-2">
-                                <a href="#" class="group flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-slate-50">
-                                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-red-50">
-                                        <svg class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <p class="text-sm font-medium text-slate-950 transition-colors group-hover:text-emerald-600">Datasheet_{{ $product->product_code ?? $product->code ?? 'product' }}.pdf</p>
-                                        <p class="text-xs text-slate-400">PDF &middot; 2.4 MB</p>
-                                    </div>
-                                    <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
+                            @if($product->getFirstMedia('pdfs'))
+                                <a href="{{ $product->getFirstMediaUrl('pdfs') }}" target="_blank" class="download-btn">
+                                    Download Technical PDF
                                 </a>
-                            </div>
+                            @endif
+
+                            @auth
+                                <a href="#" class="quote-btn">Add To Quotation</a>
+                            @else
+                                <a href="{{ route('login') }}" class="quote-btn">Login to View Pricing</a>
+                            @endauth
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 </x-layouts.public>

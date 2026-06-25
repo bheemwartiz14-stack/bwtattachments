@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="flex min-h-screen items-center justify-center p-4">
         <div class="w-full max-w-md">
-            <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
+            <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white p-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
                 <div class="mb-8 text-center">
                     <div class="mb-4 flex justify-center">
                         <span class="grid h-12 w-12 place-items-center overflow-hidden rounded-xl bg-emerald-600">
@@ -10,18 +10,18 @@
                             </svg>
                         </span>
                     </div>
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-950">Forgot your password?</h2>
-                    <p class="mt-2 text-sm text-slate-600">No problem. Just let us know your email address and we will email you a password reset link.</p>
+                    <h2 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-neutral-100">Forgot your password?</h2>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-neutral-400">No problem. Just let us know your email address and we will email you a password reset link.</p>
                 </div>
 
                 @if (session('status'))
-                    <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                    <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300">
                         {{ session('status') }}
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/30 dark:text-red-300">
                         <ul class="list-inside list-disc space-y-1">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -34,17 +34,17 @@
                     @csrf
 
                     <div>
-                        <label for="email" class="block text-sm font-semibold text-slate-700">Email address</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="name@company.com" required autofocus class="mt-1.5 block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-sm text-black placeholder-slate-400 shadow-sm transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300">Email address</label>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="name@company.com" required autofocus class="mt-1.5 block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-sm text-black placeholder-slate-400 shadow-sm transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100 dark:placeholder-neutral-500">
                     </div>
 
-                    <button type="submit" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                    <button type="submit" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:shadow-emerald-900/30 dark:hover:bg-emerald-500 dark:focus:ring-offset-neutral-900">
                         Send Password Reset Link
                     </button>
                 </form>
 
-                <p class="mt-6 text-center text-sm text-slate-600">
-                    <a href="{{ route('login') }}" class="font-semibold text-emerald-700 hover:text-emerald-800">Back to sign in</a>
+                <p class="mt-6 text-center text-sm text-slate-600 dark:text-neutral-400">
+                    <a href="{{ route('login') }}" class="font-semibold text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300">Back to sign in</a>
                 </p>
             </div>
         </div>

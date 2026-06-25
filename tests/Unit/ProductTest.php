@@ -43,10 +43,9 @@ test('product has images', function () {
     expect($product->images->first())->toBeInstanceOf(ProductImage::class);
 });
 
-test('product has soft delete', function () {
+test('product can be deleted', function () {
     $product = Product::factory()->create();
     $product->delete();
 
     expect(Product::find($product->id))->toBeNull();
-    expect(Product::withTrashed()->find($product->id))->not->toBeNull();
 });

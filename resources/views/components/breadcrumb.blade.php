@@ -1,7 +1,7 @@
 @props(['items' => []])
 
 <nav class="flex mb-4" aria-label="Breadcrumb">
-    <ol class="inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-gray-500">
+    <ol class="inline-flex items-center gap-1.5 text-sm text-gray-400 dark:text-neutral-500">
         <li>
             <a href="{{ $home ?? '/' }}" class="transition-colors hover:text-gray-700 dark:hover:text-slate-300">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -17,7 +17,7 @@
                 @if(isset($item['url']))
                     <a href="{{ $item['url'] }}" class="transition-colors hover:text-gray-700 dark:hover:text-slate-300">{{ $item['label'] }}</a>
                 @else
-                    <span class="font-medium text-black dark:text-gray-400">{{ $item['label'] }}</span>
+                    <span class="font-medium text-black dark:text-neutral-400">{{ $item['label'] }}</span>
                 @endif
             </li>
         @endforeach

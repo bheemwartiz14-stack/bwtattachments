@@ -21,7 +21,7 @@ class CategoryController extends Controller
         return view('public.categories.index', compact('categories'));
     }
 
-    public function show(int $id): View
+    public function show(string $id): View
     {
         $category = $this->categoryService->findById($id);
         $products = $this->productService->findByCategory($id);

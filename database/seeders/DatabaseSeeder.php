@@ -12,10 +12,10 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
             RolePermissionSeeder::class,
-            AdminUserSeeder::class,
             CategorySeeder::class,
-            SubcategorySeeder::class,
             ConnectionSeeder::class,
+            SubcategorySeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

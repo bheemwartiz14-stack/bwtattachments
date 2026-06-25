@@ -1,201 +1,313 @@
 <x-layouts.app>
-    <x-slot:title>{{ $product->product_description ?? $product->name }} - Attachment Portal</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Products', 'url' => route('admin.products.index')], ['label' => $product->product_code]]" />
+    <x-slot:title>{{ $product->product_title }} - Attachment Portal</x-slot:title>
+    <x-breadcrumb :items="[
+        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Products', 'url' => route('admin.products.index')],
+        ['label' => $product->product_code]
+    ]" />
+
+    @if(session('success'))
+        <div class="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-300">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-slate-100">{{ $product->product_description ?? $product->name }}</h1>
-                <p class="text-sm text-gray-700 mt-1">
-                    Code: <span class="font-mono text-emerald-600 dark:text-emerald-400">{{ $product->product_code }}</span>
-                </p>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('admin.products.edit', $product) }}" class="inline-flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                    Edit
-                </a>
-                <a href="{{ route('admin.products.index') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-normal text-black shadow-sm transition-colors hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 dark:hover:bg-slate-700">
-                    Back
-                </a>
+        {{-- HERO --}}
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 shadow-2xl">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
+            <div class="relative flex flex-col md:flex-row">
+                <div class="shrink-0 w-full md:w-80 h-64 md:h-auto bg-slate-800/50">
+                    @if($product->getFirstMediaUrl('images'))
+                        <img src="{{ $product->getFirstMediaUrl('images') }}" class="h-full w-full object-contain p-4">
+                    @else
+                        <div class="flex h-full w-full items-center justify-center">
+                            <svg class="h-20 w-20 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        </div>
+                    @endif
+                </div>
+                <div class="flex-1 p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold tracking-tight text-white">{{ $product->product_title }}</h1>
+                                <p class="mt-1.5 text-sm font-mono text-emerald-400">{{ $product->product_code }}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                @if($product->status !== null)
+                                    <span class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-sm {{ $product->status ? 'bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/30' : 'bg-red-500/20 text-red-300 ring-1 ring-red-500/30' }}">
+                                        <span class="h-1.5 w-1.5 rounded-full {{ $product->status ? 'bg-emerald-400' : 'bg-red-400' }}"></span>
+                                        {{ $product->status ? 'Active' : 'Inactive' }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        @if($product->category || $product->subcategory)
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                @if($product->category)
+                                    <span class="inline-flex items-center rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 ring-1 ring-white/20">{{ $product->category->name }}</span>
+                                @endif
+                                @if($product->subcategory)
+                                    <span class="inline-flex items-center rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 ring-1 ring-white/20">{{ $product->subcategory->name }}</span>
+                                @endif
+                                @if($product->connection)
+                                    <span class="inline-flex items-center rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 ring-1 ring-white/20">{{ $product->connection->name }}</span>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    <div class="mt-6 flex items-center gap-3">
+                        <a href="{{ route('admin.products.edit', $product) }}" class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                            Edit Product
+                        </a>
+                        <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white/80 shadow-sm transition-all hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                            Back to List
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        @if(session('success'))
-            <div class="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-300">
-                {{ session('success') }}
-            </div>
-        @endif
-
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- LEFT COLUMN --}}
             <div class="lg:col-span-2 space-y-6">
-                <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                    <h2 class="text-base font-semibold text-slate-950 dark:text-slate-100 mb-4">Product Information</h2>
-                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+
+                {{-- KEY STATS ROW --}}
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">DDP Price</p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($product->ddp_price ?? 0, 2) }}</p>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Weight</p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->weight ?? '&mdash;' }} <span class="text-sm font-normal text-slate-400">kg</span></p>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Width</p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->width ?? '&mdash;' }} <span class="text-sm font-normal text-slate-400">mm</span></p>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Machine Class</p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->machine_class ?? '&mdash;' }} <span class="text-sm font-normal text-slate-400">t</span></p>
+                    </div>
+                </div>
+
+                {{-- PRODUCT INFO --}}
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div class="mb-5 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                            <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Product Information</h2>
+                    </div>
+                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
                         <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Category</dt>
-                            <dd class="mt-1 text-sm text-black dark:text-gray-100">{{ $product->category->name ?? 'N/A' }}</dd>
+                            <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Category</dt>
+                            <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->category->name ?? 'N/A' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Subcategory</dt>
-                            <dd class="mt-1 text-sm text-black dark:text-gray-100">{{ $product->subcategory->name ?? 'N/A' }}</dd>
+                            <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Subcategory</dt>
+                            <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->subcategory->name ?? 'N/A' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Connection Type</dt>
-                            <dd class="mt-1 text-sm text-black dark:text-gray-100">{{ $product->connection->name ?? 'N/A' }}</dd>
+                            <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Connection Type</dt>
+                            <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->connection->name ?? 'N/A' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Status</dt>
-                            <dd class="mt-1">
-                                @if($product->status === 'published')
-                                    <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">Published</span>
-                                @elseif($product->status === 'draft')
-                                    <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">Draft</span>
-                                @else
-                                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-300">Hidden</span>
-                                @endif
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">DDP Price</dt>
-                            <dd class="mt-1 text-sm font-semibold text-black dark:text-gray-100">${{ number_format($product->ddp_price, 2) }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Currency</dt>
-                            <dd class="mt-1 text-sm text-black dark:text-gray-100">{{ $product->currency ?? 'USD' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Featured</dt>
-                            <dd class="mt-1 text-sm text-black dark:text-gray-100">{{ $product->featured ? 'Yes' : 'No' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Created</dt>
-                            <dd class="mt-1 text-sm text-black dark:text-gray-100">{{ $product->created_at->format('M d, Y') }}</dd>
+                            <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Material</dt>
+                            <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->material ?? 'N/A' }}</dd>
                         </div>
                         @if($product->product_description)
                             <div class="sm:col-span-2">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Description</dt>
-                                <dd class="mt-1 text-sm text-gray-700 dark:text-gray-300">{{ $product->product_description }}</dd>
+                                <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Description</dt>
+                                <dd class="mt-1 text-sm leading-relaxed text-slate-600 dark:text-neutral-300">{!! $product->product_description !!}</dd>
+                            </div>
+                        @endif
+                        @if($product->internal_notes)
+                            <div class="sm:col-span-2">
+                                <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <svg class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        Internal Notes
+                                    </span>
+                                </dt>
+                                <dd class="mt-1 text-sm text-slate-600 dark:text-neutral-300">{{ $product->internal_notes }}</dd>
                             </div>
                         @endif
                     </dl>
                 </div>
 
-                <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                    <h2 class="text-base font-semibold text-slate-950 dark:text-slate-100 mb-4">Specifications</h2>
-                    <dl class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-4">
-                        @if($product->weight_kg)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Weight</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->weight_kg }} <span class="text-sm font-normal text-gray-400">kg</span></dd>
-                            </div>
-                        @endif
-                        @if($product->width_mm)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Width</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->width_mm }} <span class="text-sm font-normal text-gray-400">mm</span></dd>
-                            </div>
-                        @endif
-                        @if($product->volume_m3)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Volume</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->volume_m3 }} <span class="text-sm font-normal text-gray-400">m³</span></dd>
-                            </div>
-                        @endif
-                        @if($product->num_teeth)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Teeth</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->num_teeth }}</dd>
-                            </div>
-                        @endif
-                        @if($product->pin_hole_diameter_mm)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Pin Hole Ø</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->pin_hole_diameter_mm }} <span class="text-sm font-normal text-gray-400">mm</span></dd>
-                            </div>
-                        @endif
-                        @if($product->machine_class_t)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Machine Class</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->machine_class_t }} <span class="text-sm font-normal text-gray-400">T</span></dd>
-                            </div>
-                        @endif
-                        @if($product->material)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Material</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->material }}</dd>
-                            </div>
-                        @endif
-                        @if($product->thickness_mm)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Thickness</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->thickness_mm }} <span class="text-sm font-normal text-gray-400">mm</span></dd>
-                            </div>
-                        @endif
-                        @if($product->reach_mm)
-                            <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
-                                <dt class="text-xs font-medium text-gray-400 dark:text-gray-500">Reach</dt>
-                                <dd class="mt-1 text-lg font-semibold text-black dark:text-gray-100">{{ $product->reach_mm }} <span class="text-sm font-normal text-gray-400">mm</span></dd>
-                            </div>
-                        @endif
-                    </dl>
-                </div>
-
-                @if($product->notes)
-                    <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <h2 class="text-base font-semibold text-slate-950 dark:text-slate-100 mb-4">Internal Notes</h2>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">{{ $product->notes }}</p>
-                        <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">These notes are only visible to administrators.</p>
+                {{-- SPECIFICATIONS --}}
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div class="mb-5 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                            <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        </div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Technical Specifications</h2>
                     </div>
-                @endif
+                    @php
+                        $specs = [
+                            'weight' => ['label' => 'Weight', 'unit' => 'kg'],
+                            'machine_class' => ['label' => 'Machine Class', 'unit' => 't'],
+                            'machine_weight' => ['label' => 'Machine Weight', 'unit' => 't'],
+                            'hinges' => ['label' => 'Hinges', 'unit' => null],
+                            'width' => ['label' => 'Width', 'unit' => 'mm'],
+                            'volume' => ['label' => 'Volume', 'unit' => 'L'],
+                            'cutting_edge_thickness' => ['label' => 'Cutting Edge Thickness', 'unit' => 'mm'],
+                            'teeth' => ['label' => 'Teeth', 'unit' => null],
+                            'stick_width' => ['label' => 'Stick Width', 'unit' => 'mm'],
+                            'pin_center' => ['label' => 'Pin Center', 'unit' => 'mm'],
+                            'pin_hole' => ['label' => 'Pin Hole', 'unit' => 'mm'],
+                            'thickness' => ['label' => 'Thickness', 'unit' => 'mm'],
+                            'reach' => ['label' => 'Reach', 'unit' => 'mm'],
+                            'material' => ['label' => 'Material', 'unit' => null],
+                        ];
+                    @endphp
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        @foreach($specs as $field => $config)
+                            @php $value = $product->$field; @endphp
+                            <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+                                <dt class="text-xs font-medium text-slate-400">{{ $config['label'] }}</dt>
+                                <dd class="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
+                                    @if($value !== null && $value !== '')
+                                        {{ $value }}
+                                        @if($config['unit'])
+                                            <span class="text-sm font-normal text-slate-400">{{ $config['unit'] }}</span>
+                                        @endif
+                                    @else
+                                        <span class="text-sm font-normal text-slate-300 dark:text-neutral-600">&mdash;</span>
+                                    @endif
+                                </dd>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- WHOLESALE CLIENT PRICING --}}
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div class="mb-5 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                            <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesale Client Pricing</h2>
+                    </div>
+                    @php $prices = $product->productPrices; @endphp
+                    @if($prices->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-left text-xs font-medium text-slate-400 uppercase tracking-wider dark:border-neutral-800">
+                                        <th class="pb-3 pr-4 font-medium">Client</th>
+                                        <th class="pb-3 pr-4 font-medium">Email</th>
+                                        <th class="pb-3 text-right font-medium">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
+                                    @foreach($prices as $price)
+                                        <tr class="text-sm text-slate-900 dark:text-white">
+                                            <td class="py-3 pr-4">
+                                                <div class="flex items-center gap-2.5">
+                                                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400">
+                                                        {{ strtoupper(substr($price->user->name ?? '?', 0, 2)) }}
+                                                    </div>
+                                                    <span class="font-medium">{{ $price->user->name ?? 'N/A' }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="py-3 pr-4 text-slate-500">{{ $price->user->email ?? '' }}</td>
+                                            <td class="py-3 text-right font-semibold text-emerald-700 dark:text-emerald-400">{{ config('app.currency_symbol') }}{{ number_format($price->price, 2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="py-10 text-center">
+                            <svg class="mx-auto h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                            <p class="mt-3 text-sm font-medium text-slate-500 dark:text-neutral-400">No wholesale prices set</p>
+                            <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">Add pricing when editing this product.</p>
+                        </div>
+                    @endif
+                </div>
             </div>
 
+            {{-- RIGHT COLUMN --}}
             <div class="space-y-6">
-                <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                    <h2 class="text-base font-semibold text-slate-950 dark:text-slate-100 mb-4">Images</h2>
-                    @if($product->images->count())
+
+                {{-- GALLERY --}}
+                @php $gallery = $product->getMedia('gallery'); @endphp
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div class="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                            <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        </div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Gallery</h2>
+                        <span class="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-neutral-800 dark:text-neutral-300">{{ $gallery->count() }}</span>
+                    </div>
+                    @if($gallery->count() > 0)
                         <div class="grid grid-cols-2 gap-3">
-                            @foreach($product->images as $image)
-                                <a href="{{ Storage::url($image->path) }}" target="_blank" class="block rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:ring-2 hover:ring-emerald-500 transition-all">
-                                    <img src="{{ Storage::url($image->path) }}" alt="" class="w-full h-28 object-cover">
+                            @foreach($gallery as $media)
+                                <a href="{{ $media->getUrl() }}" target="_blank"
+                                    class="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition-all hover:shadow-md hover:ring-2 hover:ring-emerald-500 dark:border-neutral-800 dark:bg-neutral-900/50">
+                                    <img src="{{ $media->getUrl() }}" alt="" class="h-24 w-full object-cover transition-transform duration-300 group-hover:scale-105">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20">
+                                        <svg class="h-6 w-6 text-white opacity-0 transition-opacity group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    </div>
                                 </a>
                             @endforeach
                         </div>
                     @else
-                        <div class="text-center py-8">
-                            <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            <p class="mt-2 text-sm text-gray-400">No images uploaded.</p>
+                        <div class="py-8 text-center">
+                            <svg class="mx-auto h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            <p class="mt-2 text-sm text-slate-400">No images uploaded.</p>
                         </div>
                     @endif
                 </div>
 
-                @if($product->pdf_file)
-                    <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <h2 class="text-base font-semibold text-slate-950 dark:text-slate-100 mb-4">Datasheet</h2>
-                        <a href="{{ Storage::url($product->pdf_file) }}" target="_blank" class="inline-flex items-center gap-3 p-4 rounded-xl bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors w-full">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/50">
-                                <svg class="w-5 h-5 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                {{-- PDF --}}
+                @if($product->getFirstMedia('pdfs'))
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                        <div class="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                                <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                             </div>
-                            <div>
-                                <p class="text-sm font-medium text-rose-700 dark:text-rose-300">Download PDF</p>
-                                <p class="text-xs text-gray-400">Product Datasheet</p>
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Datasheet</h2>
+                        </div>
+                        <a href="{{ $product->getFirstMediaUrl('pdfs') }}" target="_blank"
+                            class="group flex items-center gap-3.5 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50 dark:hover:border-emerald-700 dark:hover:bg-emerald-900/20">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/50">
+                                <svg class="h-5 w-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                             </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-slate-900 transition-colors group-hover:text-emerald-700 dark:text-white dark:group-hover:text-emerald-400">{{ $product->getFirstMedia('pdfs')->file_name }}</p>
+                                <p class="text-xs text-slate-400">PDF &middot; {{ number_format($product->getFirstMedia('pdfs')->size / 1024, 1) }} KB</p>
+                            </div>
+                            <svg class="h-5 w-5 text-slate-400 transition-colors group-hover:text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         </a>
                     </div>
                 @endif
 
-                <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                    <h2 class="text-base font-semibold text-slate-950 dark:text-slate-100 mb-4">Quick Actions</h2>
+                {{-- QUICK ACTIONS --}}
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                    <div class="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                            <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
+                    </div>
                     <div class="space-y-2">
-                        <a href="{{ route('admin.products.edit', $product) }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-rose-50 dark:hover:bg-slate-800/50 transition-colors text-sm text-gray-700 dark:text-gray-300">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        <a href="{{ route('admin.products.edit', $product) }}"
+                            class="flex items-center gap-3 rounded-xl p-3 text-sm font-medium text-slate-700 transition-colors hover:bg-emerald-50 hover:text-emerald-700 dark:text-neutral-300 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400">
+                            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                             Edit Product
                         </a>
                         <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm text-red-600 dark:text-red-400 w-full">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            <button type="submit"
+                                class="flex w-full items-center gap-3 rounded-xl p-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 Delete Product
                             </button>
                         </form>

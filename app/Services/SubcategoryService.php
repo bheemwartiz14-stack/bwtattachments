@@ -2,19 +2,18 @@
 
 namespace App\Services;
 
-use App\Models\Subcategory;
-use App\Repositories\Interfaces\SubcategoryRepositoryInterface;
+use App\Repositories\SubcategoryRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class SubcategoryService
 {
-    public function __construct(protected SubcategoryRepositoryInterface $subcategoryRepository)
+    public function __construct(protected SubcategoryRepository $subcategoryRepository)
     {
     }
 
-    public function getAll(): Collection
+    public function getAll(): array
     {
         return $this->subcategoryRepository->getAll();
     }
@@ -24,7 +23,7 @@ class SubcategoryService
         return $this->subcategoryRepository->paginate($perPage);
     }
 
-    public function findById(int $id): Model
+    public function findById(string $id): Model
     {
         return $this->subcategoryRepository->findById($id);
     }
@@ -44,13 +43,8 @@ class SubcategoryService
         return $this->subcategoryRepository->delete($id);
     }
 
-    public function restore(string $id): Model
-    {
-        return $this->subcategoryRepository->restore($id);
-    }
-
     public function getByCategory(string $categoryId): Collection
     {
-        return Subcategory::where('category_id', $categoryId)->get();
+        return $this->subcategoryRepository->getByCategory($categoryId);
     }
 }

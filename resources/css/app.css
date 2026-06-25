@@ -10,17 +10,17 @@
     --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --color-primary-50: #eff6ff;
-    --color-primary-100: #dbeafe;
-    --color-primary-200: #bfdbfe;
-    --color-primary-300: #93c5fd;
-    --color-primary-400: #60a5fa;
-    --color-primary-500: #3b82f6;
-    --color-primary-600: #2563eb;
-    --color-primary-700: #1d4ed8;
-    --color-primary-800: #1e40af;
-    --color-primary-900: #1e3a8a;
-    --color-primary-950: #172554;
+    --color-primary-50: #f8fafc;
+    --color-primary-100: #f1f5f9;
+    --color-primary-200: #e2e8f0;
+    --color-primary-300: #cbd5e1;
+    --color-primary-400: #94a3b8;
+    --color-primary-500: #64748b;
+    --color-primary-600: #475569;
+    --color-primary-700: #334155;
+    --color-primary-800: #1e293b;
+    --color-primary-900: #0f172a;
+    --color-primary-950: #020617;
 
     --color-surface: #ffffff;
     --color-surface-secondary: #f8fafc;
@@ -29,7 +29,7 @@
 
     --color-sidebar: #0f172a;
     --color-sidebar-hover: #1e293b;
-    --color-sidebar-active: #1e40af;
+    --color-sidebar-active: #1e293b;
     --color-sidebar-text: #cbd5e1;
     --color-sidebar-text-active: #ffffff;
     --color-sidebar-border: #1e293b;
@@ -61,13 +61,13 @@
     }
 
     .dark body {
-        @apply bg-slate-950 text-slate-100;
+        @apply bg-black text-neutral-100;
     }
 
     .dark {
-        --color-text: #f1f5f9;
-        --color-text-secondary: #cbd5e1;
-        --color-text-tertiary: #64748b;
+        --color-text: #f5f5f5;
+        --color-text-secondary: #d4d4d4;
+        --color-text-tertiary: #737373;
     }
 }
 
@@ -93,7 +93,7 @@
     }
 
     .dark .btn-secondary {
-        @apply bg-slate-800 text-slate-100 border-slate-700 hover:bg-slate-700;
+        @apply bg-neutral-900 text-neutral-100 border-neutral-800 hover:bg-neutral-800;
     }
 
     .btn-ghost {
@@ -117,7 +117,7 @@
     }
 
     .dark .card {
-        @apply bg-slate-900 border-slate-700;
+        @apply bg-neutral-950 border-neutral-800;
     }
 
     .input {
@@ -125,7 +125,7 @@
     }
 
     .dark .input {
-        @apply bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500;
+        @apply bg-neutral-900 border-neutral-800 text-neutral-100 placeholder:text-neutral-500;
     }
 
     .label {
@@ -255,7 +255,7 @@
     }
 
     .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-        @apply bg-slate-600;
+        @apply bg-neutral-700;
     }
 
     .sidebar-scroll::-webkit-scrollbar {
@@ -280,7 +280,7 @@
 }
 
 .dark .glass {
-    @apply bg-slate-900/80 border-slate-800;
+    @apply bg-black/80 border-neutral-800;
 }
 
 @utility text-balance {
