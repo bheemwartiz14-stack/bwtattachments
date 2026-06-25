@@ -18,6 +18,11 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Block mixed content and HostGator injected scripts
+    <IfModule mod_headers.c>
+        Header always set Content-Security-Policy "upgrade-insecure-requests; block-all-mixed-content"
+    </IfModule>
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
