@@ -17,7 +17,7 @@ readonly class ProductMediaService
         $product
             ->addMedia($this->sanitizeImage($file))
             ->preservingOriginal()
-            ->toMediaCollection('images');
+            ->toMediaCollection('images', 'public');
     }
 
     public function attachGalleryImages(Model $product, array $files): void
@@ -27,7 +27,7 @@ readonly class ProductMediaService
                 $product
                     ->addMedia($this->sanitizeImage($file))
                     ->preservingOriginal()
-                    ->toMediaCollection('gallery');
+                    ->toMediaCollection('gallery', 'public');
             }
         }
     }
@@ -37,7 +37,7 @@ readonly class ProductMediaService
         $product
             ->addMedia($file)
             ->preservingOriginal()
-            ->toMediaCollection('pdfs');
+            ->toMediaCollection('pdfs', 'public');
     }
 
     public function sanitizeImage(UploadedFile $file): UploadedFile
