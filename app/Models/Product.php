@@ -43,13 +43,16 @@ class Product extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
+            ->useDisk('public')
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
             ->singleFile();
 
         $this->addMediaCollection('gallery')
+            ->useDisk('public')
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
         $this->addMediaCollection('pdfs')
+            ->useDisk('public')
             ->acceptsMimeTypes(['application/pdf']);
     }
 
