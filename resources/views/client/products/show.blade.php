@@ -135,20 +135,39 @@
                         <p class="text-3xl font-bold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($displayPrice, 2) }}</p>
                     </div>
 
-                    <div class="mt-6 space-y-3">
-                        <form action="{{ route('client.quotations.create') }}" method="GET">
-                            <input type="hidden" name="add_product" value="{{ $product->id }}">
+                    @php $wholesalePrice = $product->productPrices->where('type', 'wholesale_purchase')->firstWhere('user_id', auth()->id()); @endphp
+                    @if($wholesalePrice)
+                    <div class="mt-6 pt-6 border-t border-slate-100 dark:border-neutral-800">
+                        <p class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-3">Manage Product Price</p>
+                        <form method="POST" action="{{ route('client.products.margin', $product->id) }}" class="space-y-3">
+                            @csrf
+                            @method('PATCH')
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Quantity</label>
-                                <input type="number" name="qty" min="1" value="1" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500">
+                                <label class="block text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1.5">Product Price</label>
+                                <p class="text-lg font-bold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($wholesalePrice->price, 2) }}</p>
+                            </div>
+                            <div>
+                                <label for="margin" class="block text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1.5">Margin (%)</label>
+                                <input type="number" name="margin" id="margin" value="{{ old('margin', $wholesalePrice->margin) }}"
+                                    class="margin-input block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500"
+                                    min="0" max="100" step="0.01" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1.5">Total Price</label>
+                                <p class="total-display text-2xl font-bold text-emerald-700 dark:text-emerald-400">
+                                    {{ config('app.currency_symbol') }}{{ number_format($wholesalePrice->price * (1 + ($wholesalePrice->margin ?? 0) / 100), 2) }}
+                                </p>
                             </div>
                             <button type="submit"
-                                class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                                Add to Quotation
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                Save Margin
                             </button>
                         </form>
                     </div>
+                    @endif
+
+
 
                     @php $pdf = $product->getFirstMedia('pdfs'); @endphp
                     @if($pdf)
@@ -163,4 +182,23 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        const marginInput = document.querySelector('.margin-input');
+        if (marginInput) {
+            const totalDisplay = document.querySelector('.total-display');
+            const basePrice = {{ $wholesalePrice?->price ?? 0 }};
+            const currency = '{{ config('app.currency_symbol') }}';
+
+            function updateTotal() {
+                const margin = parseFloat(marginInput.value) || 0;
+                const total = basePrice * (1 + margin / 100);
+                totalDisplay.textContent = currency + total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+
+            marginInput.addEventListener('input', updateTotal);
+        }
+    </script>
+    @endpush
 </x-layouts.app>

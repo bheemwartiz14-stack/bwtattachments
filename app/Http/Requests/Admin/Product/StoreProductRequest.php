@@ -16,6 +16,7 @@ class StoreProductRequest extends FormRequest
         return [
             'product_title' => ['required', 'string', 'max:255'],
             'product_code' => ['required', 'string', 'max:255', 'unique:products,product_code'],
+            'drawing_number' => ['nullable', 'string', 'max:255'],
             'product_description' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
             'subcategory_id' => ['required', 'exists:subcategories,id'],

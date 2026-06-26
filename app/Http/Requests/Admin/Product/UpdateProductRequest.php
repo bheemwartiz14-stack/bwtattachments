@@ -27,6 +27,7 @@ class UpdateProductRequest extends FormRequest
             ],
 
             'product_description' => ['required', 'string'],
+            'drawing_number' => ['nullable', 'string', 'max:255'],
 
             'category_id' => ['nullable', 'exists:categories,id'],
             'subcategory_id' => ['nullable', 'exists:subcategories,id'],

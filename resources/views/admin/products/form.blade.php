@@ -43,10 +43,11 @@
                 </div>
                 <div class="p-8 space-y-5">
                     <div class="grid gap-4 md:grid-cols-2">
-                        <x-forms.input name="product_title" label="Product Title" required
-                            :value="$product->product_title ?? ''" placeholder="Enter product title" />
+                        <x-forms.input name="product_title" label="Product Name" required
+                            :value="$product->product_title ?? ''" placeholder="Enter Product Name" />
                         <x-forms.input name="product_code" label="Product Code" required
                             :value="$product->product_code ?? ''" placeholder="Enter product code" />
+                        
                         <x-forms.select name="category_id" label="Category" required
                             :options="$categories ?? []" :value="$product->category_id ?? ''"
                             placeholder="Select Category" />
@@ -57,6 +58,8 @@
                         <x-forms.select name="connection_id" label="Connection" required
                             :options="$connectionTypes ?? []" :value="$product->connection_id ?? ''"
                             placeholder="Select Connection" />
+                        <x-forms.input name="drawing_number" label="Drawing Number" required
+                            :value="$product->drawing_number ?? ''" placeholder="Enter drawing number" />
                     </div>
                     <x-forms.textarea name="product_description" label="Product Description" required rows="5"
                         :value="$product->product_description ?? ''" placeholder="Enter product description" />
@@ -102,9 +105,11 @@
                         <x-forms.dropzone name="product_gallery_images" accept="image/*" hint="PNG, JPG, WebP or GIF" />
                     </div>
                     <div>
-                        <h3 class="mb-3 text-sm font-semibold text-slate-700 dark:text-neutral-300">Product PDF</h3>
-                        <x-forms.input-file name="product_pdf" accept="application/pdf"
-                            :currentFile="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->file_name : null" />
+                         <x-forms.pdf-upload
+                        :existingFile="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->file_name : null"
+                        :existingUrl="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->getUrl() : null"
+                        :existingSize="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->size : null" />
+                </div>
                     </div>
                 </div>
             </div>
@@ -118,20 +123,16 @@
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @php
                             $specs = [
-                                'weight' => ['type' => 'number', 'label' => 'Weight (kg)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'machine_class' => ['type' => 'number', 'label' => 'Machine Class/Weight (t)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'hinges' => ['type' => 'number', 'label' => 'Hinges', 'step' => '1', 'min' => '0', 'placeholder' => '0'],
-                                'width' => ['type' => 'number', 'label' => 'Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'volume' => ['type' => 'number', 'label' => 'Volume (L)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'cutting_edge_thickness' => ['type' => 'number', 'label' => 'Cutting Edge Thickness (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'teeth' => ['type' => 'number', 'label' => 'Teeth', 'step' => '1', 'min' => '0', 'placeholder' => '0'],
-                                'stick_width' => ['type' => 'number', 'label' => 'Stick Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'pin_center' => ['type' => 'number', 'label' => 'Pin Center (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'pin_hole' => ['type' => 'number', 'label' => 'Pin Hole (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'thickness' => ['type' => 'number', 'label' => 'Thickness (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'reach' => ['type' => 'number', 'label' => 'Reach (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'machine_weight' => ['type' => 'number', 'label' => 'Machine Weight (t)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'material' => ['type' => 'text', 'label' => 'Material', 'placeholder' => 'Enter material'],
+                                'weight' => ['type' => 'text', 'label' => 'Weight (kg)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
+                                'machine_class' => ['type' => 'text', 'label' => 'Machine Class/Weight (t)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
+                                'hinges' => ['type' => 'text', 'label' => 'Hinges', 'step' => '1', 'min' => '0', 'placeholder' => '0'],
+                                'width' => ['type' => 'text', 'label' => 'Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
+                                'volume' => ['type' => 'text', 'label' => 'Volume (L)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
+                                'cutting_edge_thickness' => ['type' => 'text', 'label' => 'Cutting Edge Thickness (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
+                                'teeth' => ['type' => 'text', 'label' => 'Teeth', 'step' => '1', 'min' => '0', 'placeholder' => '0'],
+                                'stick_width' => ['type' => 'text', 'label' => 'Stick Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
+                                'pin_center' => ['type' => 'text', 'label' => 'Pin center to Pin center (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
+                                'pin_hole' => ['type' => 'text', 'label' => 'Pin Hole (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
                             ];
                         @endphp
                         @foreach($specs as $field => $config)

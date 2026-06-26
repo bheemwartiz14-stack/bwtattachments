@@ -119,6 +119,10 @@
                             <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Material</dt>
                             <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->material ?? 'N/A' }}</dd>
                         </div>
+                        <div>
+                            <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Drawing Number</dt>
+                            <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->drawing_number ?? 'N/A' }}</dd>
+                        </div>
                         @if($product->product_description)
                             <div class="sm:col-span-2">
                                 <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Description</dt>
@@ -159,10 +163,7 @@
                             'teeth' => ['label' => 'Teeth', 'unit' => null],
                             'stick_width' => ['label' => 'Stick Width', 'unit' => 'mm'],
                             'pin_center' => ['label' => 'Pin Center', 'unit' => 'mm'],
-                            'pin_hole' => ['label' => 'Pin Hole', 'unit' => 'mm'],
-                            'thickness' => ['label' => 'Thickness', 'unit' => 'mm'],
-                            'reach' => ['label' => 'Reach', 'unit' => 'mm'],
-                            'material' => ['label' => 'Material', 'unit' => null],
+                            'pin_hole' => ['label' => 'Pin center to Pin center (mm)', 'unit' => 'mm'],
                         ];
                     @endphp
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">

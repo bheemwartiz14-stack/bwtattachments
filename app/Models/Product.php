@@ -36,6 +36,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
     'product_feature_image',
     'product_gallery_images',
     'product_pdf',
+    'drawing_number',
 ])]
 class Product extends Model implements HasMedia
 {

@@ -73,7 +73,7 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');
         Route::get('/products/search', [ClientProductController::class, 'search'])->name('products.search');
         Route::get('/products/{product}', [ClientProductController::class, 'show'])->name('products.show');
-
+        Route::patch('/products/{product}/margin', [App\Http\Controllers\Client\ProductPriceManageController::class, 'updateMargin'])->name('products.margin');
         Route::get('/quotations', [ClientQuotationController::class, 'index'])->name('quotations.index');
         Route::get('/quotations/create', [ClientQuotationController::class, 'create'])->name('quotations.create');
         Route::post('/quotations', [ClientQuotationController::class, 'store'])->name('quotations.store');
