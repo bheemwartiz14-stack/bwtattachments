@@ -49,24 +49,9 @@ class ProductService
         return DB::transaction(function () use ($id, $data) {
             $media = $this->extractMedia($data);
             $media = $this->resolveTempMedia($data, $media);
-            $deletedGallery = $data['deleted_gallery'] ?? null;
-            $deleteFeature = ($data['product_feature_image_deleted'] ?? null) === '1';
-            $deletePdf = ($data['product_pdf_deleted'] ?? null) === '1';
             $this->unsetMediaKeys($data);
             $product = $this->productRepository->update($id, $data);
-            if ($deleteFeature) {
-                $product->clearMediaCollection('images');
-            }
-            if ($deletePdf) {
-                $product->clearMediaCollection('pdfs');
-            }
             $this->handleMedia($product, $media);
-            if ($deletedGallery) {
-                $ids = json_decode($deletedGallery, true);
-                if (is_array($ids) && !empty($ids)) {
-                    $this->productMediaService->removeGalleryImages($product, $ids);
-                }
-            }
             $this->cleanupTemp($media);
             return $product->load('media');
         });
@@ -154,12 +139,9 @@ class ProductService
             $data['product_feature_image'],
             $data['product_pdf'],
             $data['product_gallery_images'],
-            $data['deleted_gallery'],
             $data['product_feature_image_temp'],
             $data['product_pdf_temp'],
             $data['product_gallery_images_temp'],
-            $data['product_feature_image_deleted'],
-            $data['product_pdf_deleted'],
         );
     }
 

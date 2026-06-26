@@ -42,6 +42,7 @@ Route::middleware('guest')->group(function () {
 
 // Authenticated routes
 Route::post('/upload-temp', [TempFileController::class, 'store'])->name('upload-temp')->middleware('auth');
+Route::delete('/media/{media}', [TempFileController::class, 'destroy'])->name('media.destroy')->middleware('auth');
 Route::middleware(['auth', 'first.time'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 

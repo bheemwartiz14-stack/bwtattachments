@@ -82,7 +82,12 @@
                 </div>
                 <div class="p-8 space-y-6">
                     <x-forms.image-dropzone name="product_feature_image"
-                        :existingImageUrl="$isEdit ? $product->getFirstMediaUrl('images') : null" label="Product Feature Image" />
+                        :existingImageUrl="$isEdit ? $product->getFirstMediaUrl('images') : null"
+                        :existingImageId="$isEdit && $product->getFirstMedia('images') ? $product->getFirstMedia('images')->id : null"
+                        label="Product Feature Image"
+                        
+                        
+                        />
                     <x-forms.gallery-dropzone
                         :existingImages="$isEdit ? $product->getMedia('gallery')->map(fn($m) => ['url' => $m->getUrl(), 'name' => $m->file_name, 'id' => $m->id])->toArray() : []"
                         name="product_gallery_images"
@@ -90,7 +95,8 @@
                     <x-forms.pdf-upload
                         :existingFile="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->file_name : null"
                         :existingUrl="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->getUrl() : null"
-                        :existingSize="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->size : null" 
+                        :existingSize="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->size : null"
+                        :existingFileId="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->id : null"
                         name="product_pdf"
                         />
                 </div>

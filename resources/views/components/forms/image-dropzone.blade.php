@@ -4,6 +4,7 @@
     'label' => 'Image',
     'hint' => 'PNG, JPG, WebP or GIF (Max. 2MB)',
     'existingImageUrl' => null,
+    'existingImageId' => null,
     'maxSize' => 2097152,
 ])
 
@@ -24,6 +25,7 @@
         uploading: false,
         uploadProgress: 0,
         existingUrl: @js($existingImageUrl),
+        existingImageId: @js($existingImageId),
         tempData: @js($oldTokenJson ? json_decode($oldTokenJson, true) : null),
         acceptedTypes: {{ Js::from(explode(',', $accept)) }},
         maxSize: {{ $maxSize }},
@@ -78,16 +80,19 @@
             xhr.send(formData);
         },
         removeFile() {
+            if (this.existingImageId) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', '{{ url('/media') }}/' + this.existingImageId);
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                xhr.send();
+            }
             this.file = null;
             this.previewUrl = null;
+            this.existingUrl = null;
             this.tempData = null;
             this.$refs.input.value = '';
             this.$refs.tempInput.value = '';
             this.error = '';
-            if (this.existingUrl) {
-                this.existingUrl = null;
-                this.$refs.deletedInput.value = '1';
-            }
         },
         formatSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
@@ -95,7 +100,6 @@
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
         },
     }">
-        <input type="hidden" name="{{ $name }}_deleted" x-ref="deletedInput" value="0">
         <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldTokenJson }}">
         <input type="file" name="{{ $name }}" accept="{{ $accept }}" x-ref="input" @change="handleFile($event.target.files[0])" class="hidden">
 

@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class TempFileController extends Controller
 {
@@ -30,5 +31,13 @@ class TempFileController extends Controller
             'mime_type' => $mimeType,
             'extension' => $extension,
         ]);
+    }
+
+    public function destroy(string $id): JsonResponse
+    {
+        $media = Media::findOrFail($id);
+        $media->delete();
+
+        return response()->json(['success' => true]);
     }
 }

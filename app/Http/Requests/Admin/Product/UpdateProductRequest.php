@@ -57,10 +57,8 @@ class UpdateProductRequest extends FormRequest
 
             'product_pdf' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'product_feature_image_temp' => ['nullable', 'string'],
-            'product_feature_image_deleted' => ['nullable', 'string'],
             'product_gallery_images_temp' => ['nullable', 'string'],
             'product_pdf_temp' => ['nullable', 'string'],
-            'product_pdf_deleted' => ['nullable', 'string'],
             'product_prices' => ['nullable', 'array'],
             'product_prices.*.user_id' => ['required', 'string', 'exists:users,id'],
             'product_prices.*.price' => ['required', 'numeric', 'min:0'],

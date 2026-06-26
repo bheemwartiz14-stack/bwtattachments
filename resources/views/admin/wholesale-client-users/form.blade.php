@@ -1,7 +1,9 @@
 @php
     $isEdit = isset($user);
     $wholesaleClientName = $isEdit ? ($user->userMeta?->metadata['client_name'] ?? '') : '';
-    $logoUrl = $isEdit ? $user->userMeta?->getFirstMediaUrl('wholesale_client_logo') : null;
+    $logoMedia = $isEdit ? $user->userMeta?->getFirstMedia('wholesale_client_logo') : null;
+    $logoUrl = $logoMedia?->getUrl();
+    $logoId = $logoMedia?->id;
 @endphp
 
 <x-layouts.app>
@@ -133,8 +135,9 @@
                             x-model="clientName"
                         />
                         <x-forms.image-dropzone 
-                           name="wholesale_client_logo"
+                            name="wholesale_client_logo"
                             :existingImageUrl="$logoUrl"
+                            :existingImageId="$logoId"
                             label="Wholesale Client Logo"
                             accept="image/jpeg,image/png,image/webp"
                             hint="PNG, JPG or WebP (Max. 2MB)" />

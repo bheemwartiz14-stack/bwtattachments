@@ -27,7 +27,7 @@
     @endif
     <div x-data="{
         items: {{ json_encode($existing) }},
-        deletedIds: [],
+
         dragging: false,
         error: '',
         uploading: false,
@@ -144,8 +144,11 @@
         },
         removeItem(index) {
             var item = this.items[index];
-            if (item.type === 'existing') {
-                this.deletedIds.push(item.id);
+            if (item.type === 'existing' && item.id) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', '{{ url('/media') }}/' + item.id);
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                xhr.send();
             }
             this.items.splice(index, 1);
         },
@@ -167,10 +170,8 @@
                 }
             });
             this.$refs.tempInput.value = JSON.stringify(tempItems);
-            this.$refs.deletedInput.value = JSON.stringify(this.deletedIds);
         },
     }">
-        <input type="hidden" name="deleted_gallery" x-ref="deletedInput">
         <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldGalleryTemp }}">
         <input type="file" accept="{{ $accept }}" x-ref="input" @change="addFiles($event.target.files); $refs.input.value = ''" multiple class="hidden">
 

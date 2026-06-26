@@ -69,7 +69,9 @@ class ManageAdminProductController extends Controller
 
     public function update(UpdateProductRequest $request, string $id): RedirectResponse
     {
+        
         $this->productService->update($id, $request->validated());
+       
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
 

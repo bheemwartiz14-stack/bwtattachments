@@ -6,6 +6,7 @@
     'existingFile' => null,
     'existingUrl' => null,
     'existingSize' => null,
+    'existingFileId' => null,
     'maxSize' => 10485760,
 ])
 
@@ -27,6 +28,7 @@
         existingFile: @js($existingFile),
         existingUrl: @js($existingUrl),
         existingSize: @js($existingSize),
+        existingFileId: @js($existingFileId),
         tempData: @js($oldTokenJson ? json_decode($oldTokenJson, true) : null),
         maxSize: {{ $maxSize }},
         get fileName() {
@@ -59,9 +61,6 @@
             if (file.size > this.maxSize) {
                 this.error = 'File size must be less than 10 MB.';
                 return;
-            }
-            if (this.existingUrl) {
-                this.$refs.deletedInput.value = '1';
             }
             this.uploading = true;
             this.uploadProgress = 0;
@@ -97,20 +96,22 @@
             xhr.send(formData);
         },
         removeFile() {
+            if (this.existingFileId) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', '{{ url('/media') }}/' + this.existingFileId);
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                xhr.send();
+            }
             this.file = null;
+            this.existingFile = null;
+            this.existingUrl = null;
+            this.existingSize = null;
             this.tempData = null;
             this.$refs.input.value = '';
             this.$refs.tempInput.value = '';
             this.error = '';
-            if (this.existingUrl) {
-                this.existingFile = null;
-                this.existingUrl = null;
-                this.existingSize = null;
-                this.$refs.deletedInput.value = '1';
-            }
         },
     }">
-        <input type="hidden" name="{{ $name }}_deleted" x-ref="deletedInput" value="0">
         <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldTokenJson }}">
         <input type="file" name="{{ $name }}" accept="{{ $accept }}" x-ref="input" @change="handleFile($event.target.files[0])" class="hidden">
 
