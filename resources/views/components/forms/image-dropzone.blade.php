@@ -5,6 +5,7 @@
     'hint' => 'PNG, JPG, WebP or GIF (Max. 2MB)',
     'existingImageUrl' => null,
     'maxSize' => 2097152,
+    'name' => 'Image',
 ])
 
 <div>

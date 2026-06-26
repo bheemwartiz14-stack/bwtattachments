@@ -12,7 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('product_title');
             $table->string('product_code')->unique();
-            $table->string('product_description');
+            $table->longText('product_description')->nullable();
             $table->decimal('weight', 10, 2)->nullable();
             $table->decimal('machine_weight', 10, 2)->nullable();
             $table->foreignUuid('category_id')->nullable()->constrained()->nullOnDelete();
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->decimal('pin_center', 10, 2)->nullable();
             $table->decimal('pin_hole', 10, 2)->nullable();
              $table->decimal('ddp_price', 12, 2)->nullable();
-            $table->text('internal_notes')->nullable();
+            $table->longText('internal_notes')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });
