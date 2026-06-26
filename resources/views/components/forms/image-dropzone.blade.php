@@ -50,7 +50,7 @@
             var formData = new FormData();
             formData.append('file', file);
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '{{ route('admin.upload-temp') }}');
+            xhr.open('POST', '{{ route('upload-temp') }}');
             xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
             xhr.upload.onprogress = function(e) {
                 if (e.lengthComputable) {

@@ -132,14 +132,13 @@
                             :error="$errors->first('wholesale_client_name')"
                             x-model="clientName"
                         />
-                        <x-forms.image-upload
-                            name="wholesale_client_logo"
+                        <x-forms.image-dropzone 
+                           name="wholesale_client_logo"
+                            :existingImageUrl="$logoUrl"
                             label="Wholesale Client Logo"
                             accept="image/jpeg,image/png,image/webp"
-                            :currentImageUrl="$logoUrl"
-                            :error="$errors->first('wholesale_client_logo')"
-                            hint="PNG, JPG or WebP (Max. 2MB)"
-                        />
+                            hint="PNG, JPG or WebP (Max. 2MB)" />
+
                     </div>
                 </div>
             </div>
@@ -156,6 +155,7 @@
     </div>
 
     @push('scripts')
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script>
             function wholesaleClientForm(isEdit, initialName) {
                 return {

@@ -134,14 +134,20 @@
                             :required="true"
                             :error="$errors->first('retailer_client_name')"
                         />
-                        <x-forms.image-upload
+                        <x-forms.image-dropzone 
+                            name="retailer_client_logo"
+                            :existingImageUrl="$logoUrl"
+                             label="Retailer Client Logo"
+                            accept="image/jpeg,image/png,image/webp"
+                            hint="PNG, JPG or WebP (Max. 2MB)" />
+                        <!-- <x-forms.image-dropzone 
                             name="retailer_client_logo"
                             label="Retailer Client Logo"
                             accept="image/jpeg,image/png,image/webp"
-                            :currentImageUrl="$logoUrl"
+                            :existingImageUrl="$logoUrl"
                             :error="$errors->first('retailer_client_logo')"
                             hint="PNG, JPG or WebP (Max. 2MB)"
-                        />
+                        /> -->
                     </div>
                 </div>
             </div>
@@ -157,6 +163,7 @@
     </div>
 
     @push('scripts')
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script>
             (function() {
                 var pwd = document.querySelector('[data-password-input]');

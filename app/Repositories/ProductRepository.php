@@ -87,7 +87,7 @@ class ProductRepository
         $record = $this->findById($id);
         $record->update($data);
 
-        return $record->fresh(['media']); // ✅ reload with media
+        return $record->fresh(['media']);
     }
 
     /**

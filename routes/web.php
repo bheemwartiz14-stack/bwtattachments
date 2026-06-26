@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProductWholesalePriceController;
 use App\Http\Controllers\Admin\SubcategoryController;
-use App\Http\Controllers\Admin\TempFileController;
+use App\Http\Controllers\TempFileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
@@ -34,15 +34,14 @@ Route::get('/categories/{category}', [PublicCategoryController::class, 'show'])-
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.attempt');
-
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
     Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
-
     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
 // Authenticated routes
+Route::post('/upload-temp', [TempFileController::class, 'store'])->name('upload-temp')->middleware('auth');
 Route::middleware(['auth', 'first.time'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -58,7 +57,6 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
         Route::resource('connections', ConnectionController::class)->except(['show']);
         Route::resource('products', AdminProductController::class);
-        Route::post('/upload-temp', [TempFileController::class, 'store'])->name('upload-temp');
         Route::get('/product-pricing/preview/product/{id}', [ProductWholesalePriceController::class, 'getProductPreview'])->name('product-pricing.preview.product');
         Route::get('/product-pricing/preview/user/{id}', [ProductWholesalePriceController::class, 'getUserPreview'])->name('product-pricing.preview.user');
         Route::resource('product-pricing', ProductWholesalePriceController::class);

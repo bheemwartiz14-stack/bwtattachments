@@ -60,12 +60,15 @@
                 this.error = 'File size must be less than 10 MB.';
                 return;
             }
+            if (this.existingUrl) {
+                this.$refs.deletedInput.value = '1';
+            }
             this.uploading = true;
             this.uploadProgress = 0;
             var formData = new FormData();
             formData.append('file', file);
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '{{ route('admin.upload-temp') }}');
+            xhr.open('POST', '{{ route('upload-temp') }}');
             xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
             xhr.upload.onprogress = function(e) {
                 if (e.lengthComputable) {
@@ -95,15 +98,19 @@
         },
         removeFile() {
             this.file = null;
-            this.existingFile = null;
-            this.existingUrl = null;
-            this.existingSize = null;
             this.tempData = null;
             this.$refs.input.value = '';
             this.$refs.tempInput.value = '';
             this.error = '';
+            if (this.existingUrl) {
+                this.existingFile = null;
+                this.existingUrl = null;
+                this.existingSize = null;
+                this.$refs.deletedInput.value = '1';
+            }
         },
     }">
+        <input type="hidden" name="{{ $name }}_deleted" x-ref="deletedInput" value="0">
         <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldTokenJson }}">
         <input type="file" name="{{ $name }}" accept="{{ $accept }}" x-ref="input" @change="handleFile($event.target.files[0])" class="hidden">
 
@@ -160,6 +167,10 @@
                                 Download
                             </a>
                         </template>
+                        <button type="button" @click="$refs.input.click()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+                            Change
+                        </button>
                         <button type="button" @click="removeFile()" class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:bg-neutral-900 dark:text-red-400 dark:hover:bg-red-900/20">
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                             Remove
