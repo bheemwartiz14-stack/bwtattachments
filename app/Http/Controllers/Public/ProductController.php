@@ -26,8 +26,8 @@ class ProductController extends Controller
             'category' => $request->input('category'),
             'subcategory' => $request->input('subcategory'),
             'connection' => $request->input('connection'),
+            'status' => "1",
         ]);
-
         $products = $this->productService->paginate(12, $filters);
         $categories = $this->categoryService->getAll();
         $subcategories = $this->subcategoryService->getAllWithCategory();

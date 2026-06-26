@@ -51,9 +51,9 @@ class ProductRepository
         }
 
         if (isset($filters['status'])) {
-            if ($filters['status'] === 'published') {
+            if ($filters['status'] === 'published' || $filters['status'] == 1) {
                 $query->where('status', true);
-            } elseif ($filters['status'] === 'draft' || $filters['status'] === 'hidden') {
+            } elseif (in_array($filters['status'], ['draft', 'hidden'], true) || $filters['status'] == 0) {
                 $query->where('status', false);
             }
         }

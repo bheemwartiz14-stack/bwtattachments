@@ -23,7 +23,6 @@ class StoreProductRequest extends FormRequest
             'internal_notes' => ['nullable', 'string'],
             'ddp_price' => ['nullable', 'numeric', 'min:0'],
             'status' => ['nullable', 'boolean'],
-
             'weight' => ['nullable', 'numeric', 'min:0'],
             'machine_class' => ['nullable', 'numeric'],
             'machine_weight' => ['nullable', 'numeric', 'min:0'],

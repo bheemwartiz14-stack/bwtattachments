@@ -17,6 +17,7 @@ class UpdateProductRequest extends FormRequest
         return [
             // ================= BASIC INFO =================
             'product_title' => ['required', 'string', 'max:255'],
+            
 
             'product_code' => [
                 'required',
@@ -25,14 +26,12 @@ class UpdateProductRequest extends FormRequest
                 Rule::unique('products', 'product_code')
                     ->ignore($this->route('product')),
             ],
-
+            'status' => ['nullable', 'boolean'],
             'product_description' => ['required', 'string'],
             'drawing_number' => ['nullable', 'string', 'max:255'],
-
             'category_id' => ['nullable', 'exists:categories,id'],
             'subcategory_id' => ['nullable', 'exists:subcategories,id'],
             'connection_id' => ['nullable', 'exists:connections,id'],
-
             // ================= SPECIFICATIONS =================
             'weight' => ['nullable', 'numeric'],
             'width' => ['nullable', 'numeric'],
@@ -63,7 +62,7 @@ class UpdateProductRequest extends FormRequest
             'product_prices' => ['nullable', 'array'],
             'product_prices.*.user_id' => ['required', 'string', 'exists:users,id'],
             'product_prices.*.price' => ['required', 'numeric', 'min:0'],
-
+        
             'internal_notes' => ['nullable', 'string'],
         ];
     }

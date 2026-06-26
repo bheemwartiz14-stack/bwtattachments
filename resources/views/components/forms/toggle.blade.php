@@ -16,6 +16,7 @@
 
 <div class="{{ $wrapperClass }}">
     <label for="{{ $inputId }}" class="inline-flex items-center cursor-pointer">
+        <input type="hidden" name="{{ $name }}" value="0">
         <input
             type="checkbox"
             name="{{ $name }}"
