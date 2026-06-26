@@ -38,16 +38,5 @@
     }
 </style>
 
-@php
-    $buildDir = config('vite.build_directory', 'build');
-    $manifestPath = public_path($buildDir.'/manifest.json');
-    $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : null;
-@endphp
-
-@if (config('vite.enabled') && $manifest)
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-@elseif ($manifest)
-    <link rel="stylesheet" href="{{ asset($buildDir.'/'.$manifest['resources/css/app.css']['file']) }}">
-    <script defer src="{{ asset($buildDir.'/'.$manifest['resources/js/app.js']['file']) }}"></script>
-@endif
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 @stack('styles')
