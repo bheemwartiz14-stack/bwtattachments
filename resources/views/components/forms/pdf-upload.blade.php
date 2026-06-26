@@ -23,6 +23,7 @@
         dragging: false,
         error: '',
         uploading: false,
+        uploadProgress: 0,
         existingFile: @js($existingFile),
         existingUrl: @js($existingUrl),
         existingSize: @js($existingSize),
@@ -60,27 +61,37 @@
                 return;
             }
             this.uploading = true;
+            this.uploadProgress = 0;
             var formData = new FormData();
             formData.append('file', file);
-            fetch('{{ route('admin.upload-temp') }}', {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: formData
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                this.tempData = data;
-                this.file = file;
-                this.existingFile = null;
-                this.existingUrl = null;
-                this.existingSize = null;
-                this.uploading = false;
-                this.$refs.tempInput.value = JSON.stringify(data);
-            }.bind(this))
-            .catch(function() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ route('admin.upload-temp') }}');
+            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    this.uploadProgress = Math.round((e.loaded / e.total) * 100);
+                }
+            }.bind(this);
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    var data = JSON.parse(xhr.responseText);
+                    this.tempData = data;
+                    this.file = file;
+                    this.existingFile = null;
+                    this.existingUrl = null;
+                    this.existingSize = null;
+                    this.uploading = false;
+                    this.$refs.tempInput.value = JSON.stringify(data);
+                } else {
+                    this.error = 'Upload failed. Please try again.';
+                    this.uploading = false;
+                }
+            }.bind(this);
+            xhr.onerror = function() {
                 this.error = 'Upload failed. Please try again.';
                 this.uploading = false;
-            }.bind(this));
+            }.bind(this);
+            xhr.send(formData);
         },
         removeFile() {
             this.file = null;
@@ -108,7 +119,7 @@
                     or drag and drop
                 </p>
                 @if($hint)
-                    <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">{{ $hint }}</p>
+                    <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">{!! $hint !!}</p>
                 @endif
             </div>
         </template>
@@ -116,8 +127,15 @@
         <template x-if="uploading">
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
                 <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent"></div>
-                    <p class="text-sm text-slate-600 dark:text-neutral-400">Uploading...</p>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <p class="text-sm text-slate-600 dark:text-neutral-400">Uploading...</p>
+                            <p class="text-xs text-slate-500 dark:text-neutral-500" x-text="uploadProgress + '%'"></p>
+                        </div>
+                        <div class="h-2 w-full rounded-full bg-slate-200 dark:bg-neutral-700">
+                            <div class="h-full rounded-full bg-emerald-500 transition-all duration-200" :style="'width: ' + uploadProgress + '%'"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </template>

@@ -31,6 +31,7 @@
         dragging: false,
         error: '',
         uploading: false,
+        uploadProgress: 0,
         maxSize: {{ $maxSize }},
         acceptedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
         init() {
@@ -60,20 +61,28 @@
             var formData = new FormData();
             formData.append('file', file);
             this.uploading = true;
-            fetch('{{ route('admin.upload-temp') }}', {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: formData
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
+            this.uploadProgress = 0;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ route('admin.upload-temp') }}');
+            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    this.uploadProgress = Math.round((e.loaded / e.total) * 100);
+                }
+            }.bind(this);
+            xhr.onload = function() {
                 this.uploading = false;
-                callback(data);
-            }.bind(this))
-            .catch(function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    callback(JSON.parse(xhr.responseText));
+                } else {
+                    this.error = 'Upload failed. Please try again.';
+                }
+            }.bind(this);
+            xhr.onerror = function() {
                 this.uploading = false;
                 this.error = 'Upload failed. Please try again.';
-            }.bind(this));
+            }.bind(this);
+            xhr.send(formData);
         },
         addFiles(newFiles) {
             this.error = '';
@@ -186,9 +195,15 @@
                 </div>
             </template>
             <template x-if="uploading">
-                <div class="flex items-center justify-center gap-2">
-                    <div class="h-5 w-5 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent"></div>
-                    <p class="text-sm text-slate-500 dark:text-neutral-400">Uploading...</p>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-center gap-2">
+                        <div class="h-5 w-5 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent"></div>
+                        <p class="text-sm text-slate-500 dark:text-neutral-400">Uploading...</p>
+                        <p class="text-xs text-slate-500 dark:text-neutral-500" x-text="uploadProgress + '%'"></p>
+                    </div>
+                    <div class="h-1.5 w-full max-w-xs mx-auto rounded-full bg-slate-200 dark:bg-neutral-700">
+                        <div class="h-full rounded-full bg-emerald-500 transition-all duration-200" :style="'width: ' + uploadProgress + '%'"></div>
+                    </div>
                 </div>
             </template>
         </div>
