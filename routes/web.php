@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProductWholesalePriceController;
 use App\Http\Controllers\Admin\SubcategoryController;
-use App\Http\Controllers\TempFileController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
@@ -41,8 +41,8 @@ Route::middleware('guest')->group(function () {
 });
 
 // Authenticated routes
-Route::post('/upload-temp', [TempFileController::class, 'store'])->name('upload-temp')->middleware('auth');
-Route::delete('/media/{media}', [TempFileController::class, 'destroy'])->name('media.destroy')->middleware('auth');
+Route::post('/upload-temp', [FileController::class, 'store'])->name('upload-temp')->middleware('auth');
+Route::delete('/media/{media}', [FileController::class, 'destroy'])->name('media.destroy')->middleware('auth');
 Route::middleware(['auth', 'first.time'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
