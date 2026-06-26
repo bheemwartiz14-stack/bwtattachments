@@ -9,6 +9,11 @@
     'maxSize' => 10485760,
 ])
 
+@php
+    $tempInputName = $name . '_temp';
+    $oldTokenJson = old($tempInputName);
+@endphp
+
 <div>
     @if($label)
         <h3 class="mb-3 text-sm font-semibold text-slate-700 dark:text-neutral-300">{{ $label }}</h3>
@@ -17,19 +22,26 @@
         file: null,
         dragging: false,
         error: '',
+        uploading: false,
         existingFile: @js($existingFile),
         existingUrl: @js($existingUrl),
         existingSize: @js($existingSize),
+        tempData: @js($oldTokenJson ? json_decode($oldTokenJson, true) : null),
         maxSize: {{ $maxSize }},
         get fileName() {
             if (this.file) return this.file.name;
+            if (this.tempData) return this.tempData.name;
             if (this.existingFile) return this.existingFile;
             return '';
         },
         get fileSize() {
             if (this.file) return this.formatSize(this.file.size);
+            if (this.tempData) return this.formatSize(this.tempData.size);
             if (this.existingSize) return this.formatSize(this.existingSize);
             return '';
+        },
+        get hasFile() {
+            return !!this.file || !!this.tempData || !!this.existingFile;
         },
         formatSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
@@ -47,19 +59,41 @@
                 this.error = 'File size must be less than 10 MB.';
                 return;
             }
-            this.file = file;
-            this.existingFile = null;
-            this.existingUrl = null;
-            this.existingSize = null;
+            this.uploading = true;
+            var formData = new FormData();
+            formData.append('file', file);
+            fetch('{{ route('admin.upload-temp') }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: formData
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                this.tempData = data;
+                this.file = file;
+                this.existingFile = null;
+                this.existingUrl = null;
+                this.existingSize = null;
+                this.uploading = false;
+                this.$refs.tempInput.value = JSON.stringify(data);
+            }.bind(this))
+            .catch(function() {
+                this.error = 'Upload failed. Please try again.';
+                this.uploading = false;
+            }.bind(this));
         },
         removeFile() {
             this.file = null;
+            this.tempData = null;
             this.$refs.input.value = '';
+            this.$refs.tempInput.value = '';
             this.error = '';
         },
     }">
+        <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldTokenJson }}">
         <input type="file" name="{{ $name }}" accept="{{ $accept }}" x-ref="input" @change="handleFile($event.target.files[0])" class="hidden">
-        <template x-if="!file && !existingFile">
+
+        <template x-if="!hasFile && !uploading">
             <div @click="$refs.input.click()"
                 @dragover.prevent="dragging = true"
                 @dragleave.prevent="dragging = false"
@@ -78,7 +112,17 @@
                 @endif
             </div>
         </template>
-        <template x-if="file || existingFile">
+
+        <template x-if="uploading">
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent"></div>
+                    <p class="text-sm text-slate-600 dark:text-neutral-400">Uploading...</p>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="hasFile && !uploading">
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
                 <div class="flex items-center gap-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/50">
@@ -89,7 +133,7 @@
                         <p class="text-xs text-slate-400 dark:text-neutral-500" x-text="fileSize"></p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <template x-if="existingUrl && !file">
+                        <template x-if="existingUrl && !file && !tempData">
                             <a :href="existingUrl" target="_blank" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
                                 <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 Download

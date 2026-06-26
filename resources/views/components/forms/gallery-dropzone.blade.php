@@ -17,6 +17,8 @@
             'name' => $img['name'] ?? 'image',
         ];
     }
+    $tempInputName = $name . '_temp';
+    $oldGalleryTemp = old($tempInputName);
 @endphp
 
 <div>
@@ -28,6 +30,7 @@
         deletedIds: [],
         dragging: false,
         error: '',
+        uploading: false,
         maxSize: {{ $maxSize }},
         acceptedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
         init() {
@@ -35,6 +38,42 @@
             if (form) {
                 form.addEventListener('submit', this.syncInput.bind(this));
             }
+            var oldVal = this.$refs.tempInput.value;
+            if (oldVal) {
+                try {
+                    var parsed = JSON.parse(oldVal);
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(function(t) {
+                            this.items.push({
+                                type: 'temp',
+                                tempToken: t.token,
+                                url: t.url,
+                                name: t.name,
+                                size: t.size,
+                            });
+                        }.bind(this));
+                    }
+                } catch(e) {}
+            }
+        },
+        uploadFile(file, callback) {
+            var formData = new FormData();
+            formData.append('file', file);
+            this.uploading = true;
+            fetch('{{ route('admin.upload-temp') }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: formData
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                this.uploading = false;
+                callback(data);
+            }.bind(this))
+            .catch(function() {
+                this.uploading = false;
+                this.error = 'Upload failed. Please try again.';
+            }.bind(this));
         },
         addFiles(newFiles) {
             this.error = '';
@@ -49,13 +88,15 @@
                     this.error = 'Each image must be less than 2 MB.';
                     return;
                 }
-                this.items.push({
-                    type: 'new',
-                    file: f,
-                    url: URL.createObjectURL(f),
-                    name: f.name,
-                    size: f.size,
-                });
+                this.uploadFile(f, function(data) {
+                    this.items.push({
+                        type: 'temp',
+                        tempToken: data.token,
+                        url: data.url,
+                        name: data.name,
+                        size: data.size,
+                    });
+                }.bind(this));
             }.bind(this));
         },
         replaceItem(index) {
@@ -78,17 +119,17 @@
                 var item = this.items[index];
                 if (item.type === 'existing') {
                     this.deletedIds.push(item.id);
-                } else {
-                    URL.revokeObjectURL(item.url);
                 }
-                this.items[index] = {
-                    type: 'new',
-                    file: f,
-                    url: URL.createObjectURL(f),
-                    name: f.name,
-                    size: f.size,
-                };
-                this.error = '';
+                this.uploadFile(f, function(data) {
+                    this.items[index] = {
+                        type: 'temp',
+                        tempToken: data.token,
+                        url: data.url,
+                        name: data.name,
+                        size: data.size,
+                    };
+                    this.error = '';
+                }.bind(this));
             }.bind(this);
             input.click();
         },
@@ -96,8 +137,6 @@
             var item = this.items[index];
             if (item.type === 'existing') {
                 this.deletedIds.push(item.id);
-            } else {
-                URL.revokeObjectURL(item.url);
             }
             this.items.splice(index, 1);
         },
@@ -107,35 +146,51 @@
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
         },
         syncInput() {
-            var dt = new DataTransfer();
+            var tempItems = [];
             this.items.forEach(function(item) {
-                if (item.type === 'new' && item.file) {
-                    dt.items.add(item.file);
+                if (item.type === 'temp' && item.tempToken) {
+                    tempItems.push({
+                        token: item.tempToken,
+                        url: item.url,
+                        name: item.name,
+                        size: item.size,
+                    });
                 }
             });
-            this.$refs.input.files = dt.files;
+            this.$refs.tempInput.value = JSON.stringify(tempItems);
             this.$refs.deletedInput.value = JSON.stringify(this.deletedIds);
         },
     }">
         <input type="hidden" name="deleted_gallery" x-ref="deletedInput">
-        <input type="file" name="{{ $name }}[]" accept="{{ $accept }}" x-ref="input" @change="addFiles($event.target.files); $refs.input.value = ''" multiple class="hidden">
+        <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldGalleryTemp }}">
+        <input type="file" accept="{{ $accept }}" x-ref="input" @change="addFiles($event.target.files); $refs.input.value = ''" multiple class="hidden">
 
-        <div @click="$refs.input.click()"
-            @dragover.prevent="dragging = true"
+        <div @click="uploading ? null : $refs.input.click()"
+            @dragover.prevent="uploading ? null : (dragging = true)"
             @dragleave.prevent="dragging = false"
-            @drop.prevent="addFiles($event.dataTransfer.files); dragging = false"
+            @drop.prevent="uploading ? null : (addFiles($event.dataTransfer.files); dragging = false)"
             :class="dragging ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'border-slate-300 dark:border-neutral-700'"
             class="cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors hover:border-slate-400 dark:hover:border-neutral-500">
-            <div class="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
-                <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
-            </div>
-            <p class="text-sm font-medium text-slate-700 dark:text-neutral-300">
-                <span class="text-emerald-600 dark:text-emerald-400">Click to upload</span>
-                or drag and drop
-            </p>
-            @if($hint)
-                <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">{{ $hint }}</p>
-            @endif
+            <template x-if="!uploading">
+                <div>
+                    <div class="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
+                        <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700 dark:text-neutral-300">
+                        <span class="text-emerald-600 dark:text-emerald-400">Click to upload</span>
+                        or drag and drop
+                    </p>
+                    @if($hint)
+                        <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">{{ $hint }}</p>
+                    @endif
+                </div>
+            </template>
+            <template x-if="uploading">
+                <div class="flex items-center justify-center gap-2">
+                    <div class="h-5 w-5 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent"></div>
+                    <p class="text-sm text-slate-500 dark:text-neutral-400">Uploading...</p>
+                </div>
+            </template>
         </div>
 
         <template x-if="items.length">

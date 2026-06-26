@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProductWholesalePriceController;
 use App\Http\Controllers\Admin\SubcategoryController;
+use App\Http\Controllers\Admin\TempFileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
@@ -57,6 +58,7 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
         Route::resource('connections', ConnectionController::class)->except(['show']);
         Route::resource('products', AdminProductController::class);
+        Route::post('/upload-temp', [TempFileController::class, 'store'])->name('upload-temp');
         Route::get('/product-pricing/preview/product/{id}', [ProductWholesalePriceController::class, 'getProductPreview'])->name('product-pricing.preview.product');
         Route::get('/product-pricing/preview/user/{id}', [ProductWholesalePriceController::class, 'getUserPreview'])->name('product-pricing.preview.user');
         Route::resource('product-pricing', ProductWholesalePriceController::class);

@@ -5,8 +5,12 @@
     'hint' => 'PNG, JPG, WebP or GIF (Max. 2MB)',
     'existingImageUrl' => null,
     'maxSize' => 2097152,
-    'name' => 'Image',
 ])
+
+@php
+    $tempInputName = $name . '_temp';
+    $oldTokenJson = old($tempInputName);
+@endphp
 
 <div>
     @if($label)
@@ -17,11 +21,13 @@
         previewUrl: null,
         dragging: false,
         error: '',
+        uploading: false,
         existingUrl: @js($existingImageUrl),
+        tempData: @js($oldTokenJson ? json_decode($oldTokenJson, true) : null),
         acceptedTypes: {{ Js::from(explode(',', $accept)) }},
         maxSize: {{ $maxSize }},
         get hasPreview() {
-            return !!this.previewUrl || !!this.existingUrl;
+            return !!this.previewUrl || !!this.existingUrl || !!this.tempData;
         },
         handleFile(file) {
             this.error = '';
@@ -38,23 +44,46 @@
                 this.error = 'File size must be less than 2 MB.';
                 return;
             }
-            this.file = file;
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                this.previewUrl = e.target.result;
+            this.uploading = true;
+            var formData = new FormData();
+            formData.append('file', file);
+            fetch('{{ route('admin.upload-temp') }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: formData
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                this.tempData = data;
+                this.file = file;
+                this.previewUrl = data.url;
                 this.existingUrl = null;
-            }.bind(this);
-            reader.readAsDataURL(file);
+                this.uploading = false;
+                this.$refs.tempInput.value = JSON.stringify(data);
+            }.bind(this))
+            .catch(function() {
+                this.error = 'Upload failed. Please try again.';
+                this.uploading = false;
+            }.bind(this));
         },
         removeFile() {
             this.file = null;
             this.previewUrl = null;
+            this.tempData = null;
             this.$refs.input.value = '';
+            this.$refs.tempInput.value = '';
             this.error = '';
         },
+        formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        },
     }">
+        <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldTokenJson }}">
         <input type="file" name="{{ $name }}" accept="{{ $accept }}" x-ref="input" @change="handleFile($event.target.files[0])" class="hidden">
-        <template x-if="!hasPreview">
+
+        <template x-if="!hasPreview && !uploading">
             <div @click="$refs.input.click()"
                 @dragover.prevent="dragging = true"
                 @dragleave.prevent="dragging = false"
@@ -73,15 +102,25 @@
                 @endif
             </div>
         </template>
-        <template x-if="hasPreview">
+
+        <template x-if="uploading">
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent"></div>
+                    <p class="text-sm text-slate-600 dark:text-neutral-400">Uploading...</p>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="hasPreview && !uploading">
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
                 <div class="flex items-center gap-4">
                     <div class="shrink-0">
-                        <img :src="previewUrl || existingUrl" class="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-neutral-700">
+                        <img :src="previewUrl || existingUrl || (tempData ? tempData.url : null)" class="h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-neutral-700">
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-sm font-medium text-slate-900 dark:text-white" x-text="file ? file.name : 'Current image'"></p>
-                        <p class="text-xs text-slate-400 dark:text-neutral-500" x-text="file ? formatSize(file.size) : ''"></p>
+                        <p class="text-sm font-medium text-slate-900 dark:text-white" x-text="file ? file.name : (tempData ? tempData.name : 'Current image')"></p>
+                        <p class="text-xs text-slate-400 dark:text-neutral-500" x-text="file ? formatSize(file.size) : (tempData ? formatSize(tempData.size) : '')"></p>
                     </div>
                     <div class="flex items-center gap-2">
                         <button type="button" @click="$refs.input.click()" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
