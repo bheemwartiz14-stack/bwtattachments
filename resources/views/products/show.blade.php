@@ -19,12 +19,13 @@
                             @endif
                         </div>
 
-                        @php $gallery = $product->getMedia('gallery'); @endphp
+                        @php $gallery = $product->getMedia('gallery'); 
+                        @endphp
                         @if($gallery->count() > 0)
                             <div class="thumbs">
                                 @foreach($gallery as $media)
-                                    <div class="thumb {{ $loop->first ? 'active' : '' }}" onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl('large') ?? $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active');">
-                                        <img src="{{ $media->getUrl('thumb') ?? $media->getUrl() }}" alt="">
+                                    <div class="thumb {{ $loop->first ? 'active' : '' }}" onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active');">
+                                        <img src="{{ $media->getUrl() }}" alt="">
                                     </div>
                                 @endforeach
                             </div>
