@@ -106,15 +106,14 @@
                         @php
                             $specs = [
                                 'weight' => ['type' => 'text', 'label' => 'Weight (kg)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'machine_class' => ['type' => 'text', 'label' => 'Machine Class/Weight (t)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'hinges' => ['type' => 'text', 'label' => 'Hinges', 'step' => '1', 'min' => '0', 'placeholder' => '0'],
                                 'width' => ['type' => 'text', 'label' => 'Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'volume' => ['type' => 'text', 'label' => 'Volume (L)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
+                                'volume' => ['type' => 'text', 'label' => 'Volume (m3)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
+                                'machine_class' => ['type' => 'text', 'label' => 'Machine class (t)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
                                 'cutting_edge_thickness' => ['type' => 'text', 'label' => 'Cutting Edge Thickness (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
                                 'teeth' => ['type' => 'text', 'label' => 'Teeth', 'step' => '1', 'min' => '0', 'placeholder' => '0'],
-                                'stick_width' => ['type' => 'text', 'label' => 'Stick Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'pin_center' => ['type' => 'text', 'label' => 'Pin center to Pin center (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
                                 'pin_hole' => ['type' => 'text', 'label' => 'Pin Hole (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
+                                'pin_center' => ['type' => 'text', 'label' => 'Pin center to Pin center (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
+                                'stick_width' => ['type' => 'text', 'label' => 'Stick Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
                             ];
                         @endphp
                         @foreach($specs as $field => $config)

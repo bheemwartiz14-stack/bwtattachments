@@ -58,19 +58,14 @@
                             $specRows = [
                                 'Product Code' => $product->product_code,
                                 'Weight' => $product->weight ? $product->weight . ' kg' : null,
-                                'Machine Weight' => $product->machine_weight ? $product->machine_weight . ' t' : null,
-                                'Machine Class' => $product->machine_class ? $product->machine_class . ' t' : null,
-                                'Hinges' => $product->hinges,
                                 'Width' => $product->width ? $product->width . ' mm' : null,
                                 'Volume' => $product->volume ? $product->volume . ' L' : null,
-                                'Thickness' => $product->thickness ? $product->thickness . ' mm' : null,
+                                'Machine Class' => $product->machine_class ? $product->machine_class . ' t' : null,
                                 'Cutting Edge Thickness' => $product->cutting_edge_thickness ? $product->cutting_edge_thickness . ' mm' : null,
                                 'Teeth' => $product->teeth,
-                                'Stick Width' => $product->stick_width ? $product->stick_width . ' mm' : null,
-                                'Pin Center' => $product->pin_center ? $product->pin_center . ' mm' : null,
                                 'Pin Hole' => $product->pin_hole ? $product->pin_hole . ' mm' : null,
-                                'Reach' => $product->reach ? $product->reach . ' mm' : null,
-                                'Material' => $product->material,
+                                'Pin Center' => $product->pin_center ? $product->pin_center . ' mm' : null,
+                                'Stick Width' => $product->stick_width ? $product->stick_width . ' mm' : null,
                             ];
                             $hasSpecs = collect($specRows)->filter()->isNotEmpty();
                         @endphp

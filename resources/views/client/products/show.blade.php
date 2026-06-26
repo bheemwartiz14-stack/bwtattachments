@@ -42,79 +42,30 @@
                 <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
                     <h2 class="text-base font-semibold text-slate-950 dark:text-neutral-100 mb-4">Specifications</h2>
                     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                        @if($product->product_code)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Product Code</dt>
-                                <dd class="mt-1 font-mono text-sm font-medium text-black dark:text-neutral-100">{{ $product->product_code }}</dd>
-                            </div>
-                        @endif
-                        @if($product->category)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Category</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->category->name }}</dd>
-                            </div>
-                        @endif
-                        @if($product->subcategory)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Subcategory</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->subcategory->name }}</dd>
-                            </div>
-                        @endif
-                        @if($product->connection)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Connection</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->connection->name }}</dd>
-                            </div>
-                        @endif
-                        @if($product->weight)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Weight</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->weight }} kg</dd>
-                            </div>
-                        @endif
-                        @if($product->width)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Width</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->width }} mm</dd>
-                            </div>
-                        @endif
-                        @if($product->height)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Height</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->height }} mm</dd>
-                            </div>
-                        @endif
-                        @if($product->depth)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Depth</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->depth }} mm</dd>
-                            </div>
-                        @endif
-                        @if($product->material)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Material</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->material }}</dd>
-                            </div>
-                        @endif
-                        @if($product->finish)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Finish</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->finish }}</dd>
-                            </div>
-                        @endif
-                        @if($product->load_capacity)
-                            <div>
-                                <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Load Capacity</dt>
-                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $product->load_capacity }}</dd>
-                            </div>
-                        @endif
-                    </dl>
-                    @if($product->description)
-                        <div class="mt-6 pt-6 border-t border-slate-100 dark:border-neutral-800">
-                            <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-2">Description</dt>
-                            <dd class="text-sm text-gray-700 dark:text-neutral-400 leading-relaxed">{{ $product->description }}</dd>
-                        </div>
-                    @endif
+                         @php
+                            $specRows = [
+                                'Product Code' => $product->product_code,
+                                'Weight' => $product->weight ? $product->weight . ' kg' : null,
+                                'Width' => $product->width ? $product->width . ' mm' : null,
+                                'Volume' => $product->volume ? $product->volume . ' L' : null,
+                                'Machine Class' => $product->machine_class ? $product->machine_class . ' t' : null,
+                                'Cutting Edge Thickness' => $product->cutting_edge_thickness ? $product->cutting_edge_thickness . ' mm' : null,
+                                'Teeth' => $product->teeth,
+                                'Pin Hole' => $product->pin_hole ? $product->pin_hole . ' mm' : null,
+                                'Pin Center' => $product->pin_center ? $product->pin_center . ' mm' : null,
+                                'Stick Width' => $product->stick_width ? $product->stick_width . ' mm' : null,
+                            ];
+                            $hasSpecs = collect($specRows)->filter()->isNotEmpty();
+                        @endphp
+                        @if($hasSpecs)
+                       @foreach($specRows as $label => $value)
+                                    @if($value)
+                                       <dt class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">{{ $label }}</dt>
+                                <dd class="mt-1 text-sm font-medium text-black dark:text-neutral-100">{{ $value }}</dd>
+                                    @endif
+                                @endforeach
+                          @endif
+               
                 </div>
             </div>
 

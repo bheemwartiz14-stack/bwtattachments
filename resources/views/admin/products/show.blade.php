@@ -153,18 +153,16 @@
                     </div>
                     @php
                         $specs = [
-                            'weight' => ['label' => 'Weight', 'unit' => 'kg'],
-                            'machine_class' => ['label' => 'Machine Class', 'unit' => 't'],
-                            'machine_weight' => ['label' => 'Machine Weight', 'unit' => 't'],
-                            'hinges' => ['label' => 'Hinges', 'unit' => null],
+                            'weight' => ['label' => 'Weight (kg)', 'unit' => 'kg'],
                             'width' => ['label' => 'Width', 'unit' => 'mm'],
-                            'volume' => ['label' => 'Volume', 'unit' => 'L'],
-                            'cutting_edge_thickness' => ['label' => 'Cutting Edge Thickness', 'unit' => 'mm'],
+                            'volume' => ['label' => 'Volume (m3)', 'unit' => 'm3'],
+                            'machine_class' => ['label' => 'Machine class (t)', 'unit' => 't'],
+                            'cutting_edge_thickness' => ['label' => 'Cutting edge thickness (mm)', 'unit' => 'mm'],
                             'teeth' => ['label' => 'Teeth', 'unit' => null],
+                            'pin_hole' => ['label' => 'Pin Hole (mm)', 'unit' => 'mm'],
+                            'pin_center' => ['label' => 'Pin center to Pin center (mm)', 'unit' => 'mm'],
                             'stick_width' => ['label' => 'Stick Width', 'unit' => 'mm'],
-                            'pin_center' => ['label' => 'Pin Center', 'unit' => 'mm'],
-                            'pin_hole' => ['label' => 'Pin center to Pin center (mm)', 'unit' => 'mm'],
-                        ];
+                            ];
                     @endphp
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         @foreach($specs as $field => $config)
