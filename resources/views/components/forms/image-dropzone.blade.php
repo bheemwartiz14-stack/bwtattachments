@@ -84,6 +84,10 @@
             this.$refs.input.value = '';
             this.$refs.tempInput.value = '';
             this.error = '';
+            if (this.existingUrl) {
+                this.existingUrl = null;
+                this.$refs.deletedInput.value = '1';
+            }
         },
         formatSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
@@ -91,6 +95,7 @@
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
         },
     }">
+        <input type="hidden" name="{{ $name }}_deleted" x-ref="deletedInput" value="0">
         <input type="hidden" name="{{ $tempInputName }}" x-ref="tempInput" value="{{ $oldTokenJson }}">
         <input type="file" name="{{ $name }}" accept="{{ $accept }}" x-ref="input" @change="handleFile($event.target.files[0])" class="hidden">
 

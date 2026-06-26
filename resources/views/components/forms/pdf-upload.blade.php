@@ -95,6 +95,9 @@
         },
         removeFile() {
             this.file = null;
+            this.existingFile = null;
+            this.existingUrl = null;
+            this.existingSize = null;
             this.tempData = null;
             this.$refs.input.value = '';
             this.$refs.tempInput.value = '';

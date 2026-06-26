@@ -177,7 +177,7 @@
         <div @click="uploading ? null : $refs.input.click()"
             @dragover.prevent="uploading ? null : (dragging = true)"
             @dragleave.prevent="dragging = false"
-            @drop.prevent="uploading ? null : (addFiles($event.dataTransfer.files); dragging = false)"
+            @drop.prevent="uploading ? null : (addFiles($event.dataTransfer.files), dragging = false)"
             :class="dragging ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' : 'border-slate-300 dark:border-neutral-700'"
             class="cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition-colors hover:border-slate-400 dark:hover:border-neutral-500">
             <template x-if="!uploading">
