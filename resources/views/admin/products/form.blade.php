@@ -81,36 +81,14 @@
                     <h2 class="text-base font-semibold text-slate-900 dark:text-white">Media Upload</h2>
                 </div>
                 <div class="p-8 space-y-6">
-                    <div>
-                        <h3 class="mb-3 text-sm font-semibold text-slate-700 dark:text-neutral-300">Product Feature Image</h3>
-                        <x-forms.image-upload name="product_feature_image" label="Feature Image"
-                            accept="image/jpeg,image/png,image/webp,image/gif"
-                            :currentImageUrl="$isEdit ? $product->getFirstMediaUrl('images') : null"
-                            hint="PNG, JPG, WebP or GIF (Max. 2MB)" />
-                    </div>
-                    <div>
-                        <h3 class="mb-3 text-sm font-semibold text-slate-700 dark:text-neutral-300">Product Gallery Images</h3>
-                        @if($isEdit)
-                            @php $galleryImages = $product->getMedia('gallery'); @endphp
-                            @if($galleryImages->isNotEmpty())
-                                <div class="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                                    @foreach($galleryImages as $media)
-                                        <div class="group relative overflow-hidden rounded-lg border border-slate-200 dark:border-neutral-800">
-                                            <img src="{{ $media->getUrl() }}" class="h-32 w-full object-cover">
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
-                        @endif
-                        <x-forms.dropzone name="product_gallery_images" accept="image/*" hint="PNG, JPG, WebP or GIF" />
-                    </div>
-                    <div>
-                         <x-forms.pdf-upload
+                    <x-forms.image-dropzone
+                        :existingImageUrl="$isEdit ? $product->getFirstMediaUrl('images') : null" label="Product Feature Image" />
+                    <x-forms.gallery-dropzone
+                        :existingImages="$isEdit ? $product->getMedia('gallery')->map(fn($m) => ['url' => $m->getUrl(), 'name' => $m->file_name, 'id' => $m->id])->toArray() : []" />
+                    <x-forms.pdf-upload
                         :existingFile="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->file_name : null"
                         :existingUrl="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->getUrl() : null"
                         :existingSize="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->size : null" />
-                </div>
-                    </div>
                 </div>
             </div>
 
