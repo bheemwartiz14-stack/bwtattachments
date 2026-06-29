@@ -18,15 +18,37 @@
                     @svg('heroicon-o-bars-3', 'h-5 w-5')
                 </button>
 
-                <a href="{{ $dashboardRoute }}" class="flex shrink-0 items-center gap-3">
-                    <span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-emerald-600 shadow-sm ring-1 ring-slate-200 dark:ring-neutral-700">
-                        @svg('app-logo', 'h-6 w-6 text-white')
-                    </span>
-                    <span class="hidden sm:block">
-                        <span class="block text-sm font-bold uppercase tracking-wide text-slate-950 dark:text-white">Attachment</span>
-                        <span class="block text-xs font-medium text-gray-500 dark:text-neutral-400">Operations Portal</span>
-                    </span>
-                </a>
+ <a
+    href="{{ $dashboardRoute }}"
+    class="group flex items-center gap-3 transition-all duration-300"
+>
+    <!-- Logo -->
+    <div
+        class="flex h-11 w-11 items-center justify-center rounded-2xl
+               bg-gradient-to-br from-emerald-500 to-emerald-700
+               shadow-lg shadow-emerald-500/20
+               ring-1 ring-emerald-500/20
+               transition-all duration-300
+               group-hover:scale-105
+               group-hover:shadow-xl
+               group-hover:shadow-emerald-500/30"
+    >
+        @svg('app-logo', 'h-6 w-6 text-white')
+    </div>
+
+    <!-- Brand -->
+    <div class="hidden sm:block leading-tight">
+        <h1 class="text-base font-bold tracking-tight text-slate-900 dark:text-white">
+           BIG Work Tools
+
+
+        </h1>
+
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
+            Operations Portal
+        </p>
+    </div>
+</a>
             </div>
 
             <div class="flex items-center gap-2">

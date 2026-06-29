@@ -122,7 +122,7 @@
 {{ $slot }}
 
 <footer>
-    &copy; Big Work Tools | Private B2B Attachment Portal
+    &copy; BWT | Wholesale B2B Attachment Portal
 </footer>
 
 </body>
