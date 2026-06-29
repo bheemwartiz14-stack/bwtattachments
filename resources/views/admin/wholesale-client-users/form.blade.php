@@ -1,7 +1,7 @@
 @php
     $isEdit = isset($user);
     $meta = $isEdit ? ($user->userMeta?->metadata ?? []) : [];
-    $wholesaleClientName = $meta['client_name'] ?? '';
+    $wholesaleCompanyName = $meta['wholesale_company_name'] ?? '';
     $logoMedia = $isEdit ? $user->userMeta?->getFirstMedia('wholesale_client_logo') : null;
     $logoUrl = $logoMedia?->getUrl();
     $logoId = $logoMedia?->id;
@@ -54,12 +54,12 @@
                 <div class="p-8">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
                         <x-forms.input
-                            name="wholesale_client_name"
+                            name="wholesale_company_name"
                             label="Company Name"
                             placeholder="Acme Corp Ltd"
-                            :value="$wholesaleClientName"
+                            :value="$wholesaleCompanyName"
                             :required="true"
-                            :error="$errors->first('wholesale_client_name')"
+                            :error="$errors->first('wholesale_company_name')"
                         />
                         <x-forms.input
                             name="vat_number"
@@ -199,26 +199,14 @@
                     </div>
                 </div>
                 <div class="p-8">
-                    <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
-                        <x-forms.input
-                            name="wholesale_client_name"
-                            id="wholesale_client_name"
-                            label="Wholesale Client Name"
-                            placeholder="Enter wholesale client name"
-                            :value="$wholesaleClientName"
-                            :required="true"
-                            :error="$errors->first('wholesale_client_name')"
-                            x-model="clientName"
-                        />
-                        <x-forms.image-dropzone
-                            name="wholesale_client_logo"
-                            :existingImageUrl="$logoUrl"
-                            :existingImageId="$logoId"
-                            label="Wholesale Client Logo"
-                            accept="image/jpeg,image/png,image/webp"
-                            hint="PNG, JPG or WebP (Max. 2MB)" />
-
-                    </div>
+                    <x-forms.image-dropzone
+                        name="wholesale_client_logo"
+                        :existingImageUrl="$logoUrl"
+                        :existingImageId="$logoId"
+                        label="Wholesale Client Logo"
+                        accept="image/jpeg,image/png,image/webp"
+                        hint="PNG, JPG or WebP (Max. 2MB)" />
+                </div>
                 </div>
             </div>
 

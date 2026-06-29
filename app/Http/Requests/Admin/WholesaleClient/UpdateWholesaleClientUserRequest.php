@@ -24,7 +24,7 @@ class UpdateWholesaleClientUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8'],
-            'wholesale_client_name' => ['required', 'string', 'max:255'],
+            'wholesale_company_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'regex:/^[0-9+\-\s()]{10,15}$/'],
 
             'address' => ['required', 'string', 'max:500'],
@@ -46,7 +46,7 @@ class UpdateWholesaleClientUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'wholesale_client_name.required' => 'Wholesale client name is required.',
+            'wholesale_company_name.required' => 'Company name is required.',
 
             'phone.required' => 'Phone number is required.',
             'phone.regex' => 'Please enter a valid phone number.',

@@ -18,12 +18,12 @@ class WholesaleClientUserServices
 {
     $plainPassword = $data['password'] ?? '';
 
-    $wholesaleClientName = $data['wholesale_client_name'] ?? null;
+    $wholesaleCompanyName = $data['wholesale_company_name'] ?? null;
     $logoFile = $data['wholesale_client_logo'] ?? null;
-    unset($data['wholesale_client_name'], $data['wholesale_client_logo']);
+    unset($data['wholesale_company_name'], $data['wholesale_client_logo']);
     $user = $this->userService->create($data);
     $metadata = [
-        'client_name' => $wholesaleClientName,
+        'wholesale_company_name' => $wholesaleCompanyName,
         'address' => $data['address'] ?? null,
         'postal_code' => $data['postal_code'] ?? null,
         'city' => $data['city'] ?? null,
@@ -57,10 +57,10 @@ class WholesaleClientUserServices
 
     public function update(string|int $id, array $data): Model
     {
-        $wholesaleClientName = $data['wholesale_client_name'] ?? null;
+        $wholesaleCompanyName = $data['wholesale_company_name'] ?? null;
         $logoFile = $data['wholesale_client_logo'] ?? null;
      
-        unset($data['wholesale_client_name'], $data['wholesale_client_logo']);
+        unset($data['wholesale_company_name'], $data['wholesale_client_logo']);
 
         $user = $this->userService->update($id, $data);
 
@@ -70,7 +70,7 @@ class WholesaleClientUserServices
         ]);
 
         $metadata = $userMeta->metadata ?? [];
-        $metadata['client_name'] = $wholesaleClientName;
+        $metadata['wholesale_company_name'] = $wholesaleCompanyName;
         $metadata['address'] = $data['address'] ?? null;
         $metadata['postal_code'] = $data['postal_code'] ?? null;
         $metadata['city'] = $data['city'] ?? null;

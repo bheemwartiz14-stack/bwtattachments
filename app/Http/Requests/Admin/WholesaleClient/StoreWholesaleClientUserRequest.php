@@ -29,7 +29,7 @@ class StoreWholesaleClientUserRequest extends FormRequest
 
             'roles'                  => ['required', 'string'],
 
-            'wholesale_client_name'  => ['required', 'string', 'max:255'],
+            'wholesale_company_name'  => ['required', 'string', 'max:255'],
             'phone'                  => ['required', 'regex:/^[0-9+\-\s()]{10,15}$/'],
 
             'address'                => ['required', 'string', 'max:500'],
@@ -48,7 +48,7 @@ class StoreWholesaleClientUserRequest extends FormRequest
         return [
             'roles.required' => 'A role is required.',
 
-            'wholesale_client_name.required' => 'Wholesale client name is required.',
+            'wholesale_company_name.required' => 'Company name is required.',
 
             'phone.required' => 'Phone number is required.',
             'phone.regex' => 'Please enter a valid phone number.',

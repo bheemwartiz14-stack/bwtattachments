@@ -76,8 +76,8 @@
                                 <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->email }}</td>
                                 <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->phone ?? '—' }}</td>
                                 <td class="px-5 py-4">
-                                    @if($user->userMeta && !empty($user->userMeta->metadata['client_name']))
-                                        <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $user->userMeta->metadata['client_name'] }}</span>
+                                    @if($user->userMeta && !empty($user->userMeta->metadata['wholesale_company_name']))
+                                        <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $user->userMeta->metadata['wholesale_company_name'] }}</span>
                                     @else
                                         <span class="text-sm text-slate-400">—</span>
                                     @endif
