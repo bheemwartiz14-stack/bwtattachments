@@ -38,11 +38,9 @@
 
     <!-- Brand -->
     <div class="hidden sm:block leading-tight">
-        <h1 class="text-base font-bold tracking-tight text-slate-900 dark:text-white">
-           BIG Work Tools
-
-
-        </h1>
+       <h1 class="text-base font-bold tracking-tight text-slate-900 dark:text-white">
+    {{ config('app.name') }}
+</h1>
 
         <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
             Operations Portal
