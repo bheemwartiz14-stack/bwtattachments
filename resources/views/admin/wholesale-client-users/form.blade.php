@@ -1,6 +1,7 @@
 @php
     $isEdit = isset($user);
-    $wholesaleClientName = $isEdit ? ($user->userMeta?->metadata['client_name'] ?? '') : '';
+    $meta = $isEdit ? ($user->userMeta?->metadata ?? []) : [];
+    $wholesaleClientName = $meta['client_name'] ?? '';
     $logoMedia = $isEdit ? $user->userMeta?->getFirstMedia('wholesale_client_logo') : null;
     $logoUrl = $logoMedia?->getUrl();
     $logoId = $logoMedia?->id;
@@ -35,9 +36,84 @@
         @endif
 
         {{-- Form --}}
-        <form action="{{ $isEdit ? route('admin.wholesale-client-users.update', $user) : route('admin.wholesale-client-users.store') }}" method="POST" enctype="multipart/form-data" x-data="wholesaleClientForm(@js($isEdit), @js($wholesaleClientName))" class="space-y-10">
+        <form action="{{ $isEdit ? route('admin.wholesale-client-users.update', $user) : route('admin.wholesale-client-users.store') }}" method="POST" enctype="multipart/form-data" class="space-y-10">
             @csrf
             @if($isEdit) @method('PUT') @endif
+
+            {{-- Company Details --}}
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                <div class="flex items-center gap-3 border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/30">
+                        <svg class="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21h10.5" /></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Company Details</h2>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400">Business information and registration</p>
+                    </div>
+                </div>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
+                        <x-forms.input
+                            name="wholesale_client_name"
+                            label="Company Name"
+                            placeholder="Acme Corp Ltd"
+                            :value="$wholesaleClientName"
+                            :required="true"
+                            :error="$errors->first('wholesale_client_name')"
+                        />
+                        <x-forms.input
+                            name="vat_number"
+                            label="VAT Number"
+                            placeholder="GB123456789"
+                            :value="$meta['vat_number'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('vat_number')"
+                        />
+                        <x-forms.input
+                            name="address"
+                            label="Address"
+                            placeholder="123 Business Street"
+                            :value="$meta['address'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('address')"
+                        />
+                        <x-forms.input
+                            name="postal_code"
+                            label="Postal Code"
+                            placeholder="SW1A 1AA"
+                            :value="$meta['postal_code'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('postal_code')"
+                        />
+                        <x-forms.input
+                            name="city"
+                            label="City"
+                            placeholder="London"
+                            :value="$meta['city'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('city')"
+                        />
+                        <x-forms.input
+                            name="country"
+                            label="Country"
+                            placeholder="United Kingdom"
+                            :value="$meta['country'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('country')"
+                        />
+                        <x-forms.input
+                            name="website"
+                            label="Website"
+                            type="url"
+                            placeholder="https://acme.com"
+                            :value="$meta['website'] ?? ''"
+                            :required="false"
+                            :hint="'Optional'"
+                            :error="$errors->first('website')"
+                        />
+                    </div>
+                </div>
+            </div>
 
             {{-- Account Details --}}
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
@@ -111,15 +187,15 @@
                 </div>
             </div>
 
-            {{-- Client Profile --}}
+            {{-- Wholesale Profile Details --}}
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                 <div class="flex items-center gap-3 border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
                     <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-900/30">
                         <svg class="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" /></svg>
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Client Profile</h2>
-                        <p class="text-xs text-slate-500 dark:text-neutral-400">Business name and branding</p>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesale Profile Details</h2>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400">Logo and branding</p>
                     </div>
                 </div>
                 <div class="p-8">
@@ -158,14 +234,7 @@
     </div>
 
     @push('scripts')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script>
-            function wholesaleClientForm(isEdit, initialName) {
-                return {
-                    clientName: initialName || ''
-                };
-            }
-
             (function() {
                 var pwd = document.querySelector('[data-password-input]');
                 if (pwd && !pwd.value) {
