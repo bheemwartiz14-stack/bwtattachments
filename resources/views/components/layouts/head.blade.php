@@ -1,20 +1,5 @@
 <meta charset="utf-8">
-<script>window.BASE_URL = "{{ url('') }}";</script>
-<script>
-    (function() {
-        var html = document.documentElement;
-        var stored = localStorage.getItem('darkMode');
-        if (stored === 'true' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            html.classList.add('dark');
-        }
-        document.addEventListener('click', function(e) {
-            var btn = e.target.closest('[data-toggle-dark]');
-            if (!btn) return;
-            html.classList.toggle('dark');
-            localStorage.setItem('darkMode', html.classList.contains('dark'));
-        });
-    })();
-</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ isset($title) ? str_replace('Attachment Portal', config('app.name'), $title) : config('app.name') }}</title>

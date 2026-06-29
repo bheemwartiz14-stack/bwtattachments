@@ -50,9 +50,15 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <button data-toggle-dark class="flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-slate-100 dark:text-neutral-400 dark:hover:bg-neutral-900">
-                    @svg('heroicon-o-moon', 'h-5 w-5')
-                </button>
+               <button data-toggle-dark class="flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-slate-100 dark:text-neutral-400 dark:hover:bg-neutral-900">
+                <span class="dark:hidden">
+                        @svg('heroicon-o-sun', 'h-5 w-5')
+                </span>
+                <span class="hidden dark:block">
+                      @svg('heroicon-o-moon', 'h-5 w-5')
+
+                </span>
+            </button>
 
                 <div class="relative">
                     <button type="button"

@@ -37,10 +37,24 @@
         <x-toast />
         <script src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script>
-            window.BASE_URL = "{{ url('/') }}";
-            </script>
+   <script>window.BASE_URL = "{{ url('') }}";</script>
+<script>
+    (function() {
+        var html = document.documentElement;
+        var stored = localStorage.getItem('theme');
+        console.log('stored',stored);
+        document.addEventListener('click', function(e) {
+              const toggleBtn = e.target.closest('[data-toggle-dark]');
+               if (!toggleBtn) return;
+               document.documentElement.classList.toggle('light');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    })();
+</script>
+
         @stack('scripts')
+
 
     </body>
 </html>
