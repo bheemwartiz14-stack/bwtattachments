@@ -1,69 +1,98 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repositories;
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CategoryRepository
 {
-    public function __construct(protected Category $model)
-    {
+    public function __construct(
+        protected Category $model,
+    ) {
     }
 
     /**
-     * Get all categories for dropdown (id => name)
+     * Get all categories for dropdown.
+     *
+     * @return array<int, string>
      */
     public function getAll(): array
     {
-        return $this->model->query()
+        return $this->model
+            ->query()
             ->orderBy('name')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     /**
-     * Paginated list (for admin table)
+     * Get paginated categories.
      */
-    public function paginate(int $perPage = 10)
+    public function paginate(int $perPage = 10): LengthAwarePaginator
     {
-        return $this->model->query()
-            ->withCount(['products', 'subcategories'])
+        return $this->model
+            ->query()
+            ->withCount([
+                'products',
+                'subcategories',
+            ])
+            ->latest()
             ->paginate($perPage);
     }
 
     /**
-     * Find single record
+     * Find category by ID.
      */
-    public function findById(string|int $id)
+    public function findById(string|int $id): Category
     {
-        return $this->model->findOrFail($id);
+        return $this->model
+            ->query()
+            ->withCount([
+                'products',
+                'subcategories',
+            ])
+            ->findOrFail($id);
     }
 
     /**
-     * Create category
+     * Create category.
      */
-    public function create(array $data)
+    public function create(array $data): Category
     {
         return $this->model->create($data);
     }
 
     /**
-     * Update category
+     * Update category.
      */
-    public function update(string|int $id, array $data)
+    public function update(string|int $id, array $data): Category
     {
-        $record = $this->findById($id);
-        $record->update($data);
+        $category = $this->findById($id);
 
-        return $record;
+        $category->update($data);
+
+        return $category->refresh();
     }
 
     /**
-     * Delete category
+     * Delete category.
      */
-    public function delete(string|int $id)
+    public function delete(string|int $id): bool
     {
-        $record = $this->findById($id);
-        return $record->delete();
+        return $this->findById($id)->delete();
+    }
+
+    /**
+     * Get all categories.
+     */
+    public function all(): Collection
+    {
+        return $this->model
+            ->query()
+            ->orderBy('name')
+            ->get();
     }
 }

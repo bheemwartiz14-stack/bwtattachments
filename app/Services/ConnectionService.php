@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Repositories\ConnectionRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 
 class ConnectionService
 {
@@ -14,7 +16,9 @@ class ConnectionService
 
     public function getAll(): array
     {
-        return $this->connectionRepository->getAll();
+        return Cache::remember('connections:all', 3600, fn() =>
+            $this->connectionRepository->getAll()
+        );
     }
 
     public function paginate(int $perPage = 10): LengthAwarePaginator
@@ -29,16 +33,22 @@ class ConnectionService
 
     public function create(array $data): Model
     {
-        return $this->connectionRepository->create($data);
+        $result = $this->connectionRepository->create($data);
+        Cache::forget('connections:all');
+        return $result;
     }
 
     public function update(string $id, array $data): Model
     {
-        return $this->connectionRepository->update($id, $data);
+        $result = $this->connectionRepository->update($id, $data);
+        Cache::forget('connections:all');
+        return $result;
     }
 
     public function delete(string $id): bool
     {
-        return $this->connectionRepository->delete($id);
+        $result = $this->connectionRepository->delete($id);
+        Cache::forget('connections:all');
+        return $result;
     }
 }

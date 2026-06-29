@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -6,6 +7,7 @@ use App\Repositories\CategoryRepository;
 use App\Repositories\SubcategoryRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CategoryService
@@ -17,7 +19,9 @@ class CategoryService
 
     public function getAll(): array
     {
-        return $this->categoryRepository->getAll();
+        return Cache::remember('categories:all', 3600, fn() =>
+            $this->categoryRepository->getAll()
+        );
     }
 
     public function paginate(int $perPage = 10): LengthAwarePaginator
@@ -36,7 +40,9 @@ class CategoryService
             $data['slug'] = Str::slug($data['name']);
         }
 
-        return $this->categoryRepository->create($data);
+        $result = $this->categoryRepository->create($data);
+        Cache::forget('categories:all');
+        return $result;
     }
 
     public function update(string|int $id, array $data): Model
@@ -45,12 +51,16 @@ class CategoryService
             $data['slug'] = Str::slug($data['name']);
         }
 
-        return $this->categoryRepository->update($id, $data);
+        $result = $this->categoryRepository->update($id, $data);
+        Cache::forget('categories:all');
+        return $result;
     }
 
     public function delete(string|int $id): bool
     {
-        return $this->categoryRepository->delete($id);
+        $result = $this->categoryRepository->delete($id);
+        Cache::forget('categories:all');
+        return $result;
     }
 
     public function getSubcategories(string|int $id)

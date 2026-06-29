@@ -54,7 +54,7 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('wholesale-client-users', WholesaleClientUserController::class)->except(['show']);
         Route::resource('categories', CategoryController::class)->except(['show']);
-        Route::get('/categories/{category}/subcategories', [CategoryController::class, 'getSubcategories'])->name('categories.fetch-subcataories');
+        Route::get('/categories/{category}/subcategories', [CategoryController::class, 'getSubcategories'])->name('categories.fetch-subcategories');
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
         Route::resource('connections', ConnectionController::class)->except(['show']);
         Route::resource('products', AdminProductController::class);

@@ -1,67 +1,90 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repositories;
 
 use App\Models\Connection;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ConnectionRepository
 {
-    public function __construct(protected Connection $model)
-    {
+    public function __construct(
+        protected Connection $model,
+    ) {
     }
 
     /**
-     * Dropdown data: id => name
+     * Get all connections for dropdown.
+     *
+     * @return array<int, string>
      */
     public function getAll(): array
     {
-        return $this->model->query()
+        return $this->model
+            ->query()
             ->orderBy('name')
             ->pluck('name', 'id')
             ->toArray();
     }
 
     /**
-     * Paginated list (admin table)
+     * Get paginated connections.
      */
-    public function paginate(int $perPage = 10)
+    public function paginate(int $perPage = 10): LengthAwarePaginator
     {
-        return $this->model->query()->paginate($perPage);
+        return $this->model
+            ->query()
+            ->latest()
+            ->paginate($perPage);
     }
 
     /**
-     * Find single record
+     * Find connection by ID.
      */
-    public function findById(string|int $id)
+    public function findById(string|int $id): Connection
     {
-        return $this->model->findOrFail($id);
+        return $this->model
+            ->query()
+            ->findOrFail($id);
     }
 
     /**
-     * Create
+     * Create connection.
      */
-    public function create(array $data)
+    public function create(array $data): Connection
     {
         return $this->model->create($data);
     }
 
     /**
-     * Update
+     * Update connection.
      */
-    public function update(string|int $id, array $data)
+    public function update(string|int $id, array $data): Connection
     {
-        $record = $this->findById($id);
-        $record->update($data);
+        $connection = $this->findById($id);
 
-        return $record;
+        $connection->update($data);
+
+        return $connection->refresh();
     }
 
     /**
-     * Delete
+     * Delete connection.
      */
-    public function delete(string|int $id)
+    public function delete(string|int $id): bool
     {
-        $record = $this->findById($id);
-        return $record->delete();
+        return $this->findById($id)->delete();
+    }
+
+    /**
+     * Get all connections.
+     */
+    public function all(): Collection
+    {
+        return $this->model
+            ->query()
+            ->orderBy('name')
+            ->get();
     }
 }

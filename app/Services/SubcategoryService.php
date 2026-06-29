@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -6,6 +7,7 @@ use App\Repositories\SubcategoryRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class SubcategoryService
 {
@@ -15,7 +17,9 @@ class SubcategoryService
 
     public function getAll(): array
     {
-        return $this->subcategoryRepository->getAll();
+        return Cache::remember('subcategories:all', 3600, fn() =>
+            $this->subcategoryRepository->getAll()
+        );
     }
 
     public function paginate(int $perPage = 10): LengthAwarePaginator
@@ -30,17 +34,23 @@ class SubcategoryService
 
     public function create(array $data): Model
     {
-        return $this->subcategoryRepository->create($data);
+        $result = $this->subcategoryRepository->create($data);
+        Cache::forget('subcategories:all');
+        return $result;
     }
 
     public function update(string $id, array $data): Model
     {
-        return $this->subcategoryRepository->update($id, $data);
+        $result = $this->subcategoryRepository->update($id, $data);
+        Cache::forget('subcategories:all');
+        return $result;
     }
 
     public function delete(string $id): bool
     {
-        return $this->subcategoryRepository->delete($id);
+        $result = $this->subcategoryRepository->delete($id);
+        Cache::forget('subcategories:all');
+        return $result;
     }
 
     public function getByCategory(string $categoryId): Collection

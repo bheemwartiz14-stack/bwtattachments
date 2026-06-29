@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -59,6 +60,10 @@ class Product extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        if ($media && !str_starts_with($media->mime_type, 'image/')) {
+            return;
+        }
+
         $this->addMediaConversion('thumb')
             ->width(200)
             ->height(200)

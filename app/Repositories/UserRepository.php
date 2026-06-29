@@ -1,83 +1,153 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository
 {
-    public function __construct(protected User $model)
-    {
+    /**
+     * Relationships to eager load to prevent N+1 queries.
+     */
+    private const RELATIONS = [
+        'roles',
+        'userMeta',
+    ];
+    public function __construct(
+        protected User $model
+    ) {
     }
 
-    public function getAll()
+    /**
+     * Get all users.
+     */
+    public function getAll(): Collection
     {
-        return $this->model->all();
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->get();
     }
 
-    public function paginate(int $perPage = 10, array $filters = []): LengthAwarePaginator
-    {
-        $query = $this->model->query();
-
-        if ($search = $filters['search'] ?? null) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                ;
-            });
-        }
-
-        if ($role = $filters['role'] ?? null) {
-            $query->whereHas('roles', fn($q) => $q->where('name', $role));
-        }
-
-        if ($status = $filters['status'] ?? null) {
-            $query->where('status', $status === 'active');
-        }
-
-        return $query->paginate($perPage);
+    /**
+     * Paginate users with filters.
+     */
+    public function paginate(
+        int $perPage = 10,
+        array $filters = []
+    ): LengthAwarePaginator {
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->when(
+                $filters['search'] ?? null,
+                function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+                }
+            )
+            ->when(
+                $filters['role'] ?? null,
+                fn ($query, $role) => $query->whereHas(
+                    'roles',
+                    fn ($query) => $query->where('name', $role)
+                )
+            )
+            ->when(
+                isset($filters['status']) && $filters['status'] !== '',
+                fn ($query) => $query->where(
+                    'status',
+                    $filters['status'] === 'active'
+                )
+            )
+            ->latest()
+            ->paginate($perPage);
     }
 
-    public function findById(string|int $id)
+    /**
+     * Find user by ID.
+     */
+    public function findById(string|int $id): User
     {
-        return $this->model->findOrFail($id);
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->findOrFail($id);
     }
 
-    public function create(array $data)
+    /**
+     * Create user.
+     */
+    public function create(array $data): User
     {
         return $this->model->create($data);
     }
 
-    public function update(string|int $id, array $data)
+    /**
+     * Update user.
+     */
+    public function update(string|int $id, array $data): User
     {
-        $record = $this->findById($id);
-        $record->update($data);
-        return $record;
+        $user = $this->findById($id);
+
+        $user->update($data);
+
+        return $user->refresh()->loadMissing(self::RELATIONS);
     }
 
-    public function delete(string|int $id)
+    /**
+     * Delete user.
+     */
+    public function delete(string|int $id): bool
     {
-        $record = $this->findById($id);
-        return $record->delete();
+        return $this->findById($id)->delete();
     }
 
-    public function getUsersByRole(string $role, int $perPage = 10, ?string $search = null, ?string $parentId = null)
-    {
-        return User::role($role)
-            ->when($parentId, fn($q) => $q->where('parent_id', $parentId))
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
-                });
-            })
-            ->orderBy('created_at', 'asc')
+    /**
+     * Get paginated users by role.
+     */
+    public function getUsersByRole(
+        string $role,
+        int $perPage = 10,
+        ?string $search = null,
+        ?string $parentId = null
+    ): LengthAwarePaginator {
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->role($role)
+            ->when(
+                $parentId,
+                fn ($query) => $query->where('parent_id', $parentId)
+            )
+            ->when(
+                $search,
+                function ($query) use ($search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+                }
+            )
+            ->oldest()
             ->paginate($perPage);
     }
 
-    public function getAllByRole(string $role): \Illuminate\Database\Eloquent\Collection
+    /**
+     * Get all users by role.
+     */
+    public function getAllByRole(string $role): Collection
     {
-        return User::role($role)->orderBy('name')->get();
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->role($role)
+            ->orderBy('name')
+            ->get();
     }
 }

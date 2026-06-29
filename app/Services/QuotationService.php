@@ -1,10 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Events\QuotationCreated;
 use App\Models\Quotation;
-use App\Models\QuotationItem;
 use App\Repositories\QuotationRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Model;
@@ -82,19 +82,14 @@ class QuotationService
 
     public function addItem(int $quotationId, int $productId, float $price, int $quantity): QuotationItem
     {
-        return QuotationItem::create([
-            'quotation_id' => $quotationId,
-            'product_id' => $productId,
-            'price' => $price,
-            'quantity' => $quantity,
-        ]);
+        return $this->quotationRepository->createItem(
+            $quotationId, $productId, $price, $quantity
+        );
     }
 
     public function removeItem(int $quotationId, int $itemId): bool
     {
-        return QuotationItem::where('quotation_id', $quotationId)
-            ->where('id', $itemId)
-            ->delete() > 0;
+        return $this->quotationRepository->deleteItem($quotationId, $itemId);
     }
 
     public function generatePdf(Quotation $quotation): Quotation

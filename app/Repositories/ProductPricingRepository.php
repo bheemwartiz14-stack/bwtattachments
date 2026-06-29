@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -8,72 +9,125 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductPricingRepository
 {
-    public function __construct(protected ProductPrices $model)
-    {
+    /**
+     * Relationships to eager load.
+     */
+    private const RELATIONS = [
+        'product',
+        'user',
+        'assignedBy',
+    ];
+
+    public function __construct(
+        protected ProductPrices $model
+    ) {
     }
 
-    public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
-    {
-        $query = $this->model->newQuery()
-            ->with(['product', 'user', 'assignedBy']);
-
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('product', fn($pq) => $pq->where('product_title', 'like', "%{$search}%")
-                    ->orWhere('product_code', 'like', "%{$search}%"))
-                  ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%"));
-            });
-        }
-
-        if (!empty($filters['product_id'])) {
-            $query->where('product_id', $filters['product_id']);
-        }
-
-        if (!empty($filters['user_id'])) {
-            $query->where('user_id', $filters['user_id']);
-        }
-
-        if (!empty($filters['type'])) {
-            $query->where('type', $filters['type']);
-        }
-
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+    /**
+     * Get paginated product pricing.
+     */
+    public function paginate(
+        int $perPage = 15,
+        array $filters = []
+    ): LengthAwarePaginator {
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->when(
+                $filters['search'] ?? null,
+                function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->whereHas('product', function ($productQuery) use ($search) {
+                            $productQuery
+                                ->where('product_title', 'like', "%{$search}%")
+                                ->orWhere('product_code', 'like', "%{$search}%");
+                        })->orWhereHas('user', function ($userQuery) use ($search) {
+                            $userQuery
+                                ->where('name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                        });
+                    });
+                }
+            )
+            ->when(
+                $filters['product_id'] ?? null,
+                fn ($query, $productId) => $query->where('product_id', $productId)
+            )
+            ->when(
+                $filters['user_id'] ?? null,
+                fn ($query, $userId) => $query->where('user_id', $userId)
+            )
+            ->when(
+                $filters['type'] ?? null,
+                fn ($query, $type) => $query->where('type', $type)
+            )
+            ->latest()
+            ->paginate($perPage);
     }
 
+    /**
+     * Get all pricing records.
+     */
     public function getAll(): Collection
     {
-        return $this->model->newQuery()->with(['product', 'user', 'assignedBy'])->get();
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->latest()
+            ->get();
     }
 
+    /**
+     * Find pricing by ID.
+     */
     public function findById(string|int $id): ProductPrices
     {
-        return $this->model->newQuery()
-            ->with(['product', 'user', 'assignedBy'])
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
             ->findOrFail($id);
     }
 
+    /**
+     * Create pricing.
+     */
     public function create(array $data): ProductPrices
     {
-        return $this->model->newQuery()->create($data);
+        return $this->model->create($data);
     }
 
+    /**
+     * Update pricing.
+     */
     public function update(string|int $id, array $data): ProductPrices
     {
-        $record = $this->findById($id);
-        $record->update($data);
-        return $record->fresh(['product', 'user', 'assignedBy']);
+        $pricing = $this->findById($id);
+
+        $pricing->update($data);
+
+        return $pricing
+            ->refresh()
+            ->loadMissing(self::RELATIONS);
     }
 
+    /**
+     * Delete pricing.
+     */
     public function delete(string|int $id): bool
     {
         return $this->findById($id)->delete();
     }
 
-    public function findExisting(string|int $productId, string|int $userId, string $type): ?ProductPrices
-    {
-        return $this->model->newQuery()
+    /**
+     * Find existing pricing record.
+     */
+    public function findExisting(
+        string|int $productId,
+        string|int $userId,
+        string $type
+    ): ?ProductPrices {
+        return $this->model
+            ->query()
             ->where('product_id', $productId)
             ->where('user_id', $userId)
             ->where('type', $type)

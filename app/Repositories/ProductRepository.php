@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -8,129 +9,191 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository
 {
-    public function __construct(protected Product $model)
-    {
+    /**
+     * Relationships to eager load.
+     */
+    private const RELATIONS = [
+        'media',
+        'category',
+        'subcategory',
+        'connection',
+    ];
+
+    /**
+     * Relationships for product details.
+     */
+    private const DETAIL_RELATIONS = [
+        'media',
+        'category',
+        'subcategory',
+        'connection',
+        'productPrices.user',
+    ];
+
+    public function __construct(
+        protected Product $model
+    ) {
     }
 
     /**
-     * Get all products with media
+     * Get all products.
      */
     public function getAll(): Collection
     {
-        return $this->model->newQuery()
-            ->with('media') // ✅ Spatie media eager load
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->latest()
             ->get();
     }
 
     /**
-     * Paginated products with media and optional filters
+     * Paginate products.
      */
-    public function paginate(int $perPage = 10, array $filters = []): LengthAwarePaginator
-    {
-        $query = $this->model->newQuery()->with('media');
+    public function paginate(
+        int $perPage = 10,
+        array $filters = []
+    ): LengthAwarePaginator {
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->when(
+                $filters['search'] ?? null,
+                function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('product_code', 'like', "%{$search}%")
+                            ->orWhere('product_title', 'like', "%{$search}%")
+                            ->orWhere('product_description', 'like', "%{$search}%");
+                    });
+                }
+            )
+            ->when(
+                !empty($filters['category']),
+                fn ($query) => $query->whereIn('category_id', (array) $filters['category'])
+            )
+            ->when(
+                !empty($filters['subcategory']),
+                fn ($query) => $query->whereIn('subcategory_id', (array) $filters['subcategory'])
+            )
+            ->when(
+                !empty($filters['connection']),
+                fn ($query) => $query->whereIn('connection_id', (array) $filters['connection'])
+            )
+            ->when(
+                isset($filters['status']) && $filters['status'] !== '',
+                function ($query) use ($filters) {
+                    $status = $filters['status'];
 
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('product_code', 'like', "%{$search}%")
-                  ->orWhere('product_title', 'like', "%{$search}%")
-                  ->orWhere('product_description', 'like', "%{$search}%");
-            });
-        }
+                    if ($status === 'published' || $status == 1) {
+                        $query->where('status', true);
+                    }
 
-        if (!empty($filters['category'])) {
-            $query->whereIn('category_id', (array) $filters['category']);
-        }
-
-        if (!empty($filters['subcategory'])) {
-            $query->whereIn('subcategory_id', (array) $filters['subcategory']);
-        }
-
-        if (!empty($filters['connection'])) {
-            $query->whereIn('connection_id', (array) $filters['connection']);
-        }
-
-        if (isset($filters['status'])) {
-            if ($filters['status'] === 'published' || $filters['status'] == 1) {
-                $query->where('status', true);
-            } elseif (in_array($filters['status'], ['draft', 'hidden'], true) || $filters['status'] == 0) {
-                $query->where('status', false);
-            }
-        }
-
-        return $query->paginate($perPage);
+                    if (
+                        in_array($status, ['draft', 'hidden'], true) ||
+                        $status == 0
+                    ) {
+                        $query->where('status', false);
+                    }
+                }
+            )
+            ->latest()
+            ->paginate($perPage);
     }
 
     /**
-     * Find single product
+     * Find product by ID.
      */
     public function findById(string|int $id): Product
     {
-        return $this->model->newQuery()
-            ->with(['media', 'productPrices.user'])
+        return $this->model
+            ->query()
+            ->with(self::DETAIL_RELATIONS)
             ->findOrFail($id);
     }
 
     /**
-     * Create product
+     * Create product.
      */
     public function create(array $data): Product
     {
-        return $this->model->newQuery()->create($data);
+        return $this->model->create($data);
     }
 
     /**
-     * Update product
+     * Update product.
      */
     public function update(string|int $id, array $data): Product
     {
-        $record = $this->findById($id);
-        $record->update($data);
+        $product = $this->findById($id);
 
-        return $record->fresh(['media']);
+        $product->update($data);
+
+        return $product
+            ->refresh()
+            ->loadMissing(self::DETAIL_RELATIONS);
     }
 
     /**
-     * Delete product
+     * Delete product.
      */
     public function delete(string|int $id): bool
     {
         return $this->findById($id)->delete();
     }
 
+    /**
+     * Find products by category.
+     */
     public function findByCategory(string|int $categoryId): Collection
     {
-        return $this->model->newQuery()
-            ->with('media')
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
             ->where('category_id', $categoryId)
+            ->latest()
             ->get();
     }
 
-    public function findBySubcategory(int $subcategoryId): Collection
+    /**
+     * Find products by subcategory.
+     */
+    public function findBySubcategory(string|int $subcategoryId): Collection
     {
-        return $this->model->newQuery()
-            ->with('media')
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
             ->where('subcategory_id', $subcategoryId)
+            ->latest()
             ->get();
     }
 
-    public function findByConnection(int $connectionId): Collection
+    /**
+     * Find products by connection.
+     */
+    public function findByConnection(string|int $connectionId): Collection
     {
-        return $this->model->newQuery()
-            ->with('media')
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
             ->where('connection_id', $connectionId)
+            ->latest()
             ->get();
     }
 
+    /**
+     * Search products.
+     */
     public function search(string $term): Collection
     {
-        return $this->model->newQuery()
-            ->with('media')
-            ->where(function ($q) use ($term) {
-                $q->where('name', 'like', "%{$term}%")
-                  ->orWhere('description', 'like', "%{$term}%")
-                  ->orWhere('sku', 'like', "%{$term}%");
+        return $this->model
+            ->query()
+            ->with(self::RELATIONS)
+            ->where(function ($query) use ($term) {
+                $query->where('product_code', 'like', "%{$term}%")
+                    ->orWhere('product_title', 'like', "%{$term}%")
+                    ->orWhere('product_description', 'like', "%{$term}%");
             })
+            ->latest()
             ->get();
     }
 }

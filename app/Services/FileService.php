@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -33,9 +34,9 @@ class FileService
 
     public function deleteMedia(string $id): bool
     {
-        $media = $this->fileRepository->findMediaById($id);
+        $media = $this->fileRepository->findById($id);
         if (!$media) return false;
 
-        return $this->fileRepository->deleteMedia($media);
+        return $this->fileRepository->delete($media);
     }
 }

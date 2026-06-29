@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
@@ -10,7 +11,6 @@ use App\Services\RoleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Spatie\Permission\Models\Role;
 
 class WholesaleClientUserController extends Controller
 {
@@ -23,8 +23,7 @@ class WholesaleClientUserController extends Controller
     {
         $filters = $request->only(['search', 'role', 'status']);
         $users = $this->wholesaleClientUserServices->paginate(10, $filters);
-        $roles = $this->roleService->getByNames(['Wholesale Client']);
-        return view('admin.wholesale-client-users.index', compact('users', 'roles'));
+        return view('admin.wholesale-client-users.index', compact('users'));
     }
     public function create(): View
     {
@@ -41,7 +40,6 @@ class WholesaleClientUserController extends Controller
     public function edit(string $id): View
     {
         $user = $this->wholesaleClientUserServices->findById($id);
-        $roles = Role::query()->whereIn('name', ['Wholesale Client'])->get();
         $userRole = $user->roles->first()?->name;
         return view('admin.wholesale-client-users.form', compact('user', 'roles', 'userRole'));
     }

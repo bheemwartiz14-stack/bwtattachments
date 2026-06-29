@@ -1,15 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+
 class UserMeta extends Model implements HasMedia
 {
     use HasUuids, InteractsWithMedia;
-    protected $guarded = [];
+
+    protected $fillable = [
+        'user_id',
+        'metadata',
+    ];
 
     protected function casts(): array
     {
@@ -25,6 +32,8 @@ class UserMeta extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('wholesale_client_logo') ->singleFile()  ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+        $this->addMediaCollection('wholesale_client_logo')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 }

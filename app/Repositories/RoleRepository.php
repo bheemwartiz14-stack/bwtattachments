@@ -1,18 +1,37 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Role;
 
 class RoleRepository
 {
-    public function getByNames(array $names)
-    {
-        return Role::whereIn('name', $names)->get();
+    public function __construct(
+        protected Role $model
+    ) {
     }
 
-    public function findByName(string $name)
+    /**
+     * Get roles by names.
+     */
+    public function getByNames(array $names): Collection
     {
-        return Role::where('name', $name)->first();
+        return $this->model
+            ->query()
+            ->whereIn('name', $names)
+            ->get();
+    }
+
+    /**
+     * Find a role by name.
+     */
+    public function findByName(string $name): ?Role
+    {
+        return $this->model
+            ->query()
+            ->where('name', $name)
+            ->first();
     }
 }

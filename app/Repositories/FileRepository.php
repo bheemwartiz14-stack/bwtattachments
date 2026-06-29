@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repositories;
 
@@ -7,15 +8,24 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class FileRepository
 {
     public function __construct(
-        protected Media $mediaModel,
-    ) {}
-
-    public function findMediaById(string $id): ?Media
-    {
-        return $this->mediaModel->find($id);
+        protected Media $model,
+    ) {
     }
 
-    public function deleteMedia(Media $media): bool
+    /**
+     * Find media by ID.
+     */
+    public function findById(string|int $id): ?Media
+    {
+        return $this->model
+            ->query()
+            ->find($id);
+    }
+
+    /**
+     * Delete media.
+     */
+    public function delete(Media $media): bool
     {
         return (bool) $media->delete();
     }
