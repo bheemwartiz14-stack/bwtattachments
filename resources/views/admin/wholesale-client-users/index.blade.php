@@ -53,17 +53,21 @@
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-slate-100 bg-slate-50/50 dark:border-neutral-800 dark:bg-neutral-900/50">
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">User</th>
+                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Name</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Email</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Phone</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Client Name</th>
+                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Company</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Role</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Status</th>
                             <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
                         @forelse($users ?? [] as $user)
+                            @php
+                                $meta = $user->userMeta?->metadata ?? [];
+                                $addressParts = array_filter([$meta['address'] ?? '', $meta['city'] ?? '', $meta['country'] ?? '', $meta['postal_code'] ?? '']);
+                                $fullAddress = !empty($addressParts) ? implode(', ', $addressParts) : null;
+                            @endphp
                             <tr class="transition-colors hover:bg-slate-50/80 dark:hover:bg-neutral-800/30">
                                 <td class="px-5 py-4">
                                     <div class="flex items-center gap-3">
@@ -76,8 +80,8 @@
                                 <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->email }}</td>
                                 <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->phone ?? '—' }}</td>
                                 <td class="px-5 py-4">
-                                    @if($user->userMeta && !empty($user->userMeta->metadata['wholesale_company_name']))
-                                        <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $user->userMeta->metadata['wholesale_company_name'] }}</span>
+                                    @if(!empty($meta['wholesale_company_name']))
+                                        <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $meta['wholesale_company_name'] }}</span>
                                     @else
                                         <span class="text-sm text-slate-400">—</span>
                                     @endif
@@ -90,19 +94,6 @@
                                             <span class="text-xs text-slate-400">—</span>
                                         @endforelse
                                     </div>
-                                </td>
-                                <td class="px-5 py-4">
-                                    @if($user->status == 1)
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                            Active
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
-                                            Inactive
-                                        </span>
-                                    @endif
                                 </td>
                                 <td class="px-5 py-4 text-right">
                                     @if(isset($user->roles[0]) && $user->roles[0]->name === 'Wholesale Client')

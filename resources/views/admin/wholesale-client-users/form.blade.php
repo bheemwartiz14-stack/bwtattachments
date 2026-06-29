@@ -2,6 +2,7 @@
     $isEdit = isset($user);
     $meta = $isEdit ? ($user->userMeta?->metadata ?? []) : [];
     $wholesaleCompanyName = $meta['wholesale_company_name'] ?? '';
+    $wholesaleClientName = $meta['client_name'] ?? '';
     $logoMedia = $isEdit ? $user->userMeta?->getFirstMedia('wholesale_client_logo') : null;
     $logoUrl = $logoMedia?->getUrl();
     $logoId = $logoMedia?->id;
@@ -198,14 +199,18 @@
                         <p class="text-xs text-slate-500 dark:text-neutral-400">Logo and branding</p>
                     </div>
                 </div>
-                <div class="p-8">
-                    <x-forms.image-dropzone
-                        name="wholesale_client_logo"
-                        :existingImageUrl="$logoUrl"
-                        :existingImageId="$logoId"
-                        label="Wholesale Client Logo"
-                        accept="image/jpeg,image/png,image/webp"
-                        hint="PNG, JPG or WebP (Max. 2MB)" />
+                   <div class="p-8">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
+
+                        <x-forms.image-dropzone
+                            name="wholesale_client_logo"
+                            :existingImageUrl="$logoUrl"
+                            :existingImageId="$logoId"
+                            label="Wholesale Client Logo"
+                            accept="image/jpeg,image/png,image/webp"
+                            hint="PNG, JPG or WebP (Max. 2MB)" />
+
+                    </div>
                 </div>
                 </div>
             </div>
