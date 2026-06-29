@@ -111,30 +111,21 @@
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @php
                             $specs = [
-                                'weight' => ['type' => 'text', 'label' => 'Weight (kg)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'width' => ['type' => 'text', 'label' => 'Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'volume' => ['type' => 'text', 'label' => 'Volume (m3)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'machine_class' => ['type' => 'text', 'label' => 'Machine class (t)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00'],
-                                'cutting_edge_thickness' => ['type' => 'text', 'label' => 'Cutting Edge Thickness (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'teeth' => ['type' => 'text', 'label' => 'Teeth', 'step' => '1', 'min' => '0', 'placeholder' => '0'],
-                                'pin_hole' => ['type' => 'text', 'label' => 'Pin Hole (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'pin_center' => ['type' => 'text', 'label' => 'Pin center to Pin center (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
-                                'stick_width' => ['type' => 'text', 'label' => 'Stick Width (mm)', 'step' => '0.01', 'min' => '0', 'placeholder' => '0.00', 'append' => 'mm'],
+                                'weight' => ['label' => 'Weight (kg)', 'placeholder' => 'e.g. 1.5 or 1.5-2.0'],
+                                'width' => ['label' => 'Width (mm)', 'placeholder' => 'e.g. 200 or 200-250'],
+                                'volume' => ['label' => 'Volume (m3)', 'placeholder' => 'e.g. 0.5 or 0.5-0.8'],
+                                'machine_class' => ['label' => 'Machine class (t)', 'placeholder' => 'e.g. 20 or 20-30'],
+                                'cutting_edge_thickness' => ['label' => 'Cutting Edge Thickness (mm)', 'placeholder' => 'e.g. 10 or 10-15'],
+                                'teeth' => ['label' => 'Teeth', 'placeholder' => 'e.g. 4 or 4-6'],
+                                'pin_hole' => ['label' => 'Pin Hole (mm)', 'placeholder' => 'e.g. 30 or 30-40'],
+                                'pin_center' => ['label' => 'Pin center to Pin center (mm)', 'placeholder' => 'e.g. 50 or 50-60'],
+                                'stick_width' => ['label' => 'Stick Width (mm)', 'placeholder' => 'e.g. 80 or 80-100'],
                             ];
                         @endphp
                         @foreach($specs as $field => $config)
-                            @if(($config['type'] ?? 'number') === 'number')
-                                <x-forms.input name="{{ $field }}" :label="$config['label']" type="number"
-                                    step="{{ $config['step'] }}" min="{{ $config['min'] ?? '0' }}"
-                                    placeholder="{{ $config['placeholder'] ?? '0.00' }}"
-                                    :append="$config['append'] ?? ''"
-                                    :value="$product->$field ?? ''" />
-                            @else
-                                <x-forms.input name="{{ $field }}" :label="$config['label']"
-                                    type="{{ $config['type'] }}"
-                                    placeholder="{{ $config['placeholder'] ?? '' }}"
-                                    :value="$product->$field ?? ''" />
-                            @endif
+                            <x-forms.input name="{{ $field }}" :label="$config['label']"
+                                placeholder="{{ $config['placeholder'] }}"
+                                :value="$product->$field ?? ''" />
                         @endforeach
                     </div>
                 </div>
