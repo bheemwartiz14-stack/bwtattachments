@@ -56,99 +56,101 @@
                 </form>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-100 bg-slate-50/50 dark:border-neutral-800 dark:bg-neutral-900/50">
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Name</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Email</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Phone</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Company</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Role</th>
-                            <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
-                        @forelse($users ?? [] as $user)
-                            @php
-                                $meta = $user->userMeta?->metadata ?? [];
-                                $addressParts = array_filter([$meta['address'] ?? '', $meta['city'] ?? '', $meta['country'] ?? '', $meta['postal_code'] ?? '']);
-                                $fullAddress = !empty($addressParts) ? implode(', ', $addressParts) : null;
-                            @endphp
-                            <tr class="transition-colors hover:bg-slate-50/80 dark:hover:bg-neutral-800/30">
-                                <td class="px-5 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
-                                            {!! Avatar::create($user->name)->setDimension(36)->setFontSize(14)->toSvg() !!}
-                                        </div>
-                                        <span class="font-medium text-slate-900 dark:text-white">{{ $user->name }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->email }}</td>
-                                <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->phone ?? '—' }}</td>
-                                <td class="px-5 py-4">
-                                    @if(!empty($meta['wholesale_company_name']))
-                                        <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $meta['wholesale_company_name'] }}</span>
-                                    @else
-                                        <span class="text-sm text-slate-400">—</span>
-                                    @endif
-                                </td>
-                                <td class="px-5 py-4">
-                                    <div class="flex flex-wrap gap-1">
-                                        @forelse($user->roles as $role)
-                                            <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700">{{ $role->name }}</span>
-                                        @empty
-                                            <span class="text-xs text-slate-400">—</span>
-                                        @endforelse
-                                    </div>
-                                </td>
-                                <td class="px-5 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-1">
-                                        <a href="{{ route('admin.wholesale-client-users.edit', $user) }}" title="Edit"
-                                            class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
-                                        </a>
-                                        <form action="{{ route('admin.wholesale-client-users.destroy', $user) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" title="Delete"
-                                                class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-neutral-400 dark:hover:bg-red-900/20 dark:hover:text-red-400">
-                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7">
-                                    <div class="flex flex-col items-center justify-center px-5 py-16 text-center">
-                                        <svg class="h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
-                                        <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">No Wholesale Client Users found</h3>
-                                        <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Get started by creating a new wholesale client user.</p>
-                                        <a href="{{ route('admin.wholesale-client-users.create') }}" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                                            Add Client User
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            @php
+                $roleOrder = ['Wholesale Client', 'Retailer', 'Super Admin'];
+                $grouped = collect($roleOrder)->mapWithKeys(fn($role) => [$role => collect()]);
+                foreach ($users ?? [] as $user) {
+                    $role = $user->roles->first()?->name ?? 'Other';
+                    if (in_array($role, $roleOrder)) {
+                        $grouped[$role]->push($user);
+                    } else {
+                        $grouped->put('Other', collect([$user]));
+                    }
+                }
+                $grouped = $grouped->filter(fn($group) => $group->isNotEmpty());
+            @endphp
 
-            @if(isset($users) && $users->hasPages())
-                <div class="border-t border-slate-100 px-5 py-4 dark:border-neutral-800">
-                    {{ $users->withQueryString()->links() }}
+            @forelse($grouped as $roleName => $roleUsers)
+                <div class="{{ !$loop->first ? 'border-t border-slate-100 dark:border-neutral-800' : '' }}">
+                    <div class="flex items-center gap-3 px-5 py-4 bg-slate-50/80 dark:bg-neutral-900/50">
+                        <span class="inline-flex items-center rounded-lg bg-white px-3.5 py-1.5 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-slate-200 dark:bg-neutral-800 dark:text-white dark:ring-neutral-700">{{ $roleName }}</span>
+                        <span class="text-xs text-slate-400 dark:text-neutral-500">{{ $roleUsers->count() }} user{{ $roleUsers->count() !== 1 ? 's' : '' }}</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-100 dark:border-neutral-800">
+                                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Name</th>
+                                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Email</th>
+                                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Phone</th>
+                                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Company</th>
+                                    <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Role</th>
+                                    <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
+                                @foreach($roleUsers as $user)
+                                    @php $meta = $user->userMeta?->metadata ?? []; @endphp
+                                    <tr class="transition-colors hover:bg-slate-50/80 dark:hover:bg-neutral-800/30">
+                                        <td class="px-5 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
+                                                    {!! Avatar::create($user->name)->setDimension(36)->setFontSize(14)->toSvg() !!}
+                                                </div>
+                                                <span class="font-medium text-slate-900 dark:text-white">{{ $user->name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->email }}</td>
+                                        <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->phone ?? '—' }}</td>
+                                        <td class="px-5 py-4">
+                                            @if(!empty($meta['wholesale_company_name']))
+                                                <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $meta['wholesale_company_name'] }}</span>
+                                            @else
+                                                <span class="text-sm text-slate-400">—</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-5 py-4">
+                                            <div class="flex flex-wrap gap-1">
+                                                @forelse($user->roles as $role)
+                                                    <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700">{{ $role->name }}</span>
+                                                @empty
+                                                    <span class="text-xs text-slate-400">—</span>
+                                                @endforelse
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 text-right">
+                                            <div class="flex items-center justify-end gap-1">
+                                                <a href="{{ route('admin.wholesale-client-users.edit', $user) }}" title="Edit"
+                                                    class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+                                                </a>
+                                                <form action="{{ route('admin.wholesale-client-users.destroy', $user) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" title="Delete"
+                                                        class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-neutral-400 dark:hover:bg-red-900/20 dark:hover:text-red-400">
+                                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-            @elseif(isset($users) && $users->total() > 0)
-                <div class="border-t border-slate-100 px-5 py-4 dark:border-neutral-800">
-                    <p class="text-xs text-slate-400 dark:text-neutral-500">
-                        Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} results
-                    </p>
+            </div>
+            @empty
+                <div class="flex flex-col items-center justify-center px-5 py-16 text-center">
+                    <svg class="h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+                    <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">No Users found</h3>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Get started by creating a new user.</p>
+                    <a href="{{ route('admin.wholesale-client-users.create') }}" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        Add Client User
+                    </a>
                 </div>
-            @endif
+            @endforelse
         </div>
     </div>
 </x-layouts.app>
