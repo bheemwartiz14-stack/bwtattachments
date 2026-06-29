@@ -79,15 +79,6 @@ class Product extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'ddp_price' => 'decimal:2',
-            'weight' => 'decimal:2',
-            'machine_weight' => 'decimal:2',
-            'width' => 'decimal:2',
-            'volume' => 'decimal:2',
-            'cutting_edge_thickness' => 'decimal:2',
-            'stick_width' => 'decimal:2',
-            'pin_center' => 'decimal:2',
-            'pin_hole' => 'decimal:2',
             'status' => 'boolean',
         ];
     }
