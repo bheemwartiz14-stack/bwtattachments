@@ -24,31 +24,32 @@ class WholesaleClientUserServices
     $user = $this->userService->create($data);
     $metadata = [
         'client_name' => $wholesaleClientName,
+        'address' => $data['address'] ?? null,
+        'postal_code' => $data['postal_code'] ?? null,
+        'city' => $data['city'] ?? null,
+        'country' => $data['country'] ?? null,
+        'website' => $data['website'] ?? null,
+        'vat_number' => $data['vat_number'] ?? null,
     ];
-    // 3. Create UserMeta first
+
     $userMeta = UserMeta::create([
         'user_id' => $user->id,
         'metadata' => $metadata,
     ]);
 
-    // 4. Upload logo (if exists) and update metadata at last
     if ($logoFile) {
         $userMeta->addMedia($logoFile)
             ->toMediaCollection('wholesale_client_logo');
 
-        // get final URL
         $logoUrl = $userMeta->getFirstMediaUrl('wholesale_client_logo');
 
-        // "push" into metadata (PHP way)
         $metadata['wholesale_client_logo_url'] = $logoUrl;
 
-        // update final metadata
         $userMeta->update([
             'metadata' => $metadata,
         ]);
     }
 
-    // 5. Fire event at last
     event(new WholesaleClientsRegistered($user, $plainPassword));
 
     return $user;
@@ -70,6 +71,12 @@ class WholesaleClientUserServices
 
         $metadata = $userMeta->metadata ?? [];
         $metadata['client_name'] = $wholesaleClientName;
+        $metadata['address'] = $data['address'] ?? null;
+        $metadata['postal_code'] = $data['postal_code'] ?? null;
+        $metadata['city'] = $data['city'] ?? null;
+        $metadata['country'] = $data['country'] ?? null;
+        $metadata['website'] = $data['website'] ?? null;
+        $metadata['vat_number'] = $data['vat_number'] ?? null;
         $userMeta->metadata = $metadata;
         $userMeta->save();
         if ($logoFile) {

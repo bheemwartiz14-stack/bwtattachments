@@ -134,7 +134,7 @@
                             :error="$errors->first('wholesale_client_name')"
                             x-model="clientName"
                         />
-                        <x-forms.image-dropzone 
+                        <x-forms.image-dropzone
                             name="wholesale_client_logo"
                             :existingImageUrl="$logoUrl"
                             :existingImageId="$logoId"
