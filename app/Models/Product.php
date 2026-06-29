@@ -65,15 +65,21 @@ class Product extends Model implements HasMedia
         }
 
         $this->addMediaConversion('thumb')
-            ->width(200)
-            ->height(200)
-            ->sharpen(10);
+            ->crop(150, 100)
+            ->sharpen(10)
+            ->nonQueued();
 
         $this->addMediaConversion('small')
-            ->width(480);
+            ->crop(450, 300)
+            ->nonQueued();
+
+        $this->addMediaConversion('medium')
+            ->crop(900, 600)
+            ->nonQueued();
 
         $this->addMediaConversion('large')
-            ->width(1200);
+            ->crop(1500, 1000)
+            ->nonQueued();
     }
 
     protected function casts(): array

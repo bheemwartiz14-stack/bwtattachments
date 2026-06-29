@@ -1,10 +1,14 @@
 <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-200 group hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950">
-    <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-neutral-900">
+    <div class="relative aspect-[3/2] overflow-hidden bg-slate-100 dark:bg-neutral-900">
+        @if(isset($image) && $image)
+            <img src="{{ $image }}" alt="{{ $title ?? '' }}" class="absolute inset-0 w-full h-full object-cover">
+        @else
         <div class="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-neutral-500">
             <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
         </div>
+        @endif
         <div class="absolute top-2 left-2 flex flex-wrap gap-1">
             @if(isset($category))
                 <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">{{ $category }}</span>

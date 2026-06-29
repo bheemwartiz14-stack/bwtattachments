@@ -17,9 +17,11 @@
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 shadow-2xl">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
             <div class="relative flex flex-col md:flex-row">
-                <div class="shrink-0 w-full md:w-80 h-64 md:h-auto bg-slate-800/50">
+                <div class="shrink-0 w-full md:w-80 md:h-auto bg-slate-800/50">
                     @if($product->getFirstMediaUrl('images'))
-                        <img src="{{ $product->getFirstMediaUrl('images') }}" class="h-full w-full object-contain p-4">
+                        <div class="aspect-[3/2] md:aspect-auto md:h-full">
+                            <img src="{{ $product->getFirstMediaUrl('images', 'large') }}" class="w-full h-full object-cover">
+                        </div>
                     @else
                         <div class="flex h-full w-full items-center justify-center">
                             <svg class="h-20 w-20 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -235,26 +237,48 @@
             <div class="space-y-6">
 
                 {{-- GALLERY --}}
-                @php $gallery = $product->getMedia('gallery'); @endphp
+                @php
+                    $gallery = $product->getMedia('gallery');
+                    $featureImage = $product->getFirstMediaUrl('images', 'large');
+                    $allImages = collect();
+                    if ($product->getFirstMedia('images')) {
+                        $allImages->push($product->getFirstMedia('images'));
+                    }
+                    foreach ($gallery as $m) {
+                        $allImages->push($m);
+                    }
+                @endphp
                 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                     <div class="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
                         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
                             <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         </div>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">Gallery</h2>
-                        <span class="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-neutral-800 dark:text-neutral-300">{{ $gallery->count() }}</span>
+                        <span class="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-neutral-800 dark:text-neutral-300">{{ $allImages->count() }}</span>
                     </div>
-                    @if($gallery->count() > 0)
-                        <div class="grid grid-cols-2 gap-3">
-                            @foreach($gallery as $media)
-                                <a href="{{ $media->getUrl() }}" target="_blank"
-                                    class="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition-all hover:shadow-md hover:ring-2 hover:ring-emerald-500 dark:border-neutral-800 dark:bg-neutral-900/50">
-                                    <img src="{{ $media->getUrl() }}" alt="" class="h-24 w-full object-cover transition-transform duration-300 group-hover:scale-105">
-                                    <div class="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20">
-                                        <svg class="h-6 w-6 text-white opacity-0 transition-opacity group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+
+                    @if($allImages->count() > 0)
+                        <div class="space-y-4">
+                            <div class="relative aspect-[3/2] overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
+                                <img id="adminMainImage" src="{{ $featureImage ?: $allImages->first()->getUrl() }}"
+                                     alt="{{ $product->product_title }}"
+                                     class="w-full h-full object-contain cursor-pointer transition-opacity duration-300"
+                                     onclick="openAdminLightbox('{{ $featureImage ?: $allImages->first()->getUrl() }}')">
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer" onclick="document.getElementById('adminMainImage').click()">
+                                    <div class="rounded-full bg-black/50 p-3">
+                                        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                     </div>
-                                </a>
-                            @endforeach
+                                </div>
+                            </div>
+                            <div class="flex gap-3 overflow-x-auto pb-2">
+                                @foreach($allImages as $index => $media)
+                                    <div class="shrink-0 w-20 aspect-[3/2] rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:opacity-80 {{ $index === 0 ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-slate-200 dark:border-neutral-700' }}"
+                                         data-img-src="{{ $media->getUrl() }}"
+                                         onclick="switchAdminImage(this, '{{ $media->getUrl() }}', '{{ $media->getUrl() }}')">
+                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     @else
                         <div class="py-8 text-center">
@@ -315,4 +339,39 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function switchAdminImage(el, src, fullSrc) {
+            const mainImg = document.getElementById('adminMainImage');
+            if (mainImg) {
+                mainImg.src = src;
+                mainImg.setAttribute('onclick', "openAdminLightbox('" + fullSrc + "')");
+            }
+            document.querySelectorAll('[data-img-src]').forEach(t => {
+                t.classList.remove('border-emerald-500', 'ring-2', 'ring-emerald-500/30');
+                t.classList.add('border-slate-200', 'dark:border-neutral-700');
+            });
+            if (el) {
+                el.classList.add('border-emerald-500', 'ring-2', 'ring-emerald-500/30');
+                el.classList.remove('border-slate-200', 'dark:border-neutral-700');
+            }
+        }
+
+        function openAdminLightbox(src) {
+            const overlay = document.createElement('div');
+            overlay.id = 'adminLightbox';
+            overlay.innerHTML = '<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onclick="closeAdminLightbox(event)">' +
+                '<button class="absolute top-4 right-4 text-white/80 hover:text-white text-3xl" onclick="closeAdminLightbox()">&times;</button>' +
+                '<img src="' + src + '" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl">' +
+            '</div>';
+            document.body.appendChild(overlay);
+        }
+
+        function closeAdminLightbox(e) {
+            if (!e || e.target === e.currentTarget || e.target.tagName === 'BUTTON') {
+                const lb = document.getElementById('adminLightbox');
+                if (lb) lb.remove();
+            }
+        }
+    </script>
 </x-layouts.app>

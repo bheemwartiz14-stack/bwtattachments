@@ -18,7 +18,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
             <div class="lg:col-span-3 space-y-6">
                 <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-                    <div class="aspect-[4/3] bg-slate-100 dark:bg-neutral-900 relative overflow-hidden">
+                    <div class="aspect-[3/2] bg-slate-100 dark:bg-neutral-900 relative overflow-hidden">
                         @if($product->getFirstMedia('images'))
                             <img src="{{ $product->getFirstMediaUrl('images', 'large') }}" alt="{{ $product->product_code }}" class="w-full h-full object-cover">
                         @else
@@ -31,7 +31,7 @@
                     @if($gallery && $gallery->count() > 1)
                         <div class="flex gap-2 p-4 overflow-x-auto">
                             @foreach($gallery as $media)
-                                <div class="w-20 h-20 shrink-0 rounded-lg bg-slate-100 dark:bg-neutral-900 overflow-hidden border border-slate-200 dark:border-neutral-800">
+                                <div class="w-20 shrink-0 rounded-lg bg-slate-100 dark:bg-neutral-900 overflow-hidden border border-slate-200 dark:border-neutral-800 aspect-[3/2]">
                                     <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
                                 </div>
                             @endforeach

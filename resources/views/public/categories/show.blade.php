@@ -22,6 +22,7 @@
                     @foreach($products as $product)
                         <a href="{{ route('public.products.show', $product) }}" class="block">
                             <x-product-card
+                                :image="$product->getFirstMediaUrl('images', 'small')"
                                 :code="$product->product_code"
                                 :title="$product->product_description"
                                 :category="$category->name"
