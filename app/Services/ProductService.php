@@ -103,6 +103,7 @@ class ProductService
     private function handleMedia(\App\Models\Product $product, array $media): void
     {
         if ($media['feature'] instanceof UploadedFile) {
+            $product->clearMediaCollection('images');
             $this->productMediaService->attachFeatureImage($product, $media['feature']);
         }
 
@@ -111,6 +112,7 @@ class ProductService
         }
 
         if ($media['pdf'] instanceof UploadedFile) {
+            $product->clearMediaCollection('pdfs');
             $this->productMediaService->attachPdf($product, $media['pdf']);
         }
     }

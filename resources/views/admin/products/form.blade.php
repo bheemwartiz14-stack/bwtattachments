@@ -47,7 +47,7 @@
                             :value="$product->product_title ?? ''" placeholder="Enter Product Name" />
                         <x-forms.input name="product_code" label="Product Code" required
                             :value="$product->product_code ?? ''" placeholder="Enter product code" />
-                        
+
                         <x-forms.select name="category_id" label="Category" required
                             :options="$categories ?? []" :value="$product->category_id ?? ''"
                             placeholder="Select Category" />
@@ -85,8 +85,8 @@
                         :existingImageUrl="$isEdit ? $product->getFirstMediaUrl('images') : null"
                         :existingImageId="$isEdit && $product->getFirstMedia('images') ? $product->getFirstMedia('images')->id : null"
                         label="Product Feature Image"
-                        
-                        
+
+
                         />
                     <x-forms.gallery-dropzone
                         :existingImages="$isEdit ? $product->getMedia('gallery')->map(fn($m) => ['url' => $m->getUrl(), 'name' => $m->file_name, 'id' => $m->id])->toArray() : []"
