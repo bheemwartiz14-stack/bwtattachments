@@ -41,6 +41,7 @@ class WholesaleClientUserController extends Controller
     {
         $user = $this->wholesaleClientUserServices->findById($id);
         $userRole = $user->roles->first()?->name;
+        $roles = $this->roleService->getByNames(['Wholesale Client']);
         return view('admin.wholesale-client-users.form', compact('user', 'roles', 'userRole'));
     }
 

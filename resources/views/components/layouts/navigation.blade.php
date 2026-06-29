@@ -1,8 +1,13 @@
 @php
     $user = auth()->user();
-    $isAdmin = $user->hasRole('Super Admin');
-    $dashboardRoute = $isAdmin ? route('admin.dashboard') : route('client.dashboard');
-    $profileRoute = $isAdmin ? route('admin.profile.edit') : route('client.profile.edit');
+    $rolePrefix = match(true) {
+        $user->hasRole('Super Admin') => 'admin',
+        $user->hasRole('Wholesale Client') => 'client',
+        $user->hasRole('Retailer') => 'retailer',
+        default => 'client',
+    };
+    $dashboardRoute = route($rolePrefix . '.dashboard');
+    $profileRoute = route($rolePrefix . '.profile.edit');
 @endphp
 
 <nav class="sticky top-0 z-40 border-b border-slate-100/80 bg-white/95 shadow-sm backdrop-blur no-print dark:border-neutral-800/80 dark:bg-neutral-950/95">

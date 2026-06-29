@@ -9,16 +9,14 @@ use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
-use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
-use App\Http\Controllers\Admin\QuotationController as AdminQuotationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\RetailerClientUserController as RetailerUserController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
-use App\Http\Controllers\Client\ProfileController;
 use App\Http\Controllers\Client\QuotationController as ClientQuotationController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
 use App\Http\Controllers\Public\ProductController as PublicProductController;
 use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardController;
@@ -61,9 +59,9 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::get('/product-pricing/preview/product/{id}', [ProductWholesalePriceController::class, 'getProductPreview'])->name('product-pricing.preview.product');
         Route::get('/product-pricing/preview/user/{id}', [ProductWholesalePriceController::class, 'getUserPreview'])->name('product-pricing.preview.user');
         Route::resource('product-pricing', ProductWholesalePriceController::class);
-        Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [AdminProfileController::class, 'changePassword'])->name('profile.password');
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     });
 
     // Client routes (Wholesale Client)
@@ -83,7 +81,8 @@ Route::middleware(['auth', 'first.time'])->group(function () {
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::delete('/profile/logo/wholesale', [ProfileController::class, 'deleteWholesaleClientLogo'])->name('profile.logo.wholesale.delete');
     });
 
     // Retailer routes
@@ -102,6 +101,7 @@ Route::middleware(['auth', 'first.time'])->group(function () {
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::delete('/profile/logo/retailer', [ProfileController::class, 'deleteRetailerClientLogo'])->name('profile.logo.retailer.delete');
     });
 });

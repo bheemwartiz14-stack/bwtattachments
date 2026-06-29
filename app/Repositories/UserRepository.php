@@ -150,4 +150,41 @@ class UserRepository
             ->orderBy('name')
             ->get();
     }
+
+    /**
+     * Update the user's password.
+     */
+    public function updatePassword(string|int $id, string $password): User
+    {
+        $user = $this->findById($id);
+
+        $user->password = $password;
+        $user->save();
+
+        return $user->refresh()->loadMissing(self::RELATIONS);
+    }
+
+    /**
+     * Upload and set the user's avatar.
+     */
+    public function updateAvatar(string|int $id, string $filePath): User
+    {
+        $user = $this->findById($id);
+
+        $user->addMedia($filePath)->toMediaCollection('avatar');
+
+        return $user->refresh()->loadMissing(self::RELATIONS);
+    }
+
+    /**
+     * Delete the user's avatar.
+     */
+    public function deleteAvatar(string|int $id): User
+    {
+        $user = $this->findById($id);
+
+        $user->clearMediaCollection('avatar');
+
+        return $user->refresh()->loadMissing(self::RELATIONS);
+    }
 }
