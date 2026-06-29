@@ -118,10 +118,6 @@
                             <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->connection->name ?? 'N/A' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Material</dt>
-                            <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->material ?? 'N/A' }}</dd>
-                        </div>
-                        <div>
                             <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Drawing Number</dt>
                             <dd class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $product->drawing_number ?? 'N/A' }}</dd>
                         </div>
