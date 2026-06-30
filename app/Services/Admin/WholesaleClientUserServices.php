@@ -1,10 +1,8 @@
 <?php
 declare(strict_types=1);
-
 namespace App\Services\Admin;
-
+use App\Events\UpdateProductMarginByUser;
 use App\Events\WholesaleClientsRegistered;
-use App\Models\UserMeta;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,73 +13,29 @@ class WholesaleClientUserServices
     ) {}
 
     public function create(array $data): Model
-{
-    $plainPassword = $data['password'] ?? '';
-
-    $wholesaleCompanyName = $data['wholesale_company_name'] ?? null;
-    $logoFile = $data['wholesale_client_logo'] ?? null;
-    unset($data['wholesale_company_name'], $data['wholesale_client_logo']);
-    $user = $this->userService->create($data);
-    $metadata = [
-        'wholesale_company_name' => $wholesaleCompanyName,
-        'address' => $data['address'] ?? null,
-        'postal_code' => $data['postal_code'] ?? null,
-        'city' => $data['city'] ?? null,
-        'country' => $data['country'] ?? null,
-        'website' => $data['website'] ?? null,
-        'vat_number' => $data['vat_number'] ?? null,
-    ];
-
-    $userMeta = UserMeta::create([
-        'user_id' => $user->id,
-        'metadata' => $metadata,
-    ]);
-
-    if ($logoFile) {
-        $userMeta->addMedia($logoFile)
-            ->toMediaCollection('wholesale_client_logo');
-
-        $logoUrl = $userMeta->getFirstMediaUrl('wholesale_client_logo');
-
-        $metadata['wholesale_client_logo_url'] = $logoUrl;
-
-        $userMeta->update([
-            'metadata' => $metadata,
-        ]);
+    {
+        $plainPassword = $data['password'] ?? null;
+        [$meta, $margin, $logo] = $this->extract($data);
+        $user = $this->userService->create($data);
+        $this->saveMargin($user, $margin);
+        $userMeta = $this->saveMeta($user, $meta);
+        if ($logo) {
+            $userMeta->addMedia($logo)->toMediaCollection('wholesale_client_logo');
+        }
+        event(new WholesaleClientsRegistered($user, $plainPassword));
+        return $user;
     }
-
-    event(new WholesaleClientsRegistered($user, $plainPassword));
-
-    return $user;
-}
 
     public function update(string|int $id, array $data): Model
     {
-        $wholesaleCompanyName = $data['wholesale_company_name'] ?? null;
-        $logoFile = $data['wholesale_client_logo'] ?? null;
-     
-        unset($data['wholesale_company_name'], $data['wholesale_client_logo']);
+        [$meta, $margin, $logo] = $this->extract($data);
 
         $user = $this->userService->update($id, $data);
-
-        $userMeta = $user->userMeta ?? UserMeta::create([
-            'user_id' => $user->id,
-            'metadata' => [],
-        ]);
-
-        $metadata = $userMeta->metadata ?? [];
-        $metadata['wholesale_company_name'] = $wholesaleCompanyName;
-        $metadata['address'] = $data['address'] ?? null;
-        $metadata['postal_code'] = $data['postal_code'] ?? null;
-        $metadata['city'] = $data['city'] ?? null;
-        $metadata['country'] = $data['country'] ?? null;
-        $metadata['website'] = $data['website'] ?? null;
-        $metadata['vat_number'] = $data['vat_number'] ?? null;
-        $userMeta->metadata = $metadata;
-        $userMeta->save();
-        if ($logoFile) {
+        $this->saveMargin($user, $margin);
+        $userMeta = $this->saveMeta($user, $meta);
+        if ($logo) {
             $userMeta->clearMediaCollection('wholesale_client_logo');
-            $userMeta->addMedia($logoFile)->toMediaCollection('wholesale_client_logo');
+            $userMeta->addMedia($logo)->toMediaCollection('wholesale_client_logo');
         }
 
         return $user;
@@ -102,4 +56,57 @@ class WholesaleClientUserServices
         return $this->userService->delete($id);
     }
 
+    /* ---------------- Helpers ---------------- */
+
+    private function extract(array &$data): array
+    {
+        $meta = [
+            'wholesale_company_name' => $data['wholesale_company_name'] ?? null,
+            'address' => $data['address'] ?? null,
+            'postal_code' => $data['postal_code'] ?? null,
+            'city' => $data['city'] ?? null,
+            'country' => $data['country'] ?? null,
+            'website' => $data['website'] ?? null,
+            'vat_number' => $data['vat_number'] ?? null,
+        ];
+        $margin = $data['commission_percentage'] ?? 0;
+        $logo = $data['wholesale_client_logo'] ?? null;
+        unset(
+            $data['wholesale_company_name'],
+            $data['commission_percentage'],
+            $data['wholesale_client_logo']
+        );
+
+        return [$meta, $margin, $logo];
+    }
+
+    private function saveMeta(Model $user, array $meta): mixed
+    {
+        return $user->userMeta()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'metadata' => array_merge(
+                    $user->userMeta?->metadata ?? [],
+                    $meta
+                ),
+            ]
+        );
+    }
+
+    private function saveMargin(Model $user, $value): void
+    {
+        $oldMargin = (float) ($user->userMargin?->margin_value ?? 0);
+
+        $user->userMargin()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'margin_type' => 'percentage',
+                'margin_value' => $value ?? 0,
+            ]
+        );
+        $newMargin = (float) $value;
+        // if ($newMargin !== $oldMargin) {
+            event(new UpdateProductMarginByUser($user->id, 'percentage', $newMargin, 'wholesale'));
+        // }
+    }
 }

@@ -19,6 +19,11 @@ class UserService
         return $this->userRepository->getAll();
     }
 
+    public function getWithMarginQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return $this->userRepository->getWithMarginQuery();
+    }
+
     public function paginate(int $perPage = 10, array $filters = []): LengthAwarePaginator
     {
         return $this->userRepository->paginate($perPage, $filters);

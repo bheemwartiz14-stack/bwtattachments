@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\UserMargin;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -36,7 +37,7 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        
+
         $this->addMediaCollection('avatar')
             ->singleFile()
             ->acceptsMimeTypes([
@@ -77,6 +78,10 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(UserMeta::class);
     }
 
+    public function userMargin()
+    {
+        return $this->hasOne(UserMargin::class);
+    }
     public function productPrices()
     {
         return $this->hasMany(ProductPrices::class);

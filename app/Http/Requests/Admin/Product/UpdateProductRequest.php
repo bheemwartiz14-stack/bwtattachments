@@ -49,9 +49,9 @@ class UpdateProductRequest extends FormRequest
             'pin_center' => ['nullable', 'string'],
             'cutting_edge_thickness' => ['nullable', 'string'],
             'ddp_price' => ['nullable', 'string'],
-            'product_feature_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'product_feature_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'product_gallery_images' => ['nullable', 'array'],
-            'product_gallery_images.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'product_gallery_images.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
 
             'product_pdf' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
             'product_feature_image_temp' => ['nullable', 'string'],

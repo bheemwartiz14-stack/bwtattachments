@@ -13,12 +13,11 @@ class ProductPrices extends Model
     protected $fillable = [
         'product_id',
         'user_id',
-        'assigned_by',
         'type',
-        'price',
+        'base_price',
         'margin',
+        'final_price',
     ];
-
     protected function casts(): array
     {
         return [

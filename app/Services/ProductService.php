@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Events\UpdatedProductMarginForAllUsersByProduct;
 use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
@@ -20,6 +21,11 @@ class ProductService
     public function getAll(): Collection
     {
         return $this->productRepository->getAll();
+    }
+
+    public function getActiveQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return $this->productRepository->activeQuery();
     }
 
     public function paginate(int $perPage = 10, array $filters = []): LengthAwarePaginator
@@ -41,6 +47,7 @@ class ProductService
             $product = $this->productRepository->create($data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
+            event(new UpdatedProductMarginForAllUsersByProduct($product));
             return $product->load('media');
         });
     }
@@ -54,6 +61,7 @@ class ProductService
             $product = $this->productRepository->update($id, $data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
+            event(new UpdatedProductMarginForAllUsersByProduct($product));
             return $product->load('media');
         });
     }

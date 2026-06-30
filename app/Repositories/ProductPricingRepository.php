@@ -133,4 +133,12 @@ class ProductPricingRepository
             ->where('type', $type)
             ->first();
     }
+
+    /**
+     * Bulk upsert pricing records.
+     */
+    public function upsert(array $rows, array $uniqueBy, array $update): int
+    {
+        return $this->model->upsert($rows, $uniqueBy, $update);
+    }
 }

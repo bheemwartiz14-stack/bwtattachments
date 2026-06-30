@@ -106,7 +106,7 @@
                             <tr class="transition-colors hover:bg-slate-50/80 dark:hover:bg-neutral-800/30">
                                 <td class="px-5 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-neutral-800">
+                                        <div class="aspect-[3/2] w-10 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-neutral-800">
                                             @if($product->getFirstMediaUrl('images'))
                                                 <img src="{{ $product->getFirstMediaUrl('images') }}" class="h-full w-full object-cover">
                                             @else

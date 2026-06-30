@@ -5,6 +5,9 @@ namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
+use Intervention\Image\Format;
+use Intervention\Image\Laravel\Facades\Image;
 use LaravelAt\ImageSanitize\ImageSanitize;
 
 readonly class ProductMediaService
@@ -16,7 +19,7 @@ readonly class ProductMediaService
     public function attachFeatureImage(Model $product, UploadedFile $file): void
     {
         $product
-            ->addMedia($this->sanitizeImage($file))
+            ->addMedia($this->processImage($file))
             ->preservingOriginal()
             ->toMediaCollection('images', 'public');
     }
@@ -26,7 +29,7 @@ readonly class ProductMediaService
         foreach ($files as $file) {
             if ($file instanceof UploadedFile) {
                 $product
-                    ->addMedia($this->sanitizeImage($file))
+                    ->addMedia($this->processImage($file))
                     ->preservingOriginal()
                     ->toMediaCollection('gallery', 'public');
             }
@@ -41,7 +44,17 @@ readonly class ProductMediaService
             ->toMediaCollection('pdfs', 'public');
     }
 
-    public function sanitizeImage(UploadedFile $file): UploadedFile
+    private function processImage(UploadedFile $file): UploadedFile
+    {
+        $sanitized = $this->sanitizeImage($file);
+        $image = Image::decode($sanitized)->cover(1200, 800, 'center');
+        $tempPath = tempnam(sys_get_temp_dir(), 'img_processed_') . '.webp';
+        $encoded = (string) $image->encodeUsingFormat(Format::WEBP, 85);
+        file_put_contents($tempPath, $encoded);
+        return new UploadedFile($tempPath, Str::uuid() . '.webp', 'image/webp', null, true);
+    }
+
+    private function sanitizeImage(UploadedFile $file): UploadedFile
     {
         $content = file_get_contents($file->getRealPath());
 

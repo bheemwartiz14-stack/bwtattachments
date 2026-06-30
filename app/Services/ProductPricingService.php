@@ -3,92 +3,65 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\ProductPrices;
 use App\Repositories\ProductPricingRepository;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class ProductPricingService
 {
     public function __construct(
         protected ProductPricingRepository $productPricingRepository,
-        protected ProductService $productService,
-        protected UserService $userService,
     ) {}
 
-    public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
+    public function syncProductPricesForUser(string $userId, float $mainPrice, string $type, string $marginType, array $products): void
     {
-        return $this->productPricingRepository->paginate($perPage, $filters);
+        $rows = array_map(fn ($p) => [
+            'product_id'  => $p['id'],
+            'user_id'     => $userId,
+            'type'        => $type,
+            ...$this->calculatePrice((float) ($p['ddp_price'] ?? 0), $marginType, $mainPrice),
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ], $products);
+        $this->upsertRows($rows);
     }
 
-    public function getAll(): Collection
+    public function syncProductPricesForAllUsers(array $payload): void
     {
-        return $this->productPricingRepository->getAll();
+        $rows = array_map(fn ($item) => [
+            'product_id'  => $item['product_id'],
+            'user_id'     => $item['user_id'],
+            'type'        => $item['type'],
+            'base_price'  => $item['base_price'],
+            'final_price' => $item['final_price'],
+            'margin'      => $item['margin'],
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ], $payload);
+
+        $this->upsertRows($rows);
     }
 
-    public function findById(string|int $id): ProductPrices
+    private function upsertRows(array $rows): void
     {
-        return $this->productPricingRepository->findById($id);
-    }
+        if (empty($rows)) return;
 
-    public function store(array $data): ProductPrices
-    {
-        $existing = $this->productPricingRepository->findExisting(
-            $data['product_id'],
-            $data['user_id'],
-            $data['type'] ?? 'wholesale_purchase'
+        $this->productPricingRepository->upsert(
+            $rows,
+            ['product_id', 'user_id', 'type'],
+            ['base_price', 'final_price', 'margin', 'updated_at'],
         );
-
-        if ($existing) {
-            $existing->update([
-                'price' => $data['price'],
-                'margin' => $data['margin'] ?? null,
-            ]);
-            return $existing->fresh(['product', 'user', 'assignedBy']);
-        }
-
-        return $this->productPricingRepository->create($data);
     }
 
-    public function update(string|int $id, array $data): ProductPrices
+    private function calculatePrice(float $basePrice, string $marginType, float $marginValue): array
     {
-        return $this->productPricingRepository->update($id, $data);
-    }
+        $finalPrice = $marginType === 'value'
+            ? $basePrice + $marginValue
+            : $basePrice + ($basePrice * $marginValue / 100);
 
-    public function delete(string|int $id): bool
-    {
-        return $this->productPricingRepository->delete($id);
-    }
-
-    public function syncPrices(mixed $product, array $prices, string $type = 'wholesale_purchase'): void
-    {
-        foreach ($prices as $priceData) {
-            if (empty($priceData['user_id']) || !isset($priceData['price'])) {
-                continue;
-            }
-
-            ProductPrices::updateOrCreate(
-                [
-                    'product_id' => $product->id,
-                    'user_id' => $priceData['user_id'],
-                    'type' => $type,
-                ],
-                [
-                    'price' => (float) $priceData['price'],
-                    'margin' => $priceData['margin'] ?? null,
-                    'assigned_by' => $priceData['assigned_by'] ?? auth()->id(),
-                ]
-            );
-        }
-    }
-
-    public function getProductsForSelect(): array
-    {
-        return $this->productService->getAll()->pluck('product_title', 'id')->toArray();
-    }
-
-    public function getWholesaleUsersForSelect(): array
-    {
-        return $this->userService->getByRole('Wholesale Client')->pluck('name', 'id')->toArray();
+        return [
+            'base_price'  => $basePrice,
+            'final_price' => round($finalPrice, 2),
+            'margin'      => $marginValue,
+        ];
     }
 }

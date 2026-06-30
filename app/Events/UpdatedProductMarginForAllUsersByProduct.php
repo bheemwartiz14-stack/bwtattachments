@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Events;
@@ -7,7 +6,7 @@ namespace App\Events;
 use App\Models\Product;
 use Illuminate\Foundation\Events\Dispatchable;
 
-class ProductCreated
+class UpdatedProductMarginForAllUsersByProduct
 {
     use Dispatchable;
 

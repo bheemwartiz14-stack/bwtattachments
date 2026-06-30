@@ -21,6 +21,14 @@ class UserRepository
     ) {
     }
 
+    public function getWithMarginQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return $this->model
+            ->query()
+            ->whereHas('userMargin', fn ($q) => $q->where('margin_value', '>', 0))
+            ->with('userMargin');
+    }
+
     /**
      * Get all users.
      */

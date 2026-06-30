@@ -10,12 +10,12 @@
             <div class="detail-page">
                 <div class="detail-layout">
                     <div class="gallery">
-                        <div class="main-image">
+                        <div class="main-image aspect-[3/2] overflow-hidden rounded-lg bg-slate-100">
                             @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
                             @if($featureImage)
-                                <img src="{{ $featureImage }}" alt="{{ $product->product_title }}" id="mainProductImage">
+                                <img src="{{ $featureImage }}" alt="{{ $product->product_title }}" id="mainProductImage" class="w-full h-full object-cover">
                             @else
-                                Main Product Image
+                                <div class="w-full h-full flex items-center justify-center text-slate-400">Main Product Image</div>
                             @endif
                         </div>
 
@@ -24,8 +24,8 @@
                         @if($gallery->count() > 0)
                             <div class="thumbs">
                                 @foreach($gallery as $media)
-                                    <div class="thumb {{ $loop->first ? 'active' : '' }}" onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active');">
-                                        <img src="{{ $media->getUrl() }}" alt="">
+                                    <div class="thumb {{ $loop->first ? 'active' : '' }} aspect-[3/2]" onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active');">
+                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
                                     </div>
                                 @endforeach
                             </div>

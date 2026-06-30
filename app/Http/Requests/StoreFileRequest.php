@@ -15,7 +15,17 @@ class StoreFileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'max:10240'],
+            'file' => ['required', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'file.required' => 'Please select a file to upload.',
+            'file.image' => 'The file must be an image.',
+            'file.mimes' => 'Only JPEG, PNG, WebP and GIF images are allowed.',
+            'file.max' => 'Image must not exceed 5MB.',
         ];
     }
 }

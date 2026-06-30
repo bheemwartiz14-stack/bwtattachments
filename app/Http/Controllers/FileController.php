@@ -16,18 +16,28 @@ class FileController extends Controller
 
     public function store(StoreFileRequest $request): JsonResponse
     {
-        $data = $this->fileService->storeTemp($request->file('file'));
+        $data = $this->fileService->storeTemp(
+            $request->file('file')
+        );
 
-        return response()->json((new FileResource($data))->toArray($request));
+        return response()->json(
+            new FileResource($data)
+        );
     }
 
     public function destroy(string $id): JsonResponse
     {
         $deleted = $this->fileService->deleteMedia($id);
+
         if (!$deleted) {
-            return response()->json(['success' => false], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'File not found'
+            ], 404);
         }
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

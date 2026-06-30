@@ -9,22 +9,13 @@ class FileRepository
 {
     public function __construct(
         protected Media $model,
-    ) {
-    }
+    ) {}
 
-    /**
-     * Find media by ID.
-     */
     public function findById(string|int $id): ?Media
     {
-        return $this->model
-            ->query()
-            ->find($id);
+        return $this->model->query()->find($id);
     }
 
-    /**
-     * Delete media.
-     */
     public function delete(Media $media): bool
     {
         return (bool) $media->delete();

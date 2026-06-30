@@ -14,6 +14,7 @@
         "blade-ui-kit/blade-heroicons": "^2.7",
         "blade-ui-kit/blade-icons": "^1.10",
         "codeat3/blade-solar-icons": "^1.4",
+        "intervention/image-laravel": "^4.0",
         "laravel-at/laravel-image-sanitize": "^5.0",
         "laravel/framework": "^13.8",
         "laravel/telescope": "^5.20",
@@ -21,6 +22,7 @@
         "laravolt/avatar": "^6.5",
         "maatwebsite/excel": "^3.1",
         "php-flasher/flasher-laravel": "^2.6",
+        "spatie/enum": "*",
         "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-permission": "^8.0"
     },
