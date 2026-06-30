@@ -55,13 +55,21 @@ class ProductService
     public function update(string $id, array $data): \App\Models\Product
     {
         return DB::transaction(function () use ($id, $data) {
+            $original = $this->productRepository->findById($id);
+            $oldPrice = (float) ($original->ddp_price ?? 0);
+
             $media = $this->extractMedia($data);
             $media = $this->resolveTempMedia($data, $media);
             $this->unsetMediaKeys($data);
             $product = $this->productRepository->update($id, $data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
-            event(new UpdatedProductMarginForAllUsersByProduct($product));
+
+            $newPrice = (float) ($product->ddp_price ?? 0);
+            if ($oldPrice !== $newPrice) {
+                event(new UpdatedProductMarginForAllUsersByProduct($product));
+            }
+
             return $product->load('media');
         });
     }

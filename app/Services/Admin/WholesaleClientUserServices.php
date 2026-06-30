@@ -105,8 +105,8 @@ class WholesaleClientUserServices
             ]
         );
         $newMargin = (float) $value;
-        // if ($newMargin !== $oldMargin) {
+        if ($newMargin !== $oldMargin) {
             event(new UpdateProductMarginByUser($user->id, 'percentage', $newMargin, 'wholesale'));
-        // }
+        }
     }
 }
