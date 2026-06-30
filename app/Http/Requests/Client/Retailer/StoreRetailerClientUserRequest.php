@@ -76,6 +76,13 @@ class StoreRetailerClientUserRequest extends FormRequest
                 'mimes:jpeg,jpg,png,webp',
                 'max:2048',
             ],
+
+            'commission_percentage' => [
+                'required',
+                'numeric',
+                'min:0',
+                'max:100',
+            ],
         ];
     }
 

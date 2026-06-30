@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Client;
 
 use App\Events\RetailerClientInvited;
+use App\Models\UserMargin;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -20,7 +21,8 @@ class RetailerClientUserService
             $plainPassword = $data['password'] ?? '';
             $logoFile = $data['retailer_client_logo'] ?? null;
             $retailerClientName = $data['retailer_client_name'] ?? null;
-            unset($data['retailer_client_logo'], $data['retailer_client_name']);
+            $commission = (float) ($data['commission_percentage'] ?? 0);
+            unset($data['retailer_client_logo'], $data['retailer_client_name'], $data['commission_percentage']);
             $user = $this->userService->create($data);
             if ($logoFile instanceof UploadedFile) {
                 $user->addMedia($logoFile)->toMediaCollection('retailer_client_logo');
@@ -34,6 +36,12 @@ class RetailerClientUserService
                     ['metadata' => $metadata]
                 );
             }
+
+            UserMargin::create([
+                'user_id'      => $user->id,
+                'margin_type'  => 'percentage',
+                'margin_value' => $commission,
+            ]);
 
             event(new RetailerClientInvited($user, $plainPassword));
 
@@ -52,7 +60,8 @@ class RetailerClientUserService
         return DB::transaction(function () use ($id, $data) {
             $retailerClientName = $data['retailer_client_name'] ?? null;
             $logoFile = $data['retailer_client_logo'] ?? null;
-            unset($data['retailer_client_name'], $data['retailer_client_logo']);
+            $commission = isset($data['commission_percentage']) ? (float) $data['commission_percentage'] : null;
+            unset($data['retailer_client_name'], $data['retailer_client_logo'], $data['commission_percentage']);
             $user = $this->userService->update($id, $data);
             $metadata = $user->userMeta?->metadata ?? [];
             $metadata['retailer_client_name'] = $retailerClientName;
@@ -67,6 +76,13 @@ class RetailerClientUserService
             if ($logoFile instanceof UploadedFile) {
                 $user->clearMediaCollection('retailer_client_logo');
                 $user->addMedia($logoFile)->toMediaCollection('retailer_client_logo');
+            }
+
+            if ($commission !== null) {
+                $user->userMargin()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['margin_type' => 'percentage', 'margin_value' => $commission]
+                );
             }
 
             return $user;

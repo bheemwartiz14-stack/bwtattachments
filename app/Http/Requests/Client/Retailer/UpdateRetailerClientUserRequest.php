@@ -23,6 +23,7 @@ class UpdateRetailerClientUserRequest extends FormRequest
             'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{10,15}$/'],
             'retailer_client_name' => ['required', 'string', 'max:255'],
             'retailer_client_logo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            'commission_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ];
     }
 }
