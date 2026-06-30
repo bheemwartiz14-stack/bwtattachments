@@ -27,7 +27,6 @@ class ProductController extends Controller
         $categories = $this->categoryService->getAll();
         $subcategories = $this->subcategoryService->getAll();
         $connections = $this->connectionService->getAll();
-
         return view('client.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
@@ -35,7 +34,6 @@ class ProductController extends Controller
     {
         $product = $this->productService->findById($id);
         $product->load('category', 'subcategory', 'connection');
-
         return view('client.products.show', compact('product'));
     }
 
