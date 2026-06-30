@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Http\Resources\MarginUpdateResource;
 use App\Models\User;
 use App\Services\ProductPricingService;
 use App\Services\ProductService;
