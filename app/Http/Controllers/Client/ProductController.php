@@ -33,7 +33,8 @@ class ProductController extends Controller
     public function show(string $id): View
     {
         $product = $this->productService->findById($id);
-        $product->load('category', 'subcategory', 'connection');
+        $product->load(['category', 'subcategory', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', auth()->id())]);
+
         return view('client.products.show', compact('product'));
     }
 

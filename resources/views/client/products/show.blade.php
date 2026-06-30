@@ -78,15 +78,15 @@
                     <h1 class="text-xl font-bold text-slate-950 dark:text-neutral-100 mt-1">{{ $product->description }}</h1>
 
                     @php
-                        $userPrice = $product->productPrices->firstWhere('user_id', auth()->id());
-                        $displayPrice = $userPrice?->price ?? $product->ddp_price;
+                        $userPrice = $product->productPrices->first();
+                        $displayPrice = $userPrice?->final_price ?? $product->ddp_price;
                     @endphp
                     <div class="mt-6 pt-6 border-t border-slate-100 dark:border-neutral-800">
                         <p class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1">{{ $userPrice ? 'Your Wholesale Price' : 'DDP Price' }}</p>
                         <p class="text-3xl font-bold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($displayPrice, 2) }}</p>
                     </div>
 
-                    @php $wholesalePrice = $product->productPrices->where('type', 'wholesale_purchase')->firstWhere('user_id', auth()->id()); @endphp
+                    @php $wholesalePrice = $product->productPrices->where('type', 'wholesale_purchase')->first(); @endphp
                     @if($wholesalePrice)
                     <div class="mt-6 pt-6 border-t border-slate-100 dark:border-neutral-800">
                         <p class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-3">Manage Product Price</p>
@@ -95,7 +95,7 @@
                             @method('PATCH')
                             <div>
                                 <label class="block text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1.5">Product Price</label>
-                                <p class="text-lg font-bold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($wholesalePrice->price, 2) }}</p>
+                                <p class="text-lg font-bold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($wholesalePrice->final_price, 2) }}</p>
                             </div>
                             <div>
                                 <label for="margin" class="block text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1.5">Margin (%)</label>
@@ -106,7 +106,7 @@
                             <div>
                                 <label class="block text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1.5">Total Price</label>
                                 <p class="total-display text-2xl font-bold text-emerald-700 dark:text-emerald-400">
-                                    {{ config('app.currency_symbol') }}{{ number_format($wholesalePrice->price * (1 + ($wholesalePrice->margin ?? 0) / 100), 2) }}
+                                    {{ config('app.currency_symbol') }}{{ number_format($wholesalePrice->final_price * (1 + ($wholesalePrice->margin ?? 0) / 100), 2) }}
                                 </p>
                             </div>
                             <button type="submit"
@@ -139,7 +139,7 @@
         const marginInput = document.querySelector('.margin-input');
         if (marginInput) {
             const totalDisplay = document.querySelector('.total-display');
-            const basePrice = {{ $wholesalePrice?->price ?? 0 }};
+            const basePrice = {{ $wholesalePrice?->final_price ?? 0 }};
             const currency = '{{ config('app.currency_symbol') }}';
 
             function updateTotal() {
