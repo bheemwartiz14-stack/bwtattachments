@@ -47,7 +47,7 @@ class ProductService
             $product = $this->productRepository->create($data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
-            event(new UpdatedProductMarginForAllUsersByProduct($product));
+            // event(new UpdatedProductMarginForAllUsersByProduct($product));
             return $product->load('media');
         });
     }
@@ -67,9 +67,8 @@ class ProductService
 
             $newPrice = (float) ($product->ddp_price ?? 0);
             if ($oldPrice !== $newPrice) {
-                event(new UpdatedProductMarginForAllUsersByProduct($product));
+                // event(new UpdatedProductMarginForAllUsersByProduct($product));
             }
-
             return $product->load('media');
         });
     }

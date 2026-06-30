@@ -81,7 +81,11 @@ class RetailerClientUserService
         $oldMargin = (float) ($user->userMargin?->margin_value ?? 0);
         $user->userMargin()->updateOrCreate(
             ['user_id' => $user->id],
-            ['margin_type' => 'percentage', 'margin_value' => $value]
+            [
+                'type' => 'retailer',
+                'margin_type' => 'percentage',
+                'margin_value' => $value,
+            ]
         );
         if ($value !== $oldMargin) {
             event(new UpdateProductMarginByUser($user->id, 'percentage', $value, 'retailer'));

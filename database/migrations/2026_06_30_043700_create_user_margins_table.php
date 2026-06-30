@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('user_margins', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id') ->nullable()->constrained('users')->nullOnDelete();
+            $table->string('type')->default('wholesale');
             $table->enum('margin_type', [ 'percentage', 'value', ])->default('percentage');
             $table->decimal('margin_value', 10, 2)->default(0);
             $table->timestamps();

@@ -17,8 +17,6 @@ class MarginUpdateResource extends JsonResource
         $basePrice = (float) ($userPrice?->final_price ?? $product->ddp_price ?? 0);
         $marginType = $user->userMargin?->margin_type ?? 'percentage';
         $marginValue = (float) ($user->userMargin?->margin_value ?? 0);
-        $roleName = $user->roles->pluck('name')->first();
-
         $finalPrice = $marginType === 'value'
             ? $basePrice + $marginValue
             : $basePrice + ($basePrice * $marginValue / 100);
@@ -26,8 +24,8 @@ class MarginUpdateResource extends JsonResource
         return [
             'product_id'   => $product->id,
             'user_id'      => $user->id,
-            'type'         => $roleName === 'Wholesale Client' ? 'wholesale' : 'retailer',
-            'role_name'    => $roleName,
+            'type'         => $user->userMargin?->type ?? 'wholesale',
+            'role_name'    => $user->roles->pluck('name')->first(),
             'base_price'   => round($basePrice, 2),
             'final_price'  => round($finalPrice, 2),
             'margin'       => $marginValue,

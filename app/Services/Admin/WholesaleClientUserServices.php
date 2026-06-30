@@ -100,6 +100,7 @@ class WholesaleClientUserServices
         $user->userMargin()->updateOrCreate(
             ['user_id' => $user->id],
             [
+                'type' => 'wholesale',
                 'margin_type' => 'percentage',
                 'margin_value' => $value ?? 0,
             ]

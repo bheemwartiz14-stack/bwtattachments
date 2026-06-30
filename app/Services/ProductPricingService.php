@@ -11,24 +11,6 @@ class ProductPricingService
     public function __construct(
         protected ProductPricingRepository $productPricingRepository,
     ) {}
-
-    public function syncProductPricesForUser(string $userId, float $mainPrice, string $type, string $marginType, array $products): void
-    {
-        $rows = array_map(fn ($p) => [
-            'product_id'  => $p['id'],
-            'user_id'     => $userId,
-            'type'        => $type,
-            ...$this->calculatePrice(
-                (float) ($p['product_prices'][0]['final_price'] ?? $p['ddp_price'] ?? 0),
-                $marginType,
-                $mainPrice,
-            ),
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ], $products);
-        $this->upsertRows($rows);
-    }
-
     public function syncProductPricesForAllUsers(array $payload): void
     {
         $rows = array_map(fn ($item) => [

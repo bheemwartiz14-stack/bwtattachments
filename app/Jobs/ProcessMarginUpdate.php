@@ -32,10 +32,17 @@ class ProcessMarginUpdate implements ShouldQueue
         $baseUserId = $this->type === 'retailer' ? $user->parent_id : $this->user;
         $products = $productService->getActiveProductsWithUserPrices($baseUserId);
 
-        Log::info('Products fetched for margin update', [
-            'count' => $products->count(),
-            'product' => $products,
+        $payload = $products->map(fn ($product) => MarginUpdateResource::make([
+            'product' => $product,
+            'user'    => $user,
+        ])->resolve())->values()->toArray();
+
+        $syncService->syncProductPricesForAllUsers($payload);
+
+        Log::info('Products synced for margin update', [
+            'count'   => count($payload),
             'user_id' => $this->user,
+            '$payload' => $payload
         ]);
     }
 }
