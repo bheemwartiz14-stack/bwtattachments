@@ -18,7 +18,11 @@ class ProductPricingService
             'product_id'  => $p['id'],
             'user_id'     => $userId,
             'type'        => $type,
-            ...$this->calculatePrice((float) ($p['ddp_price'] ?? 0), $marginType, $mainPrice),
+            ...$this->calculatePrice(
+                (float) ($p['product_prices'][0]['final_price'] ?? $p['ddp_price'] ?? 0),
+                $marginType,
+                $mainPrice,
+            ),
             'created_at'  => now(),
             'updated_at'  => now(),
         ], $products);

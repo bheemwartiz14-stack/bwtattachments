@@ -92,6 +92,11 @@ class ProductService
         return $this->productRepository->getAllWithClientProducts($perPage, auth()->id());
     }
 
+    public function getActiveProductsWithUserPrices(string $userId): Collection
+    {
+        return $this->productRepository->getActiveProductsWithUserPrices($userId);
+    }
+
     public function search(string $term): Collection
     {
         return $this->productRepository->search($term);
