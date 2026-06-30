@@ -27,7 +27,7 @@ class DashboardController extends Controller
         ];
 
         $recentQuotations = $quotations->sortByDesc('created_at')->take(5);
-        $recentProducts = Product::latest()->take(5)->get();
+        $recentProducts = Product::where('status', true)->with(['productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'final_price', 'margin'])])->latest()->take(5)->get();
 
         return view('retailer.dashboard', compact('stats', 'recentQuotations', 'recentProducts'));
     }

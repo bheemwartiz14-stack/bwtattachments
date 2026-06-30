@@ -69,7 +69,7 @@
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->created_at->format('M d, Y') }}</td>
                                         <td class="px-6 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->items_count ?? $quotation->items->count() }}</td>
-                                        <td class="px-6 py-4 text-sm font-semibold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->total, 2) }}</td>
+                                        <td class="px-6 py-4 text-sm font-semibold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->items->sum(fn($i) => $i->price * $i->quantity) * (1 + ($quotation->margin_percentage ?: 0) / 100), 2) }}</td>
                                         <td class="px-6 py-4">
                                             <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
                                                 {{ $quotation->status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : '' }}
@@ -115,7 +115,7 @@
                                     <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-neutral-900/50">
                                         <td class="px-6 py-4">
                                             <a href="{{ route('retailer.products.show', $product) }}" class="text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400">
-                                                {{ $product->product_description }}
+                                                {{ $product->product_title }}
                                             </a>
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $product->product_code }}</td>
