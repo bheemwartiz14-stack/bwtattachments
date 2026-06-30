@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Client;
 
 use App\Events\RetailerClientInvited;
-use App\Models\UserMargin;
+use App\Events\UpdateProductMarginByUser;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -15,6 +15,7 @@ class RetailerClientUserService
     public function __construct(
         protected UserService $userService
     ) {}
+
     public function create(array $data): Model
     {
         return DB::transaction(function () use ($data) {
@@ -27,32 +28,14 @@ class RetailerClientUserService
             if ($logoFile instanceof UploadedFile) {
                 $user->addMedia($logoFile)->toMediaCollection('retailer_client_logo');
             }
-            $metadata = [
-                'client_name' => $retailerClientName,
-            ];
-            if (method_exists($user, 'userMeta')) {
-                $user->userMeta()->updateOrCreate(
-                    ['user_id' => $user->id],
-                    ['metadata' => $metadata]
-                );
-            }
-
-            UserMargin::create([
-                'user_id'      => $user->id,
-                'margin_type'  => 'percentage',
-                'margin_value' => $commission,
-            ]);
-
+            $user->userMeta()->updateOrCreate(
+                ['user_id' => $user->id],
+                ['metadata' => ['client_name' => $retailerClientName]]
+            );
+            $this->saveMargin($user, $commission);
             event(new RetailerClientInvited($user, $plainPassword));
-
             return $user;
         });
-    }
-
-    public function paginate(int $perPage = 10, array $filters = []): mixed
-    {
-        $search = $filters['search'] ?? null;
-        return $this->userService->fetchUsers('Retailer', $perPage, $search, auth()->id());
     }
 
     public function update(string|int $id, array $data): Model
@@ -63,28 +46,17 @@ class RetailerClientUserService
             $commission = isset($data['commission_percentage']) ? (float) $data['commission_percentage'] : null;
             unset($data['retailer_client_name'], $data['retailer_client_logo'], $data['commission_percentage']);
             $user = $this->userService->update($id, $data);
-            $metadata = $user->userMeta?->metadata ?? [];
-            $metadata['retailer_client_name'] = $retailerClientName;
-
-            if (method_exists($user, 'userMeta')) {
-                $user->userMeta()->updateOrCreate(
-                    ['user_id' => $user->id],
-                    ['metadata' => $metadata]
-                );
-            }
-
+            $user->userMeta()->updateOrCreate(
+                ['user_id' => $user->id],
+                ['metadata' => array_merge($user->userMeta?->metadata ?? [], ['retailer_client_name' => $retailerClientName])]
+            );
             if ($logoFile instanceof UploadedFile) {
                 $user->clearMediaCollection('retailer_client_logo');
                 $user->addMedia($logoFile)->toMediaCollection('retailer_client_logo');
             }
-
             if ($commission !== null) {
-                $user->userMargin()->updateOrCreate(
-                    ['user_id' => $user->id],
-                    ['margin_type' => 'percentage', 'margin_value' => $commission]
-                );
+                $this->saveMargin($user, $commission);
             }
-
             return $user;
         });
     }
@@ -97,5 +69,22 @@ class RetailerClientUserService
     public function findById(string|int $id): Model
     {
         return $this->userService->findById($id);
+    }
+
+    public function paginate(int $perPage = 10, array $filters = []): mixed
+    {
+        return $this->userService->fetchUsers('Retailer', $perPage, $filters['search'] ?? null, auth()->id());
+    }
+
+    private function saveMargin(Model $user, float $value): void
+    {
+        $oldMargin = (float) ($user->userMargin?->margin_value ?? 0);
+        $user->userMargin()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['margin_type' => 'percentage', 'margin_value' => $value]
+        );
+        if ($value !== $oldMargin) {
+            event(new UpdateProductMarginByUser($user->id, 'percentage', $value, 'retailer'));
+        }
     }
 }
