@@ -20,7 +20,7 @@ class ProductPricingResource extends JsonResource
         return [
             'product_id'   => $product->id,
             'user_id'      => $user->id,
-            'type'         => $roleName === 'Wholesale Client' ? 'wholesale_purchase' : 'retailer_price',
+            'type'         => $roleName === 'Wholesale Client' ? 'wholesale' : 'retailer',
             'role_name'    => $roleName,
             'base_price'   => round($basePrice, 2),
             'final_price'  => round($finalPrice, 2),
