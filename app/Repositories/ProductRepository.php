@@ -172,6 +172,16 @@ class ProductRepository
     /**
      * Search products
      */
+    public function getAllWithClientProducts(int $perPage, string $userId): LengthAwarePaginator
+    {
+        return $this->model
+            ->query()
+            ->with(['category', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'final_price', 'margin'])])
+            ->where('status', 1)
+            ->select(['id', 'product_code', 'category_id', 'connection_id', 'ddp_price'])
+            ->paginate($perPage);
+    }
+
     public function search(string $term): Collection
     {
         return $this->model

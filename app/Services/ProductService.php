@@ -87,6 +87,11 @@ class ProductService
         });
     }
 
+    public function getAllWithClientProducts(int $perPage): LengthAwarePaginator
+    {
+        return $this->productRepository->getAllWithClientProducts($perPage, auth()->id());
+    }
+
     public function search(string $term): Collection
     {
         return $this->productRepository->search($term);

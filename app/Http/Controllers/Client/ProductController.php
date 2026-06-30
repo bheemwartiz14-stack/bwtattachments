@@ -23,7 +23,7 @@ class ProductController extends Controller
 
     public function index(): View
     {
-        $products = $this->productService->paginate(12);
+        $products = $this->productService->getAllWithClientProducts(12);
         $categories = $this->categoryService->getAll();
         $subcategories = $this->subcategoryService->getAll();
         $connections = $this->connectionService->getAll();
