@@ -66,7 +66,7 @@ class QuotationRepository
             ->get();
     }
 
-    public function createItem(int $quotationId, int $productId, float $price, int $quantity): \App\Models\QuotationItem
+    public function createItem(string $quotationId, string $productId, float $price, int $quantity): \App\Models\QuotationItem
     {
         return \App\Models\QuotationItem::create([
             'quotation_id' => $quotationId,
@@ -76,7 +76,7 @@ class QuotationRepository
         ]);
     }
 
-    public function deleteItem(int $quotationId, int $itemId): bool
+    public function deleteItem(string $quotationId, int $itemId): bool
     {
         return \App\Models\QuotationItem::where('quotation_id', $quotationId)
             ->where('id', $itemId)

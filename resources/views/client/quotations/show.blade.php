@@ -56,6 +56,7 @@
 
             <div class="divide-y divide-slate-100 dark:divide-neutral-800">
                 @forelse($quotation->items as $item)
+                    @php $lineTotal = $item->price * $item->quantity; @endphp
                     <div class="px-6 py-4 hover:bg-rose-50 dark:hover:bg-neutral-900/50 transition-colors">
                         <div class="flex items-start gap-4">
                             <div class="flex h-14 w-14 items-center justify-center rounded-lg bg-slate-100 dark:bg-neutral-900 shrink-0">
@@ -64,14 +65,14 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <p class="text-sm font-medium text-black dark:text-neutral-100">{{ $item->product->description ?? $item->description }}</p>
-                                        <p class="text-xs font-mono text-gray-400 dark:text-neutral-500 mt-0.5">{{ $item->product->product_code ?? $item->product_code }}</p>
+                                        <p class="text-sm font-medium text-black dark:text-neutral-100">{{ $item->product?->product_description ?? $item->product?->product_title ?? 'Product' }}</p>
+                                        <p class="text-xs font-mono text-gray-400 dark:text-neutral-500 mt-0.5">{{ $item->product?->product_code }}</p>
                                     </div>
                                 </div>
                                 <div class="mt-2 grid grid-cols-3 gap-4 text-xs text-gray-700 dark:text-neutral-400">
                                     <span>Quantity: <span class="font-medium text-black dark:text-neutral-100">{{ $item->quantity }}</span></span>
-                                    <span>Unit Price: <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($item->unit_price, 2) }}</span></span>
-                                    <span>Total: <span class="font-medium text-emerald-600 dark:text-emerald-400">{{ config('app.currency_symbol') }}{{ number_format($item->total, 2) }}</span></span>
+                                    <span>Unit Price: <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($item->price, 2) }}</span></span>
+                                    <span>Total: <span class="font-medium text-emerald-600 dark:text-emerald-400">{{ config('app.currency_symbol') }}{{ number_format($lineTotal, 2) }}</span></span>
                                 </div>
                             </div>
                         </div>
@@ -84,21 +85,26 @@
                 @endforelse
             </div>
 
+            @php
+                $subtotal = $quotation->items->sum(fn($i) => $i->price * $i->quantity);
+                $marginAmount = $subtotal * ($quotation->margin_percentage / 100);
+                $grandTotal = $subtotal + $marginAmount;
+            @endphp
             <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800 bg-rose-50 dark:bg-neutral-900/50">
                 <div class="max-w-sm ml-auto space-y-2">
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-gray-700 dark:text-neutral-400">Subtotal</span>
-                        <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->subtotal, 2) }}</span>
+                        <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($subtotal, 2) }}</span>
                     </div>
-                    @if($quotation->margin > 0)
+                    @if($quotation->margin_percentage > 0)
                         <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-700 dark:text-neutral-400">Margin ({{ $quotation->margin }}%)</span>
-                            <span class="font-medium text-emerald-600 dark:text-emerald-400">+{{ config('app.currency_symbol') }}{{ number_format($quotation->margin_amount, 2) }}</span>
+                            <span class="text-gray-700 dark:text-neutral-400">Margin ({{ $quotation->margin_percentage }}%)</span>
+                            <span class="font-medium text-emerald-600 dark:text-emerald-400">+{{ config('app.currency_symbol') }}{{ number_format($marginAmount, 2) }}</span>
                         </div>
                     @endif
                     <div class="flex items-center justify-between text-lg font-bold pt-2 border-t border-slate-100 dark:border-neutral-800">
                         <span class="text-black dark:text-neutral-100">Grand Total</span>
-                        <span class="text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->total, 2) }}</span>
+                        <span class="text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($grandTotal, 2) }}</span>
                     </div>
                 </div>
             </div>

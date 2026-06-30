@@ -43,11 +43,13 @@ class ProductController extends Controller
         $term = $request->input('q', '');
         $products = $this->productService->search($term);
 
+        $products->load(['productPrices' => fn ($q) => $q->where('user_id', auth()->id())->select(['product_id', 'user_id', 'final_price', 'margin'])]);
+
         return response()->json($products->map(fn ($p) => [
             'id' => $p->id,
             'product_code' => $p->product_code,
             'product_description' => $p->product_description,
-            'ddp_price' => $p->ddp_price,
+            'price' => $p->productPrices->first()?->final_price ?? $p->ddp_price,
             'image' => $p->getFirstMediaUrl('images', 'thumb'),
             'category' => $p->category?->name,
         ]));

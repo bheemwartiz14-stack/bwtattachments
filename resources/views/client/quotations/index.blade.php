@@ -47,7 +47,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->created_at->format('M d, Y') }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->items_count ?? $quotation->items->count() }}</td>
-                                <td class="px-6 py-4 text-sm font-semibold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->total, 2) }}</td>
+                                <td class="px-6 py-4 text-sm font-semibold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->items->sum(fn($i) => $i->price * $i->quantity) * (1 + ($quotation->margin_percentage ?: 0) / 100), 2) }}</td>
                                 <td class="px-6 py-4">
                                     @php
                                         $statusClasses = [

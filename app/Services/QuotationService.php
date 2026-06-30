@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Events\QuotationCreated;
 use App\Models\Quotation;
+use App\Models\QuotationItem;
 use App\Repositories\QuotationRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Model;
@@ -28,7 +29,7 @@ class QuotationService
         return $this->quotationRepository->paginate($perPage);
     }
 
-    public function findById(int $id): Model
+    public function findById(string $id): Model
     {
         return $this->quotationRepository->findById($id);
     }
@@ -41,12 +42,12 @@ class QuotationService
         return $this->quotationRepository->create($data);
     }
 
-    public function update(int $id, array $data): Model
+    public function update(string $id, array $data): Model
     {
         return $this->quotationRepository->update($id, $data);
     }
 
-    public function delete(int $id): bool
+    public function delete(string $id): bool
     {
         return $this->quotationRepository->delete($id);
     }
@@ -72,7 +73,7 @@ class QuotationService
 
         if ($lastQuotation) {
             $lastNumber = (int) substr($lastQuotation->quotation_number, -4);
-            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+            $newNumber = str_pad((string) ($lastNumber + 1), 4, '0', STR_PAD_LEFT);
         } else {
             $newNumber = '0001';
         }
@@ -80,23 +81,23 @@ class QuotationService
         return "{$prefix}-{$date}-{$newNumber}";
     }
 
-    public function addItem(int $quotationId, int $productId, float $price, int $quantity): QuotationItem
+    public function addItem(string $quotationId, string $productId, float $price, int $quantity): QuotationItem
     {
         return $this->quotationRepository->createItem(
             $quotationId, $productId, $price, $quantity
         );
     }
 
-    public function removeItem(int $quotationId, int $itemId): bool
+    public function removeItem(string $quotationId, int $itemId): bool
     {
         return $this->quotationRepository->deleteItem($quotationId, $itemId);
     }
 
     public function generatePdf(Quotation $quotation): Quotation
     {
-        $quotation->load('items.product');
+        $quotation->load(['items.product', 'user.userMeta']);
 
-        $pdf = Pdf::loadView('pdfs.quotation', compact('quotation'));
+        $pdf = Pdf::loadView('pdf.quotations', compact('quotation'));
         $filename = "quotations/{$quotation->quotation_number}.pdf";
         Storage::disk('public')->put($filename, $pdf->output());
 

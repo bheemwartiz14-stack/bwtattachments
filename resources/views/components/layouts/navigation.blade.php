@@ -20,14 +20,7 @@
 
                 <a href="{{ $dashboardRoute }}" class="flex items-center gap-3">
                     <img src="{{ asset('images/bwt-logo.jpg') }}" alt="BWT Logo" class="h-10 w-10 object-contain">
-                    <div class="hidden sm:block leading-tight">
-                        <h1 class="text-base font-bold tracking-tight text-slate-900 dark:text-white">
-                            {{ config('app.name') }}
-                        </h1>
-                        <p class="text-xs font-medium text-slate-500 dark:text-neutral-400">
-                            Operations Portal
-                        </p>
-                    </div>
+
                 </a>
             </div>
 

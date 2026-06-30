@@ -40,8 +40,8 @@ class QuotationController extends Controller
             $this->quotationService->addItem(
                 $quotation->id,
                 $item['product_id'],
-                $item['price'] ?? 0,
-                $item['quantity']
+                (float) ($item['price'] ?? 0),
+                (int) $item['quantity']
             );
         }
 
@@ -49,7 +49,7 @@ class QuotationController extends Controller
             ->with('success', 'Quotation created successfully.');
     }
 
-    public function show(int $id): View
+    public function show(string $id): View
     {
         $quotation = $this->quotationService->findById($id);
         $quotation->load('items.product');
@@ -57,7 +57,7 @@ class QuotationController extends Controller
         return view('client.quotations.show', compact('quotation'));
     }
 
-    public function download(int $id): StreamedResponse|RedirectResponse
+    public function download(string $id): StreamedResponse|RedirectResponse
     {
         $quotation = $this->quotationService->findById($id);
 

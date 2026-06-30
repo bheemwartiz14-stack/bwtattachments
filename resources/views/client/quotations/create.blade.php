@@ -62,7 +62,7 @@
                 <form method="POST" action="{{ route('client.quotations.store') }}" class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 sticky top-20">
                     @csrf
                     <input type="hidden" name="items" id="items-input" value="[]">
-                    <input type="hidden" name="margin" id="margin-input" value="10">
+                    <input type="hidden" name="margin_percentage" id="margin-input" value="10">
 
                     <h2 class="text-base font-semibold text-slate-950 dark:text-neutral-100 mb-4">Summary</h2>
 
@@ -140,7 +140,7 @@
                     }
 
                     // Update hidden inputs
-                    $('#items-input').val(JSON.stringify(items.map(function(i) { return { id: i.id, qty: i.qty }; })));
+                    $('#items-input').val(JSON.stringify(items.map(function(i) { return { product_id: i.id, quantity: i.qty, price: i.price }; })));
                     $('#margin-input').val(margin);
 
                     // Calculate totals
