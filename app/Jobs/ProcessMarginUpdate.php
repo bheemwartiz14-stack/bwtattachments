@@ -29,15 +29,12 @@ class ProcessMarginUpdate implements ShouldQueue
         if (!$user) return;
 
         $baseUserId = $this->type === 'retailer' ? $user->parent_id : $this->user;
-
         $products = $productService->getActiveProductsWithUserPrices($baseUserId);
 
-        $syncService->syncProductPricesForUser(
-            $this->user,
-            $this->newMargin,
-            $this->type,
-            $this->marginType,
-            $products->toArray(),
-        );
+        Log::info('Products fetched for margin update', [
+            'count' => $products->count(),
+            'product' => $products,
+            'user_id' => $this->user,
+        ]);
     }
 }
