@@ -3,10 +3,15 @@
     $meta = $isEdit ? ($user->userMeta?->metadata ?? []) : [];
     $wholesaleCompanyName = $meta['wholesale_company_name'] ?? '';
     $wholesaleClientName = $meta['client_name'] ?? '';
-     $logoMedia = $user->getFirstMedia('wholesale_client_logo');
-    $logoUrl = $logoMedia?->getUrl();
-    $Margin = (float) ($user->userMargin?->margin_value ?? 0);
-    $logoId = $logoMedia?->id;
+    $Margin = (float) ($isEdit ? ($user->userMargin?->margin_value ?? 0) : 0);
+    if ($isEdit) {
+        $logoMedia = $user->getFirstMedia('wholesale_client_logo');
+        $logoUrl = $logoMedia?->getUrl();
+        $logoId = $logoMedia?->id;
+    } else {
+        $logoUrl = null;
+        $logoId = null;
+    }
 @endphp
 
 <x-layouts.app>
