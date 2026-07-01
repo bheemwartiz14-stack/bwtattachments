@@ -7,7 +7,6 @@
     <title>{{ $title ?? 'BWT | Wholesale Attachment Product Database' }}</title>
     <link rel="icon" type="image/x-icon" href="{{ app(\App\Settings\GeneralSettings::class)->logo_favicon ? asset(app(\App\Settings\GeneralSettings::class)->logo_favicon) : asset('favicon.ico') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
     @stack('styles')
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased">
