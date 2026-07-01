@@ -170,6 +170,18 @@
                             :hint="$isEdit ? 'Username cannot be changed' : ''"
                         />
 
+                        @if(!$isEdit)
+                            <x-forms.password
+                                name="password"
+                                label="Password"
+                                :required="true"
+                                :showGenerator="true"
+                                :showToggle="true"
+                                :showCopy="false"
+                                :hint="$isEdit ? 'Password cannot be changed after creation' : ''"
+                            />
+                        @endif
+
                         <div>
                             <input type="hidden" name="role" value="{{ $roles->first()->name ?? 'Wholesale Client' }}">
                             <label class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Role</label>
