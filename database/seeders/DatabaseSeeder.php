@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             ConnectionSeeder::class,
             SubcategorySeeder::class,
             AdminUserSeeder::class,
+            GeneralSettingsSeeder::class,
         ]);
     }
 }
