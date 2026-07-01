@@ -177,51 +177,6 @@
                     </div>
                 </div>
 
-                {{-- WHOLESALE CLIENT PRICING --}}
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                    <div class="mb-5 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
-                            <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesale Client Pricing</h2>
-                    </div>
-                    @php $prices = $product->productPrices; @endphp
-                    @if($prices->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead>
-                                    <tr class="border-b border-slate-200 text-left text-xs font-medium text-slate-400 uppercase tracking-wider dark:border-neutral-800">
-                                        <th class="pb-3 pr-4 font-medium">Client</th>
-                                        <th class="pb-3 pr-4 font-medium">Email</th>
-                                        <th class="pb-3 text-right font-medium">Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
-                                    @foreach($prices as $price)
-                                        <tr class="text-sm text-slate-900 dark:text-white">
-                                            <td class="py-3 pr-4">
-                                                <div class="flex items-center gap-2.5">
-                                                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400">
-                                                        {{ strtoupper(substr($price->user->name ?? '?', 0, 2)) }}
-                                                    </div>
-                                                    <span class="font-medium">{{ $price->user->name ?? 'N/A' }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="py-3 pr-4 text-slate-500">{{ $price->user->email ?? '' }}</td>
-                                            <td class="py-3 text-right font-semibold text-emerald-700 dark:text-emerald-400">{{ config('app.currency_symbol') }}{{ number_format($price->price, 2) }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="py-10 text-center">
-                            <svg class="mx-auto h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                            <p class="mt-3 text-sm font-medium text-slate-500 dark:text-neutral-400">No wholesale prices set</p>
-                            <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">Add pricing when editing this product.</p>
-                        </div>
-                    @endif
-                </div>
             </div>
 
             {{-- RIGHT COLUMN --}}
