@@ -106,8 +106,8 @@ class WholesaleClientUserServices
             ['user_id' => $user->id],
             ['type' => 'wholesale', 'margin_type' => 'percentage', 'margin_value' => $value ?? 0]
         );
-        if ((float) $value !== $old) {
+        // if ((float) $value !== $old) {
             event(new UpdateProductMarginByUser($user->id, 'percentage', (float) $value, 'wholesale'));
-        }
+        // }
     }
 }
