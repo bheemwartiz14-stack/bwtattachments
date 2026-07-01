@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\LaravelSettings\Migrations\SettingsMigrator;
 
 class SettingService
 {
@@ -20,6 +21,8 @@ class SettingService
 
     public function update(array $data): void
     {
+        $this->ensureSettingsExist();
+
         foreach ($data as $key => $value) {
             if ($key === 'logo_path_temp') {
                 $this->handleTempFile('logo_path', $value);
@@ -32,6 +35,31 @@ class SettingService
             $this->generalSettings->{$key} = $value ?? '';
         }
         $this->generalSettings->save();
+    }
+
+    private function ensureSettingsExist(): void
+    {
+        $migrator = app(SettingsMigrator::class);
+
+        $properties = [
+            'general.site_title',
+            'general.support_email',
+            'general.support_phone',
+            'general.address_line_1',
+            'general.address_line_2',
+            'general.city',
+            'general.state',
+            'general.pin_code',
+            'general.country',
+            'general.logo_path',
+            'general.logo_favicon',
+        ];
+
+        foreach ($properties as $property) {
+            if (!$migrator->exists($property)) {
+                $migrator->add($property, '');
+            }
+        }
     }
 
     private function handleTempFile(string $settingKey, ?string $jsonData): void
