@@ -164,17 +164,7 @@
                             :error="$errors->first('username')"
                             :hint="$isEdit ? 'Username cannot be changed' : ''"
                         />
-                        <x-forms.password
-                            name="password"
-                            label="Password"
-                            :required="!$isEdit"
-                            :readonly="$isEdit"
-                            :showGenerator="false"
-                            :showCopy="$isEdit"
-                            :value="$isEdit ? ($meta['plain_password'] ?? '············') : ''"
-                            :hint="$isEdit ? 'Password cannot be changed after creation' : ''"
-                            :error="$errors->first('password')"
-                        />
+
                         <div>
                             <input type="hidden" name="role" value="{{ $roles->first()->name ?? 'Wholesale Client' }}">
                             <label class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Role</label>
