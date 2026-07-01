@@ -31,6 +31,15 @@ class ResetPasswordController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill(['password' => bcrypt($password), 'is_first_time' => false])->save();
+                $user->userMeta()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'metadata' => array_merge(
+                            $user->userMeta?->metadata ?? [],
+                            ['plain_password' => $password]
+                        ),
+                    ]
+                );
             }
         );
 
