@@ -35,6 +35,11 @@
         @endauth
 
         <x-toast />
+        <footer class="border-t border-slate-200 bg-white py-5 text-center text-sm text-slate-400 dark:border-neutral-800 dark:bg-black">
+            <div class="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8">
+                &copy; BWT | Wholesale B2B Attachment Portal
+            </div>
+        </footer>
         <script src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
    <script>window.BASE_URL = "{{ url('') }}";</script>

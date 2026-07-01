@@ -1,30 +1,32 @@
 <x-layouts.public>
     <x-slot:title>{{ $product->product_title ?? 'Product Detail' }} - Attachment Portal</x-slot:title>
 
-    <div class="container">
-        <main class="content">
-            <a href="{{ route('public.products.index') }}" style="display:inline-flex;align-items:center;gap:5px;margin-bottom:15px;color:#1d2939;text-decoration:none;font-size:14px;">
+    <main class="bg-gray-100 min-h-screen pt-8 pb-14">
+        <div class="max-w-[1700px] mx-auto px-8">
+            <a href="{{ route('public.home.index') }}" class="inline-flex items-center gap-1 mb-4 text-bwtblue hover:text-bwtblue2 no-underline text-sm font-medium">
                 &larr; Back to Products
             </a>
 
-            <div class="detail-page">
-                <div class="detail-layout">
-                    <div class="gallery">
-                        <div class="main-image aspect-[3/2] overflow-hidden rounded-lg bg-slate-100">
+            <div class="bg-white rounded-md shadow-sm p-8">
+                <div class="flex flex-col lg:flex-row gap-10">
+
+                    <!-- Gallery -->
+                    <div class="w-full lg:w-[45%]">
+                        <div class="aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
                             @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
                             @if($featureImage)
                                 <img src="{{ $featureImage }}" alt="{{ $product->product_title }}" id="mainProductImage" class="w-full h-full object-cover">
                             @else
-                                <div class="w-full h-full flex items-center justify-center text-slate-400">Main Product Image</div>
+                                <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">Main Product Image</div>
                             @endif
                         </div>
 
-                        @php $gallery = $product->getMedia('gallery'); 
-                        @endphp
+                        @php $gallery = $product->getMedia('gallery'); @endphp
                         @if($gallery->count() > 0)
-                            <div class="thumbs">
+                            <div class="flex gap-3 mt-3">
                                 @foreach($gallery as $media)
-                                    <div class="thumb {{ $loop->first ? 'active' : '' }} aspect-[3/2]" onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active');">
+                                    <div class="flex-1 h-20 bg-gray-100 rounded overflow-hidden cursor-pointer border-2 {{ $loop->first ? 'border-bwtblue' : 'border-transparent' }} hover:border-bwtblue transition-colors"
+                                         onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('border-bwtblue'));this.classList.add('border-bwtblue');">
                                         <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
                                     </div>
                                 @endforeach
@@ -32,24 +34,25 @@
                         @endif
                     </div>
 
-                    <div class="product-info">
-                        <p style="font-size:13px;color:#0f766e;font-weight:600;margin-bottom:5px;">{{ $product->product_code ?? 'N/A' }}</p>
-                        <h2>{{ $product->product_title ?? 'Product' }}</h2>
+                    <!-- Info -->
+                    <div class="flex-1">
+                        <p class="text-sm text-bwtblue font-semibold mb-1">{{ $product->product_code ?? 'N/A' }}</p>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $product->product_title ?? 'Product' }}</h2>
 
                         @if($product->product_description)
-                            <div class="desc">{!! $product->product_description !!}</div>
+                            <div class="text-gray-600 text-sm leading-relaxed mb-4">{!! $product->product_description !!}</div>
                         @endif
 
                         @if($product->category || $product->subcategory || $product->connection)
-                            <div style="margin-bottom:15px;">
+                            <div class="flex flex-wrap gap-2 mb-4">
                                 @if($product->category)
-                                    <span class="category-tag">{{ $product->category->name }}</span>
+                                    <span class="bg-blue-50 text-bwtblue text-xs font-medium px-3 py-1 rounded">{{ $product->category->name }}</span>
                                 @endif
                                 @if($product->subcategory)
-                                    <span class="category-tag" style="background:#e6f7ed;">{{ $product->subcategory->name }}</span>
+                                    <span class="bg-green-50 text-green-700 text-xs font-medium px-3 py-1 rounded">{{ $product->subcategory->name }}</span>
                                 @endif
                                 @if($product->connection)
-                                    <span class="category-tag" style="background:#fef3c7;">{{ $product->connection->name }}</span>
+                                    <span class="bg-yellow-50 text-yellow-700 text-xs font-medium px-3 py-1 rounded">{{ $product->connection->name }}</span>
                                 @endif
                             </div>
                         @endif
@@ -71,20 +74,20 @@
                         @endphp
 
                         @if($hasSpecs)
-                            <table class="spec-table">
+                            <table class="w-full mt-4">
                                 @foreach($specRows as $label => $value)
                                     @if($value)
-                                        <tr>
-                                            <td>{{ $label }}</td>
-                                            <td>{{ $value }}</td>
+                                        <tr class="border-b border-gray-100">
+                                            <td class="py-2.5 pr-4 text-sm font-semibold text-gray-900 w-[40%]">{{ $label }}</td>
+                                            <td class="py-2.5 text-sm text-gray-600">{{ $value }}</td>
                                         </tr>
                                     @endif
                                 @endforeach
                             </table>
                         @endif
 
-                        <div class="client-box">
-                            <h3>
+                        <div class="mt-6 bg-blue-50 rounded-md p-5">
+                            <h3 class="font-semibold text-gray-900 text-sm mb-2">
                                 @auth Wholesale Client Area @else Wholesale Client Area &mdash; Login Required @endauth
                             </h3>
 
@@ -93,31 +96,39 @@
                                     $userPrice = $product->productPrices->firstWhere('user_id', auth()->id());
                                 @endphp
                                 @if($userPrice || $product->ddp_price)
-                                    <div class="price">
+                                    <div class="text-2xl font-bold text-green-600 my-3">
                                         {{ config('app.currency_symbol') }} {{ number_format($userPrice->final_price ?? $product->ddp_price, 2) }}
                                     </div>
                                 @endif
                             @else
-                                <p style="font-size:14px;color:#555;margin-bottom:15px;">
+                                <p class="text-sm text-gray-500 mb-3">
                                     Log in to view wholesale pricing, request quotations, and download product documents.
                                 </p>
                             @endauth
 
-                            @if($product->getFirstMedia('pdfs'))
-                                <a href="{{ $product->getFirstMediaUrl('pdfs') }}" target="_blank" class="download-btn">
-                                    Download Technical PDF
-                                </a>
-                            @endif
+                            <div class="flex flex-wrap gap-3 mt-4">
+                                @if($product->getFirstMedia('pdfs'))
+                                    <a href="{{ $product->getFirstMediaUrl('pdfs') }}" target="_blank" class="inline-block bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
+                                        Download Technical PDF
+                                    </a>
+                                @endif
 
-                            @auth
-                                <a href="#" class="quote-btn">Add To Quotation</a>
-                            @else
-                                <a href="{{ route('login') }}" class="quote-btn">Login to View Pricing</a>
-                            @endauth
+                                @auth
+                                    <a href="#" class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
+                                        Add To Quotation
+                                    </a>
+                                @else
+                                    <a href="{{ route('login') }}" class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
+                                        Login to View Pricing
+                                    </a>
+                                @endauth
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
+
 </x-layouts.public>

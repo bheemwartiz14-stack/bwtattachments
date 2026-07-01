@@ -19,7 +19,7 @@
                 </button>
 
                 <a href="{{ $dashboardRoute }}" class="flex items-center gap-3">
-                    <img src="{{ asset('images/bwt-logo.jpg') }}" alt="BWT Logo" class="h-10 w-10 object-contain">
+                    <img src="{{ asset('images/bwt-logo.jpg') }}" alt="BWT Logo" class="h-10 w-13 object-contain">
 
                 </a>
             </div>

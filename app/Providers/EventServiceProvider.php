@@ -25,6 +25,7 @@ class EventServiceProvider extends ServiceProvider
             DispatchProductPricingSync::class,
         ],
         QuotationCreated::class => [GenerateQuotationPdf::class],
+        \App\Events\ContactMessageSubmitted::class => [\App\Listeners\SendContactMessageMail::class],
     ];
 
     public function boot(): void

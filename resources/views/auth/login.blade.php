@@ -3,10 +3,11 @@
         <div class="grid w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950 lg:grid-cols-[1.05fr_0.95fr]">
             <section class="hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 text-white lg:flex lg:flex-col lg:justify-between">
                 <div>
-                    <div class="inline-flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-sm">
-                        <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white/20">
-                            <img src="{{ asset('images/bwt-logo.jpg') }}" alt="BWT" class="h-8 w-8 object-contain brightness-0 invert">
-                        </div>
+                        @php $settings = app(\App\Settings\GeneralSettings::class); @endphp
+                        <div class="inline-flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-sm">
+                            <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white/20">
+                                <img src="{{ $settings->logo_path ? asset($settings->logo_path) : asset('images/bwt-logo.jpg') }}" alt="BWT" class="h-8 w-8 object-contain brightness-0 invert">
+                            </div>
                         <div>
                             <p class="text-sm font-bold uppercase tracking-wide">BWT</p>
                             <p class="text-xs text-slate-300">Operations Portal</p>
@@ -23,10 +24,10 @@
             <section class="flex items-center justify-center bg-slate-50 px-5 py-10 sm:px-8 lg:px-12 dark:bg-neutral-900">
                 <div class="w-full max-w-md">
                     <div class="mb-8 lg:hidden">
-                        <div class="inline-flex items-center gap-3">
-                            <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900 dark:ring-neutral-700">
-                                <img src="{{ asset('images/bwt-logo.jpg') }}" alt="BWT" class="h-8 w-8 object-contain">
-                            </div>
+                            <div class="inline-flex items-center gap-3">
+                                <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-neutral-900 dark:ring-neutral-700">
+                                    <img src="{{ $settings->logo_path ? asset($settings->logo_path) : asset('images/bwt-logo.jpg') }}" alt="BWT" class="h-8 w-8 object-contain">
+                                </div>
                             <div>
                                 <p class="text-sm font-bold uppercase tracking-wide text-slate-950 dark:text-neutral-100">BWT</p>
                                 <p class="text-xs text-slate-500 dark:text-neutral-400">Operations Portal</p>

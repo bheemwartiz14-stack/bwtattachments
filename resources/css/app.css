@@ -45,6 +45,9 @@
     --color-warning: #f59e0b;
     --color-danger: #ef4444;
     --color-info: #3b82f6;
+
+    --color-bwtblue: #0b5cab;
+    --color-bwtblue2: #0a52a0;
 }
 
 @layer base {

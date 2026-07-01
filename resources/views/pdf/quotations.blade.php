@@ -231,7 +231,8 @@
     <div class="header">
         <div class="logo-area">
             <div class="logo-icon">
-                <img src="{{ public_path('images/bwt-logo.jpg') }}" alt="BWT">
+                @php $settings = app(\App\Settings\GeneralSettings::class); @endphp
+                <img src="{{ $settings->logo_path ? public_path($settings->logo_path) : public_path('images/bwt-logo.jpg') }}" alt="BWT">
             </div>
             <div class="brand">
                 <div class="company-name">BWT</div>
