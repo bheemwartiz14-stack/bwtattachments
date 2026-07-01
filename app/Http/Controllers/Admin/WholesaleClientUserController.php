@@ -37,6 +37,13 @@ class WholesaleClientUserController extends Controller
         return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale client user created successfully.');
     }
 
+    public function show(string $id): View
+    {
+        $user = $this->wholesaleClientUserServices->findById($id);
+        $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)]);
+        return view('admin.wholesale-client-users.show', compact('user'));
+    }
+
     public function edit(string $id): View
     {
         $user = $this->wholesaleClientUserServices->findById($id);

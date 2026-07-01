@@ -35,13 +35,14 @@
                     </div>
 
                     <!-- Info -->
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0 max-w-full">
                         <p class="text-sm text-bwtblue font-semibold mb-1">{{ $product->product_code ?? 'N/A' }}</p>
                         <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $product->product_title ?? 'Product' }}</h2>
-
-                        @if($product->product_description)
-                            <div class="text-gray-600 text-sm leading-relaxed mb-4">{!! $product->product_description !!}</div>
-                        @endif
+                            @if($product->product_description)
+                                <div class="text-sm leading-relaxed text-slate-700 break-words overflow-x-auto whitespace-normal [&_img]:max-w-full [&_table]:max-w-full [&_pre]:whitespace-pre-wrap">
+                                    {!! $product->product_description !!}
+                                </div>
+                            @endif
 
                         @if($product->category || $product->subcategory || $product->connection)
                             <div class="flex flex-wrap gap-2 mb-4">

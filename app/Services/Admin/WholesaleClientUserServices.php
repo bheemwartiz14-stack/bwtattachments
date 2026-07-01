@@ -1,13 +1,18 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Services\Admin;
+
 use App\Events\UpdateProductMarginByUser;
 use App\Events\WholesaleClientsRegistered;
 use App\Services\UserService;
+use App\Traits\ResolvesTempFiles;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class WholesaleClientUserServices
 {
+    use ResolvesTempFiles;
     public function __construct(
         protected UserService $userService,
     ) {}
@@ -15,12 +20,16 @@ class WholesaleClientUserServices
     public function create(array $data): Model
     {
         $plainPassword = $data['password'] ?? null;
-        [$meta, $margin, $logo] = $this->extract($data);
+        [$meta, $margin] = $this->extract($data);
+        $meta['plain_password'] = $plainPassword;
+
         $user = $this->userService->create($data);
         $this->saveMargin($user, $margin);
         $userMeta = $this->saveMeta($user, $meta);
+
+        $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
         if ($logo) {
-            $userMeta->addMedia($logo)->toMediaCollection('wholesale_client_logo');
+            $user->addMedia($logo)->toMediaCollection('wholesale_client_logo');
         }
         event(new WholesaleClientsRegistered($user, $plainPassword));
         return $user;
@@ -28,17 +37,20 @@ class WholesaleClientUserServices
 
     public function update(string|int $id, array $data): Model
     {
-        [$meta, $margin, $logo] = $this->extract($data);
+        return DB::transaction(function () use ($id, $data) {
+            $user = $this->userService->update($id, $data);
+            [$meta, $margin] = $this->extract($data);
+            $this->saveMargin($user, $margin);
+            $this->saveMeta($user, $meta);
 
-        $user = $this->userService->update($id, $data);
-        $this->saveMargin($user, $margin);
-        $userMeta = $this->saveMeta($user, $meta);
-        if ($logo) {
-            $userMeta->clearMediaCollection('wholesale_client_logo');
-            $userMeta->addMedia($logo)->toMediaCollection('wholesale_client_logo');
-        }
+            $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
+            if ($logo) {
+                $user->clearMediaCollection('wholesale_client_logo');
+                $user->addMedia($logo)->toMediaCollection('wholesale_client_logo');
+            }
 
-        return $user;
+            return $user;
+        });
     }
 
     public function findById(string|int $id): Model
@@ -70,44 +82,32 @@ class WholesaleClientUserServices
             'vat_number' => $data['vat_number'] ?? null,
         ];
         $margin = $data['commission_percentage'] ?? 0;
-        $logo = $data['wholesale_client_logo'] ?? null;
+
         unset(
             $data['wholesale_company_name'],
-            $data['commission_percentage'],
-            $data['wholesale_client_logo']
+            $data['commission_percentage']
         );
 
-        return [$meta, $margin, $logo];
+        return [$meta, $margin];
     }
 
     private function saveMeta(Model $user, array $meta): mixed
     {
         return $user->userMeta()->updateOrCreate(
             ['user_id' => $user->id],
-            [
-                'metadata' => array_merge(
-                    $user->userMeta?->metadata ?? [],
-                    $meta
-                ),
-            ]
+            ['metadata' => array_merge($user->userMeta?->metadata ?? [], $meta)]
         );
     }
 
     private function saveMargin(Model $user, $value): void
     {
-        $oldMargin = (float) ($user->userMargin?->margin_value ?? 0);
-
+        $old = (float) ($user->userMargin?->margin_value ?? 0);
         $user->userMargin()->updateOrCreate(
             ['user_id' => $user->id],
-            [
-                'type' => 'wholesale',
-                'margin_type' => 'percentage',
-                'margin_value' => $value ?? 0,
-            ]
+            ['type' => 'wholesale', 'margin_type' => 'percentage', 'margin_value' => $value ?? 0]
         );
-        $newMargin = (float) $value;
-        if ($newMargin !== $oldMargin) {
-            event(new UpdateProductMarginByUser($user->id, 'percentage', $newMargin, 'wholesale'));
+        if ((float) $value !== $old) {
+            event(new UpdateProductMarginByUser($user->id, 'percentage', (float) $value, 'wholesale'));
         }
     }
 }

@@ -6,9 +6,11 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuotationRequest;
 use App\Models\Quotation;
+use App\Models\User;
 use App\Services\QuotationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -26,13 +28,21 @@ class QuotationController extends Controller
 
     public function create(): View
     {
-        return view('client.quotations.create');
+        $resellers = User::where('parent_id', auth()->id())
+            ->role('Retailer')
+            ->orderBy('name')
+            ->get(['id', 'name', 'email', 'phone']);
+
+        $quotationNumber = $this->quotationService->generateQuotationNumber();
+
+        return view('client.quotations.create', compact('resellers', 'quotationNumber'));
     }
 
     public function store(StoreQuotationRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['user_id'] = auth()->id();
+        $data['status'] = $request->input('action', 'draft') === 'send' ? 'sent' : 'draft';
 
         $quotation = $this->quotationService->create($data);
 
@@ -45,8 +55,23 @@ class QuotationController extends Controller
             );
         }
 
+        if ($request->input('action') === 'pdf' || $request->input('action') === 'send') {
+            $this->quotationService->generatePdf($quotation);
+        }
+
+        if ($request->input('action') === 'send') {
+            $quotation->load('reseller');
+            $this->quotationService->sendEmail($quotation);
+        }
+
+        $message = match ($request->input('action')) {
+            'pdf' => 'Quotation created and PDF generated successfully.',
+            'send' => 'Quotation created, PDF generated, and sent to reseller successfully.',
+            default => 'Quotation saved as draft successfully.',
+        };
+
         return redirect()->route('client.quotations.show', $quotation->id)
-            ->with('success', 'Quotation created successfully.');
+            ->with('success', $message);
     }
 
     public function show(string $id): View
@@ -72,5 +97,37 @@ class QuotationController extends Controller
         }
 
         return Storage::disk('public')->download($quotation->pdf_file);
+    }
+
+    public function generatePdf(string $id): RedirectResponse
+    {
+        $quotation = $this->quotationService->findById($id);
+
+        if ($quotation->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $this->quotationService->generatePdf($quotation);
+
+        return back()->with('success', 'PDF generated successfully.');
+    }
+
+    public function sendEmail(string $id): RedirectResponse
+    {
+        $quotation = $this->quotationService->findById($id);
+
+        if ($quotation->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $quotation->load('reseller');
+
+        if (!$quotation->pdf_file) {
+            $this->quotationService->generatePdf($quotation);
+        }
+
+        $this->quotationService->sendEmail($quotation);
+
+        return back()->with('success', 'Quotation PDF sent to reseller successfully.');
     }
 }

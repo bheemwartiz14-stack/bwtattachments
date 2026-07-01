@@ -10,6 +10,7 @@ use App\Services\ProductService;
 use App\Services\SubcategoryService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class HomeController extends Controller
 {
@@ -33,7 +34,19 @@ class HomeController extends Controller
         $categories = $this->categoryService->getAll();
         $subcategories = $this->subcategoryService->getAllWithCategory();
         $connections = $this->connectionService->getAll();
-
         return view('public.home.index', compact('products', 'categories', 'subcategories', 'connections'));
+    }
+
+    public function testPdf()
+    {
+        $quotation = \App\Models\Quotation::with(['items.product', 'reseller.userMeta'])->latest()->first();
+
+        if (!$quotation) {
+            return response('No quotations found. Create one first.');
+        }
+
+        return Pdf::view('pdf.quotations', compact('quotation'))
+            ->format('A4')
+            ->driver('dompdf');
     }
 }

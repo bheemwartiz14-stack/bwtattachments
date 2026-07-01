@@ -67,7 +67,7 @@ class StoreRetailerClientUserRequest extends FormRequest
             'phone' => [
                 'required',
                 'string',
-                'regex:/^[0-9+\-\s()]{10,15}$/',
+                'regex:/^[0-9+\-\s()]{10,20}$/',
             ],
 
             'retailer_client_logo' => [

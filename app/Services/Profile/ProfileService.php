@@ -6,6 +6,7 @@ namespace App\Services\Profile;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
+use App\Traits\ResolvesTempFiles;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -13,22 +14,20 @@ use Illuminate\Support\Facades\Log;
 
 class ProfileService
 {
+    use ResolvesTempFiles;
+
     public function __construct(
         protected UserRepository $userRepository,
         protected PasswordService $passwordService,
         protected AvatarService $avatarService,
     ) {}
 
-    /**
-     * Update the authenticated user's profile information.
-     */
     public function updateProfile(User $user, array $data): User
     {
         try {
             return DB::transaction(function () use ($user, $data) {
                 $user = $this->userRepository->update($user->id, [
                     'name' => $data['name'],
-                    'email' => $data['email'],
                     'phone' => $data['phone'] ?? null,
                 ]);
 
@@ -38,6 +37,12 @@ class ProfileService
 
                 if ($user->hasRole('Retailer')) {
                     $this->updateClientProfile($user, $data, 'retailer');
+                }
+
+                $avatarPath = $this->resolveTempFile($data['avatar_temp'] ?? null);
+                if ($avatarPath) {
+                    $user->clearMediaCollection('avatar');
+                    $user->addMedia($avatarPath)->toMediaCollection('avatar');
                 }
 
                 return $user->load('userMeta');
@@ -52,9 +57,6 @@ class ProfileService
         }
     }
 
-    /**
-     * Update client-specific profile fields (name + logo).
-     */
     private function updateClientProfile(User $user, array $data, string $type): void
     {
         $nameField = $type . '_client_name';
@@ -78,33 +80,21 @@ class ProfileService
         }
     }
 
-    /**
-     * Change the user's password.
-     */
     public function changePassword(User $user, string $currentPassword, string $newPassword): bool
     {
         return $this->passwordService->changePassword($user, $currentPassword, $newPassword);
     }
 
-    /**
-     * Upload avatar for the user.
-     */
     public function uploadAvatar(User $user, array $file): User
     {
         return $this->avatarService->upload($user, $file);
     }
 
-    /**
-     * Delete the user's avatar.
-     */
     public function deleteAvatar(User $user): User
     {
         return $this->avatarService->delete($user);
     }
 
-    /**
-     * Delete the client logo for wholesale client.
-     */
     public function deleteWholesaleClientLogo(User $user): User
     {
         try {
@@ -124,9 +114,6 @@ class ProfileService
         }
     }
 
-    /**
-     * Delete the client logo for retailer.
-     */
     public function deleteRetailerClientLogo(User $user): User
     {
         try {
@@ -143,9 +130,6 @@ class ProfileService
         }
     }
 
-    /**
-     * Update notification preference for the user.
-     */
     public function updateNotificationPreference(User $user, array $data): User
     {
         try {

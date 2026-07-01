@@ -17,6 +17,7 @@
     "dependencies": {
         "@flasher/flasher": "^2.2.0",
         "jquery": "^4.0.0",
+        "puppeteer": "^25.2.1",
         "select2": "^4.0.13",
         "select2-tailwindcss-theme": "^1.3.0"
     }

@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@source "../views/pdf/";
+
+/* Override modern CSS features for DOMPDF compatibility */
+:root {
+    --color-blue-800: #005691;
+    --color-gray-50: #F1F5F9;
+    --color-gray-100: #F8F9FA;
+    --color-gray-400: #94a3b8;
+    --color-gray-600: #666666;
+    --color-gray-900: #333333;
+    --color-amber-100: #fef3c7;
+    --color-amber-800: #92400e;
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-red-500: #E43A36;
+    --color-navy: #1A2B4C;
+}

@@ -92,7 +92,9 @@
                                 </div>
                                 <div class="flex min-w-0 flex-1 items-center gap-4">
                                     <div class="min-w-0 flex-1">
-                                        <p class="truncate text-sm font-medium text-slate-900 dark:text-white">{{ $user->name }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <a href="{{ route('admin.wholesale-client-users.show', $user) }}" class="truncate text-sm font-medium text-slate-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400">{{ $user->name }}</a>
+                                        </div>
                                         <p class="truncate text-xs text-slate-500 dark:text-neutral-400">{{ $user->email }}</p>
                                     </div>
                                     <div class="hidden sm:block min-w-0 flex-1">

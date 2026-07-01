@@ -39,7 +39,7 @@ class ManageAdminProductController extends Controller
         return view('admin.products.index', [
             'products' => $this->productService->paginate(
                 (int) $request->query('per_page', 15),
-                $request->only(['search', 'category', 'subcategory', 'connection', 'status'])
+                $request->only(['search', 'category', 'subcategory', 'connection', 'machine_class', 'status'])
             ),
             'categories' => $this->categoryService->getAll(),
             'subcategories' => $this->subcategoryService->getAll(),

@@ -23,8 +23,10 @@
         "livewire/livewire": "*",
         "maatwebsite/excel": "^3.1",
         "php-flasher/flasher-laravel": "^2.6",
+        "spatie/browsershot": "^5.4",
         "spatie/enum": "*",
         "spatie/laravel-medialibrary": "^11.23",
+        "spatie/laravel-pdf": "^2.12",
         "spatie/laravel-permission": "^8.0",
         "spatie/laravel-settings": "^3.9"
     },

@@ -73,7 +73,7 @@ class StoreWholesaleClientUserRequest extends FormRequest
 
             'phone' => [
                 'required',
-                'regex:/^[0-9+\-\s()]{10,15}$/',
+                'regex:/^[0-9+\-\s()]{10,20}$/',
             ],
 
             'address' => [
@@ -113,7 +113,6 @@ class StoreWholesaleClientUserRequest extends FormRequest
             ],
 
             'commission_percentage' => [
-                'required',
                 'numeric',
                 'between:0,100',
                 'decimal:0,2',
@@ -125,6 +124,7 @@ class StoreWholesaleClientUserRequest extends FormRequest
                 'mimes:jpeg,jpg,png,webp',
                 'max:2048',
             ],
+            'wholesale_client_logo_temp' => ['nullable', 'string'],
         ];
     }
 
@@ -165,7 +165,6 @@ class StoreWholesaleClientUserRequest extends FormRequest
 
             'vat_number.required' => 'The VAT number is required.',
 
-            'commission_percentage.required' => 'The commission percentage is required.',
             'commission_percentage.numeric' => 'The commission percentage must be a number.',
             'commission_percentage.between' => 'The commission percentage must be between 0 and 100.',
             'commission_percentage.decimal' => 'The commission percentage may have up to 2 decimal places.',

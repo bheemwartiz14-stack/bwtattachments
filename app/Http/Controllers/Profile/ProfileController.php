@@ -29,15 +29,18 @@ class ProfileController extends Controller
         /** @var User $user */
         $user = auth()->user()->load('userMeta');
 
+        $avatarMedia = $user->getFirstMedia('avatar');
         $viewData = [
             'user' => $user,
             'prefix' => $this->resolveRoutePrefix($user),
+            'avatarUrl' => $avatarMedia?->getUrl(),
+            'avatarId' => $avatarMedia?->id,
         ];
 
         if ($user->hasRole('Wholesale Client')) {
             $meta = $user->userMeta;
-            $viewData['wholesaleClientName'] = $meta?->metadata['client_name'] ?? '';
-            $logoMedia = $meta?->getFirstMedia('wholesale_client_logo');
+            $viewData['wholesaleClientName'] = $meta?->metadata['wholesale_company_name'] ?? '';
+            $logoMedia = $user?->getFirstMedia('wholesale_client_logo');
             $viewData['wholesaleClientLogoUrl'] = $logoMedia?->getUrl();
             $viewData['wholesaleClientLogoId'] = $logoMedia?->id;
         }

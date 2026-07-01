@@ -10,9 +10,6 @@ class GeneralSettingsSeeder extends Seeder
 {
     public function run(): void
     {
-        $migration = require database_path('settings/2026_07_01_000001_create_general_settings.php');
-        $migration->up();
-
         $settings = app(GeneralSettings::class);
 
         $settings->site_title = 'BWT Attachment Portal';

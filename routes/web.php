@@ -1,11 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ContactListController;
 use App\Http\Controllers\Admin\ConnectionController;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
+use App\Http\Controllers\Admin\ProductWholesalePriceController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\Admin\UserController;
@@ -27,6 +26,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes (guest + authenticated)
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
+Route::get('/test-pdf', [HomeController::class, 'testPdf'])->name('public.test-pdf');
+
 Route::get('/products/{product}', [PublicProductController::class, 'show'])->name('public.products.show');
 Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories.index');
 Route::get('/categories/{category}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
@@ -47,31 +48,34 @@ Route::post('/upload-temp', [FileController::class, 'store'])->name('upload-temp
 Route::delete('/media/{media}', [FileController::class, 'destroy'])->name('media.destroy')->middleware('auth');
 Route::middleware(['auth', 'first.time'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
     Route::get('/first-time-password', [App\Http\Controllers\Auth\FirstTimePasswordController::class, 'showForm'])->name('first-time-password.form');
     Route::post('/first-time-password', [App\Http\Controllers\Auth\FirstTimePasswordController::class, 'update'])->name('first-time-password.update');
+
     // Admin routes
     Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('wholesale-client-users', WholesaleClientUserController::class)->except(['show']);
+        Route::get('wholesale-client-users/{wholesale_client_user}/view', [WholesaleClientUserController::class, 'show'])->name('wholesale-client-users.show');
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::get('/categories/{category}/subcategories', [CategoryController::class, 'getSubcategories'])->name('categories.fetch-subcategories');
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
         Route::resource('connections', ConnectionController::class)->except(['show']);
         Route::resource('products', AdminProductController::class);
-        Route::get('/contact-list', [ContactListController::class, 'index'])->name('contact-list.index');
-        Route::delete('/contact-list/{id}', [ContactListController::class, 'destroy'])->name('contact-list.destroy');
-
-        Route::get('/setting/general-setting', [SettingController::class, 'general'])->name('settings.general');
-        Route::post('/setting/general-setting', [SettingController::class, 'updateGeneral'])->name('settings.general.update');
-
+        Route::get('/product-pricing/preview/product/{id}', [ProductWholesalePriceController::class, 'getProductPreview'])->name('product-pricing.preview.product');
+        Route::get('/product-pricing/preview/user/{id}', [ProductWholesalePriceController::class, 'getUserPreview'])->name('product-pricing.preview.user');
+        Route::resource('product-pricing', ProductWholesalePriceController::class);
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+        Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
     });
 
     // Client routes (Wholesale Client)
     Route::middleware(['role:Wholesale Client'])->prefix('client')->name('client.')->group(function () {
         Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
+
         Route::resource('retailer-users', RetailerUserController::class)->except(['show']);
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');
         Route::get('/products/search', [ClientProductController::class, 'search'])->name('products.search');
@@ -82,9 +86,12 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::post('/quotations', [ClientQuotationController::class, 'store'])->name('quotations.store');
         Route::get('/quotations/{quotation}', [ClientQuotationController::class, 'show'])->name('quotations.show');
         Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
+
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+        Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
         Route::delete('/profile/logo/wholesale', [ProfileController::class, 'deleteWholesaleClientLogo'])->name('profile.logo.wholesale.delete');
     });
 
@@ -105,6 +112,8 @@ Route::middleware(['auth', 'first.time'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+        Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
         Route::delete('/profile/logo/retailer', [ProfileController::class, 'deleteRetailerClientLogo'])->name('profile.logo.retailer.delete');
     });
 });

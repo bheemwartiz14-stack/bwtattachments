@@ -70,8 +70,8 @@
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                         <h2 class="mb-3 text-2xl font-bold tracking-tight text-slate-950">Description</h2>
-                        <p class="text-sm leading-relaxed text-slate-700">
-                            {{ $product->long_description ?? $product->description ?? $product->title ?? 'No description available.' }}
+                        <p class="text-sm leading-relaxed text-slate-700 break-words">
+                            {{ $product->long_description ?? $product->description ?? $product->product_description ?? $product->title ?? 'No description available.' }}
                         </p>
                     </div>
                 </div>

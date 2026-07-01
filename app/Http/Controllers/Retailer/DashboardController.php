@@ -17,18 +17,49 @@ class DashboardController extends Controller
     public function index(): View
     {
         $userId = auth()->id();
+        $user = auth()->user();
         $quotations = $this->quotationService->findByUser($userId);
+
+        $companyName = $user->userMeta?->metadata['client_name']
+            ?? $user->userMeta?->metadata['retailer_client_name']
+            ?? $user->name;
+        $lastLogin = $user->created_at;
 
         $stats = [
             'total_products' => Product::count(),
-            'total_categories' => Category::count(),
-            'total_quotations' => $quotations->count(),
-            'pending_quotations' => $quotations->where('status', 'pending')->count(),
+            'draft_quotations' => $quotations->where('status', 'draft')->count(),
+            'sent_quotations' => $quotations->where('status', 'sent')->count(),
+            'downloads' => $quotations->whereNotNull('pdf_file')->count(),
         ];
 
-        $recentQuotations = $quotations->sortByDesc('created_at')->take(5);
-        $recentProducts = Product::where('status', true)->with(['productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'final_price', 'margin'])])->latest()->take(5)->get();
+        $recentQuotations = $quotations->sortByDesc('created_at')->take(5)->load('items');
+        $recentProducts = Product::where('status', true)
+            ->with(['productPrices' => fn ($q) => $q->where('user_id', $userId)])
+            ->latest()->take(5)->get();
 
-        return view('retailer.dashboard', compact('stats', 'recentQuotations', 'recentProducts'));
+        $notifications = collect()
+            ->merge(
+                $recentQuotations->map(fn ($q) => [
+                    'type' => 'New PDF',
+                    'message' => "Quotation {$q->quotation_number} generated",
+                    'time' => $q->created_at->diffForHumans(),
+                    'icon' => 'document-text',
+                ])
+            )
+            ->merge(
+                $recentProducts->map(fn ($p) => [
+                    'type' => 'New Product',
+                    'message' => $p->product_title,
+                    'time' => $p->created_at->diffForHumans(),
+                    'icon' => 'cube',
+                ])
+            )
+            ->sortByDesc(fn ($n) => $n['time'])
+            ->take(5);
+
+        return view('retailer.dashboard', compact(
+            'stats', 'recentQuotations', 'recentProducts', 'notifications',
+            'companyName', 'lastLogin', 'user'
+        ));
     }
 }

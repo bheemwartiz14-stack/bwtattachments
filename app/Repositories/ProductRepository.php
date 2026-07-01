@@ -78,6 +78,9 @@ class ProductRepository
             ->when(!empty($filters['connection']), fn ($q) =>
                 $q->whereIn('connection_id', (array) $filters['connection'])
             )
+            ->when(!empty($filters['machine_class']), fn ($q) =>
+                $q->where('machine_class', $filters['machine_class'])
+            )
             ->when(isset($filters['status']) && $filters['status'] !== '', function ($q) use ($filters) {
                 if ($filters['status'] === 'published' || $filters['status'] == 1) {
                     $q->where('status', 1);

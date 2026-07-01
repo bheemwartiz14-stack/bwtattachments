@@ -25,7 +25,7 @@
         @endif
 
         <form method="GET" action="{{ route('admin.products.index') }}" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
                 <div class="lg:col-span-2">
                     <label class="block text-xs font-medium text-slate-500 dark:text-neutral-400 mb-1">Search</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name or code..." class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500">
@@ -56,6 +56,10 @@
                             <option value="{{ $id }}" @selected(request('connection') == $id)>{{ $name }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-neutral-400 mb-1">Machine Class (t)</label>
+                    <input type="text" name="machine_class" value="{{ request('machine_class') }}" placeholder="e.g. 22, 30, 45" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500">
                 </div>
             </div>
             <div class="flex flex-wrap items-center justify-between gap-3 mt-4">

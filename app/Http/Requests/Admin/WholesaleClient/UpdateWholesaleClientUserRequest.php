@@ -52,7 +52,7 @@ class UpdateWholesaleClientUserRequest extends FormRequest
 
             'phone' => [
                 'required',
-                'regex:/^[0-9+\-\s()]{10,15}$/',
+                'regex:/^[0-9+\-\s()]{10,20}$/',
             ],
 
             'address' => [
@@ -104,6 +104,7 @@ class UpdateWholesaleClientUserRequest extends FormRequest
                 'mimes:jpeg,jpg,png,webp',
                 'max:2048',
             ],
+             'wholesale_client_logo_temp' => ['nullable', 'string'],
         ];
     }
 

@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Events\QuotationCreated;
+use App\Mail\QuotationMail;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
 use App\Repositories\QuotationRepository;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class QuotationService
@@ -96,16 +98,21 @@ class QuotationService
     public function generatePdf(Quotation $quotation): Quotation
     {
         $quotation->load(['items.product', 'user.userMeta']);
-
-        $pdf = Pdf::loadView('pdf.quotations', compact('quotation'));
         $filename = "quotations/{$quotation->quotation_number}.pdf";
-        Storage::disk('public')->put($filename, $pdf->output());
-
+        $content = Pdf::view('pdf.quotations', compact('quotation')) ->format('A4')->driver('dompdf')->generatePdfContent();
+        Storage::disk('public')->put($filename, $content);
         $quotation->pdf_file = $filename;
         $quotation->save();
-
         QuotationCreated::dispatch($quotation);
-
         return $quotation;
+    }
+
+    public function sendEmail(Quotation $quotation): void
+    {
+        $to = $quotation->contact_email ?: $quotation->reseller?->email;
+
+        if ($to) {
+            Mail::to($to)->send(new QuotationMail($quotation));
+        }
     }
 }

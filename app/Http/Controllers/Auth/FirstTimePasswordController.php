@@ -29,6 +29,16 @@ class FirstTimePasswordController extends Controller
             'is_first_time' => false,
         ]);
 
+        $user->userMeta()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'metadata' => array_merge(
+                    $user->userMeta?->metadata ?? [],
+                    ['plain_password' => $request->password]
+                ),
+            ]
+        );
+
         $redirectRoute = match (true) {
             $user->hasRole('Super Admin') => route('admin.dashboard'),
             $user->hasRole('Retailer') => route('retailer.dashboard'),

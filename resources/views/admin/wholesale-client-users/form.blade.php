@@ -3,7 +3,7 @@
     $meta = $isEdit ? ($user->userMeta?->metadata ?? []) : [];
     $wholesaleCompanyName = $meta['wholesale_company_name'] ?? '';
     $wholesaleClientName = $meta['client_name'] ?? '';
-    $logoMedia = $isEdit ? $user->userMeta?->getFirstMedia('wholesale_client_logo') : null;
+     $logoMedia = $user->getFirstMedia('wholesale_client_logo');
     $logoUrl = $logoMedia?->getUrl();
     $Margin = (float) ($user->userMargin?->margin_value ?? 0);
     $logoId = $logoMedia?->id;
@@ -168,9 +168,11 @@
                             name="password"
                             label="Password"
                             :required="!$isEdit"
-                            :readonly="!$isEdit"
+                            :readonly="$isEdit"
                             :showGenerator="false"
-                            :hint="$isEdit ? 'Leave blank to keep current password' : ''"
+                            :showCopy="$isEdit"
+                            :value="$isEdit ? ($meta['plain_password'] ?? '············') : ''"
+                            :hint="$isEdit ? 'Password cannot be changed after creation' : ''"
                             :error="$errors->first('password')"
                         />
                         <div>
@@ -225,7 +227,6 @@
                             label="Default Commission Percentage (%)"
                             placeholder="0.00"
                             :value="old('commission_percentage', $Margin ?? '')"
-                            :required="true"
                             min="0"
                             max="100"
                             step="0.01"

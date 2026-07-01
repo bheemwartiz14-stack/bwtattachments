@@ -35,7 +35,12 @@
                         data-dropdown-toggle="user-menu"
                         class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white py-1.5 pe-2.5 ps-1.5 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                         <span class="grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 dark:from-neutral-800 dark:to-neutral-700">
-                            {!! Avatar::create($user->name)->setDimension(32)->setFontSize(14)->toSvg() !!}
+                            @php $avatar = $user->getFirstMedia('avatar'); @endphp
+                            @if($avatar)
+                                <img src="{{ $avatar->getUrl() }}" alt="" class="h-full w-full object-cover">
+                            @else
+                                {!! Avatar::create($user->name)->setDimension(32)->setFontSize(14)->toSvg() !!}
+                            @endif
                         </span>
                         <span class="hidden text-left md:block">
                             <span class="block max-w-32 truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $user->name }}</span>
