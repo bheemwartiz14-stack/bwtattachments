@@ -166,8 +166,18 @@ class UserRepository
     {
         $user = $this->findById($id);
 
-        $user->password = $password;
+        $user->password = bcrypt($password);
         $user->save();
+
+        $user->userMeta()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'metadata' => array_merge(
+                    $user->userMeta?->metadata ?? [],
+                    ['plain_password' => $password]
+                ),
+            ]
+        );
 
         return $user->refresh()->loadMissing(self::RELATIONS);
     }

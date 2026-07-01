@@ -120,66 +120,17 @@
                                 <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Username</dt>
                                 <dd class="mt-1 text-sm font-mono font-medium text-slate-900 dark:text-neutral-100">{{ $user->username }}</dd>
                             </div>
-                            <div>
-                                <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Password</dt>
-                                <dd class="mt-1">
-                                    @php $pwd = $meta['plain_password'] ?? ''; @endphp
-                                    <span class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 font-mono text-sm text-slate-700 dark:bg-neutral-800 dark:text-neutral-300" data-pwd-wrapper>
-                                        <span data-pwd-text class="min-w-[8ch]">{{ $pwd ? str_repeat('•', 12) : '············' }}</span>
-                                        <button type="button" data-pwd-toggle class="rounded-md p-1 text-slate-400 transition-colors hover:bg-slate-200 hover:text-slate-600 dark:hover:bg-neutral-700 dark:hover:text-slate-300" title="Show password">
-                                            <svg data-pwd-eye class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                            <svg data-pwd-eye-off class="h-3.5 w-3.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
-                                        </button>
-                                        <button type="button" data-pwd-copy class="rounded-md p-1 text-slate-400 transition-colors hover:bg-slate-200 hover:text-slate-600 dark:hover:bg-neutral-700 dark:hover:text-slate-300" title="Copy password">
-                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                                        </button>
-                                    </span>
-                                    <script>
-                                        (function() {
-                                            var pwd = @js($pwd);
-                                            var wrapper = document.querySelector('[data-pwd-wrapper]');
-                                            if (!wrapper) return;
-                                            var text = wrapper.querySelector('[data-pwd-text]');
-                                            var toggle = wrapper.querySelector('[data-pwd-toggle]');
-                                            var eye = wrapper.querySelector('[data-pwd-eye]');
-                                            var eyeOff = wrapper.querySelector('[data-pwd-eye-off]');
-                                            var copyBtn = wrapper.querySelector('[data-pwd-copy]');
-                                            toggle.addEventListener('click', function() {
-                                                if (text.dataset.revealed === 'true') {
-                                                    text.textContent = pwd ? '\u2022'.repeat(12) : '\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7';
-                                                    text.dataset.revealed = 'false';
-                                                    eye.classList.remove('hidden');
-                                                    eyeOff.classList.add('hidden');
-                                                    toggle.title = 'Show password';
-                                                } else {
-                                                    text.textContent = pwd || '\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7';
-                                                    text.dataset.revealed = 'true';
-                                                    eye.classList.add('hidden');
-                                                    eyeOff.classList.remove('hidden');
-                                                    toggle.title = 'Hide password';
-                                                }
-                                            });
-                                            copyBtn.addEventListener('click', function() {
-                                                if (!pwd) return;
-                                                var icon = copyBtn.querySelector('svg');
-                                                navigator.clipboard.writeText(pwd).then(function() {
-                                                    icon.classList.replace('text-slate-400', 'text-emerald-500');
-                                                    setTimeout(function() { icon.classList.replace('text-emerald-500', 'text-slate-400'); }, 1500);
-                                                }).catch(function() {
-                                                    var ta = document.createElement('textarea');
-                                                    ta.value = pwd;
-                                                    ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
-                                                    document.body.appendChild(ta);
-                                                    ta.select();
-                                                    document.execCommand('copy');
-                                                    document.body.removeChild(ta);
-                                                    icon.classList.replace('text-slate-400', 'text-emerald-500');
-                                                    setTimeout(function() { icon.classList.replace('text-emerald-500', 'text-slate-400'); }, 1500);
-                                                });
-                                            });
-                                        })();
-                                    </script>
-                                </dd>
+                            <div class="md:col-span-2">
+                                <x-forms.password
+                                    name="password"
+                                    label="Password"
+                                    :value="$meta['plain_password'] ?? ''"
+                                    readonly
+                                    :showGenerator="false"
+                                    :showToggle="true"
+                                    :showCopy="true"
+                                    wrapperClass="w-full"
+                                />
                             </div>
                             <div>
                                 <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Role</dt>
