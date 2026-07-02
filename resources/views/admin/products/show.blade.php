@@ -148,7 +148,7 @@
                         $specs = [
                             'weight' => ['label' => 'Weight (kg)', 'unit' => 'kg'],
                             'width' => ['label' => 'Width', 'unit' => 'mm'],
-                            'volume' => ['label' => 'Volume (m3)', 'unit' => 'm3'],
+                            'volume' => ['label' => 'Volume (m3)', 'unit' => 'm³'],
                             'machine_class' => ['label' => 'Machine class (t)', 'unit' => 't'],
                             'cutting_edge_thickness' => ['label' => 'Cutting edge thickness (mm)', 'unit' => 'mm'],
                             'teeth' => ['label' => 'Teeth', 'unit' => null],

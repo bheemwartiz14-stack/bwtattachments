@@ -88,6 +88,7 @@
                 </div>
 
                 <div class="text-sm text-gray-700 space-y-0.5 mb-4">
+
                   @if($product->machine_class)
                     <p><span class="text-gray-500">Machine Class:</span> {{ $product->machine_class }} t</p>
                   @endif
@@ -95,13 +96,16 @@
                     <p><span class="text-gray-500">Connection:</span> {{ $product->connection->name }}</p>
                   @endif
                   @if($product->weight)
-                    <p><span class="text-gray-500">Weight:</span> {{ $product->weight }} kg</p>
+                   <p>
+        <span class="text-gray-500">Weight:</span>
+        {{ rtrim(rtrim(number_format($product->weight, 2, '.', ''), '0'), '.') }} kg
+    </p>
                   @endif
                   @if($product->width)
-                    <p><span class="text-gray-500">Width:</span> {{ $product->width }} mm</p>
+                    <p><span class="text-gray-500">Width:</span> {{ rtrim(rtrim(number_format($product->width, 2, '.', ''), '0'), '.') }} mm</p>
                   @endif
                   @if($product->volume)
-                    <p><span class="text-gray-500">Volume:</span> {{ $product->volume }} L</p>
+                    <p><span class="text-gray-500">Volume:</span> {{ rtrim(rtrim(number_format($product->volume, 2, '.', ''), '0'), '.') }} m³</p>
                   @endif
                 </div>
 
