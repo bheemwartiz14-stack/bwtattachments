@@ -11,7 +11,7 @@ class AuthService
 {
     public function login(array $credentials, bool $remember = false): bool
     {
-        $login = $credentials['indenify'] ?? $credentials['login'] ?? null;
+        $login = $credentials['login'];
         $password = $credentials['password'];
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 

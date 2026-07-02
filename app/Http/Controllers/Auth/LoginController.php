@@ -23,34 +23,27 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request): RedirectResponse
     {
-        $credentials = $request->only('indenify', 'password');
+        $credentials = $request->only('login', 'password');
         $remember = $request->boolean('remember');
 
         $loginStatus = $this->authService->login($credentials, $remember);
-
         if (! $loginStatus) {
             return back()
                 ->withErrors([
-                    'identify' => 'The provided credentials do not match our records.',
+                    'login' => 'The provided credentials do not match our records.',
                 ])
-                ->onlyInput('identify');
+                ->onlyInput('login');
         }
-
         $request->session()->regenerate();
-
         $user = auth()->user();
 
-        // Super Admin Dashboard
         if ($user->hasRole('Super Admin')) {
             return redirect()->route('admin.dashboard');
         }
-
-        // Retailer Dashboard
         if ($user->hasRole('Retailer')) {
             return redirect()->route('retailer.dashboard');
         }
 
-        // Client Dashboard (Wholesale Client and others)
         return redirect()->route('client.dashboard');
     }
 

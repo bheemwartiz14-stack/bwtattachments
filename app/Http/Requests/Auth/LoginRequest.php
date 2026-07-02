@@ -15,7 +15,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'indenify' => ['required', 'string'],
+            'login' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -23,7 +23,7 @@ class LoginRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'indenify' => 'email or username',
+            'login' => 'email or username',
         ];
     }
 }
