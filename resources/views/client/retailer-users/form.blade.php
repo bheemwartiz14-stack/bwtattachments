@@ -1,6 +1,6 @@
 @php
     $isEdit = isset($user);
-    $retailerClientName = $isEdit ? ($user->userMeta?->metadata['client_name'] ?? '') : '';
+    $meta = $meta ?? ($user->userMeta?->metadata ?? []);
     $logoUrl = $isEdit ? $user->getFirstMediaUrl('retailer_client_logo') : null;
     $commission = $isEdit ? ($user->userMargin?->margin_value ?? '') : '';
 @endphp
@@ -36,6 +36,80 @@
             @csrf
             @if($isEdit) @method('PUT') @endif
 
+             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+                <div class="flex items-center gap-3 border-b border-slate-100 px-8 py-5 dark:border-neutral-800">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/30">
+                        <svg class="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21h10.5" /></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Company Details</h2>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400">Business information and registration</p>
+                    </div>
+                </div>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
+                        <x-forms.input
+                            name="company_name"
+                            label="Company Name"
+                            placeholder="Acme Corp Ltd"
+                            :value="$meta['company_name'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('company_name')"
+                        />
+                        <x-forms.input
+                            name="vat_number"
+                            label="VAT Number"
+                            placeholder="GB123456789"
+                            :value="$meta['vat_number'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('vat_number')"
+                        />
+                        <x-forms.input
+                            name="address"
+                            label="Address"
+                            placeholder="123 Business Street"
+                            :value="$meta['address'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('address')"
+                        />
+                        <x-forms.input
+                            name="postal_code"
+                            label="Postal Code"
+                            placeholder="SW1A 1AA"
+                            :value="$meta['postal_code'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('postal_code')"
+                        />
+                        <x-forms.input
+                            name="city"
+                            label="City"
+                            placeholder="London"
+                            :value="$meta['city'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('city')"
+                        />
+                        <x-forms.input
+                            name="country"
+                            label="Country"
+                            placeholder="United Kingdom"
+                            :value="$meta['country'] ?? ''"
+                            :required="true"
+                            :error="$errors->first('country')"
+                        />
+                        <x-forms.input
+                            name="website"
+                            label="Website"
+                            type="url"
+                            placeholder="https://acme.com"
+                            :value="$meta['website'] ?? ''"
+                            :required="false"
+                            :hint="'Optional'"
+                            :error="$errors->first('website')"
+                        />
+                    </div>
+                </div>
+            </div>
+
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
                 <div class="flex items-center gap-3 border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
                     <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-neutral-800">
@@ -45,6 +119,7 @@
                 </div>
                 <div class="p-8">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
+
                         <x-forms.input
                             name="name"
                             label="Full Name"
@@ -126,22 +201,10 @@
                     <h2 class="text-base font-semibold text-slate-900 dark:text-white">Retailer Profile</h2>
                 </div>
                 <div class="p-8">
-                    <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
-                        <x-forms.input
-                            name="retailer_client_name"
-                            label="Retailer Client Name"
-                            placeholder="Enter retailer client name"
-                            :value="$retailerClientName"
-                            :required="true"
-                            :error="$errors->first('retailer_client_name')"
-                        />
-                        <x-forms.image-dropzone
-                            name="retailer_client_logo"
-                            :existingImageUrl="$logoUrl"
+                    <x-forms.image-dropzone name="retailer_client_logo"    :existingImageUrl="$logoUrl"
                              label="Retailer Client Logo"
                             accept="image/jpeg,image/png,image/webp"
                             hint="PNG, JPG or WebP (Max. 2MB)" />
-                    </div>
                 </div>
             </div>
 

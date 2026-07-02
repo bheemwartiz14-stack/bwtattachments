@@ -6,6 +6,7 @@
         ['label' => $product->product_code]
     ]" />
 
+
     @if(session('success'))
         <div class="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-300">
             {{ session('success') }}
@@ -59,11 +60,7 @@
                         @endif
                     </div>
                     <div class="mt-6 flex items-center gap-3">
-                        <a href="{{ route('admin.products.edit', $product) }}" class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                            Edit Product
-                        </a>
-                        <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white/80 shadow-sm transition-all hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30">
+                        <a href="{{ route('client.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white/80 shadow-sm transition-all hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                             Back to List
                         </a>
@@ -79,8 +76,8 @@
                 {{-- KEY STATS ROW --}}
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">DDP Price</p>
-                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($product->ddp_price ?? 0, 2) }}</p>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">{{ $userPrice ? 'Your Retailer Price' : 'DDP Price' }}</p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($displayPrice, 2) }}</p>
                     </div>
                     <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Weight</p>
@@ -176,7 +173,6 @@
                         @endforeach
                     </div>
                 </div>
-
             </div>
 
             {{-- RIGHT COLUMN --}}
@@ -256,32 +252,6 @@
                         </a>
                     </div>
                 @endif
-
-                {{-- QUICK ACTIONS --}}
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                    <div class="mb-4 flex items-center gap-2.5 border-b border-slate-100 pb-4 dark:border-neutral-800">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
-                            <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
-                    </div>
-                    <div class="space-y-2">
-                        <a href="{{ route('admin.products.edit', $product) }}"
-                            class="flex items-center gap-3 rounded-xl p-3 text-sm font-medium text-slate-700 transition-colors hover:bg-emerald-50 hover:text-emerald-700 dark:text-neutral-300 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400">
-                            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                            Edit Product
-                        </a>
-                        <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="flex w-full items-center gap-3 rounded-xl p-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                Delete Product
-                            </button>
-                        </form>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

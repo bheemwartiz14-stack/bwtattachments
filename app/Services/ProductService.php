@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Events\UpdatedProductMarginForAllUsersByProduct;
 use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
@@ -47,7 +46,6 @@ class ProductService
             $product = $this->productRepository->create($data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
-            // event(new UpdatedProductMarginForAllUsersByProduct($product));
             return $product->load('media');
         });
     }
@@ -66,9 +64,6 @@ class ProductService
             $this->cleanupTemp($media);
 
             $newPrice = (float) ($product->ddp_price ?? 0);
-            if ($oldPrice !== $newPrice) {
-                // event(new UpdatedProductMarginForAllUsersByProduct($product));
-            }
             return $product->load('media');
         });
     }
@@ -114,6 +109,11 @@ class ProductService
     public function findByConnection(string $connectionId): Collection
     {
         return $this->productRepository->findByConnection($connectionId);
+    }
+
+    public function paginateActiveProductsForUser(array $filters, int $perPage, $userId = null): LengthAwarePaginator
+    {
+        return $this->productRepository->paginateActiveProductsForUser($filters, $perPage, $userId);
     }
 
     private function extractMedia(array &$data): array

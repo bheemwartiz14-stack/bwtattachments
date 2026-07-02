@@ -25,7 +25,7 @@
                 <div class="shrink-0 w-full md:w-80 md:h-auto bg-slate-800/50">
                     @if($product->getFirstMediaUrl('images'))
                         <div class="aspect-[3/2] md:aspect-auto md:h-full">
-                            <img src="{{ $product->getFirstMediaUrl('images', 'large') }}" class="w-full h-full object-cover">
+                            <img src="{{ $product->getFirstMediaUrl('images', 'large') }}" class="w-full h-full object-contain p-4">
                         </div>
                     @else
                         <div class="flex h-full w-full items-center justify-center">
@@ -221,7 +221,7 @@
                                     <div class="shrink-0 w-20 aspect-[3/2] rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:opacity-80 {{ $index === 0 ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-slate-200 dark:border-neutral-700' }}"
                                          data-img-src="{{ $media->getUrl() }}"
                                          onclick="switchAdminImage(this, '{{ $media->getUrl() }}', '{{ $media->getUrl() }}')">
-                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
+                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
                                     </div>
                                 @endforeach
                             </div>

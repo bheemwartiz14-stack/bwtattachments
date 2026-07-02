@@ -23,11 +23,6 @@
             ['label' => 'Subcategories', 'route' => 'admin.subcategories.index', 'pattern' => 'admin.subcategories.*'],
             ['label' => 'Connections', 'route' => 'admin.connections.index', 'pattern' => 'admin.connections.*'],
             ['label' => 'Products', 'route' => 'admin.products.index', 'pattern' => 'admin.products.*'],
-            ['label' => 'Contact Messages', 'route' => 'admin.contact-list.index', 'pattern' => 'admin.contact-list.*'],
-            ['label' => 'Site Settings', 'icon' => 'heroicon-o-cog-6-tooth',
-                'children' => [
-                ['label' => 'General Setting', 'route' => 'admin.settings.general', 'pattern' => 'admin.settings.general'],
-            ]],
         ];
     } elseif ($user->hasRole('Wholesale Client')) {
         $sidebarItems = [
@@ -40,8 +35,7 @@
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'retailer.dashboard', 'pattern' => 'retailer.dashboard'],
             ['label' => 'Products', 'route' => 'retailer.products.index', 'pattern' => 'retailer.products.*'],
-            ['label' => 'Quotations', 'route' => 'retailer.quotations.index', 'pattern' => 'retailer.quotations.*'],
-            ['label' => 'Profile', 'route' => 'retailer.profile.edit', 'pattern' => 'retailer.profile.*'],
+
         ];
     } else {
         $sidebarItems = [];

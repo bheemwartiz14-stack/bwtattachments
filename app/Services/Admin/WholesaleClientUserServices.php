@@ -2,16 +2,18 @@
 declare(strict_types=1);
 
 namespace App\Services\Admin;
-
-use App\Events\UpdateProductMarginByWholesaleAccounts;
+use App\Data\UserData;
+use App\Events\UpdateUserMargins;
 use App\Events\WholesaleClientsRegistered;
 use App\Services\UserService;
+use App\Traits\ExtractsUserMeta;
 use App\Traits\ResolvesTempFiles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class WholesaleClientUserServices
 {
+    use ExtractsUserMeta;
     use ResolvesTempFiles;
     public function __construct(
         protected UserService $userService,
@@ -24,8 +26,8 @@ class WholesaleClientUserServices
         $meta['plain_password'] = $plainPassword;
 
         $user = $this->userService->create($data);
-        $this->saveMargin($user, $margin);
-        $userMeta = $this->saveMeta($user, $meta);
+        $this->saveMargin($user, (float) $margin, 'wholesale');
+        $this->saveMeta($user, $meta);
 
         $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
         if ($logo) {
@@ -40,15 +42,14 @@ class WholesaleClientUserServices
         return DB::transaction(function () use ($id, $data) {
             $user = $this->userService->update($id, $data);
             [$meta, $margin] = $this->extract($data);
-            $this->saveMargin($user, $margin);
             $this->saveMeta($user, $meta);
-
+            $this->saveMargin($user, (float) $margin, 'wholesale');
             $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
             if ($logo) {
                 $user->clearMediaCollection('wholesale_client_logo');
                 $user->addMedia($logo)->toMediaCollection('wholesale_client_logo');
             }
-
+            $this->dispatchMarginEvent($user, (float) $margin);
             return $user;
         });
     }
@@ -68,43 +69,18 @@ class WholesaleClientUserServices
         return $this->userService->delete($id);
     }
 
-    /* ---------------- Helpers ---------------- */
-
-    private function extract(array &$data): array
+       private function dispatchMarginEvent(Model $user, float $margin): void
     {
-        $meta = [
-            'wholesale_company_name' => $data['wholesale_company_name'] ?? null,
-            'address' => $data['address'] ?? null,
-            'postal_code' => $data['postal_code'] ?? null,
-            'city' => $data['city'] ?? null,
-            'country' => $data['country'] ?? null,
-            'website' => $data['website'] ?? null,
-            'vat_number' => $data['vat_number'] ?? null,
-        ];
-        $margin = $data['commission_percentage'] ?? 0;
-
-        unset(
-            $data['wholesale_company_name'],
-            $data['commission_percentage']
+        $dispytechdata = new UserData(
+            user_id: $user->id,
+            parent_id: $user->parent_id,
+            role_name: $user->roles->pluck('name')->first(),
+            name: $user->name,
+            margin_type: 'percentage',
+            type: 'wholesale',
+            margin_value: $margin,
         );
-
-        return [$meta, $margin];
+       event(new UpdateUserMargins($dispytechdata));
     }
 
-    private function saveMeta(Model $user, array $meta): mixed
-    {
-        return $user->userMeta()->updateOrCreate(
-            ['user_id' => $user->id],
-            ['metadata' => array_merge($user->userMeta?->metadata ?? [], $meta)]
-        );
-    }
-
-    private function saveMargin(Model $user, $value): void
-    {
-        $user->userMargin()->updateOrCreate(
-            ['user_id' => $user->id],
-            ['type' => 'wholesale', 'margin_type' => 'percentage', 'margin_value' => $value ?? 0]
-        );
-        event(new UpdateProductMarginByWholesaleAccounts($user->id, 'percentage', (float) $value));
-    }
 }

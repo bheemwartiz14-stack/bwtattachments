@@ -18,7 +18,7 @@
                         <div class="relative aspect-[3/2] bg-slate-100">
                             @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
                             @if($featureImage)
-                                <img src="{{ $featureImage }}" alt="{{ $product->product_title ?? $product->description ?? '' }}" id="mainProductImage" class="absolute inset-0 w-full h-full object-cover">
+                                <img src="{{ $featureImage }}" alt="{{ $product->product_title ?? $product->description ?? '' }}" id="mainProductImage" class="absolute inset-0 w-full h-full object-contain p-4">
                             @else
                                 <div class="absolute inset-0 flex items-center justify-center">
                                     <div class="text-center">
@@ -35,7 +35,7 @@
                                 @foreach($gallery as $media)
                                     <div class="w-20 rounded-lg border-2 overflow-hidden aspect-[3/2] {{ $loop->first ? 'border-emerald-500 bg-white' : 'border-transparent bg-white/80 opacity-60 hover:opacity-100' }} cursor-pointer transition-opacity"
                                          onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl('large') }}';this.closest('.flex').querySelectorAll('div').forEach(d=>d.classList.remove('border-emerald-500'));this.classList.add('border-emerald-500')">
-                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
+                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
                                     </div>
                                 @endforeach
                             </div>

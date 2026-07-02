@@ -56,7 +56,7 @@
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">User</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Email</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Phone</th>
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Client Name</th>
+                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Company</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Role</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Status</th>
                             <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
@@ -67,17 +67,24 @@
                             <tr class="transition-colors hover:bg-slate-50/80 dark:hover:bg-neutral-800/30">
                                 <td class="px-5 py-4">
                                     <div class="flex items-center gap-3">
+                                          <a href="{{ route('client.retailer-users.show', $user) }}" title="View"
+                                                class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
+
                                         <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
                                             {!! Avatar::create($user->name)->setDimension(36)->setFontSize(14)->toSvg() !!}
                                         </div>
-                                        <span class="font-medium text-slate-900 dark:text-white">{{ $user->name }}</span>
+                                           </a>
+                                        <a href="{{ route('client.retailer-users.show', $user) }}"
+                                        class="truncate text-sm font-medium text-slate-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400">
+                                            {{ $user->name }}
+                                        </a>
                                     </div>
                                 </td>
                                 <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->email }}</td>
                                 <td class="px-5 py-4 text-slate-600 dark:text-neutral-400">{{ $user->phone ?? '—' }}</td>
                                 <td class="px-5 py-4">
-                                    @if($user->userMeta && !empty($user->userMeta->metadata['client_name']))
-                                        <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $user->userMeta->metadata['client_name'] }}</span>
+                                    @if($user->userMeta && !empty($user->userMeta->metadata['company_name']))
+                                        <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $user->userMeta->metadata['company_name'] }}</span>
                                     @else
                                         <span class="text-sm text-slate-400">—</span>
                                     @endif
@@ -106,6 +113,10 @@
                                 </td>
                                 <td class="px-5 py-4 text-right">
                                         <div class="flex items-center justify-end gap-1">
+                                            <a href="{{ route('client.retailer-users.show', $user) }}" title="View"
+                                                class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            </a>
                                             <a href="{{ route('client.retailer-users.edit', $user) }}" title="Edit"
                                                 class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>

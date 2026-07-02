@@ -21,73 +21,26 @@ class StoreRetailerClientUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'email' => [
-                'required',
-                'email:rfc,dns',
-                'max:255',
-                'unique:users,email',
-            ],
-
-            'username' => [
-                'required',
-                'string',
-                'max:255',
-                'unique:users,username',
-            ],
-
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-            ],
-
-            'roles' => [
-                'required',
-                'string',
-            ],
-
-            'retailer_client_name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'parent_id' => [
-                'required',
-                'string',
-                'exists:users,id',
-            ],
-
-            'phone' => [
-                'required',
-                'string',
-                'regex:/^[0-9+\-\s()]{10,20}$/',
-            ],
-
-            'retailer_client_logo' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:2048',
-            ],
-
-            'commission_percentage' => [
-                'numeric',
-                'min:0',
-                'max:100',
-            ],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
+            'password' => ['required', 'string', 'min:8'],
+            'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{10,20}$/'],
+            'parent_id' => ['required', 'string', 'exists:users,id'],
+            'roles' => ['required', 'string'],
+            'retailer_client_logo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            'commission_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'company_name' => ['required', 'string', 'max:255'],
+            'vat_number' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'max:20'],
+            'city' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:255'],
+            'website' => ['nullable', 'url', 'max:255'],
+             'retailer_client_logo_temp' => ['nullable', 'string'],
         ];
     }
 
-    /**
-     * Custom validation messages.
-     */
     public function messages(): array
     {
         return [
@@ -99,25 +52,28 @@ class StoreRetailerClientUserRequest extends FormRequest
             'username.unique' => 'This username is already taken.',
             'password.required' => 'The password field is required.',
             'password.min' => 'The password must be at least 8 characters.',
-            'password.confirmed' => 'The password confirmation does not match.',
-            'roles.required' => 'Please select a role.',
-            'retailer_client_name.required' => 'The retailer name is required.',
             'phone.required' => 'The phone number is required.',
             'phone.regex' => 'Please enter a valid phone number.',
             'retailer_client_logo.image' => 'The uploaded file must be an image.',
             'retailer_client_logo.mimes' => 'The logo must be a jpeg, jpg, png, or webp file.',
             'retailer_client_logo.max' => 'The logo may not be greater than 2MB.',
+            'company_name.required' => 'The company name field is required.',
+            'vat_number.required' => 'The VAT number field is required.',
+            'address.required' => 'The address field is required.',
+            'postal_code.required' => 'The postal code field is required.',
+            'city.required' => 'The city field is required.',
+            'country.required' => 'The country field is required.',
+            'website.url' => 'Please enter a valid URL.',
         ];
     }
 
-    /**
-     * Custom attribute names.
-     */
     public function attributes(): array
     {
         return [
-            'retailer_client_name' => 'retailer name',
             'retailer_client_logo' => 'retailer logo',
+            'company_name' => 'company name',
+            'vat_number' => 'VAT number',
+            'postal_code' => 'postal code',
         ];
     }
 }
