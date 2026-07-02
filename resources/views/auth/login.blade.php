@@ -6,7 +6,7 @@
                         @php $settings = app(\App\Settings\GeneralSettings::class); @endphp
                         <div class="inline-flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-sm">
                             <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white/20">
-                                <img src="{{ $settings->logo_path ? asset($settings->logo_path) : asset('images/bwt-logo.jpg') }}" alt="BWT" class="h-8 w-8 object-contain brightness-0 invert">
+                              <img src="{{ $settings->logo_path ? asset($settings->logo_path) : asset('images/bwt-logo.jpg') }}" alt="BWT Logo" class="h-10 w-13 object-contain">
                             </div>
                         <div>
                             <p class="text-sm font-bold uppercase tracking-wide">BWT</p>
@@ -15,7 +15,6 @@
                     </div>
 
                     <div class="mt-16 max-w-md">
-                        <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300">B2B Wholesale</p>
                         <h1 class="mt-4 text-4xl font-bold tracking-tight">Manage your attachment inventory from one focused dashboard.</h1>
                         <p class="mt-5 text-base leading-7 text-slate-300">Track products, quotations, clients, and daily sales performance after sign in.</p>
                     </div>
