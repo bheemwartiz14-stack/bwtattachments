@@ -40,11 +40,6 @@ class LoginController extends Controller
 
         $user = auth()->user();
 
-        // First-time login
-        if ($user->is_first_time) {
-            return redirect()->route('first-time-password.form');
-        }
-
         // Super Admin Dashboard
         if ($user->hasRole('Super Admin')) {
             return redirect()->route('admin.dashboard');

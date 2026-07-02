@@ -46,7 +46,6 @@ class ResetPasswordController extends Controller
                 // Update user's password
                 $user->forceFill([
                     'password'      => Hash::make($password),
-                    'is_first_time' => false,
                 ])->save();
                 // Get existing metadata
                 $metadata = $user->userMeta?->metadata ?? [];

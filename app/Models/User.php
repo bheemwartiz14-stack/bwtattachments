@@ -20,7 +20,6 @@ use Spatie\Permission\Traits\HasRoles;
     'email',
     'phone',
     'password',
-    'is_first_time',
     'parent_id',
 ])]
 #[Hidden([
@@ -54,7 +53,6 @@ class User extends Authenticatable implements HasMedia
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => 'boolean',
-            'is_first_time' => 'boolean',
         ];
     }
 

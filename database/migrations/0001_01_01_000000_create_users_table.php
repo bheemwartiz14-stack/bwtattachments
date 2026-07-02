@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone', 30)->nullable();
             $table->boolean('status')->default(true);
-            $table->boolean('is_first_time')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

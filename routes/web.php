@@ -46,11 +46,8 @@ Route::middleware('guest')->group(function () {
 // Authenticated routes
 Route::post('/upload-temp', [FileController::class, 'store'])->name('upload-temp')->middleware('auth');
 Route::delete('/media/{media}', [FileController::class, 'destroy'])->name('media.destroy')->middleware('auth');
-Route::middleware(['auth', 'first.time'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-    Route::get('/first-time-password', [App\Http\Controllers\Auth\FirstTimePasswordController::class, 'showForm'])->name('first-time-password.form');
-    Route::post('/first-time-password', [App\Http\Controllers\Auth\FirstTimePasswordController::class, 'update'])->name('first-time-password.update');
 
     // Admin routes
     Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {

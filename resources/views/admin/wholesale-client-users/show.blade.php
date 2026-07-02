@@ -27,7 +27,7 @@
                             <h1 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-neutral-100">{{ $user->name }}</h1>
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                {{ $user->is_first_time ? 'First Time Login' : 'Active' }}
+                                Active
                             </span>
                         </div>
                         <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">{{ $meta['wholesale_company_name'] ?? 'No company' }} &middot; {{ $user->email }}</p>
@@ -143,9 +143,9 @@
                             <div>
                                 <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Status</dt>
                                 <dd class="mt-1">
-                                    <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {{ $user->is_first_time ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' }}">
-                                        <span class="h-1.5 w-1.5 rounded-full {{ $user->is_first_time ? 'bg-amber-500' : 'bg-emerald-500' }}"></span>
-                                        {{ $user->is_first_time ? 'First Time Login' : 'Active' }}
+                                    <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                        Active
                                     </span>
                                 </dd>
                             </div>

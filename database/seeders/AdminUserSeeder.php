@@ -19,7 +19,6 @@ class AdminUserSeeder extends Seeder
                 'username' => env('ADMIN_USERNAME', 'admin'),
                 'password' => bcrypt(env('ADMIN_PASSWORD', 'password')),
                 'status' => true,
-                'is_first_time' => false,
                 'email_verified_at' => now(),
             ]
         );
