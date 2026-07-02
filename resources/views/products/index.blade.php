@@ -66,7 +66,7 @@
                             <div class="product-image">
                                 @php $img = $product->getFirstMediaUrl('images', 'small'); @endphp
                                 @if($img)
-                                    <img src="{{ $img }}" alt="{{ $product->product_title }}" class="aspect-[3/2] w-full object-cover">
+                                    <img src="{{ $img }}" alt="{{ $product->product_title }}" class="aspect-[3/2] w-full object-contain">
                                 @else
                                     <div class="aspect-[3/2] w-full flex items-center justify-center bg-slate-100 text-slate-400 text-sm">Product Image</div>
                                 @endif
