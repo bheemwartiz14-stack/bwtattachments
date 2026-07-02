@@ -48,10 +48,12 @@
 
   {{ $slot }}
 
-  <footer class="bg-black text-white text-center py-5 text-sm">
-    &copy; BWT | Wholesale B2B BWT
+  <footer class="bg-slate-900 text-slate-400 text-center py-8 text-sm mt-12">
+    <div class="max-w-[1700px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <span class="font-semibold text-white text-base">BWT</span>
+      <p>&copy; {{ date('Y') }} BWT | Wholesale B2B Attachments. All rights reserved.</p>
+    </div>
   </footer>
-
 
   @livewireScripts
 </body>

@@ -1,159 +1,178 @@
 <x-layouts.public>
     <x-slot:title>Products - BWT</x-slot:title>
 
-    <section class="hero">
-        <h1>Attachment Product Database</h1>
-        <p>Browse Excavator Attachments, Wheel Loader Attachments and Wear Parts. Login required to view prices and download technical PDFs.</p>
-    </section>
+    <main class="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+        <div class="max-w-[1700px] mx-auto px-6 lg:px-8 py-8">
 
-    <div class="container">
-        <aside class="sidebar">
-            <h3>Filters</h3>
+            {{-- Hero --}}
+            <div class="text-center mb-10">
+                <h1 class="text-3xl lg:text-4xl font-bold text-slate-900">Attachment Product Database</h1>
+                <p class="mt-3 text-slate-500 max-w-2xl mx-auto leading-relaxed">
+                    Browse Excavator Attachments, Wheel Loader Attachments and Wear Parts. Login required to view prices and download technical PDFs.
+                </p>
+            </div>
 
-            <form method="GET" action="{{ route('public.products.index') }}" id="filter-form">
-                <div class="filter-group">
-                    <strong>Category</strong><br><br>
-                    @foreach($categories ?? [] as $id => $name)
-                        <label>
-                            <input type="radio" name="category" value="{{ $id }}" class="category-radio" {{ (string)request('category') === (string)$id ? 'checked' : '' }}>
-                            {{ $name }}
-                        </label>
-                    @endforeach
-                </div>
+            <div class="flex flex-col lg:flex-row gap-8">
 
-                <div class="filter-group">
-                    <strong>Sub Category</strong><br><br>
-                    <div id="subcategory-list">
-                        @foreach($subcategories ?? [] as $subcategory)
-                            <label class="subcategory-item" data-category-id="{{ $subcategory->category_id }}">
-                                <input type="checkbox" name="subcategory[]" value="{{ $subcategory->id }}" {{ in_array((string)$subcategory->id, (array)request('subcategory', [])) ? 'checked' : '' }}>
-                                {{ $subcategory->name }}
-                            </label>
-                        @endforeach
+                {{-- Sidebar Filters --}}
+                <aside class="lg:w-72 flex-shrink-0">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 sticky top-6 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold text-slate-900">Filters</h3>
+                            @if(request()->anyFilled(['category', 'subcategory', 'connection', 'search']))
+                                <a href="{{ route('public.products.index') }}" class="text-xs font-medium text-red-500 hover:text-red-600 no-underline">Clear all</a>
+                            @endif
+                        </div>
+
+                        <form method="GET" action="{{ route('public.products.index') }}" id="filter-form" class="space-y-5">
+
+                            {{-- Category --}}
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Category</label>
+                                <div class="space-y-1.5">
+                                    @foreach($categories ?? [] as $id => $name)
+                                        <label class="flex items-center gap-2.5 cursor-pointer group">
+                                            <input type="radio" name="category" value="{{ $id }}"
+                                                   class="category-radio w-4 h-4 text-bwtblue border-slate-300 focus:ring-bwtblue/30"
+                                                   {{ (string)request('category') === (string)$id ? 'checked' : '' }}>
+                                            <span class="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">{{ $name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            {{-- Subcategory --}}
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Subcategory</label>
+                                <div id="subcategory-list" class="space-y-1.5 max-h-48 overflow-y-auto scrollbar-thin">
+                                    @foreach($subcategories ?? [] as $subcategory)
+                                        <label class="subcategory-item flex items-center gap-2.5 cursor-pointer group"
+                                               data-category-id="{{ $subcategory->category_id }}">
+                                            <input type="checkbox" name="subcategory[]" value="{{ $subcategory->id }}"
+                                                   class="w-4 h-4 text-bwtblue border-slate-300 rounded focus:ring-bwtblue/30"
+                                                   {{ in_array((string)$subcategory->id, (array)request('subcategory', [])) ? 'checked' : '' }}>
+                                            <span class="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">{{ $subcategory->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            {{-- Connection --}}
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Connection</label>
+                                <div class="space-y-1.5">
+                                    @foreach($connections ?? [] as $id => $name)
+                                        <label class="flex items-center gap-2.5 cursor-pointer group">
+                                            <input type="checkbox" name="connection[]" value="{{ $id }}"
+                                                   class="w-4 h-4 text-bwtblue border-slate-300 rounded focus:ring-bwtblue/30"
+                                                   {{ in_array($id, (array)request('connection', [])) ? 'checked' : '' }}>
+                                            <span class="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">{{ $name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <button type="submit"
+                                    class="w-full bg-bwtblue hover:bg-bwtblue2 text-white text-sm font-semibold py-2.5 rounded-xl transition-all duration-200 cursor-pointer">
+                                Apply Filters
+                            </button>
+                        </form>
                     </div>
+                </aside>
+
+                {{-- Products --}}
+                <div class="flex-1 min-w-0">
+
+                    {{-- Search Bar --}}
+                    <form method="GET" action="{{ route('public.products.index') }}"
+                          class="bg-white rounded-2xl border border-slate-200 p-4 mb-6 flex gap-3 items-center shadow-sm">
+                        <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Search product code or description..."
+                               class="flex-1 border-0 bg-transparent text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-0">
+                        <button type="submit"
+                                class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-1.5 rounded-xl transition-colors cursor-pointer">
+                            Search
+                        </button>
+                        @if(request()->anyFilled(['search', 'category', 'subcategory', 'connection']))
+                            <a href="{{ route('public.products.index') }}"
+                               class="text-xs text-slate-400 hover:text-red-500 no-underline transition-colors">Clear</a>
+                        @endif
+                    </form>
+
+                    @if($products->count())
+                        {{-- Results Count --}}
+                        <p class="text-sm text-slate-500 mb-4">{{ $products->total() }} product{{ $products->total() !== 1 ? 's' : '' }} found</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                            @foreach($products as $product)
+                                @php
+                                    $img = $product->getFirstMediaUrl('images', 'small');
+                                @endphp
+                                <x-product-card
+                                    :image="$img"
+                                    :title="$product->product_title ?? $product->product_description ?? 'Product'"
+                                    :code="$product->product_code ?? 'N/A'"
+                                    :category="$product->category?->name"
+                                    :subcategory="$product->subcategory?->name"
+                                    :connectionType="$product->connection?->name"
+                                    :weight="$product->weight ? $product->weight . ' kg' : null"
+                                    :width="$product->width ? $product->width . ' mm' : null"
+                                    :machineClass="$product->machine_class ? $product->machine_class . ' t' : null"
+                                    detailsUrl="{{ route('public.products.show', $product) }}"
+                                />
+                            @endforeach
+                        </div>
+
+                        <div class="mt-8">
+                            {{ $products->links() }}
+                        </div>
+                    @else
+                        <div class="text-center py-20 px-6 bg-white rounded-2xl border border-slate-200">
+                            <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.75v2.25a.75.75 0 01-.75.75h-3m6.75 3l-3 3m0 0l-3-3m3 3V3m-3 16.5h12a.75.75 0 00.75-.75v-12a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v12a.75.75 0 00.75.75z"/>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-1">No products found</h3>
+                            <p class="text-sm text-slate-500">Try adjusting your search or filter criteria.</p>
+                        </div>
+                    @endif
                 </div>
+            </div>
+        </div>
+    </main>
 
-                <div class="filter-group">
-                    <strong>Connection</strong><br><br>
-                    @foreach($connections ?? [] as $id => $name)
-                        <label>
-                            <input type="checkbox" name="connection[]" value="{{ $id }}" {{ in_array($id, (array)request('connection', [])) ? 'checked' : '' }}>
-                            {{ $name }}
-                        </label>
-                    @endforeach
-                </div>
+    <script>
+        (function() {
+            var categoryRadios = document.querySelectorAll('.category-radio');
+            var subcategoryItems = document.querySelectorAll('.subcategory-item');
 
-                <button type="submit" style="width:100%;padding:10px;background:#1d2939;color:white;border:none;border-radius:5px;cursor:pointer;font-size:14px;">Apply Filters</button>
-                @if(request()->anyFilled(['category', 'subcategory', 'connection', 'search']))
-                    <a href="{{ route('public.products.index') }}" style="display:block;text-align:center;margin-top:10px;padding:10px;background:#e74c3c;color:white;border:none;border-radius:5px;text-decoration:none;font-size:14px;">Clear Filters</a>
-                @endif
-            </form>
-        </aside>
+            function filterSubcategories() {
+                var selected = null;
+                categoryRadios.forEach(function(rb) {
+                    if (rb.checked) selected = rb.value;
+                });
 
-        <main class="content">
-            <form method="GET" action="{{ route('public.products.index') }}" class="searchbar">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search product code or description">
-                <button type="submit">Search</button>
-                @if(request()->anyFilled(['search', 'category', 'subcategory', 'connection']))
-                    <a href="{{ route('public.products.index') }}" class="clear-btn">Clear</a>
-                @endif
-            </form>
-
-            @if($products->count())
-                <div class="products">
-                    @foreach($products as $product)
-                        <a href="{{ route('public.products.show', $product) }}" class="product-card">
-                            <div class="product-image">
-                                @php $img = $product->getFirstMediaUrl('images', 'small'); @endphp
-                                @if($img)
-                                    <img src="{{ $img }}" alt="{{ $product->product_title }}" class="aspect-[3/2] w-full object-contain">
-                                @else
-                                    <div class="aspect-[3/2] w-full flex items-center justify-center bg-slate-100 text-slate-400 text-sm">Product Image</div>
-                                @endif
-                            </div>
-                            <div class="product-body">
-                                <div class="product-code">{{ $product->product_code ?? 'N/A' }}</div>
-                                <div>{{ $product->product_title ?? $product->product_description ?? 'Product' }}</div>
-
-                                @if($product->category || $product->subcategory)
-                                    <div>
-                                        @if($product->category)
-                                            <span class="category-tag">{{ $product->category->name }}</span>
-                                        @endif
-                                        @if($product->subcategory)
-                                            <span class="category-tag" style="background:#e6f7ed;">{{ $product->subcategory->name }}</span>
-                                        @endif
-                                    </div>
-                                @endif
-
-                                <div class="specs">
-                                    @if($product->machine_class)
-                                        <div>Machine Class: {{ $product->machine_class }} t</div>
-                                    @endif
-                                    @if($product->connection)
-                                        <div>Connection: {{ $product->connection->name }}</div>
-                                    @endif
-                                    @if($product->weight)
-                                        <div>Weight: {{ $product->weight }} kg</div>
-                                    @endif
-                                    @if($product->width)
-                                        <div>Width: {{ $product->width }} mm</div>
-                                    @endif
-                                    @if($product->volume)
-                                        <div>Volume: {{ $product->volume }} L</div>
-                                    @endif
-                                </div>
-
-                                <div class="product-buttons">
-                                    <span class="view-btn">View Details</span>
-                                </div>
-                            </div>
-                        </a>
-                    @endforeach
-                </div>
-
-                <div class="pagination">
-                    {{ $products->links() }}
-                </div>
-            @else
-                <div style="text-align:center;padding:60px 20px;background:white;border-radius:8px;">
-                    <h3 style="margin-bottom:10px;">No products found</h3>
-                    <p style="color:#666;">Try adjusting your search or filter criteria.</p>
-                </div>
-            @endif
-        </main>
-    </div>
-</x-layouts.public>
-
-<script>
-(function() {
-    var categoryRadios = document.querySelectorAll('.category-radio');
-    var subcategoryItems = document.querySelectorAll('.subcategory-item');
-
-    function filterSubcategories() {
-        var selected = null;
-        categoryRadios.forEach(function(rb) {
-            if (rb.checked) selected = rb.value;
-        });
-
-        subcategoryItems.forEach(function(item) {
-            var catId = item.getAttribute('data-category-id');
-            if (selected === null) {
-                item.style.display = '';
-            } else {
-                item.style.display = selected === catId ? '' : 'none';
-                if (selected !== catId) {
-                    var checkbox = item.querySelector('input[type="checkbox"]');
-                    if (checkbox) checkbox.checked = false;
-                }
+                subcategoryItems.forEach(function(item) {
+                    var catId = item.getAttribute('data-category-id');
+                    if (selected === null) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = selected === catId ? '' : 'none';
+                        if (selected !== catId) {
+                            var checkbox = item.querySelector('input[type="checkbox"]');
+                            if (checkbox) checkbox.checked = false;
+                        }
+                    }
+                });
             }
-        });
-    }
 
-    categoryRadios.forEach(function(rb) {
-        rb.addEventListener('change', filterSubcategories);
-    });
+            categoryRadios.forEach(function(rb) {
+                rb.addEventListener('change', filterSubcategories);
+            });
 
-    filterSubcategories();
-})();
-</script>
+            filterSubcategories();
+        })();
+    </script>
+</x-layouts.public>
