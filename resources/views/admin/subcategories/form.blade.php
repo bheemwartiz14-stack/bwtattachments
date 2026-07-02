@@ -1,7 +1,7 @@
 <x-layouts.app>
     @php $isEdit = isset($subcategory); @endphp
 
-    <x-slot:title>{{ $isEdit ? 'Edit Subcategory' : 'Add Subcategory' }} - Attachment Portal</x-slot:title>
+    <x-slot:title>{{ $isEdit ? 'Edit Subcategory' : 'Add Subcategory' }} - BWT</x-slot:title>
 
     <x-breadcrumb :items="[
         ['label' => 'Admin', 'url' => route('admin.dashboard')],

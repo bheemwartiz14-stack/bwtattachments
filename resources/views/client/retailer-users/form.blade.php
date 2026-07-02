@@ -6,7 +6,7 @@
 @endphp
 
 <x-layouts.app>
-    <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} Retailer User - Attachment Portal</x-slot:title>
+    <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} Retailer User - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Dashboard', 'url' => route('client.dashboard')], ['label' => 'Retailer Users', 'url' => route('client.retailer-users.index')], ['label' => $isEdit ? 'Edit' : 'New']]" />
 
     <div class="space-y-4">

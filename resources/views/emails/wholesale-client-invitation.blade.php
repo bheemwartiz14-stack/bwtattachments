@@ -332,7 +332,7 @@
 
         <!-- FOOTER -->
         <div class="footer">
-            Sent by <strong>Attachment Portal</strong> &bull; This is an automated message<br>
+            Sent by <strong>BWT</strong> &bull; This is an automated message<br>
             If you have any questions, reach out to your account administrator.
         </div>
 

@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Connections - Attachment Portal</x-slot:title>
+    <x-slot:title>Connections - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Connections']]" />
 
     <div class="space-y-6">
@@ -50,7 +50,7 @@
                                         <span class="font-medium text-slate-900 dark:text-white">{{ $connection->name }}</span>
                                     </div>
                                 </td>
-               
+
                                 <td class="px-5 py-4">
                                     @if($connection->status === false || $connection->status === 0)
                                         <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-neutral-800 dark:text-neutral-300">Inactive</span>

@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Create Quotation - Attachment Portal</x-slot:title>
+    <x-slot:title>Create Quotation - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Client Portal', 'url' => route('client.dashboard')], ['label' => 'My Quotations', 'url' => route('client.quotations.index')], ['label' => 'Create Quotation']]" />
 
     @if(session('success'))

@@ -49,7 +49,7 @@
   {{ $slot }}
 
   <footer class="bg-black text-white text-center py-5 text-sm">
-    &copy; BWT | Wholesale B2B Attachment Portal
+    &copy; BWT | Wholesale B2B BWT
   </footer>
 
 

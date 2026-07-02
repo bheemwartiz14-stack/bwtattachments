@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Subcategories - Attachment Portal</x-slot:title>
+    <x-slot:title>Subcategories - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Subcategories']]" />
 
     <div class="space-y-6">

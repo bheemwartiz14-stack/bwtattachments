@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Quotation Builder - Attachment Portal</x-slot:title>
+    <x-slot:title>Quotation Builder - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Client Portal', 'url' => '#'], ['label' => 'Quotation Builder']]" />
 
     <div class="max-w-5xl mx-auto space-y-6">

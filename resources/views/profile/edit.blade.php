@@ -8,7 +8,7 @@
 @endphp
 
 <x-layouts.app>
-    <x-slot:title>Profile Settings - Attachment Portal</x-slot:title>
+    <x-slot:title>Profile Settings - BWT</x-slot:title>
     <x-breadcrumb :items="[
         ['label' => $breadcrumbLabel, 'url' => route($prefix . '.dashboard')],
         ['label' => 'Profile Settings']

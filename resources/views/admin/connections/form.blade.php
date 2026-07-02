@@ -1,7 +1,7 @@
 <x-layouts.app>
     @php $isEdit = isset($connection); @endphp
 
-    <x-slot:title>{{ $isEdit ? 'Edit Connection' : 'Add Connection' }} - Attachment Portal</x-slot:title>
+    <x-slot:title>{{ $isEdit ? 'Edit Connection' : 'Add Connection' }} - BWT</x-slot:title>
 
     <x-breadcrumb :items="[
         ['label' => 'Admin', 'url' => route('admin.dashboard')],

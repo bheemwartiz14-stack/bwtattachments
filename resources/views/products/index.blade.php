@@ -1,5 +1,5 @@
 <x-layouts.public>
-    <x-slot:title>Products - Attachment Portal</x-slot:title>
+    <x-slot:title>Products - BWT</x-slot:title>
 
     <section class="hero">
         <h1>Attachment Product Database</h1>

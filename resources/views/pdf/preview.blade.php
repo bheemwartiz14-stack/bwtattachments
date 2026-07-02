@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Quotation {{ $quotation->number ?? 'Q-001' }} - Attachment Portal</title>
+    <title>Quotation {{ $quotation->number ?? 'Q-001' }} - BWT</title>
     <style>
         @page { margin: 20mm; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -195,7 +195,7 @@
         <div class="logo-area">
             <div class="logo-icon">AP</div>
             <div>
-                <div class="company-name">Attachment Portal</div>
+                <div class="company-name">BWT</div>
                 <div class="company-tagline">Premium B2B Wholesale Attachments</div>
             </div>
         </div>
@@ -304,7 +304,7 @@
     </div>
 
     <div class="footer">
-        <div>Attachment Portal &copy; {{ date('Y') }}</div>
+        <div>BWT &copy; {{ date('Y') }}</div>
         <div>Page 1 of 1</div>
         <div>Generated on {{ date('Y-m-d H:i') }}</div>
     </div>

@@ -1,7 +1,7 @@
 @php $settings = app(\App\Settings\GeneralSettings::class); @endphp
 
 <x-layouts.public>
-  <x-slot:title>Contact Us - BWT Attachment Portal</x-slot:title>
+  <x-slot:title>Contact Us - BWT BWT</x-slot:title>
 
   <section class="bg-gradient-to-b from-bwtblue to-bwtblue2 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">

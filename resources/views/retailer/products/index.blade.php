@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Products - Attachment Portal</x-slot:title>
+    <x-slot:title>Products - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Client Portal', 'url' => route('client.dashboard')], ['label' => 'Products']]" />
 
     @if(session('success'))

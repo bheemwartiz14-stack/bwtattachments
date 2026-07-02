@@ -12,7 +12,7 @@ class GeneralSettingsSeeder extends Seeder
     {
         $settings = app(GeneralSettings::class);
 
-        $settings->site_title = 'BWT Attachment Portal';
+        $settings->site_title = 'BWT BWT';
         $settings->support_email = 'info@bwt-attachments.com';
         $settings->support_phone = '+31 (0) 85 123 4567';
 

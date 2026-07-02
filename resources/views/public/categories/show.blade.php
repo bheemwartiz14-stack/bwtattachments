@@ -1,5 +1,5 @@
 <x-layouts.public>
-  <x-slot:title>{{ $category->name }} - Attachment Portal</x-slot:title>
+  <x-slot:title>{{ $category->name }} - BWT</x-slot:title>
 
   <section class="bg-gradient-to-b from-bwtblue to-bwtblue2 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">

@@ -1,5 +1,5 @@
 <x-layouts.public>
-    <x-slot:title>{{ $product->product_title ?? 'Product Detail' }} - Attachment Portal</x-slot:title>
+    <x-slot:title>{{ $product->product_title ?? 'Product Detail' }} - BWT</x-slot:title>
 
     <main class="bg-gray-100 min-h-screen pt-8 pb-14">
         <div class="max-w-[1700px] mx-auto px-8">
@@ -12,27 +12,53 @@
 
                     <!-- Gallery -->
                     <div class="w-full lg:w-[45%]">
-                        <div class="aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
-                            @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
-                            @if($featureImage)
-                                <img src="{{ $featureImage }}" alt="{{ $product->product_title }}" id="mainProductImage" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">Main Product Image</div>
-                            @endif
-                        </div>
 
-                        @php $gallery = $product->getMedia('gallery'); @endphp
-                        @if($gallery->count() > 0)
-                            <div class="flex gap-3 mt-3">
-                                @foreach($gallery as $media)
-                                    <div class="flex-1 h-20 bg-gray-100 rounded overflow-hidden cursor-pointer border-2 {{ $loop->first ? 'border-bwtblue' : 'border-transparent' }} hover:border-bwtblue transition-colors"
-                                         onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl() }}';document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('border-bwtblue'));this.classList.add('border-bwtblue');">
-                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
+    @php
+        $featureImage = $product->getFirstMediaUrl('images', 'large');
+    @endphp
+
+    <!-- Main Image -->
+    <div class="aspect-[3/2] bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+        @if($featureImage)
+            <img
+                src="{{ $featureImage }}"
+                alt="{{ $product->product_title }}"
+                id="mainProductImage"
+                class="max-w-full max-h-full object-contain p-2 transition-all duration-300">
+        @else
+            <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                Main Product Image
+            </div>
+        @endif
+    </div>
+
+    @php
+        $gallery = $product->getMedia('gallery');
+    @endphp
+
+    @if($gallery->count() > 0)
+        <div class="grid grid-cols-4 md:grid-cols-5 gap-3 mt-3">
+
+            @foreach($gallery as $media)
+                <div
+                    class="thumb h-20 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center cursor-pointer border-2 {{ $loop->first ? 'border-bwtblue' : 'border-transparent' }} hover:border-bwtblue transition-colors"
+                    onclick="
+                        document.getElementById('mainProductImage').src='{{ $media->getUrl() }}';
+                        document.querySelectorAll('.thumb').forEach(el => el.classList.remove('border-bwtblue'));
+                        this.classList.add('border-bwtblue');
+                    "
+                >
+                    <img
+                        src="{{ $media->getUrl() }}"
+                        alt="{{ $product->product_title }}"
+                        class="max-w-full max-h-full object-contain p-1">
+                </div>
+            @endforeach
+
+        </div>
+    @endif
+
+</div>
 
                     <!-- Info -->
                     <div class="flex-1 min-w-0 max-w-full">
@@ -63,7 +89,7 @@
                                 'Product Code' => $product->product_code,
                                 'Weight' => $product->weight ? $product->weight . ' kg' : null,
                                 'Width' => $product->width ? $product->width . ' mm' : null,
-                                'Volume' => $product->volume ? $product->volume . ' L' : null,
+                                'Volume' => $product->volume ? $product->volume . ' m³' : null,
                                 'Machine Class' => $product->machine_class ? $product->machine_class . ' t' : null,
                                 'Cutting Edge Thickness' => $product->cutting_edge_thickness ? $product->cutting_edge_thickness . ' mm' : null,
                                 'Teeth' => $product->teeth,

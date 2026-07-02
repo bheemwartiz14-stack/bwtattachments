@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Wholesale Clients - Attachment Portal</x-slot:title>
+    <x-slot:title>Wholesale Clients - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Wholesale Clients']]" />
 
     <div class="space-y-6">

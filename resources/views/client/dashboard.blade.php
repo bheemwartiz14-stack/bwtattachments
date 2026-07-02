@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Client Dashboard - Attachment Portal</x-slot:title>
+    <x-slot:title>Client Dashboard - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Client Portal']]" />
 
     @if(session('success'))

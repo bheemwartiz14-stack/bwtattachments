@@ -1,5 +1,5 @@
 <x-layouts.public>
-    <x-slot:title>{{ $product->description ?? $product->title ?? 'Product Detail' }} - Attachment Portal</x-slot:title>
+    <x-slot:title>{{ $product->description ?? $product->title ?? 'Product Detail' }} - BWT</x-slot:title>
 
     <div class="bg-slate-50">
         <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -45,26 +45,41 @@
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                         <h2 class="mb-4 text-2xl font-bold tracking-tight text-slate-950">Technical Specifications</h2>
+                        @php
+                            $specs = [
+                                'weight' => ['label' => 'Weight (kg)', 'unit' => 'kg'],
+                                'width' => ['label' => 'Width', 'unit' => 'mm'],
+                                'volume' => ['label' => 'Volume (m3)', 'unit' => 'm³'],
+                                'machine_class' => ['label' => 'Machine class (t)', 'unit' => 't'],
+                                'cutting_edge_thickness' => ['label' => 'Cutting edge thickness (mm)', 'unit' => 'mm'],
+                                'teeth' => ['label' => 'Teeth', 'unit' => null],
+                                'pin_hole' => ['label' => 'Pin Hole (mm)', 'unit' => 'mm'],
+                                'pin_center' => ['label' => 'Pin center to Pin center (mm)', 'unit' => 'mm'],
+                                'stick_width' => ['label' => 'Stick Width', 'unit' => 'mm'],
+                            ];
+                        @endphp
                         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                            @forelse(($product->specifications ?? $product->specs ?? []) as $spec)
+                            @foreach($specs as $field => $config)
+                                @php
+                                    $value = $product->$field;
+                                    if (in_array($field, ['weight', 'width']) && $value !== null) {
+                                        $value = rtrim(rtrim($value, '0'), '.');
+                                    }
+                                @endphp
                                 <div class="rounded-lg bg-slate-50 p-3">
-                                    <p class="text-xs text-slate-500">{{ $spec['label'] ?? $spec->label ?? $spec->name ?? $spec }}</p>
-                                    <p class="mt-0.5 text-sm font-semibold text-slate-950">{{ $spec['value'] ?? $spec->value ?? '-' }}</p>
+                                    <p class="text-xs text-slate-500">{{ $config['label'] }}</p>
+                                    <p class="mt-0.5 text-sm font-semibold text-slate-950">
+                                        @if($value !== null && $value !== '')
+                                            {{ $value }}
+                                            @if($config['unit'])
+                                                <span class="text-xs font-normal text-slate-400">{{ $config['unit'] }}</span>
+                                            @endif
+                                        @else
+                                            <span class="text-sm font-normal text-slate-300">&mdash;</span>
+                                        @endif
+                                    </p>
                                 </div>
-                            @empty
-                                @foreach([
-                                    ['label' => 'Weight', 'value' => $product->weight ?? '-'],
-                                    ['label' => 'Width', 'value' => $product->width ?? '-'],
-                                    ['label' => 'Connection Type', 'value' => $product->connection_type ?? $product->connectionType ?? '-'],
-                                    ['label' => 'Machine Class', 'value' => $product->machine_class ?? $product->machineClass ?? '-'],
-                                    ['label' => 'Subcategory', 'value' => $product->subcategory ?? '-'],
-                                ] as $spec)
-                                    <div class="rounded-lg bg-slate-50 p-3">
-                                        <p class="text-xs text-slate-500">{{ $spec['label'] }}</p>
-                                        <p class="mt-0.5 text-sm font-semibold text-slate-950">{{ $spec['value'] }}</p>
-                                    </div>
-                                @endforeach
-                            @endforelse
+                            @endforeach
                         </div>
                     </div>
 

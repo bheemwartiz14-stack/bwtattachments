@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>{{ $user->name }} - Wholesale Client - Attachment Portal</x-slot:title>
+    <x-slot:title>{{ $user->name }} - Wholesale Client - BWT</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Wholesale Clients', 'url' => route('admin.wholesale-client-users.index')], ['label' => $user->name]]" />
 
     @php
