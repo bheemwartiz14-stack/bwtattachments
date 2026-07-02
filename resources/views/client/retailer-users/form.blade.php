@@ -160,7 +160,6 @@
                             type="number"
                             placeholder="e.g. 10"
                             :value="$commission"
-                            :required="true"
                             min="0"
                             max="100"
                             step="0.01"

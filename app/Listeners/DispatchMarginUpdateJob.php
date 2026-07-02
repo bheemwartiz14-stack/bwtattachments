@@ -23,6 +23,7 @@ class DispatchMarginUpdateJob
 
         $products = $productService->getActiveProductsWithUserPrices($baseUserId);
 
+
         $payload = $products->map(fn ($product) => MarginUpdateResource::make([
             'product' => $product,
             'user'    => $user,
@@ -33,6 +34,8 @@ class DispatchMarginUpdateJob
         Log::info('Products synced for margin update', [
             'count'   => count($payload),
             'user_id' => $event->user,
+            '$payload' => $payload,
+            '$products'=> $products
         ]);
     }
 }

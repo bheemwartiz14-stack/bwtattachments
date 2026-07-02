@@ -78,7 +78,6 @@ class StoreRetailerClientUserRequest extends FormRequest
             ],
 
             'commission_percentage' => [
-                'required',
                 'numeric',
                 'min:0',
                 'max:100',

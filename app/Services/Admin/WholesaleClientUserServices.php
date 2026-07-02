@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services\Admin;
 
-use App\Events\UpdateProductMarginByUser;
+use App\Events\UpdateProductMarginByWholesaleAccounts;
 use App\Events\WholesaleClientsRegistered;
 use App\Services\UserService;
 use App\Traits\ResolvesTempFiles;
@@ -101,13 +101,10 @@ class WholesaleClientUserServices
 
     private function saveMargin(Model $user, $value): void
     {
-        $old = (float) ($user->userMargin?->margin_value ?? 0);
         $user->userMargin()->updateOrCreate(
             ['user_id' => $user->id],
             ['type' => 'wholesale', 'margin_type' => 'percentage', 'margin_value' => $value ?? 0]
         );
-        // if ((float) $value !== $old) {
-            event(new UpdateProductMarginByUser($user->id, 'percentage', (float) $value, 'wholesale'));
-        // }
+        event(new UpdateProductMarginByWholesaleAccounts($user->id, 'percentage', (float) $value));
     }
 }

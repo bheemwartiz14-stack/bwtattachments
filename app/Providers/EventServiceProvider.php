@@ -6,12 +6,14 @@ use App\Events\UpdatedProductMarginForAllUsersByProduct;
 use App\Events\QuotationCreated;
 use App\Events\RetailerClientInvited;
 use App\Events\UpdateProductMarginByUser;
+use App\Events\UpdateProductMarginByWholesaleAccounts;
 use App\Events\WholesaleClientsRegistered;
 use App\Listeners\GenerateQuotationPdf;
 use App\Listeners\DispatchProductPricingSync;
 use App\Listeners\LogProductCreated;
 use App\Listeners\SendRetailerClientInvitationEmailListener;
 use App\Listeners\DispatchMarginUpdateJob;
+use App\Listeners\DispatchMarginUpdateJobWholesale;
 use App\Listeners\SendWholesaleClientInvitationEmail;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -24,6 +26,8 @@ class EventServiceProvider extends ServiceProvider
         UpdatedProductMarginForAllUsersByProduct::class => [
             DispatchProductPricingSync::class,
         ],
+        UpdateMarginsForRetailers::class => [DispatchResellerMargin::class],
+        UpdateProductMarginByWholesaleAccounts::class => [DispatchMarginUpdateJobWholesale::class],
         QuotationCreated::class => [GenerateQuotationPdf::class],
         \App\Events\ContactMessageSubmitted::class => [\App\Listeners\SendContactMessageMail::class],
     ];
