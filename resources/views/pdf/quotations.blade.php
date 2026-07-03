@@ -1,166 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Quotation</title>
-
-    <style>
-        @page {
-            margin: 10mm;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 12.8px;
-            color: #2b2b2b;
-        }
-
-        .wrapper {
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            /* IMPORTANT FOR PDF */
-        }
-
-        td,
-        th {
-            padding: 6px;
-            vertical-align: top;
-        }
-
-        /* HEADER */
-        .header td {
-            border: none;
-        }
-
-        .company h2 {
-            font-size: 18px;
-            color: #0a5aa7;
-            margin-bottom: 4px;
-        }
-
-        .company p {
-            margin: 2px 0;
-            font-size: 12px;
-            color: #555;
-        }
-
-        .logo {
-            text-align: right;
-        }
-
-        .logo img {
-            width: 105px;
-        }
-
-        /* TITLE */
-        .title {
-            margin-top: 12px;
-            background: #0a5aa7;
-            color: #fff;
-            padding: 8px 10px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        /* INFO */
-        .info {
-            margin-top: 10px;
-            background: #f4f6f8;
-            border-left: 4px solid #0a5aa7;
-        }
-
-        .info td {
-            padding: 8px;
-        }
-
-        /* CUSTOMER */
-        .box {
-            margin-top: 12px;
-            border: 1px solid #ddd;
-        }
-
-        .box-title {
-            background: #f0f4f8;
-            color: #0a5aa7;
-            font-weight: bold;
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .box-content td {
-            padding: 10px;
-        }
-
-        .muted {
-            color: #666;
-        }
-
-        /* ITEMS TABLE */
-        .items {
-            margin-top: 14px;
-        }
-
-        .items th {
-            background: #0a5aa7;
-            color: #fff;
-            padding: 8px;
-            font-size: 12px;
-        }
-
-        .items td {
-            border-bottom: 1px solid #e5e5e5;
-            padding: 8px;
-
-            /* ✅ FIX DESCRIPTION ISSUE */
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            white-space: normal;
-        }
-
-        /* column alignment helpers */
-        .right {
-            text-align: right;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        /* FOOTER */
-        .footer {
-            margin-top: 15px;
-        }
-
-        .summary-box {
-            border: 1px solid #ddd;
-            padding: 8px;
-            background: #fafafa;
-        }
-
-        .summary-box table td {
-            padding: 4px 0;
-        }
-    </style>
-</head>
-
-<body>
-
     @php
         $path = public_path('images/BIG.jpg');
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-
         $settings = app(\App\Settings\GeneralSettings::class);
-
         $address = trim(
             ($settings->address_line_1 ?? '') .
                 ', ' .
@@ -178,152 +21,241 @@
         $reseller = $quotation->reseller ?? null;
         $meta = $reseller->usermeta->metadata ?? [];
     @endphp
+    <!DOCTYPE html>
+    <html>
 
-    <div class="wrapper"
-    <div class="wrapper">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quotation</title>
+    </head>
 
-        <!-- HEADER -->
-        <table class="header">
-            <tr>
-                <td width="70%">
-                    <div class="company">
-                        <h2>{{ $settings->site_title ?? 'BIG Work Tools' }}</h2>
-                        <p>{{ $address }}</p>
-                        <p>{{ $settings->support_phone }}</p>
-                        <p>{{ $settings->support_email }}</p>
-                    </div>
-                </td>
+    <body
+        style="margin:0;padding:40px;font-family:Arial,Helvetica,sans-serif;color:#222;background:#fff;font-size:14px;">
 
-                <td width="30%" class="logo">
-                    <img src="{{ $base64 }}" alt="Logo">
-                </td>
-            </tr>
-        </table>
+        <div style="width:100%;max-width:1000px;margin:auto;">
 
-        <!-- TITLE -->
-        <div class="title">QUOTATION</div>
-
-        <!-- INFO -->
-        <table class="info">
-            <tr>
-                <td><strong>Quote No:</strong> {{ $quotation->quotation_number }}</td>
-                <td style="text-align:right;">
-                    <strong>Date:</strong> {{ $quotation->created_at->format('d M Y') }}
-                </td>
-            </tr>
-        </table>
-
-        <!-- CUSTOMER -->
-        <div class="box">
-            <div class="box-title">Bill To</div>
-
-            <table class="box-content">
+            <!-- Header -->
+            <table style="width:100%;border-collapse:collapse;">
                 <tr>
-                    <td width="60%">
-                        <strong>{{ $reseller->name ?? '' }}</strong><br><br>
+                    <td style="width:70%;vertical-align:top;">
 
-                        <span class="muted">Address:</span> {{ $meta['address'] ?? '' }}<br>
-                        <span class="muted">City:</span> {{ $meta['city'] ?? '' }}, {{ $meta['pin_code'] ?? '' }}<br>
-                        <span class="muted">Country:</span> {{ $meta['country'] ?? '' }}
-                    </td>
-
-                    <td width="40%">
-                        <strong>VAT:</strong> {{ $meta['vat_number'] ?? '' }}<br><br>
-                        <strong>Phone:</strong> {{ $reseller->phone ?? '' }}<br><br>
-                        <strong>Email:</strong> {{ $reseller->email ?? '' }}
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- ITEMS -->
-        <table class="items">
-            <thead>
-                <tr>
-                    <th width="18%">Item</th>
-                    <th width="44%">Description</th>
-                    <th width="15%" class="right">Unit Price</th>
-                    <th width="8%" class="center">Qty</th>
-                    <th width="15%" class="right">Total</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach ($quotation->items as $item)
-                    <tr>
-                        <td>{{ $item->product->product_code }}</td>
-
-                        <td style="word-break: break-word; white-space: normal;">
-                            {{ $item->product->product_description }}
-                        </td>
-
-                        <td class="right">
-                            € {{ number_format($item->price, 2, ',', '.') }}
-                        </td>
-
-                        <td class="center">
-                            {{ $item->quantity }}
-                        </td>
-
-                        <td class="right">
-                            € {{ number_format($item->price * $item->quantity, 2, ',', '.') }}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <!-- FOOTER -->
-        <div class="footer">
-
-            <table>
-                <tr>
-
-                    <td width="60%">
-                        <strong>Terms & Conditions</strong><br>
-
-                        By accepting this quotation, you agree to our terms and conditions.
-
-                       {{ $quotation->customer_terms }}
-                    </td>
-
-                      <td width="60%">
-                        <strong>CUSTOMEMR nOTES </strong><br>
-
-
-                       {{ $quotation->notes }}
-                    </td>
-
-                    <td width="40%">
-                        <div class="summary-box">
-
-                            <table width="100%">
-                                <tr>
-                                    <td>Subtotal</td>
-                                    <td class="right">€ {{ $quotation->sub_total }}</td>
-                                </tr>
-                                 <tr>
-                                    <td>Margin ({{ $quotation->margin_percentage }}%)</td>
-                                    <td class="right">€ {{ $quotation->margin_amount }}</td>
-                                </tr>
-                                 <tr>
-                                    <td>VAT ({{ $quotation->vat_percentage }}%)</td>
-                                    <td class="right">€ {{ $quotation->tax_amount }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Total</strong></td>
-                                     <td class="right">€ {{ $quotation->grand_total }}</td>
-                                </tr>
-                            </table>
+                        <div style="font-size:20px;font-weight:bold;">
+                            BIG Work Tools
                         </div>
+
+                        <div style="font-size:16px;margin-top:4px;">
+                            {{ $address }}
+                        </div>
+
+                        <div style="font-size:16px;margin-top:4px;">
+                            {{ $settings->support_phone }}
+                        </div>
+
+                        <div style="font-size:16px;margin-top:4px;">
+                            {{ $settings->support_email }}
+                        </div>
+
+                    </td>
+
+                    <td style="width:30%;text-align:right;vertical-align:top;">
+                        <img src="{{ $base64 }}" style="width:170px;">
+
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Title -->
+
+            <div style="font-size:64px;font-weight:bold;margin-top:40px;margin-bottom:40px;">
+                Quotation
+            </div>
+
+            <!-- Quote Details -->
+
+            <table style="width:100%;border-collapse:collapse;border:1px solid #777;margin-bottom:30px;">
+                <tr>
+
+                    <td style="width:60%;padding:10px;font-size:18px;font-weight:bold;">
+                        Quote No.: {{ $quotation->quotation_number }}
+                    </td>
+
+                    <td style="width:40%;padding:10px;font-size:18px;font-weight:bold;">
+                        Quote Date: {{ $quotation->created_at->format('d M Y') }}
                     </td>
 
                 </tr>
             </table>
+
+            <!-- Customer -->
+
+            <table style="width:100%;border-collapse:collapse;border:1px solid #777;margin-bottom:35px;">
+
+                <tr>
+
+                    <td colspan="2"
+                        style="background:#0057a8;color:#fff;font-weight:bold;padding:8px 10px;font-size:18px;">
+                        Quotation to:
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td style="width:55%;padding:10px;vertical-align:top;font-size:18px;">
+                        {{ $reseller->name ?? '' }}
+                        <br>
+                        {{ $meta['address'] ?? '' }}, {{ $meta['pin_code'] ?? '' }}, {{ $meta['city'] ?? '' }},
+                        {{ $meta['country'] ?? '' }}<br>
+                        {{ $reseller->email ?? '' }}
+                    </td>
+                    <td style="width:45%;padding:10px;vertical-align:top;font-size:18px;">
+
+                        {{ $meta['vat_number'] ?? '' }}<br>
+
+                        {{ $reseller->phone ?? '' }}
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <!-- Items -->
+
+            <table style="width:100%;border-collapse:collapse;border:1px solid #777;">
+
+                <thead>
+                    <tr style="background:#0057a8;color:white;">
+
+                        <th style="border:1px solid #555;padding:8px;text-align:left;font-size:18px;">
+                            Item
+                        </th>
+
+                        <th style="border:1px solid #555;padding:8px;text-align:left;font-size:18px;">
+                            Description
+                        </th>
+
+                        <th style="border:1px solid #555;padding:8px;text-align:center;font-size:18px;">
+                            Unit price
+                        </th>
+
+                        <th style="border:1px solid #555;padding:8px;text-align:center;font-size:18px;">
+                            Qty
+                        </th>
+
+                        <th style="border:1px solid #555;padding:8px;text-align:right;font-size:18px;">
+                            Total
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    @foreach ($quotation->items as $item)
+                        <tr style="height:700px;vertical-align:top;">
+
+                            <td style="border:1px solid #777;padding:10px;font-size:18px;">
+                           {{ $item->product->product_title }}
+                            </td>
+
+                            <td style="border:1px solid #777;padding:10px;font-size:18px;">
+                               {{ $item->product->product_description }}
+                            </td>
+
+                            <td style="border:1px solid #777;padding:10px;text-align:center;font-size:18px;">
+                                € {{ number_format($item->price, 2, ',', '.') }}
+                            </td>
+
+                            <td style="border:1px solid #777;padding:10px;text-align:center;font-size:18px;">
+                                {{ $item->quantity }}
+                            </td>
+
+                            <td style="border:1px solid #777;padding:10px;text-align:right;font-size:18px;">
+                                 € {{ number_format($item->price * $item->quantity, 2, ',', '.') }}
+                            </td>
+
+                        </tr>
+                    @endforeach
+
+                </tbody>
+
+            </table>
+
+            <!-- Bottom -->
+
+            <table style="width:100%;margin-top:15px;border-collapse:collapse;">
+
+                <tr>
+
+                    <!-- Terms -->
+
+                    <td style="width:62%;vertical-align:top;padding-right:20px;">
+
+                        <div style="font-size:18px;line-height:1.4;">
+
+                            Terms and Conditions:
+                            By accepting this quotation, you agree to our terms and
+                            conditions which you can view here.
+
+                        </div>
+
+                    </td>
+
+                    <!-- Totals -->
+
+                    <td style="width:38%;">
+
+                        <table style="width:100%;border-collapse:collapse;">
+
+                            <tr>
+
+                                <td style="border:1px solid #777;padding:10px;text-align:right;font-size:18px;">
+                                    Sub total:
+                                </td>
+
+                                <td style="border:1px solid #777;padding:10px;text-align:right;font-size:18px;">
+                                  € {{ $quotation->sub_total }}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td style="border:1px solid #777;padding:10px;text-align:right;font-size:18px;">
+                                  VAT ({{ $quotation->vat_percentage }}%)
+                                </td>
+
+                                <td style="border:1px solid #777;padding:10px;text-align:right;font-size:18px;">
+                                   € {{ $quotation->tax_amount }}
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td
+                                    style="border:1px solid #777;padding:10px;text-align:right;font-size:20px;font-weight:bold;">
+                                    Grand total:
+                                </td>
+
+                                <td
+                                    style="border:1px solid #777;padding:10px;text-align:right;font-size:20px;font-weight:bold;">
+                                    € {{ $quotation->grand_total }}
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
         </div>
 
-    </div>
+    </body>
 
-</body>
-
-</html>
+    </html>

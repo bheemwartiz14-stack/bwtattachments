@@ -132,7 +132,7 @@
                     {{-- Pricing & CTA --}}
                        <div class="mt-6 bg-blue-50 rounded-md p-5">
                             <h3 class="font-semibold text-gray-900 text-sm mb-2">
-                                @auth Wholesale Client Area @else Wholesale Client Area &mdash; Login Required @endauth
+                                @auth Wholesale Client Area @else Wholesale Client Area "" Login Required @endauth
                             </h3>
 
                             @auth

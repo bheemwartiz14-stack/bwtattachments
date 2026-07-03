@@ -75,7 +75,7 @@
                                                 <span class="text-xs font-normal text-slate-400">{{ $config['unit'] }}</span>
                                             @endif
                                         @else
-                                            <span class="text-sm font-normal text-slate-300">&mdash;</span>
+                                            <span class="text-sm font-normal text-slate-300">""</span>
                                         @endif
                                     </p>
                                 </div>

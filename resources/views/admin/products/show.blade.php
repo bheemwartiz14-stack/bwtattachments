@@ -84,15 +84,16 @@
                     </div>
                     <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Weight</p>
-                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->weight ?? '&mdash;' }} <span class="text-sm font-normal text-slate-400">kg</span></p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->weight ?? '' }}
+                            <span class="text-sm font-normal text-slate-400">kg</span></p>
                     </div>
                     <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Width</p>
-                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->width ?? '&mdash;' }} <span class="text-sm font-normal text-slate-400">mm</span></p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->width ?? '' }} <span class="text-sm font-normal text-slate-400">mm</span></p>
                     </div>
                     <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Machine Class</p>
-                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->machine_class ?? '&mdash;' }} <span class="text-sm font-normal text-slate-400">t</span></p>
+                        <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->machine_class ?? '""' }} <span class="text-sm font-normal text-slate-400">t</span></p>
                     </div>
                 </div>
 
@@ -169,7 +170,7 @@
                                             <span class="text-sm font-normal text-slate-400">{{ $config['unit'] }}</span>
                                         @endif
                                     @else
-                                        <span class="text-sm font-normal text-slate-300 dark:text-neutral-600">&mdash;</span>
+                                        <span class="text-sm font-normal text-slate-300 dark:text-neutral-600"></span>
                                     @endif
                                 </dd>
                             </div>

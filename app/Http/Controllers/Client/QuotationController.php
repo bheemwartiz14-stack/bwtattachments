@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Quotations\StoreQuotationRequest;
+use App\Http\Requests\Client\Quotations\StoreQuotationRequest;
 use App\Models\Quotation;
 use App\Models\User;
 use App\Services\QuotationService;
