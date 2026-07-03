@@ -256,7 +256,13 @@
     </div>
 
     @push('scripts')
+
         <script>
+            $('#name').on('input', function () {
+                const name = $(this).val();
+                const username = name.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-');
+                $('#username').val(username);
+            });
             (function() {
                 var pwd = document.querySelector('[data-password-input]');
                 if (pwd && !pwd.value) {
@@ -264,17 +270,6 @@
                     var s = '';
                     for (var i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)];
                     pwd.value = s;
-                }
-                var nameEl = document.querySelector('[data-generate-username]');
-                var userEl = document.getElementById('username');
-                if (nameEl && userEl && !userEl.value) {
-                    var timer;
-                    nameEl.addEventListener('input', function() {
-                        clearTimeout(timer);
-                        timer = setTimeout(function() {
-                            userEl.value = nameEl.value.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-');
-                        }, 350);
-                    });
                 }
             })();
         </script>
