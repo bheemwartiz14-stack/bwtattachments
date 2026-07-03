@@ -5,14 +5,14 @@
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
-<link rel="icon" type="image/png" sizes="96x96" href="{{ config('app.url') }}/favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="{{ config('app.url') }}/favicon.svg">
-<link rel="shortcut icon" href="{{ config('app.url') }}/favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="{{ config('app.url') }}/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="96x96" href="{{ config('app.asset_url') }}/favicon-96x96.png">
+<link rel="icon" type="image/svg+xml" href="{{ config('app.asset_url') }}/favicon.svg">
+<link rel="shortcut icon" href="{{ config('app.asset_url') }}/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ config('app.asset_url') }}/apple-touch-icon.png">
 
 <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
 
-<link rel="manifest" href="{{ config('app.url') }}/site.webmanifest">
+<link rel="manifest" href="{{ config('app.asset_url') }}/site.webmanifest">
 
 <link rel="stylesheet" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
 <style>
