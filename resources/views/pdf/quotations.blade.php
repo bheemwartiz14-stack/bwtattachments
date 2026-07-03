@@ -1,236 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Quotation {{ $quotation->quotation_number }} - BWT</title>
+    <title>Quotation</title>
+
     <style>
-        @page { margin: 0; size: A4; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @page {
+            margin: 10mm;
+        }
+
         body {
-            margin: 0; background: #efefef;
+            margin: 0;
+            padding: 0;
             font-family: Arial, Helvetica, sans-serif;
-            color: #333; font-size: 12px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            font-size: 12.8px;
+            color: #2b2b2b;
         }
-        .page { width: 210mm; min-height: 297mm; margin: auto; background: #fff; position: relative; }
-        .header { background: #005691; color: #fff; padding: 35px 45px; }
-        .header-table { width: 100%; }
-        .header-table td { vertical-align: top; }
-        .logo { font-size: 32px; font-weight: bold; border: 3px solid #fff; display: inline-block; padding: 10px 30px; letter-spacing: 2px; }
-        .logo img { max-height: 50px; vertical-align: middle; }
-        .company-tag { margin-top: 8px; font-size: 12px; opacity: .9; letter-spacing: 1px; }
-        .company-info { text-align: right; font-size: 12px; line-height: 22px; }
-        .company-info a { color: #fff; text-decoration: none; }
-        .title { padding: 35px 45px 20px; }
-        .title table { width: 100%; }
-        .title h1 { margin: 0; color: #005691; font-size: 34px; }
-        .badge {
-            background: #0BA360; color: #fff; padding: 8px 18px;
-            border-radius: 20px; font-size: 12px; font-weight: bold;
-            display: inline-block;
+
+        .wrapper {
+            width: 100%;
         }
-        .badge.draft { background: #f59e0b; }
-        .cards { padding: 0 45px; }
-        .cards table { width: 100%; border-spacing: 15px; margin-left: -15px; }
-        .card {
-            background: #F7F9FC; border: 1px solid #E5EAF0;
-            border-radius: 8px; padding: 18px;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* IMPORTANT FOR PDF */
         }
-        .card-title { color: #005691; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
-        .card p { margin: 4px 0; line-height: 1.5; }
-        .product-section { padding: 30px 45px; }
-        .product-table { width: 100%; border-collapse: collapse; }
-        .product-table thead { background: #005691; color: #fff; }
-        .product-table th { padding: 14px; text-align: left; font-size: 12px; }
-        .product-table td { padding: 14px; border-bottom: 1px solid #ECECEC; font-size: 12px; vertical-align: top; }
-        .product-table tbody tr:nth-child(even) { background: #FAFAFA; }
-        .product-table .text-right { text-align: right; }
-        .product-table .text-center { text-align: center; }
-        .product-specs { font-size: 11px; color: #666; margin-top: 4px; }
-        .summary { padding: 0 45px; overflow: hidden; }
-        .summary-table { width: 320px; float: right; border-collapse: collapse; }
-        .summary-table td { padding: 10px; }
-        .summary-table tr:last-child { background: #005691; color: #fff; font-size: 15px; font-weight: bold; }
-        .terms { clear: both; padding: 40px 45px 20px; }
-        .terms h3 { color: #005691; margin-bottom: 12px; }
-        .terms ul { padding-left: 18px; margin: 0; }
-        .terms li { margin-bottom: 8px; line-height: 1.5; }
+
+        td,
+        th {
+            padding: 6px;
+            vertical-align: top;
+        }
+
+        /* HEADER */
+        .header td {
+            border: none;
+        }
+
+        .company h2 {
+            font-size: 18px;
+            color: #0a5aa7;
+            margin-bottom: 4px;
+        }
+
+        .company p {
+            margin: 2px 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .logo {
+            text-align: right;
+        }
+
+        .logo img {
+            width: 105px;
+        }
+
+        /* TITLE */
+        .title {
+            margin-top: 12px;
+            background: #0a5aa7;
+            color: #fff;
+            padding: 8px 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* INFO */
+        .info {
+            margin-top: 10px;
+            background: #f4f6f8;
+            border-left: 4px solid #0a5aa7;
+        }
+
+        .info td {
+            padding: 8px;
+        }
+
+        /* CUSTOMER */
+        .box {
+            margin-top: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .box-title {
+            background: #f0f4f8;
+            color: #0a5aa7;
+            font-weight: bold;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .box-content td {
+            padding: 10px;
+        }
+
+        .muted {
+            color: #666;
+        }
+
+        /* ITEMS TABLE */
+        .items {
+            margin-top: 14px;
+        }
+
+        .items th {
+            background: #0a5aa7;
+            color: #fff;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .items td {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 8px;
+
+            /* ✅ FIX DESCRIPTION ISSUE */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
+        /* column alignment helpers */
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        /* FOOTER */
         .footer {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: #F5F7FA; padding: 25px 45px;
+            margin-top: 15px;
         }
-        .signature { width: 100%; }
-        .signature td { width: 50%; }
-        .line { width: 180px; border-top: 1px solid #555; margin-top: 60px; }
-        .line-right { width: 180px; border-top: 1px solid #555; margin-top: 60px; margin-left: auto; }
-        .footer-text { text-align: center; margin-top: 20px; color: #888; font-size: 11px; }
+
+        .summary-box {
+            border: 1px solid #ddd;
+            padding: 8px;
+            background: #fafafa;
+        }
+
+        .summary-box table td {
+            padding: 4px 0;
+        }
     </style>
 </head>
+
 <body>
+
     @php
+        $path = public_path('images/BIG.jpg');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
         $settings = app(\App\Settings\GeneralSettings::class);
-        $reseller = $quotation->reseller;
-        $resellerMeta = $reseller?->userMeta?->metadata ?? [];
-        $subtotal = $quotation->items->sum(fn($i) => $i->price * $i->quantity);
-        $marginAmount = $subtotal * ($quotation->margin_percentage / 100);
-        $grandTotal = $subtotal + $marginAmount;
+
+        $address = trim(
+            ($settings->address_line_1 ?? '') .
+                ', ' .
+                ($settings->address_line_2 ?? '') .
+                ', ' .
+                ($settings->city ?? '') .
+                ', ' .
+                ($settings->state ?? '') .
+                ' - ' .
+                ($settings->pin_code ?? '') .
+                ', ' .
+                ($settings->country ?? ''),
+        );
+
+        $reseller = $quotation->user ?? null;
+        $meta = $reseller->usermeta->metadata ?? [];
     @endphp
 
-    <div class="page">
-        <div class="header">
-            <table class="header-table">
+    <div class="wrapper">
+
+        <!-- HEADER -->
+        <table class="header">
+            <tr>
+                <td width="70%">
+                    <div class="company">
+                        <h2>{{ $settings->site_title ?? 'BIG Work Tools' }}</h2>
+                        <p>{{ $address }}</p>
+                        <p>{{ $settings->support_phone }}</p>
+                        <p>{{ $settings->support_email }}</p>
+                    </div>
+                </td>
+
+                <td width="30%" class="logo">
+                    <img src="{{ $base64 }}" alt="Logo">
+                </td>
+            </tr>
+        </table>
+
+        <!-- TITLE -->
+        <div class="title">QUOTATION</div>
+
+        <!-- INFO -->
+        <table class="info">
+            <tr>
+                <td><strong>Quote No:</strong> {{ $quotation->quotation_number }}</td>
+                <td style="text-align:right;">
+                    <strong>Date:</strong> {{ $quotation->created_at->format('d M Y') }}
+                </td>
+            </tr>
+        </table>
+
+        <!-- CUSTOMER -->
+        <div class="box">
+            <div class="box-title">Bill To</div>
+
+            <table class="box-content">
                 <tr>
-                    <td>
-                        <div class="logo">
-                            @if($settings->logo_path)
-                                <img src="{{ public_path($settings->logo_path) }}" alt="BWT">
-                            @else
-                                BWT
-                            @endif
-                        </div>
-                        <div class="company-tag">{{ $settings->site_title }}</div>
+                    <td width="60%">
+                        <strong>{{ $reseller->name ?? '' }}</strong><br><br>
+
+                        <span class="muted">Address:</span> {{ $meta['address'] ?? '' }}<br>
+                        <span class="muted">City:</span> {{ $meta['city'] ?? '' }}, {{ $meta['pin_code'] ?? '' }}<br>
+                        <span class="muted">Country:</span> {{ $meta['country'] ?? '' }}
                     </td>
-                    <td class="company-info">
-                        <strong>{{ $settings->site_title }}</strong><br>
-                        {{ $settings->address_line_1 }}, {{ $settings->city }}, {{ $settings->country }}<br>
-                        <a href="mailto:{{ $settings->support_email }}">{{ $settings->support_email }}</a><br>
-                        {{ $settings->support_phone }}
+
+                    <td width="40%">
+                        <strong>VAT:</strong> {{ $meta['vat_number'] ?? '' }}<br><br>
+                        <strong>Phone:</strong> {{ $reseller->phone ?? '' }}<br><br>
+                        <strong>Email:</strong> {{ $reseller->email ?? '' }}
                     </td>
                 </tr>
             </table>
         </div>
 
-        <div class="title">
-            <table>
+        <!-- ITEMS -->
+        <table class="items">
+            <thead>
                 <tr>
-                    <td>
-                        <h1>QUOTATION</h1>
-                        Quotation No: <strong>{{ $quotation->quotation_number }}</strong>
-                    </td>
-                    <td align="right">
-                        <span class="badge {{ $quotation->status === 'draft' ? 'draft' : '' }}">{{ ucfirst($quotation->status) }}</span>
-                    </td>
+                    <th width="18%">Item</th>
+                    <th width="44%">Description</th>
+                    <th width="15%" class="right">Unit Price</th>
+                    <th width="8%" class="center">Qty</th>
+                    <th width="15%" class="right">Total</th>
                 </tr>
-            </table>
-        </div>
+            </thead>
 
-        <div class="cards">
-            <table>
-                <tr>
-                    <td width="50%">
-                        <div class="card">
-                            <div class="card-title">Bill To</div>
-                            <p><strong>{{ $resellerMeta['wholesale_company_name'] ?? $reseller?->name ?? 'Client' }}</strong></p>
-                            <p>{{ $quotation->contact_name ?? $reseller?->name ?? '' }}</p>
-                            <p>{{ $resellerMeta['address'] ?? '' }}</p>
-                            <p>{{ $resellerMeta['city'] ?? '' }}{{ ($resellerMeta['city'] ?? '') && ($resellerMeta['postal_code'] ?? '') ? ', ' : '' }}{{ $resellerMeta['postal_code'] ?? '' }}</p>
-                            <p>{{ $quotation->contact_email ?? $reseller?->email ?? '' }}</p>
-                            <p>{{ $quotation->contact_phone ?? '' }}</p>
-                        </div>
-                    </td>
-                    <td width="50%">
-                        <div class="card">
-                            <div class="card-title">Quotation Details</div>
-                            <p>Date : {{ $quotation->issue_date?->format('d M Y') ?? $quotation->created_at->format('d M Y') }}</p>
-                            <p>Valid Until : {{ $quotation->valid_until?->format('d M Y') ?? 'N/A' }}</p>
-                            <p>Currency : {{ config('app.currency_symbol') ?? 'EUR' }}</p>
-                            @if($quotation->margin_percentage > 0)
-                            <p>Margin : {{ $quotation->margin_percentage }}%</p>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="product-section">
-            <table class="product-table">
-                <thead>
+            <tbody>
+                @foreach ($quotation->items as $item)
                     <tr>
-                        <th style="width: 40px; text-align: center;">#</th>
-                        <th>Product</th>
-                        <th style="width: 80px; text-align: center;">Qty</th>
-                        <th style="width: 100px; text-align: right;">Unit Price</th>
-                        <th style="width: 120px; text-align: right;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($quotation->items as $index => $item)
-                    @php $lineTotal = $item->price * $item->quantity; @endphp
-                    <tr>
-                        <td class="text-center">{{ $index + 1 }}</td>
-                        <td>
-                            <strong>{{ $item->product?->product_code ?? 'SKU' }}</strong>
-                            <div>{{ $item->product?->product_description ?? $item->product?->product_title ?? 'Product' }}</div>
-                            <div class="product-specs">
-                                {{ $item->product?->machine_class ? 'Machine: ' . $item->product->machine_class : '' }}{{ $item->product?->weight ? ' | Weight: ' . $item->product->weight . ' kg' : '' }}{{ $item->product?->width ? ' | Width: ' . $item->product->width . ' mm' : '' }}
-                            </div>
+                        <td>{{ $item->product->product_code }}</td>
+
+                        <td style="word-break: break-word; white-space: normal;">
+                            {{ $item->product->product_description }}
                         </td>
-                        <td class="text-center">{{ $item->quantity }}</td>
-                        <td class="text-right">{{ config('app.currency_symbol') }}{{ number_format($item->price, 2) }}</td>
-                        <td class="text-right">{{ config('app.currency_symbol') }}{{ number_format($lineTotal, 2) }}</td>
+
+                        <td class="right">
+                            € {{ number_format($item->price, 2, ',', '.') }}
+                        </td>
+
+                        <td class="center">
+                            {{ $item->quantity }}
+                        </td>
+
+                        <td class="right">
+                            € {{ number_format($item->price * $item->quantity, 2, ',', '.') }}
+                        </td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 24px; color: #999;">No items</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                @endforeach
+            </tbody>
+        </table>
 
-        <div class="summary">
-            <table class="summary-table">
-                <tr>
-                    <td>Subtotal</td>
-                    <td align="right">{{ config('app.currency_symbol') }}{{ number_format($subtotal, 2) }}</td>
-                </tr>
-                @if($quotation->margin_percentage > 0)
-                <tr>
-                    <td>Margin ({{ $quotation->margin_percentage }}%)</td>
-                    <td align="right">{{ config('app.currency_symbol') }}{{ number_format($marginAmount, 2) }}</td>
-                </tr>
-                @endif
-                <tr>
-                    <td>Grand Total</td>
-                    <td align="right">{{ config('app.currency_symbol') }}{{ number_format($grandTotal, 2) }}</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="terms">
-            <h3>Terms & Conditions</h3>
-            <ul>
-                @if($quotation->notes)
-                <li>{{ $quotation->notes }}</li>
-                @endif
-                <li>Quotation valid for 30 days from date of issue.</li>
-                <li>Delivery within 25–35 working days after order confirmation.</li>
-                <li>Payment: 30% Deposit, 70% Before Shipment.</li>
-                <li>Warranty: 12 Months from date of delivery.</li>
-                <li>Prices exclude customs duties and local taxes.</li>
-            </ul>
-        </div>
-
+        <!-- FOOTER -->
         <div class="footer">
-            <table class="signature">
+
+            <table>
                 <tr>
-                    <td>
-                        <div class="line"></div>
-                        Authorized Signature
+
+                    <td width="60%">
+                        <strong>Terms & Conditions</strong><br>
+
+                        By accepting this quotation, you agree to our terms and conditions.
+
+                       {{ $quotation->customer_terms }}
                     </td>
-                    <td align="right">
-                        <div class="line-right"></div>
-                        Customer Signature
+
+                      <td width="60%">
+                        <strong>CUSTOMEMR nOTES </strong><br>
+
+
+                       {{ $quotation->notes }}
                     </td>
+
+                    <td width="40%">
+                        <div class="summary-box">
+
+                            <table width="100%">
+                                <tr>
+                                    <td>Subtotal</td>
+                                    <td class="right">€ {{ $quotation->sub_total }}</td>
+                                </tr>
+                                 <tr>
+                                    <td>Margin ({{ $quotation->margin_percentage }}%)</td>
+                                    <td class="right">€ {{ $quotation->margin_amount }}</td>
+                                </tr>
+                                 <tr>
+                                    <td>VAT ({{ $quotation->vat_percentage }}%)</td>
+                                    <td class="right">€ {{ $quotation->tax_amount }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total</strong></td>
+                                     <td class="right">€ {{ $quotation->grand_total }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+
                 </tr>
             </table>
-            <div class="footer-text">
-                Thank you for your business.<br>
-                {{ $settings->site_title }} | {{ $settings->support_email }} | {{ $settings->support_phone }}
-            </div>
         </div>
+
     </div>
+
 </body>
+
 </html>

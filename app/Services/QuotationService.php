@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services;
@@ -8,12 +9,13 @@ use App\Mail\QuotationMail;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
 use App\Repositories\QuotationRepository;
-use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class QuotationService
 {
@@ -68,6 +70,7 @@ class QuotationService
     {
         $prefix = 'QTN';
         $date = now()->format('Ymd');
+
         $lastQuotation = Quotation::whereDate('created_at', today())
             ->where('quotation_number', 'like', "{$prefix}-{$date}-%")
             ->orderBy('id', 'desc')
@@ -83,10 +86,17 @@ class QuotationService
         return "{$prefix}-{$date}-{$newNumber}";
     }
 
-    public function addItem(string $quotationId, string $productId, float $price, int $quantity): QuotationItem
-    {
+    public function addItem(
+        string $quotationId,
+        string $productId,
+        float $price,
+        int $quantity
+    ): QuotationItem {
         return $this->quotationRepository->createItem(
-            $quotationId, $productId, $price, $quantity
+            $quotationId,
+            $productId,
+            $price,
+            $quantity
         );
     }
 
@@ -97,14 +107,41 @@ class QuotationService
 
     public function generatePdf(Quotation $quotation): Quotation
     {
-        $quotation->load(['items.product', 'user.userMeta']);
+        $quotation->load([
+            'items.product',
+            'user.userMeta',
+        ]);
+
         $filename = "quotations/{$quotation->quotation_number}.pdf";
-        $content = Pdf::view('pdf.quotations', compact('quotation')) ->format('A4')->driver('dompdf')->generatePdfContent();
+
+        $content = Pdf::view('pdf.quotations', compact('quotation'))
+            ->format('a4')
+            ->orientation('portrait')
+            ->driver('dompdf')
+            ->generatePdfContent();
+
         Storage::disk('public')->put($filename, $content);
         $quotation->pdf_file = $filename;
         $quotation->save();
+
         QuotationCreated::dispatch($quotation);
+
         return $quotation;
+    }
+
+    public function previewPdf(string $quotationId): BinaryFileResponse
+    {
+        /** @var Quotation $quotation */
+        $quotation = $this->findById($quotationId);
+       $quotation = $this->generatePdf($quotation);
+
+        return response()->file(
+            Storage::disk('public')->path($quotation->pdf_file),
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . basename($quotation->pdf_file) . '"',
+            ]
+        );
     }
 
     public function sendEmail(Quotation $quotation): void

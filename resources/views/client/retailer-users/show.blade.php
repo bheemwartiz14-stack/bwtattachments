@@ -239,13 +239,13 @@
                         </div>
                         <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Default Commission</h3>
                     </div>
-                    <div class="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-neutral-950/50">
-                        <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-white shadow-sm dark:bg-neutral-800">
+                    <div class="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-neutral-800">
+                        <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-white shadow-sm dark:bg-neutral-800/80">
                             <span class="text-xl font-bold text-emerald-600 dark:text-emerald-400">%</span>
                         </div>
                         <div>
                             <p class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ number_format($margin, 2) }}%</p>
-                            <p class="text-xs text-slate-500 dark:text-neutral-400">Default margin on all products</p>
+                            <p class="text-xs text-slate-500 dark:text-neutral-300">Default margin on all products</p>
                         </div>
                     </div>
                 </div>
@@ -261,12 +261,12 @@
                     <div class="space-y-3">
                         @foreach([
                             ['Total Quotations', $quotationsCount, 'text-slate-900', 'dark:text-white'],
-                            ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-400'],
-                            ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-400'],
-                            ['Approved', $approvedCount, 'text-emerald-600', 'dark:text-emerald-400'],
+                            ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-300'],
+                            ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-300'],
+                            ['Approved', $approvedCount, 'text-emerald-600', 'dark:text-emerald-300'],
                         ] as [$label, $val, $color, $darkColor])
-                            <div class="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2.5 dark:bg-neutral-950/50">
-                                <span class="text-sm text-slate-600 dark:text-neutral-400">{{ $label }}</span>
+                            <div class="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2.5 dark:bg-neutral-800">
+                                <span class="text-sm text-slate-600 dark:text-neutral-300">{{ $label }}</span>
                                 <span class="text-sm font-semibold {{ $color }} {{ $darkColor }}">{{ $val }}</span>
                             </div>
                         @endforeach

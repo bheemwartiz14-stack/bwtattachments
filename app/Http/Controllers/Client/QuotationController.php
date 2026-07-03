@@ -8,6 +8,7 @@ use App\Http\Requests\StoreQuotationRequest;
 use App\Models\Quotation;
 use App\Models\User;
 use App\Services\QuotationService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -41,11 +42,9 @@ class QuotationController extends Controller
     public function store(StoreQuotationRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $data['user_id'] = auth()->id();
+
         $data['status'] = $request->input('action', 'draft') === 'send' ? 'sent' : 'draft';
-
         $quotation = $this->quotationService->create($data);
-
         foreach ($data['items'] as $item) {
             $this->quotationService->addItem(
                 $quotation->id,
@@ -54,11 +53,13 @@ class QuotationController extends Controller
                 (int) $item['quantity']
             );
         }
-
         if ($request->input('action') === 'pdf' || $request->input('action') === 'send') {
             $this->quotationService->generatePdf($quotation);
         }
-
+        if ($request->input('action') === 'preview') {
+            $this->quotationService->generatePdf($quotation);
+            return redirect()->route('client.quotations.preview', $quotation->id) ->with('success', 'Quotation created and PDF generated successfully.');
+        }
         if ($request->input('action') === 'send') {
             $quotation->load('reseller');
             $this->quotationService->sendEmail($quotation);
@@ -74,6 +75,11 @@ class QuotationController extends Controller
             ->with('success', $message);
     }
 
+  public function preview(string $id): BinaryFileResponse
+{
+    return $this->quotationService->previewPdf($id);
+}
+
     public function show(string $id): View
     {
         $quotation = $this->quotationService->findById($id);
@@ -85,11 +91,6 @@ class QuotationController extends Controller
     public function download(string $id): StreamedResponse|RedirectResponse
     {
         $quotation = $this->quotationService->findById($id);
-
-        if ($quotation->user_id !== auth()->id()) {
-            abort(403);
-        }
-
         $quotation = $this->quotationService->generatePdf($quotation);
 
         if (!$quotation->pdf_file || !Storage::disk('public')->exists($quotation->pdf_file)) {

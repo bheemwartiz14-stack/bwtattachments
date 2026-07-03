@@ -88,7 +88,10 @@
             @php
                 $subtotal = $quotation->items->sum(fn($i) => $i->price * $i->quantity);
                 $marginAmount = $subtotal * ($quotation->margin_percentage / 100);
-                $grandTotal = $subtotal + $marginAmount;
+                $beforeTax = $subtotal + $marginAmount;
+                $taxRate = $quotation->tax_rate ?? 0;
+                $taxAmount = $beforeTax * ($taxRate / 100);
+                $grandTotal = $beforeTax + $taxAmount;
             @endphp
             <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800 bg-rose-50 dark:bg-neutral-900/50">
                 <div class="max-w-sm ml-auto space-y-2">
@@ -102,8 +105,14 @@
                             <span class="font-medium text-emerald-600 dark:text-emerald-400">+{{ config('app.currency_symbol') }}{{ number_format($marginAmount, 2) }}</span>
                         </div>
                     @endif
+                    @if($taxRate > 0)
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-neutral-400">VAT ({{ $taxRate }}%)</span>
+                            <span class="font-medium text-amber-600 dark:text-amber-400">{{ config('app.currency_symbol') }}{{ number_format($taxAmount, 2) }}</span>
+                        </div>
+                    @endif
                     <div class="flex items-center justify-between text-lg font-bold pt-2 border-t border-slate-100 dark:border-neutral-800">
-                        <span class="text-black dark:text-neutral-100">Grand Total</span>
+                        <span class="text-black dark:text-neutral-100">Total incl. VAT</span>
                         <span class="text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($grandTotal, 2) }}</span>
                     </div>
                 </div>

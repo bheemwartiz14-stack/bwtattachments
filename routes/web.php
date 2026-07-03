@@ -73,12 +73,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');
         Route::get('/products/search', [ClientProductController::class, 'search'])->name('products.search');
         Route::get('/products/{product}', [ClientProductController::class, 'show'])->name('products.show');
-        Route::patch('/products/{product}/margin', [App\Http\Controllers\Client\ProductPriceManageController::class, 'updateMargin'])->name('products.margin');
-        Route::get('/quotations', [ClientQuotationController::class, 'index'])->name('quotations.index');
-        Route::get('/quotations/create', [ClientQuotationController::class, 'create'])->name('quotations.create');
-        Route::post('/quotations', [ClientQuotationController::class, 'store'])->name('quotations.store');
-        Route::get('/quotations/{quotation}', [ClientQuotationController::class, 'show'])->name('quotations.show');
+        // quotations Roures
+        Route::resource('quotations', ClientQuotationController::class)->except(['delete']);
         Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
+        Route::get('/quotations/{quotation}/preview', [ClientQuotationController::class, 'preview'])->name('quotations.preview');
+
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -1,3 +1,4 @@
+import "./libs/lexxy";
 import $ from 'jquery';
 
 window.$ = window.jQuery = $;
