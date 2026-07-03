@@ -65,7 +65,7 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <p class="text-sm font-medium text-black dark:text-neutral-100">{{ $item->product?->product_description ?? $item->product?->product_title ?? 'Product' }}</p>
+                                        <p class="text-sm font-medium text-black dark:text-neutral-100">{{ $item->product?->product_title ?? $item->product?->product_title ?? 'Product' }}</p>
                                         <p class="text-xs font-mono text-gray-400 dark:text-neutral-500 mt-0.5">{{ $item->product?->product_code }}</p>
                                     </div>
                                 </div>
@@ -86,34 +86,26 @@
             </div>
 
             @php
-                $subtotal = $quotation->items->sum(fn($i) => $i->price * $i->quantity);
-                $marginAmount = $subtotal * ($quotation->margin_percentage / 100);
-                $beforeTax = $subtotal + $marginAmount;
-                $taxRate = $quotation->tax_rate ?? 0;
-                $taxAmount = $beforeTax * ($taxRate / 100);
-                $grandTotal = $beforeTax + $taxAmount;
+                $taxRate = $quotation->vat_percentage ?? 0;
             @endphp
             <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800 bg-rose-50 dark:bg-neutral-900/50">
                 <div class="max-w-sm ml-auto space-y-2">
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-gray-700 dark:text-neutral-400">Subtotal</span>
-                        <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($subtotal, 2) }}</span>
+                        <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }} {{ $quotation->sub_total }}</span>
                     </div>
-                    @if($quotation->margin_percentage > 0)
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-700 dark:text-neutral-400">Margin ({{ $quotation->margin_percentage }}%)</span>
-                            <span class="font-medium text-emerald-600 dark:text-emerald-400">+{{ config('app.currency_symbol') }}{{ number_format($marginAmount, 2) }}</span>
+                            <span class="font-medium text-emerald-600 dark:text-emerald-400">+{{ config('app.currency_symbol') }}{{  $quotation->margin_amount }}</span>
                         </div>
-                    @endif
-                    @if($taxRate > 0)
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-700 dark:text-neutral-400">VAT ({{ $taxRate }}%)</span>
-                            <span class="font-medium text-amber-600 dark:text-amber-400">{{ config('app.currency_symbol') }}{{ number_format($taxAmount, 2) }}</span>
+                            <span class="font-medium text-amber-600 dark:text-amber-400">{{ config('app.currency_symbol') }}{{ $quotation->tax_amount }}</span>
                         </div>
-                    @endif
+
                     <div class="flex items-center justify-between text-lg font-bold pt-2 border-t border-slate-100 dark:border-neutral-800">
                         <span class="text-black dark:text-neutral-100">Total incl. VAT</span>
-                        <span class="text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($grandTotal, 2) }}</span>
+                        <span class="text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{  $quotation->grand_total }}</span>
                     </div>
                 </div>
             </div>

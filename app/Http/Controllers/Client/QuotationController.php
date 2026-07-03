@@ -82,6 +82,7 @@ class QuotationController extends Controller
     public function show(string $id): View
     {
         $quotation = $this->quotationService->findById($id);
+            // dd($quotation);
         $quotation->load('items.product');
 
         return view('client.quotations.show', compact('quotation'));
