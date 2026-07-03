@@ -27,6 +27,10 @@
         $meta['country'] ?? null,
     ]);
     $custAddress = implode(', ', $custAddressParts);
+
+    $subTotal = (float) str_replace(',', '', $quotation->sub_total);
+    $taxAmount = (float) str_replace(',', '', $quotation->tax_amount);
+    $grandTotal = (float) str_replace(',', '', $quotation->grand_total);
 @endphp
 <!DOCTYPE html>
 <html>
@@ -124,6 +128,9 @@
 
             <tbody>
                 @foreach ($quotation->items as $item)
+                    @php
+                        $itemPrice = (float) str_replace(',', '', $item->price);
+                    @endphp
                     <tr style="vertical-align:top;">
                         <td style="padding:12px 14px;font-size:15px;border-bottom:1px solid #b3b3b3;">
                             {{ $item->product->product_title }}
@@ -132,13 +139,13 @@
                             {{ Str::limit(strip_tags($item->product->product_description), 120) }}
                         </td>
                         <td style="padding:12px 14px;font-size:15px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                            € {{ number_format($item->price, 2, ',', '.') }}
+                            € {{ number_format($itemPrice, 2, '.', ',') }}
                         </td>
                         <td style="padding:12px 14px;font-size:15px;text-align:center;border-bottom:1px solid #b3b3b3;">
                             {{ $item->quantity }}
                         </td>
                         <td style="padding:12px 14px;font-size:15px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                            € {{ number_format($item->price * $item->quantity, 2, ',', '.') }}
+                            € {{ number_format($itemPrice * $item->quantity, 2, '.', ',') }}
                         </td>
                     </tr>
                 @endforeach
@@ -164,7 +171,7 @@
                                 Sub total:
                             </td>
                             <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                                € {{ $quotation->sub_total }}
+                                € {{ number_format($subTotal, 2, '.', ',') }}
                             </td>
                         </tr>
                         <tr>
@@ -172,7 +179,7 @@
                                 VAT {{ $quotation->vat_percentage }}%:
                             </td>
                             <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                                € {{ $quotation->tax_amount }}
+                                € {{ number_format($taxAmount, 2, '.', ',') }}
                             </td>
                         </tr>
                         <tr>
@@ -180,7 +187,7 @@
                                 Grand total:
                             </td>
                             <td style="padding:10px 16px;text-align:right;font-size:16px;font-weight:bold;white-space:nowrap;">
-                                € {{ $quotation->grand_total }}
+                                € {{ number_format($grandTotal, 2, '.', ',') }}
                             </td>
                         </tr>
                     </table>
