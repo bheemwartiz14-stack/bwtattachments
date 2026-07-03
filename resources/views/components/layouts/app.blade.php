@@ -42,8 +42,8 @@
         </footer>
         <script src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-   <script>window.BASE_URL = "{{ url('') }}";</script>
-<script>
+        <script>window.BASE_URL = "{{ url('') }}";</script>
+    <script>
     (function() {
         var html = document.documentElement;
         var stored = localStorage.getItem('theme');
@@ -58,6 +58,7 @@
     })();
 </script>
 
+        @livewireScripts
         @stack('scripts')
 
 

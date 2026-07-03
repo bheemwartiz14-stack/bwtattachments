@@ -1,16 +1,19 @@
-<meta charset="utf-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{{ isset($title) ? str_replace('BWT', config('app.name'), $title) : config('app.name') }}</title>
+
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
-<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="BWT" />
-<link rel="manifest" href="/site.webmanifest" />
+
+<link rel="icon" type="image/png" sizes="96x96" href="{{ config('app.url') }}/favicon-96x96.png">
+<link rel="icon" type="image/svg+xml" href="{{ config('app.url') }}/favicon.svg">
+<link rel="shortcut icon" href="{{ config('app.url') }}/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ config('app.url') }}/apple-touch-icon.png">
+
+<meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
+
+<link rel="manifest" href="{{ config('app.url') }}/site.webmanifest">
+
 <link rel="stylesheet" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
 <style>
     input:-webkit-autofill,
@@ -28,4 +31,5 @@
 </style>
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+@livewireStyles
 @stack('styles')
