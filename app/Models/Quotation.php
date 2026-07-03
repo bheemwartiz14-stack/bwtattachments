@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
     'margin_percentage',
     'reseller_id',
     'delivery_country',
+    'vat_percentage',
     'sub_total',
     'tax_amount',
     'margin_amount',
