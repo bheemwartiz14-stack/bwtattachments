@@ -12,7 +12,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->string('quotation_number')->unique();
-            $table->decimal('margin_percentage', 5, 2)->default(0);
             $table->string('pdf_file')->nullable();
             $table->string('status')->default('draft');
             $table->timestamps();
