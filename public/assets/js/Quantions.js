@@ -38,7 +38,7 @@
         ensureHidden('contact_name', 'contact_name');
         ensureHidden('contact_email', 'contact_email');
         ensureHidden('contact_phone', 'contact_phone');
-        ensureHidden('user_id', 'user_id');
+        ensureHidden('reseller_id', 'reseller_id');
 
         window.addEventListener('customerSelected', function (e) {
             if (e.detail && contactInfo) {
@@ -49,7 +49,7 @@
                 setVal('contact_name', e.detail.name || '');
                 setVal('contact_email', e.detail.email || '');
                 setVal('contact_phone', e.detail.phone || '');
-                setVal('user_id', e.detail.id || '');
+                setVal('reseller_id', e.detail.id || '');
             }
         });
         window.addEventListener('customerCleared', function () {
@@ -122,7 +122,7 @@
                 alert('Please add at least one item to the quotation.');
                 return;
             }
-            var r = document.getElementById('user_id');
+            var r = document.getElementById('reseller_id');
             if (!r || !r.value) {
                 e.preventDefault();
                 alert('Please select a customer.');

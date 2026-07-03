@@ -175,10 +175,11 @@
                 ($settings->country ?? ''),
         );
 
-        $reseller = $quotation->user ?? null;
+        $reseller = $quotation->reseller ?? null;
         $meta = $reseller->usermeta->metadata ?? [];
     @endphp
 
+    <div class="wrapper"
     <div class="wrapper">
 
         <!-- HEADER -->

@@ -88,7 +88,6 @@
                         <livewire:customer-select />
                         <div id="contact-info" class="hidden grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
                             <div>
-                                <input type="hidden" name="user_id" id="user_id" value="">
                                 <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Contact Name</p>
                                 <p id="contact-name-display" class="mt-1 text-sm font-medium text-slate-900 dark:text-white">—</p>
                             </div>

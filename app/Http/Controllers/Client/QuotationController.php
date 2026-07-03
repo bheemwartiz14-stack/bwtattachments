@@ -23,7 +23,6 @@ class QuotationController extends Controller
     public function index(): View
     {
         $quotations = $this->quotationService->findByUser(auth()->id());
-
         return view('client.quotations.index', compact('quotations'));
     }
 
@@ -42,7 +41,7 @@ class QuotationController extends Controller
     public function store(StoreQuotationRequest $request): RedirectResponse
     {
         $data = $request->validated();
-
+        $data['user_id'] = auth()->id();
         $data['status'] = $request->input('action', 'draft') === 'send' ? 'sent' : 'draft';
         $quotation = $this->quotationService->create($data);
         foreach ($data['items'] as $item) {

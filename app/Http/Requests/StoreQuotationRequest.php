@@ -26,10 +26,8 @@ class StoreQuotationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'exists:users,id'],
-            'contact_name' => ['required', 'string', 'max:255'],
-            'contact_email' => ['required', 'email', 'max:255'],
-            'contact_phone' => ['required', 'string', 'max:50'],
+            'reseller_id' => ['required', 'exists:users,id'],
+            'quotation_number' => ['required', 'string', 'max:255'],
             'valid_until' => ['required', 'date', 'after:today'],
             'issue_date' => ['required', 'date'],
             'margin_percentage' => ['required', 'numeric', 'min:0', 'max:100'],

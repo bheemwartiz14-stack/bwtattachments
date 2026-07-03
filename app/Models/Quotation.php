@@ -6,8 +6,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -20,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
     'sub_total',
     'tax_amount',
     'margin_amount',
-    'vat_percentage',
     'grand_total',
     'tax_rate',
     'valid_until',
