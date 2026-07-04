@@ -15,6 +15,13 @@
         'Profile' => 'heroicon-o-user',
     ];
 
+    $rolePrefix = match(true) {
+        $user->hasRole('Super Admin') => 'admin',
+        $user->hasRole('Wholesale Client') => 'client',
+        $user->hasRole('Retailer') => 'retailer',
+        default => null,
+    };
+
     if ($user->hasRole('Super Admin')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin.dashboard'],
@@ -34,8 +41,8 @@
     } elseif ($user->hasRole('Retailer')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'retailer.dashboard', 'pattern' => 'retailer.dashboard'],
+            ['label' => 'Manage Customer Users', 'route' => 'retailer.customer-users.index', 'pattern' => 'retailer.customer-users.*'],
             ['label' => 'Products', 'route' => 'retailer.products.index', 'pattern' => 'retailer.products.*'],
-
         ];
     } else {
         $sidebarItems = [];
@@ -49,7 +56,7 @@
             @php
                 $hasChildren = isset($item['children']) && count($item['children']);
                 $isGroupActive = $hasChildren && collect($item['children'])->contains(fn($c) => request()->routeIs($c['pattern']));
-                $icon = $item['icon'] ?? ($iconMap[$item['label']] ?? 'heroicon-o-dot');
+                $icon = $item['icon'] ?? ($iconMap[$item['label']] ?? 'heroicon-o-ellipsis-horizontal');
             @endphp
 
             @if ($hasChildren)

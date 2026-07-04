@@ -42,7 +42,6 @@ class QuotationService
     {
         $data['quotation_number'] = $this->generateQuotationNumber();
         $data['status'] = $data['status'] ?? 'draft';
-
         return $this->quotationRepository->create($data);
     }
 
@@ -70,12 +69,10 @@ class QuotationService
     {
         $prefix = 'QTN';
         $date = now()->format('Ymd');
-
         $lastQuotation = Quotation::whereDate('created_at', today())
             ->where('quotation_number', 'like', "{$prefix}-{$date}-%")
             ->orderBy('id', 'desc')
             ->first();
-
         if ($lastQuotation) {
             $lastNumber = (int) substr($lastQuotation->quotation_number, -4);
             $newNumber = str_pad((string) ($lastNumber + 1), 4, '0', STR_PAD_LEFT);

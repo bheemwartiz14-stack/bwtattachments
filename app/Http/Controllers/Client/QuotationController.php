@@ -34,7 +34,6 @@ class QuotationController extends Controller
             ->get(['id', 'name', 'email', 'phone']);
 
         $quotationNumber = $this->quotationService->generateQuotationNumber();
-
         return view('client.quotations.create', compact('resellers', 'quotationNumber'));
     }
 

@@ -28,7 +28,6 @@ class ProfileController extends Controller
     {
         /** @var User $user */
         $user = auth()->user()->load('userMeta');
-
         $avatarMedia = $user->getFirstMedia('avatar');
         $viewData = [
             'user' => $user,
@@ -47,7 +46,7 @@ class ProfileController extends Controller
 
         if ($user->hasRole('Retailer')) {
             $meta = $user->userMeta;
-            $viewData['retailerClientName'] = $meta?->metadata['client_name'] ?? '';
+            $viewData['retailerClientName'] = $meta?->metadata['company_name'] ?? '';
             $logoMedia = $user->getFirstMedia('retailer_client_logo');
             $viewData['retailerClientLogoUrl'] = $logoMedia?->getUrl();
             $viewData['retailerClientLogoId'] = $logoMedia?->id;

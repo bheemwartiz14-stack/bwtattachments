@@ -21,8 +21,8 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\ProductController as PublicProductController;
 use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardController;
 // Retailer Product Controller
+use App\Http\Controllers\Retailer\CustomerUserController;
 use App\Http\Controllers\Retailer\RetailerProductController;
-
 use Illuminate\Support\Facades\Route;
 
 // Public routes (guest + authenticated)
@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
     // Retailer routes
     Route::middleware(['role:Retailer'])->prefix('retailer')->name('retailer.')->group(function () {
         Route::get('/dashboard', [RetailerDashboardController::class, 'index'])->name('dashboard');
+        // Manager CUSTOMER Via Retailer
+        Route::resource('customer-users', CustomerUserController::class);
+
         Route::get('/products', [RetailerProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product}', [RetailerProductController::class, 'show'])->name('products.show');
         Route::get('/quotations', [ClientQuotationController::class, 'index'])->name('quotations.index');
@@ -97,7 +100,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/quotations', [ClientQuotationController::class, 'store'])->name('quotations.store');
         Route::get('/quotations/{quotation}', [ClientQuotationController::class, 'show'])->name('quotations.show');
         Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
-
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');

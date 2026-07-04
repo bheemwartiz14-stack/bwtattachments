@@ -12,6 +12,8 @@
     ready(function () {
         initCustomerSelection();
         initDateDefaults();
+        initQuillEditor();
+        initDateSync();
         initFormSubmission();
         initAutoSave();
         initDropZones();
@@ -41,11 +43,13 @@
         ensureHidden('reseller_id', 'reseller_id');
 
         window.addEventListener('customerSelected', function (e) {
-            if (e.detail && contactInfo) {
-                contactInfo.classList.remove('hidden');
-                if (nameDisplay) nameDisplay.textContent = e.detail.name || '—';
-                if (emailDisplay) emailDisplay.textContent = e.detail.email || '—';
-                if (phoneDisplay) phoneDisplay.textContent = e.detail.phone || '—';
+            if (e.detail) {
+                if (contactInfo) {
+                    contactInfo.classList.remove('hidden');
+                    if (nameDisplay) nameDisplay.textContent = e.detail.name || '—';
+                    if (emailDisplay) emailDisplay.textContent = e.detail.email || '—';
+                    if (phoneDisplay) phoneDisplay.textContent = e.detail.phone || '—';
+                }
                 setVal('contact_name', e.detail.name || '');
                 setVal('contact_email', e.detail.email || '');
                 setVal('contact_phone', e.detail.phone || '');
@@ -186,6 +190,54 @@
             });
             marginInput.addEventListener('input', function () {
                 Livewire.dispatch('marginChanged', { margin: parseFloat(this.value) || 0 });
+            });
+        }
+    }
+
+    /* ---------- QUILL EDITOR ---------- */
+    function initQuillEditor() {
+        var editorEl = document.getElementById('notes_editor');
+        var hiddenInput = document.getElementById('notes_input');
+        if (editorEl && hiddenInput && typeof Quill !== 'undefined') {
+            var quill = new Quill(editorEl, {
+                theme: 'snow',
+                placeholder: 'Enter any additional notes, terms, or instructions...',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block'],
+                        ['link'],
+                        ['clean']
+                    ]
+                }
+            });
+            if (hiddenInput.value) {
+                quill.root.innerHTML = hiddenInput.value;
+            }
+            quill.on('text-change', function() {
+                hiddenInput.value = quill.root.innerHTML;
+            });
+            var form = document.getElementById('quotation-form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    hiddenInput.value = quill.root.innerHTML;
+                });
+            }
+        }
+    }
+
+    /* ---------- DATE SYNC ---------- */
+    function initDateSync() {
+        var issueDate = document.getElementById('issue_date');
+        var validUntil = document.getElementById('valid_until');
+        if (issueDate && validUntil) {
+            issueDate.addEventListener('change', function() {
+                validUntil.min = this.value;
+                if (validUntil.value && validUntil.value < this.value) {
+                    validUntil.value = this.value;
+                }
             });
         }
     }

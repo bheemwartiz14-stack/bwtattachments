@@ -27,8 +27,8 @@
         $meta['country'] ?? null,
     ]);
     $custAddress = implode(', ', $custAddressParts);
-
     $subTotal = (float) str_replace(',', '', $quotation->sub_total);
+    $marginammout = (float) str_replace(',', '', $quotation->margin_amount);
     $taxAmount = (float) str_replace(',', '', $quotation->tax_amount);
     $grandTotal = (float) str_replace(',', '', $quotation->grand_total);
 @endphp
@@ -172,6 +172,14 @@
                             </td>
                             <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
                                 € {{ number_format($subTotal, 2, '.', ',') }}
+                            </td>
+                        </tr>
+                           <tr>
+                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;">
+                                 Margin {{ $quotation->margin_percentage }}%:
+                            </td>
+                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
+                                € {{ number_format($marginammout, 2, '.', ',') }}
                             </td>
                         </tr>
                         <tr>

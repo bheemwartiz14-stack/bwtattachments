@@ -13,6 +13,24 @@ class CustomerSelect extends Component
 
     public ?string $selectedId = null;
 
+    public function mount(?string $selectedId = null): void
+    {
+        if ($selectedId) {
+            $this->selectedId = $selectedId;
+            $customer = User::where('parent_id', auth()->id())
+                ->role('Retailer')
+                ->find($selectedId, ['id', 'name', 'email', 'phone']);
+            if ($customer) {
+                $this->dispatch('customerSelected',
+                    id: $customer->id,
+                    name: $customer->name,
+                    email: $customer->email,
+                    phone: $customer->phone ?? '',
+                );
+            }
+        }
+    }
+
     public function selectCustomer(string $id): void
     {
         $customer = User::where('parent_id', auth()->id())

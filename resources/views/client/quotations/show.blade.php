@@ -35,7 +35,7 @@
             <div class="px-6 py-4 border-b border-slate-100 dark:border-neutral-800 flex items-center justify-between">
                 <div>
                     <h2 class="text-sm font-mono font-semibold text-black dark:text-neutral-100">{{ $quotation->quotation_number }}</h2>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Created {{ $quotation->created_at->format('F d, Y') }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Created {{ $quotation->created_at->format('M d, Y') }}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     @php
@@ -119,7 +119,7 @@
 
             <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between">
                 <p class="text-xs text-gray-400 dark:text-neutral-500">
-                    {{ $quotation->items->count() }} item(s) &middot; Generated on {{ $quotation->created_at->format('Y-m-d H:i') }}
+                    {{ $quotation->items->count() }} item(s) &middot; Generated on {{ $quotation->created_at->format('M d, Y') }}
                 </p>
                 <a href="{{ route('client.quotations.download', $quotation) }}" class="inline-flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>

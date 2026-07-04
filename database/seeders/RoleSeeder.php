@@ -13,6 +13,7 @@ class RoleSeeder extends Seeder
             'Super Admin',
             'Wholesale Client',
             'Retailer',
+            'customer'
         ];
         foreach ($roles as $role) {
             Role::firstOrCreate([

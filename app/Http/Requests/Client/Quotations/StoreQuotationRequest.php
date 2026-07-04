@@ -28,8 +28,8 @@ class StoreQuotationRequest extends FormRequest
         return [
             'reseller_id' => ['required', 'exists:users,id'],
             'quotation_number' => ['required', 'string', 'max:255'],
-            'valid_until' => ['required', 'date', 'after:today'],
-            'issue_date' => ['required', 'date'],
+            'valid_until' => ['required', 'date', 'after:issue_date'],
+            'issue_date' => ['required', 'date', 'after_or_equal:today'],
             'margin_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
             'vat_percentage' => ['required', 'string'],
             'sub_total' => ['required', 'string'],

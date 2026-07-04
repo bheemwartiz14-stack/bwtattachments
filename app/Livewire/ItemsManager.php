@@ -28,6 +28,24 @@ class ItemsManager extends Component
         $this->productService = $productService;
     }
 
+    public function mount(): void
+    {
+        $items = old('items');
+        if ($items) {
+            $decoded = is_string($items) ? json_decode($items, true) : $items;
+            if (is_array($decoded)) {
+                $this->items = $decoded;
+            }
+        }
+        $margin = old('margin_percentage');
+        if ($margin !== null) {
+            $this->marginPercentage = (float) $margin;
+        }
+        if (count($this->items) > 0) {
+            $this->dispatchItemsUpdated();
+        }
+    }
+
     public function openModal(): void
     {
         $this->search = '';

@@ -1,0 +1,19 @@
+/* Quill Editor Dark Mode */
+.dark .ql-toolbar { background-color: #262626; border-color: #404040; border-radius: 0.75rem 0.75rem 0 0; }
+.dark .ql-container { background-color: #171717; border-color: #404040; border-radius: 0 0 0.75rem 0.75rem; }
+.dark .ql-editor { color: #e5e5e5; }
+.dark .ql-editor.ql-blank::before { color: #737373; }
+.dark .ql-toolbar .ql-stroke { stroke: #a3a3a3; }
+.dark .ql-toolbar .ql-fill { fill: #a3a3a3; }
+.dark .ql-toolbar button:hover .ql-stroke,
+.dark .ql-toolbar button.ql-active .ql-stroke { stroke: #f5f5f5; }
+.dark .ql-toolbar button:hover .ql-fill,
+.dark .ql-toolbar button.ql-active .ql-fill { fill: #f5f5f5; }
+.dark .ql-toolbar button:hover,
+.dark .ql-toolbar button.ql-active { background-color: #404040; }
+.dark .ql-picker-label { color: #a3a3a3; }
+.dark .ql-picker-label:hover { color: #f5f5f5; }
+.dark .ql-picker-options { background-color: #262626; border-color: #404040; }
+.dark .ql-picker-item { color: #a3a3a3; }
+.dark .ql-picker-item:hover { color: #f5f5f5; }
+.ql-editor { min-height: 200px; font-size: 0.875rem; }
