@@ -5,11 +5,12 @@ use App\Http\Controllers\Admin\ConnectionController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
 use App\Http\Controllers\Admin\SubcategoryController;
-use App\Http\Controllers\FileController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+
+// Client CONTROLLERS
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\RetailerClientUserController as RetailerUserController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
@@ -24,6 +25,9 @@ use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardContro
 // Retailer Product Controller
 use App\Http\Controllers\Retailer\CustomerUserController;
 use App\Http\Controllers\Retailer\RetailerProductController;
+
+
+use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes (guest + authenticated)

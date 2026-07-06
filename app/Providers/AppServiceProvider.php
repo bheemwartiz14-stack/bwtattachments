@@ -16,5 +16,6 @@ class AppServiceProvider extends ServiceProvider
         if (config('vite.enabled')) {
             Vite::useBuildDirectory(config('vite.build_directory'));
         }
+        view()->share('siteTitle', 'BWT');
     }
 }
