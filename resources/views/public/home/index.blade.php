@@ -110,13 +110,8 @@
                   <div class="h-40 flex items-center justify-center text-gray-400 text-sm">No Image</div>
                 @endif
               </div>
-              <div class="px-5">
-                <p class="text-[11px] text-gray-500 border-t border-gray-100 pt-2">{{ $product->product_code }}</p>
-              </div>
-              <div class="px-5 pt-2 flex-1 flex flex-col">
-                <h3 class="font-bold text-[15px] text-gray-900 leading-snug">{{ $product->product_code }}</h3>
-                <p class="text-gray-700 text-sm mt-1 mb-3">{{ $product->product_title ?? $product->product_description }}</p>
-
+              <div class="px-6 pt-2 flex-1 flex flex-col">
+                <h3 class="font-bold text-[15px] text-gray-900 leading-snug">{{ $product->product_title }}</h3>
                 <div class="flex flex-wrap gap-2 mb-3">
                   @if($product->category)
                     <span class="bg-blue-50 text-bwtblue text-xs font-medium px-2.5 py-1 rounded">{{ $product->category->name }}</span>
