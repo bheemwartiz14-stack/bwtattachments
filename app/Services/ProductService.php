@@ -72,9 +72,9 @@ class ProductService
     {
         $product = $this->productRepository->findById($id);
 
-        if ($product->quotationItems()->exists()) {
-            return false;
-        }
+        // if ($product->quotationItems()->exists()) {
+        //     return false;
+        // }
 
         return DB::transaction(function () use ($product) {
             return (bool) $product->delete();
