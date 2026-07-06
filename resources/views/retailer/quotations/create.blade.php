@@ -36,7 +36,7 @@
         </div>
     @endif
 
-    <form id="quotation-form" action="{{ route('client.quotations.store') }}" method="POST" class="space-y-6">
+    <form id="quotation-form" action="{{ route('retailer.quotations.store') }}" method="POST" class="space-y-6">
         @csrf
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="reseller_id" name="reseller_id" value="{{ old('reseller_id') }}">

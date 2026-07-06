@@ -26,21 +26,17 @@ use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardContro
 // Retailer Product Controller
 use App\Http\Controllers\Retailer\CustomerUserController;
 use App\Http\Controllers\Retailer\RetailerProductController;
-
-
+use App\Http\Controllers\Retailer\CustomerQuotationController;
 use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
-
 // Public routes (guest + authenticated)
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
 Route::get('/test-pdf', [HomeController::class, 'testPdf'])->name('public.test-pdf');
-
 Route::get('/products/{product}', [PublicProductController::class, 'show'])->name('public.products.show');
 Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories.index');
 Route::get('/categories/{category}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('public.contact.index');
 Route::get('/reseller-program', [ResellerProgramController::class, 'index'])->name('public.reseller-program.index');
-
 // Guest-only routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -50,13 +46,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
-
 // Authenticated routes
 Route::post('/upload-temp', [FileController::class, 'store'])->name('upload-temp')->middleware('auth');
 Route::delete('/media/{media}', [FileController::class, 'destroy'])->name('media.destroy')->middleware('auth');
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
     // Admin routes
     Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -101,14 +95,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [RetailerDashboardController::class, 'index'])->name('dashboard');
         // Manager CUSTOMER Via Retailer
         Route::resource('customer-users', CustomerUserController::class);
-
         Route::get('/products', [RetailerProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product}', [RetailerProductController::class, 'show'])->name('products.show');
-        Route::get('/quotations', [ClientQuotationController::class, 'index'])->name('quotations.index');
-        Route::get('/quotations/create', [ClientQuotationController::class, 'create'])->name('quotations.create');
-        Route::post('/quotations', [ClientQuotationController::class, 'store'])->name('quotations.store');
-        Route::get('/quotations/{quotation}', [ClientQuotationController::class, 'show'])->name('quotations.show');
-        Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
+        // QUAOTATION
+        Route::resource('quotations', CustomerQuotationController::class);
+        Route::controller(CustomerQuotationController::class) ->prefix('quotations') ->name('quotations.')->group(function () {
+            Route::get('{quotation}/download', 'download')->name('download');
+            Route::get('{quotation}/preview', 'preview')->name('preview');
+        });
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');

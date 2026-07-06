@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use App\Services\CategoryService;
 use App\Services\ConnectionService;
 use App\Services\ProductService;
+use Illuminate\Support\Facades\Auth;
 use App\Services\SubcategoryService;
 
 class RetailerProductController extends Controller
@@ -24,6 +25,7 @@ class RetailerProductController extends Controller
         $subcategories = $this->subcategoryService->getAll();
         $connections = $this->connectionService->getAll();
         $parent_id = auth()->user()->parent_id;
+
         $filter = [
             'category' => request()->query('category'),
             'subcategory' => request()->query('subcategory'),
@@ -32,8 +34,8 @@ class RetailerProductController extends Controller
             'status' => request()->query('status'),
         ];
         $perPage = (int) request()->query('per_page', 10);
-        $parent_id = "";
-        $products = $this->productService->paginateActiveProductsForUser($filter, $perPage, $parent_id);
+        // $parent_id = "";
+        $products = $this->productService->getActiveProductsWithUserPrices(Auth::id());
         return view('retailer.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 

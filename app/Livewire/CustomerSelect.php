@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class CustomerSelect extends Component
@@ -13,13 +13,13 @@ class CustomerSelect extends Component
 
     public ?string $selectedId = null;
 
+    public Collection $users;
+
     public function mount(?string $selectedId = null): void
     {
         if ($selectedId) {
             $this->selectedId = $selectedId;
-            $customer = User::where('parent_id', auth()->id())
-                ->role('Retailer')
-                ->find($selectedId, ['id', 'name', 'email', 'phone']);
+            $customer = $this->users->firstWhere('id', $selectedId);
             if ($customer) {
                 $this->dispatch('customerSelected',
                     id: $customer->id,
@@ -33,9 +33,7 @@ class CustomerSelect extends Component
 
     public function selectCustomer(string $id): void
     {
-        $customer = User::where('parent_id', auth()->id())
-            ->role('Retailer')
-            ->find($id, ['id', 'name', 'email', 'phone']);
+        $customer = $this->users->firstWhere('id', $id);
 
         if ($customer) {
             $this->selectedId = $customer->id;
@@ -57,10 +55,7 @@ class CustomerSelect extends Component
 
     public function render(): View
     {
-        $customers = User::where('parent_id', auth()->id())
-            ->role('Retailer')
-            ->orderBy('name')
-            ->get(['id', 'name', 'email', 'phone']);
+        $customers = $this->users;
 
         if ($this->search) {
             $s = strtolower($this->search);

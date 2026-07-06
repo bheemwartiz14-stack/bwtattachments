@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -16,12 +18,12 @@ class UserRepository
         'roles',
         'userMeta',
     ];
+
     public function __construct(
         protected User $model
-    ) {
-    }
+    ) {}
 
-    public function getWithMarginQuery(): \Illuminate\Database\Eloquent\Builder
+    public function getWithMarginQuery(): Builder
     {
         return $this->model
             ->query()
@@ -204,5 +206,12 @@ class UserRepository
         $user->clearMediaCollection('avatar');
 
         return $user->refresh()->loadMissing(self::RELATIONS);
+    }
+
+    public function getMyCustomers(string|int $id): Collection
+    {
+        $query = User::where('parent_id', $id);
+
+        return $query->orderBy('name')->get(['id', 'name', 'email', 'phone']);
     }
 }

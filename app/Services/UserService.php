@@ -1,25 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserService
 {
-    public function __construct(protected UserRepository $userRepository)
-    {
-    }
+    public function __construct(protected UserRepository $userRepository) {}
 
     public function getAll(): Collection
     {
         return $this->userRepository->getAll();
     }
 
-    public function getWithMarginQuery(): \Illuminate\Database\Eloquent\Builder
+    public function getWithMarginQuery(): Builder
     {
         return $this->userRepository->getWithMarginQuery();
     }
@@ -46,23 +46,25 @@ class UserService
 
     public function create(array $data): Model
     {
-        $roles = !empty($data['roles']) ? [$data['roles']] : [];
+        $roles = ! empty($data['roles']) ? [$data['roles']] : [];
         unset($data['roles']);
         $user = $this->userRepository->create($data);
-        if (!empty($roles)) {
+        if (! empty($roles)) {
             $user->assignRole($roles);
         }
+
         return $user;
     }
 
     public function update(string|int $id, array $data): Model
     {
-        $roles = !empty($data['roles']) ? [$data['roles']] : [];
+        $roles = ! empty($data['roles']) ? [$data['roles']] : [];
         unset($data['roles']);
         $user = $this->userRepository->update($id, $data);
-        if (!empty($roles)) {
+        if (! empty($roles)) {
             $user->syncRoles($roles);
         }
+
         return $user;
     }
 
@@ -71,4 +73,9 @@ class UserService
         return $this->userRepository->delete($id);
     }
 
+    public function getMyCustomers(string|int $id)
+    {
+        return $this->userRepository->getMyCustomers($id);
+
+    }
 }
