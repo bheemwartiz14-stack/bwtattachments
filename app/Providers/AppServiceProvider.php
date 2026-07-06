@@ -9,25 +9,48 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     */
     public function register(): void
     {
+        //
     }
 
+    /**
+     * Bootstrap any application services.
+     */
     public function boot(): void
     {
+        // Mail views
         View::addNamespace('mail', resource_path('views/vendor/mail'));
 
+        // Vite build directory
         if (config('vite.enabled')) {
             Vite::useBuildDirectory(config('vite.build_directory'));
         }
         try {
-            $siteTitle = SiteSetting::where('key', 'site_title')->value('value') ?? 'BWT';
-        } catch (\Throwable) {
-            $siteTitle = 'BWT';
-        }
-        view()->share('siteTitle', $siteTitle);
+            $settings = SiteSetting::pluck('value', 'key')->toArray();
+            config([
+                'site_settings' => $settings,
+            ]);
 
-        $settings = SiteSetting::pluck('value', 'key')->toArray();
-        config(['site_settings' => $settings]);
+            // Get site title
+            $siteTitle = $settings['site_title'] ?? 'BWT';
+        } catch (\Throwable $e) {
+            // Fallback if database is unavailable
+            $settings = [];
+            $siteTitle = 'BWT';
+
+            config([
+                'site_settings' => [],
+            ]);
+
+            // Optional: Log the exception
+            // report($e);
+        }
+        View::share([
+            'siteTitle'    => $siteTitle,
+        ]);
     }
 }
