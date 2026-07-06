@@ -38,7 +38,7 @@ class UpdateCustomerClientUserRequest extends FormRequest
             'city' => ['required', 'string', 'max:255'],
             'country' => ['required', 'string', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
-             'retailer_client_logo_temp' => ['nullable', 'string'],
+                 'customer_logo_temp' => ['nullable', 'string'],
         ];
     }
 }

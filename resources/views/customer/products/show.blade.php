@@ -1,10 +1,11 @@
 <x-layouts.app>
     <x-slot:title>{{ $product->product_title }} - BWT</x-slot:title>
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
-        ['label' => 'Products', 'url' => route('admin.products.index')],
+        ['label' => 'Customer Dashborad', 'url' => route('customer.dashboard')],
+        ['label' => 'View All Products', 'url' => route('customer.products.index')],
         ['label' => $product->product_code],
     ]" />
+
     @if (session('success'))
         <div
             class="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-300">
@@ -73,7 +74,7 @@
                         @endif
                     </div>
                     <div class="mt-6 flex items-center gap-3">
-                        <a href="{{ route('client.products.index') }}"
+                        <a href="{{ route('customer.products.index') }}"
                             class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white/80 shadow-sm transition-all hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">
@@ -109,7 +110,8 @@
                         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Width</p>
                         <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->width ?? '' }}
-                            <span class="text-sm font-normal text-slate-400">mm</span></p>
+                            <span class="text-sm font-normal text-slate-400">mm</span>
+                        </p>
                     </div>
                     <div
                         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">

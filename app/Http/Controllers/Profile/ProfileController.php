@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Profile\UpdateAvatarRequest;
-use App\Http\Requests\Profile\UpdateNotificationRequest;
-use App\Http\Requests\Profile\UpdatePasswordRequest;
-use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Http\Requests\Profile\{
+    UpdateAvatarRequest,
+    UpdateNotificationRequest,
+    UpdatePasswordRequest,
+    UpdateProfileRequest
+};
 use App\Models\User;
 use App\Services\Profile\ProfileService;
 use Illuminate\Http\RedirectResponse;
@@ -21,170 +23,137 @@ class ProfileController extends Controller
         protected ProfileService $profileService,
     ) {}
 
-    /**
-     * Show the profile edit form.
-     */
     public function edit(): View
     {
         /** @var User $user */
         $user = auth()->user()->load('userMeta');
-        $avatarMedia = $user->getFirstMedia('avatar');
+
+        $avatar = $user->getFirstMedia('avatar');
+
         $viewData = [
             'user' => $user,
             'prefix' => $this->resolveRoutePrefix($user),
-            'avatarUrl' => $avatarMedia?->getUrl(),
-            'avatarId' => $avatarMedia?->id,
+            'avatarUrl' => $avatar?->getUrl(),
+            'avatarId' => $avatar?->id,
         ];
 
-        if ($user->hasRole('Wholesale Client')) {
-            $meta = $user->userMeta;
-            $viewData['wholesaleClientName'] = $meta?->metadata['wholesale_company_name'] ?? '';
-            $logoMedia = $user?->getFirstMedia('wholesale_client_logo');
-            $viewData['wholesaleClientLogoUrl'] = $logoMedia?->getUrl();
-            $viewData['wholesaleClientLogoId'] = $logoMedia?->id;
-        }
+        $meta = $user->userMeta?->metadata ?? [];
+        $roleData = match (true) {
+            $user->hasRole('Wholesale Client') => [
+                'company_name' => $meta['wholesale_company_name'] ?? '',
+                'logo' => $user->getFirstMedia('wholesale_client_logo'),
+            ],
 
-        if ($user->hasRole('Retailer')) {
-            $meta = $user->userMeta;
-            $viewData['retailerClientName'] = $meta?->metadata['company_name'] ?? '';
-            $logoMedia = $user->getFirstMedia('retailer_client_logo');
-            $viewData['retailerClientLogoUrl'] = $logoMedia?->getUrl();
-            $viewData['retailerClientLogoId'] = $logoMedia?->id;
-        }
+            $user->hasRole('Retailer') => [
+                'company_name' => $meta['company_name'] ?? '',
+                'logo' => $user->getFirstMedia('retailer_client_logo'),
+            ],
 
+            $user->hasRole('customer') => [
+                'company_name' => $meta['company_name'] ?? '',
+                'logo' => $user->getFirstMedia('customer_logo'),
+            ],
+            default => [],
+        };
+
+        if (!empty($roleData)) {
+            $viewData['company_name'] = $roleData['company_name'] ?? '';
+            $viewData['logo'] = $roleData['logo']?->getUrl();
+            $viewData['logo_id'] = $roleData['logo']?->id;
+        }
         return view('profile.edit', $viewData);
     }
 
-    /**
-     * Update the user's profile information.
-     */
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $this->profileService->updateProfile($user, $request->validated());
-
-        return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
-            ->with('success', 'Profile updated successfully.');
+        return $this->handleUpdate(
+            $request,
+            fn($user, $data) => $this->profileService->updateProfile($user, $data),
+            'Profile updated successfully.'
+        );
     }
 
-    /**
-     * Update the user's password.
-     */
     public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
-        /** @var User $user */
         $user = $request->user();
 
-        $changed = $this->profileService->changePassword(
+        if (!$this->profileService->changePassword(
             $user,
             $request->input('current_password'),
             $request->input('password'),
-        );
-
-        if (!$changed) {
+        )) {
             return back()->withErrors(['current_password' => 'The current password is incorrect.']);
         }
 
-        return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
-            ->with('success', 'Password changed successfully.');
+        return $this->successRedirect($user, 'Password changed successfully.');
     }
 
-    /**
-     * Upload avatar for the user.
-     */
     public function uploadAvatar(UpdateAvatarRequest $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $this->profileService->uploadAvatar($user, $request->validated());
-
-        return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
-            ->with('success', 'Avatar uploaded successfully.');
+        return $this->handleUpdate(
+            $request,
+            fn($user, $data) => $this->profileService->uploadAvatar($user, $data),
+            'Avatar uploaded successfully.'
+        );
     }
 
-    /**
-     * Delete the user's avatar.
-     */
     public function deleteAvatar(Request $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $this->profileService->deleteAvatar($user);
-
-        return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
-            ->with('success', 'Avatar deleted successfully.');
+        return $this->handleSimple($request, 'deleteAvatar', 'Avatar deleted successfully.');
     }
 
-    /**
-     * Delete wholesale client logo.
-     */
     public function deleteWholesaleClientLogo(Request $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $this->profileService->deleteWholesaleClientLogo($user);
-
-        return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
-            ->with('success', 'Logo removed successfully.');
+        return $this->handleSimple($request, 'deleteWholesaleClientLogo', 'Logo removed successfully.');
     }
 
-    /**
-     * Delete retailer client logo.
-     */
     public function deleteRetailerClientLogo(Request $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $this->profileService->deleteRetailerClientLogo($user);
-
-        return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
-            ->with('success', 'Logo removed successfully.');
+        return $this->handleSimple($request, 'deleteRetailerClientLogo', 'Logo removed successfully.');
     }
 
-    /**
-     * Update notification preferences.
-     */
     public function updateNotificationPreference(UpdateNotificationRequest $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $this->profileService->updateNotificationPreference($user, $request->validated());
-
-        return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
-            ->with('success', 'Notification preferences updated successfully.');
+        return $this->handleUpdate(
+            $request,
+            fn($user, $data) => $this->profileService->updateNotificationPreference($user, $data),
+            'Notification preferences updated successfully.'
+        );
     }
 
-    /**
-     * Resolve the route prefix based on the user's role.
-     */
+    /* ---------------- Helpers ---------------- */
+
+    private function handleUpdate($request, callable $action, string $message): RedirectResponse
+    {
+        $user = $request->user();
+        $action($user, $request->validated());
+
+        return $this->successRedirect($user, $message);
+    }
+
+    private function handleSimple(Request $request, string $method, string $message): RedirectResponse
+    {
+        $user = $request->user();
+        $this->profileService->$method($user);
+
+        return $this->successRedirect($user, $message);
+    }
+
+    private function successRedirect(User $user, string $message): RedirectResponse
+    {
+        return redirect()
+            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
+            ->with('success', $message);
+    }
+
     private function resolveRoutePrefix(User $user): string
     {
-        if ($user->hasRole('Super Admin')) {
-            return 'admin';
-        }
-
-        if ($user->hasRole('Wholesale Client')) {
-            return 'client';
-        }
-
-        if ($user->hasRole('Retailer')) {
-            return 'retailer';
-        }
-
-        return 'admin';
+        return match (true) {
+            $user->hasRole('Super Admin') => 'admin',
+            $user->hasRole('Wholesale Client') => 'client',
+            $user->hasRole('Retailer') => 'retailer',
+            $user->hasRole('customer') => 'customer',
+            default => 'admin',
+        };
     }
 }

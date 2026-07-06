@@ -31,10 +31,7 @@
                         <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-neutral-500">Company</p>
                         <p class="mt-1 text-sm font-semibold text-slate-900 dark:text-neutral-100">{{ $companyName }}</p>
                     </div>
-                    <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
-                        <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-neutral-500">Client ID</p>
-                        <p class="mt-1 text-sm font-semibold font-mono text-slate-900 dark:text-neutral-100">{{ $user->username ?? $user->email }}</p>
-                    </div>
+
                     <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
                         <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-neutral-500">Last Login</p>
                         <p class="mt-1 text-sm font-semibold text-slate-900 dark:text-neutral-100">{{ $lastLogin?->format('M d, Y H:i') ?? 'N/A' }}</p>

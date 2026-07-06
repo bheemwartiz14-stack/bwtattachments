@@ -1,18 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers\Customers;
 
 use App\Http\Controllers\Controller;
 use App\Services\CategoryService;
 use App\Services\ConnectionService;
 use App\Services\ProductService;
 use App\Services\SubcategoryService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class ProductController extends Controller
+class CustomerProductController extends Controller
 {
     public function __construct(
         protected ProductService $productService,
@@ -23,7 +23,6 @@ class ProductController extends Controller
 
     public function index(Request $request): View
     {
-
         $categories = $this->categoryService->getAll();
         $subcategories = $this->subcategoryService->getAll();
         $connections = $this->connectionService->getAll();
@@ -38,16 +37,17 @@ class ProductController extends Controller
                 'status',
             ])
         );
-        $products = $this->productService->paginate(12, $filter);
-        return view('client.products.index', compact('products', 'categories', 'subcategories', 'connections'));
+        $products = $this->productService->paginate($per_page, $filter);
+
+        return view('customer.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
-       public function show(string $id): View
+      public function show(string $id): View
     {
         $product = $this->productService->findById($id);
         $userPrice = $product->productPrices->where('user_id', auth()->id())->first();
         $displayPrice = $userPrice ? $userPrice->final_price : $product->ddp_price;
         $product->load(['category', 'subcategory', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', auth()->id())]);
-        return view('client.products.show', compact('product', 'userPrice', 'displayPrice'));
+        return view('customer.products.show', compact('product', 'userPrice', 'displayPrice'));
     }
 }

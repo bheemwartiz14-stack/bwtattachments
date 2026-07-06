@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <x-slot:title>Manage Products - BWT</x-slot:title>
+    <x-slot:title>Manage Products - {{ $siteTitle }}</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Products']]" />
 
     <div class="space-y-6">
@@ -57,7 +57,10 @@
                         @endforeach
                     </select>
                 </div>
-
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-neutral-400 mb-1">Machine Class (t)</label>
+                    <input type="text" name="machine_class" value="{{ request('machine_class') }}" placeholder="e.g. 22, 30, 45" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500">
+                </div>
             </div>
             <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
                 <div class="flex items-center gap-2">
@@ -94,22 +97,35 @@
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-slate-100 bg-slate-50/50 dark:border-neutral-800 dark:bg-neutral-900/50">
-                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Description</th>
+                            <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Product</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Code</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">DDP Price</th>
                             <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
+                         <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
                         @forelse($products ?? [] as $product)
                             <tr class="transition-colors hover:bg-slate-50/80 dark:hover:bg-neutral-800/30">
                                 <td class="px-5 py-4">
-                                    <a href="{{ route('admin.products.show', $product) }}" class="text-sm text-slate-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400 line-clamp-2">{{ strip_tags($product->product_description) }}</a>
+                                    <div class="flex items-center gap-3">
+                                        <div class="aspect-[3/2] w-10 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-neutral-800">
+                                            @if($product->getFirstMediaUrl('images'))
+                                                <img src="{{ $product->getFirstMediaUrl('images') }}" class="h-full w-full object-contain">
+                                            @else
+                                                <div class="flex h-full w-full items-center justify-center">
+                                                    <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <a href="{{ route('admin.products.show', $product) }}" class="font-medium text-slate-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400">{{ $product->product_title }}</a>
+                                    </div>
                                 </td>
                                 <td class="px-5 py-4">
                                     <code class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-600 dark:bg-neutral-800 dark:text-neutral-300">{{ $product->product_code }}</code>
                                 </td>
                                 <td class="px-5 py-4 font-medium text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($product->ddp_price, 2) }}</td>
+
                                 <td class="px-5 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
                                         <a href="{{ route('admin.products.show', $product) }}" title="View" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
@@ -130,7 +146,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4">
+                                <td colspan="6">
                                     <div class="flex flex-col items-center justify-center px-5 py-16 text-center">
                                         <svg class="h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                                         <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">No Products Found</h3>

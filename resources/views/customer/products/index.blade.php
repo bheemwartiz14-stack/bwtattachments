@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>Manage Products - {{ $siteTitle }}</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Client Portal', 'url' => route('client.dashboard')], ['label' => 'Products']]" />
+    <x-breadcrumb :items="[['label' => 'Csutomer Portal', 'url' => route('customer.dashboard')], ['label' => 'Products']]" />
 
     <div class="space-y-6">
         <x-ui.hero title="Products" subtitle="Manage your product catalog">
@@ -22,7 +22,7 @@
             </div>
         @endif
 
-        <form method="GET" action="{{ route('client.products.index') }}"
+        <form method="GET" action="{{ route('customer.products.index') }}"
             class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
                 <div class="lg:col-span-2">
@@ -100,7 +100,7 @@
                         </svg>
                         Filter
                     </button>
-                    <a href="{{ route('client.products.index') }}"
+                    <a href="{{ route('customer.products.index') }}"
                         class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
                         Clear
                     </a>
@@ -151,7 +151,7 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <a href="{{ route('client.products.show', $product) }}"
+                                        <a href="{{ route('customer.products.show', $product) }}"
                                             class="font-medium text-slate-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400">{{ $product->product_title }}</a>
                                     </div>
                                 </td>
@@ -170,7 +170,7 @@
                                     {{ config('app.currency_symbol') }}{{ number_format($price, 2) }}
                                 </td>
                                  <td class="px-6 py-4 text-right">
-                                        <a href="{{ route('client.products.show', $product) }}" title="View" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
+                                        <a href="{{ route('customer.products.show', $product) }}" title="View" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                         </a>
 

@@ -27,6 +27,12 @@ use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardContro
 use App\Http\Controllers\Retailer\CustomerUserController;
 use App\Http\Controllers\Retailer\RetailerProductController;
 use App\Http\Controllers\Retailer\CustomerQuotationController;
+// Customers Routes
+use App\Http\Controllers\Customers\CustomerDashboardController;
+use App\Http\Controllers\Customers\CustomerProductController;
+
+
+
 use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 // Public routes (guest + authenticated)
@@ -74,14 +80,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [ClientDashboardController::class, 'index'])->name('dashboard');
         Route::resource('retailer-users', RetailerUserController::class);
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');
-        Route::get('/products/search', [ClientProductController::class, 'search'])->name('products.search');
         Route::get('/products/{product}', [ClientProductController::class, 'show'])->name('products.show');
         // quotations Roures
         Route::resource('quotations', ClientQuotationController::class)->except(['delete']);
         Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
         Route::get('/quotations/{quotation}/preview', [ClientQuotationController::class, 'preview'])->name('quotations.preview');
-
-
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
@@ -109,5 +112,20 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
         Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
         Route::delete('/profile/logo/retailer', [ProfileController::class, 'deleteRetailerClientLogo'])->name('profile.logo.retailer.delete');
+    });
+
+    // customer Routes
+    Route::middleware(['role:customer'])->prefix('customer')->name('customer.')->group(function () {
+        Route::get('/', [CustomerDashboardController::class, 'index'])->name('dashboard');
+        Route::controller(ProfileController::class)->group(function () {
+            Route::get('/profile', 'edit')->name('profile.edit');
+            Route::put('/profile', 'update')->name('profile.update');
+            Route::put('/profile/password', 'updatePassword')->name('profile.password');
+            Route::post('/profile/avatar', 'uploadAvatar')->name('profile.avatar.upload');
+            Route::delete('/profile/avatar', 'deleteAvatar')->name('profile.avatar.delete');
+            Route::delete('/profile/logo/retailer', 'deleteRetailerClientLogo')  ->name('profile.logo.retailer.delete');
+        });
+        Route::get('/products', [CustomerProductController::class, 'index'])->name('products.index');
+        Route::get('/products/{product}', [CustomerProductController::class, 'show'])->name('products.show');
     });
 });

@@ -14,7 +14,7 @@ class MarginUpdateResource extends JsonResource
         $product = $this->resource['product'];
         $userData = $this->resource['userData'];
         $userPrice = $product->productPrices->first();
-        $basePrice = (float) ($userPrice?->final_price ?? $product->ddp_price ?? 0);
+        $basePrice = (float) ($userPrice?->base_price ?? $product->ddp_price ?? 0);
         $marginType = $userData->margin_type ?? '';
         $marginValue = (float) ($userData->margin_value ?? 0);
         $finalPrice = $marginType === 'value' ? $basePrice + $marginValue : $basePrice + ($basePrice * $marginValue / 100);

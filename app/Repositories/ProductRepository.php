@@ -59,44 +59,64 @@ class ProductRepository
     /**
      * Paginate products
      */
-    public function paginate(
-        int $perPage = 10,
-        array $filters = []
-    ): LengthAwarePaginator {
-        return $this->model
-            ->query()
-            ->with(self::RELATIONS)
-            ->when($filters['search'] ?? null, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('product_code', 'like', "%{$search}%")
-                        ->orWhere('product_title', 'like', "%{$search}%")
-                        ->orWhere('product_description', 'like', "%{$search}%");
-                });
-            })
-            ->when(!empty($filters['category']), fn ($q) =>
-                $q->whereIn('category_id', (array) $filters['category'])
-            )
-            ->when(!empty($filters['subcategory']), fn ($q) =>
-                $q->whereIn('subcategory_id', (array) $filters['subcategory'])
-            )
-            ->when(!empty($filters['connection']), fn ($q) =>
-                $q->whereIn('connection_id', (array) $filters['connection'])
-            )
-            ->when(!empty($filters['machine_class']), fn ($q) =>
-                $q->where('machine_class', $filters['machine_class'])
-            )
-            ->when(isset($filters['status']) && $filters['status'] !== '', function ($q) use ($filters) {
-                if ($filters['status'] === 'published' || $filters['status'] == 1) {
-                    $q->where('status', 1);
+ public function paginate(
+    int $perPage = 10,
+    array $filters = []
+): LengthAwarePaginator {
+    $userId = $filters['user_id'] ?? null;
+
+    return $this->model
+        ->query()
+        ->with(array_merge(self::RELATIONS, [
+            'productPrices' => function ($query) use ($userId) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
                 }
 
-                if (in_array($filters['status'], ['draft', 'hidden'], true) || $filters['status'] == 0) {
-                    $q->where('status', 0);
-                }
-            })
-            ->latest()
-            ->paginate($perPage);
-    }
+                $query->select([
+                    'product_id',
+                    'user_id',
+                    'final_price',
+                    'margin',
+                ]);
+            },
+        ]))
+        ->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('product_code', 'like', "%{$search}%")
+                    ->orWhere('product_title', 'like', "%{$search}%")
+                    ->orWhere('product_description', 'like', "%{$search}%");
+            });
+        })
+        ->when(!empty($filters['category']), fn ($q) =>
+            $q->whereIn('category_id', (array) $filters['category'])
+        )
+        ->when(!empty($filters['subcategory']), fn ($q) =>
+            $q->whereIn('subcategory_id', (array) $filters['subcategory'])
+        )
+        ->when(!empty($filters['connection']), fn ($q) =>
+            $q->whereIn('connection_id', (array) $filters['connection'])
+        )
+        ->when(!empty($filters['machine_class']), fn ($q) =>
+            $q->where('machine_class', $filters['machine_class'])
+        )
+        ->when($userId, function ($q) use ($userId) {
+            $q->whereHas('productPrices', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            });
+        })
+        ->when(isset($filters['status']) && $filters['status'] !== '', function ($q) use ($filters) {
+            if ($filters['status'] === 'published' || $filters['status'] == 1) {
+                $q->where('status', 1);
+            }
+
+            if (in_array($filters['status'], ['draft', 'hidden'], true) || $filters['status'] == 0) {
+                $q->where('status', 0);
+            }
+        })
+        ->latest()
+        ->paginate($perPage);
+}
 
     /**
      * Find product by ID

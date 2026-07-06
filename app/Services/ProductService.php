@@ -27,7 +27,7 @@ class ProductService
         return $this->productRepository->activeQuery();
     }
 
-    public function paginate(int $perPage = 10, array $filters = []): LengthAwarePaginator
+    public function paginate(int $perPage = 10, array $filters = [] , ): LengthAwarePaginator
     {
         return $this->productRepository->paginate($perPage, $filters);
     }
