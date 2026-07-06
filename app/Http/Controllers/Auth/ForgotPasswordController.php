@@ -47,24 +47,10 @@ class ForgotPasswordController extends Controller
             'token' => $token,
             'email' => $user->email,
         ]);
-
-        // Save to storage/app/reset-password-links.txt
-        Storage::append(
-            'reset-password-links.txt',
-            sprintf(
-                "[%s]\nEmail: %s\nReset Link: %s\n%s\n",
-                now()->toDateTimeString(),
-                $user->email,
-                $resetUrl,
-                str_repeat('-', 80)
-            )
-        );
-
         // Send email normally
         $status = Password::sendResetLink([
             'email' => $user->email,
         ]);
-
         return $status === Password::RESET_LINK_SENT
             ? back()->with('status', __($status))
             : back()->withErrors([
