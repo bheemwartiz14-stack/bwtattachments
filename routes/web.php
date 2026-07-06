@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ConnectionController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
 use App\Http\Controllers\Admin\SubcategoryController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -70,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
         Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
         Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
+        Route::get('/setting/genral-setting', [SettingController::class, 'index'])->name('setting.genral-setting');
+        Route::put('/setting/genral-setting', [SettingController::class, 'update'])->name('setting.genral-setting.update');
     });
 
     // Client routes (Wholesale Client)

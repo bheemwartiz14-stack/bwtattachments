@@ -30,6 +30,7 @@
             ['label' => 'Subcategories', 'route' => 'admin.subcategories.index', 'pattern' => 'admin.subcategories.*'],
             ['label' => 'Connections', 'route' => 'admin.connections.index', 'pattern' => 'admin.connections.*'],
             ['label' => 'Products', 'route' => 'admin.products.index', 'pattern' => 'admin.products.*'],
+            ['label' => 'Site Settings', 'route' => 'admin.setting.genral-setting', 'pattern' => 'admin.setting.*'],
             ];
     } elseif ($user->hasRole('Wholesale Client')) {
         $sidebarItems = [

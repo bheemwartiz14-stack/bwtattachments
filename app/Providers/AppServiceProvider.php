@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,6 +17,11 @@ class AppServiceProvider extends ServiceProvider
         if (config('vite.enabled')) {
             Vite::useBuildDirectory(config('vite.build_directory'));
         }
-        view()->share('siteTitle', 'BWT');
+        try {
+            $siteTitle = SiteSetting::where('key', 'site_title')->value('value') ?? 'BWT';
+        } catch (\Throwable) {
+            $siteTitle = 'BWT';
+        }
+        view()->share('siteTitle', $siteTitle);
     }
 }
