@@ -4,7 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'BWT | Wholesale Attachment Product Database' }}</title>
+    @php
+        $siteSettings = config('site_settings', []);
+        // dd($siteSettings);
+        $siteTitle = $siteSettings['site_title'] ?? 'BWT';
+        $metaDesc = $siteSettings['meta_description'] ?? '';
+        $metaKeywords = $siteSettings['meta_keywords'] ?? '';
+    @endphp
+    <title>{{ $title ?? $siteTitle . ' | Wholesale Attachment Product Database' }}</title>
+    @if ($metaDesc)
+        <meta name="description" content="{{ $metaDesc }}">
+    @endif
+    @if ($metaKeywords)
+        <meta name="keywords" content="{{ $metaKeywords }}">
+    @endif
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
@@ -98,7 +111,7 @@
   {{ $slot }}
 
   <footer class="bg-black text-white text-center py-5 text-sm">
-    &copy; All rights reserved | BWT Attachments
+    {!! $siteSettings['footer_text'] ?? '' !!}
   </footer>
 
   @livewireScripts

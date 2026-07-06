@@ -14,12 +14,35 @@
 
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
                 <div class="space-y-6 lg:col-span-3">
-                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    @php
+                        $featureImage = $product->getFirstMediaUrl('images', 'large');
+                        $galleryMedia = $product->getMedia('gallery');
+                        $allImages = [];
+                        if ($featureImage) {
+                            $allImages[] = ['url' => $featureImage, 'alt' => $product->product_title ?? $product->description ?? ''];
+                        }
+                        foreach ($galleryMedia as $media) {
+                            $allImages[] = ['url' => $media->getUrl('large'), 'thumb' => $media->getUrl(), 'alt' => ''];
+                        }
+                    @endphp
+                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+                         x-data="{ current: 0, images: {{ json_encode($allImages) }} }">
                         <div class="relative aspect-[3/2] bg-slate-100">
-                            @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
-                            @if($featureImage)
-                                <img src="{{ $featureImage }}" alt="{{ $product->product_title ?? $product->description ?? '' }}" id="mainProductImage" class="absolute inset-0 w-full h-full object-contain p-4">
-                            @else
+                            <template x-if="images.length">
+                                <template x-for="(img, i) in images" :key="i">
+                                    <img x-show="current === i"
+                                         :src="img.url"
+                                         :alt="img.alt"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         x-transition:leave="transition ease-in duration-200"
+                                         x-transition:leave-start="opacity-100"
+                                         x-transition:leave-end="opacity-0"
+                                         class="absolute inset-0 w-full h-full object-contain p-4">
+                                </template>
+                            </template>
+                            <template x-if="!images.length">
                                 <div class="absolute inset-0 flex items-center justify-center">
                                     <div class="text-center">
                                         <svg class="mx-auto h-20 w-20 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
@@ -28,19 +51,39 @@
                                         <p class="mt-2 text-sm text-slate-400">Product Image</p>
                                     </div>
                                 </div>
-                            @endif
-                            @php $gallery = $product->getMedia('gallery'); @endphp
-                            @if($gallery && $gallery->count() > 0)
-                            <div class="absolute bottom-4 left-4 flex gap-2">
-                                @foreach($gallery as $media)
-                                    <div class="w-24 aspect-[3/2] rounded-lg overflow-hidden {{ $loop->first ? 'ring-2 ring-emerald-500' : 'opacity-60 hover:opacity-100' }} cursor-pointer transition-opacity bg-white/80"
-                                         onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl('large') }}';this.closest('.flex').querySelectorAll('div').forEach(d=>d.classList.remove('ring-2','ring-emerald-500'));this.classList.add('ring-2','ring-emerald-500')">
-                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
+                            </template>
+
+                            <template x-if="images.length > 1">
+                                <div class="absolute inset-0 z-10">
+                                    <button @click="current = current > 0 ? current - 1 : images.length - 1"
+                                            class="absolute left-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-white transition-all">
+                                        <svg class="h-5 w-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                                    </button>
+                                    <button @click="current = current < images.length - 1 ? current + 1 : 0"
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-white transition-all">
+                                        <svg class="h-5 w-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                                    </button>
+                                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                        <template x-for="(img, i) in images" :key="i">
+                                            <button @click="current = i"
+                                                    :class="current === i ? 'bg-emerald-500 w-6' : 'bg-white/60 hover:bg-white w-2'"
+                                                    class="h-2 rounded-full transition-all"></button>
+                                        </template>
                                     </div>
-                                @endforeach
-                            </div>
-                            @endif
+                                </div>
+                            </template>
                         </div>
+                        <template x-if="images.length > 1">
+                            <div class="flex gap-2 overflow-x-auto px-4 pb-4 pt-2 scrollbar-thin">
+                                <template x-for="(img, i) in images" :key="i">
+                                    <button @click="current = i"
+                                            :class="current === i ? 'ring-2 ring-emerald-500 opacity-100' : 'opacity-50 hover:opacity-80'"
+                                            class="w-20 aspect-[3/2] flex-shrink-0 rounded-lg overflow-hidden transition-all cursor-pointer bg-slate-100">
+                                        <img :src="img.thumb || img.url" alt="" class="w-full h-full object-cover">
+                                    </button>
+                                </template>
+                            </div>
+                        </template>
                     </div>
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

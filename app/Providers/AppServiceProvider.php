@@ -23,5 +23,8 @@ class AppServiceProvider extends ServiceProvider
             $siteTitle = 'BWT';
         }
         view()->share('siteTitle', $siteTitle);
+
+        $settings = SiteSetting::pluck('value', 'key')->toArray();
+        config(['site_settings' => $settings]);
     }
 }

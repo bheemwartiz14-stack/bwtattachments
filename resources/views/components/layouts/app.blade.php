@@ -1,4 +1,6 @@
+@php $siteSettings = config('site_settings', []); @endphp
 <!DOCTYPE html>
+
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('components.layouts.head')
@@ -37,7 +39,7 @@
         <x-toast />
         <footer class="border-t border-slate-200 bg-white py-5 text-center text-sm text-slate-400 dark:border-neutral-800 dark:bg-black">
             <div class="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8">
-                &copy; All rights reserved | BWT Attachments
+                   {!! $siteSettings['footer_text'] ?? '' !!}
             </div>
         </footer>
         <script src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
