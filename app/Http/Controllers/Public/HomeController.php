@@ -28,6 +28,7 @@ class HomeController extends Controller
             'category' => $request->input('category'),
             'subcategory' => $request->input('subcategory'),
             'connection' => $request->input('connection'),
+            'machine_class' => $request->input('machine_class'),
             'status' => "1",
         ]);
         $products = $this->productService->paginate(12, $filters);

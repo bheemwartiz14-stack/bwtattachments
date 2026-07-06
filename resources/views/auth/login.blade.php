@@ -2,11 +2,9 @@
     <div class="flex min-h-screen items-center justify-center p-4">
         <div class="w-full max-w-md">
             <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white p-8 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-                @php $settings = app(\App\Settings\GeneralSettings::class); @endphp
-
                 <div class="mb-8 text-center">
                     <div class="mb-4 flex justify-center">
-                        <img src="{{ $settings->logo_path ? asset($settings->logo_path) : asset('images/bwt-logo.jpg') }}"
+                        <img src="{{ asset('images/bwt-logo.jpg') }}"
                              alt="BWT" class="h-10 w-auto">
                     </div>
                     <h2 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-neutral-100">Sign in</h2>

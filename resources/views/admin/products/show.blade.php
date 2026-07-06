@@ -219,10 +219,10 @@
                             </div>
                             <div class="flex gap-3 overflow-x-auto pb-2">
                                 @foreach($allImages as $index => $media)
-                                    <div class="shrink-0 w-20 aspect-[3/2] rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:opacity-80 {{ $index === 0 ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-slate-200 dark:border-neutral-700' }}"
+                                    <div class="shrink-0 w-24 aspect-[3/2] rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-80 {{ $index === 0 ? 'ring-2 ring-emerald-500' : 'opacity-60 hover:opacity-100' }}"
                                          data-img-src="{{ $media->getUrl() }}"
                                          onclick="switchAdminImage(this, '{{ $media->getUrl() }}', '{{ $media->getUrl() }}')">
-                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
+                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
                                     </div>
                                 @endforeach
                             </div>

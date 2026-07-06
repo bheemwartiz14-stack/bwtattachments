@@ -18,7 +18,7 @@
       @if($products->count())
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           @foreach($products as $product)
-            @php $img = $product->getFirstMediaUrl('images', 'small'); @endphp
+            @php $img = $product->getFirstMediaUrl('images'); @endphp
             <div class="bg-white rounded-md shadow-sm overflow-hidden flex flex-col">
               <div class="p-6 pb-2 flex items-center justify-center">
                 @if($img)

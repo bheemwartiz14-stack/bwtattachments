@@ -17,7 +17,6 @@
         "intervention/image-laravel": "^4.0",
         "laravel-at/laravel-image-sanitize": "^5.0",
         "laravel/framework": "^13.8",
-        "laravel/telescope": "^5.20",
         "laravel/tinker": "^3.0",
         "laravolt/avatar": "^6.5",
         "livewire/livewire": "*",
@@ -27,8 +26,7 @@
         "spatie/enum": "*",
         "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-pdf": "^2.12",
-        "spatie/laravel-permission": "^8.0",
-        "spatie/laravel-settings": "^3.9"
+        "spatie/laravel-permission": "^8.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

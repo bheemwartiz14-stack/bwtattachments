@@ -33,9 +33,9 @@
                             @if($gallery && $gallery->count() > 0)
                             <div class="absolute bottom-4 left-4 flex gap-2">
                                 @foreach($gallery as $media)
-                                    <div class="w-20 rounded-lg border-2 overflow-hidden aspect-[3/2] {{ $loop->first ? 'border-emerald-500 bg-white' : 'border-transparent bg-white/80 opacity-60 hover:opacity-100' }} cursor-pointer transition-opacity"
-                                         onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl('large') }}';this.closest('.flex').querySelectorAll('div').forEach(d=>d.classList.remove('border-emerald-500'));this.classList.add('border-emerald-500')">
-                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
+                                    <div class="w-24 aspect-[3/2] rounded-lg overflow-hidden {{ $loop->first ? 'ring-2 ring-emerald-500' : 'opacity-60 hover:opacity-100' }} cursor-pointer transition-opacity bg-white/80"
+                                         onclick="document.getElementById('mainProductImage').src='{{ $media->getUrl('large') }}';this.closest('.flex').querySelectorAll('div').forEach(d=>d.classList.remove('ring-2','ring-emerald-500'));this.classList.add('ring-2','ring-emerald-500')">
+                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
                                     </div>
                                 @endforeach
                             </div>

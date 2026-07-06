@@ -3,20 +3,7 @@
     $type = pathinfo($path, PATHINFO_EXTENSION);
     $data = file_get_contents($path);
     $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    $settings = app(\App\Settings\GeneralSettings::class);
-    $address = trim(
-        ($settings->address_line_1 ?? '') .
-            ', ' .
-            ($settings->address_line_2 ?? '') .
-            ', ' .
-            ($settings->city ?? '') .
-            ', ' .
-            ($settings->state ?? '') .
-            ' - ' .
-            ($settings->pin_code ?? '') .
-            ', ' .
-            ($settings->country ?? ''),
-    );
+    $address = 'Industrieweg 12, Amsterdam, North Holland - 1234 AB, Netherlands';
 
     $reseller = $quotation->reseller ?? null;
     $meta = $reseller->usermeta->metadata ?? [];
@@ -58,11 +45,11 @@
                     </div>
 
                     <div style="font-size:15px;line-height:1.5;">
-                        {{ $settings->support_phone }}
+                        +31 (0) 85 123 4567
                     </div>
 
                     <div style="font-size:15px;line-height:1.5;">
-                        {{ $settings->support_email }}
+                        info@bwt-attachments.com
                     </div>
 
                 </td>

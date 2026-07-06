@@ -59,10 +59,6 @@ return new class extends Migration
             $table->string('reference')
                 ->nullable()
                 ->after('grand_total');
-
-            $table->string('pdf_file')
-                ->nullable()
-                ->after('grand_total');
         });
     }
 
@@ -84,8 +80,7 @@ return new class extends Migration
                 'delivery_country',
                 'grand_total',
                 'reference',
-                'customer_terms',
-                'pdf_file'
+                'customer_terms'
             ]);
         });
     }

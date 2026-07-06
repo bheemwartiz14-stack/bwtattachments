@@ -18,6 +18,7 @@ use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\ResellerProgramController;
 use App\Http\Controllers\Public\ProductController as PublicProductController;
 use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardController;
 // Retailer Product Controller
@@ -33,6 +34,7 @@ Route::get('/products/{product}', [PublicProductController::class, 'show'])->nam
 Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories.index');
 Route::get('/categories/{category}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('public.contact.index');
+Route::get('/reseller-program', [ResellerProgramController::class, 'index'])->name('public.reseller-program.index');
 
 // Guest-only routes
 Route::middleware('guest')->group(function () {
@@ -52,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin routes
     Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('wholesale-client-users', WholesaleClientUserController::class);
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::get('/categories/{category}/subcategories', [CategoryController::class, 'getSubcategories'])->name('categories.fetch-subcategories');
@@ -68,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Client routes (Wholesale Client)
     Route::middleware(['role:Wholesale Client'])->prefix('client')->name('client.')->group(function () {
-        Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [ClientDashboardController::class, 'index'])->name('dashboard');
         Route::resource('retailer-users', RetailerUserController::class);
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');
         Route::get('/products/search', [ClientProductController::class, 'search'])->name('products.search');
@@ -89,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Retailer routes
     Route::middleware(['role:Retailer'])->prefix('retailer')->name('retailer.')->group(function () {
-        Route::get('/dashboard', [RetailerDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [RetailerDashboardController::class, 'index'])->name('dashboard');
         // Manager CUSTOMER Via Retailer
         Route::resource('customer-users', CustomerUserController::class);
 
