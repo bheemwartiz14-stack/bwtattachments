@@ -18,9 +18,7 @@ class SettingController extends Controller
     public function index(): View
     {
         $settings = $this->settingService->getAll();
-        $logoUrl = $this->settingService->getMediaUrl('site_logo', 'site_logo');
-        $logoId = $this->settingService->getMediaId('site_logo', 'site_logo');
-        return view('admin.setting.genral-setting', compact('settings', 'logoUrl', 'logoId'));
+        return view('admin.setting.genral-setting', compact('settings'));
     }
 
     public function update(Request $request): RedirectResponse
@@ -36,9 +34,6 @@ class SettingController extends Controller
         ]);
 
         $this->settingService->saveTextSettings($data);
-
-        $allData = $request->all();
-        $this->settingService->handleMediaUpload($allData, 'site_logo', 'site_logo');
 
         return redirect()->route('admin.setting.genral-setting')
             ->with('success', 'Settings updated successfully.');

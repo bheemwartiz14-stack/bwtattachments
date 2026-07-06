@@ -18,23 +18,9 @@
 
         <x-ui.error-alert />
 
-        <form action="{{ route('admin.setting.genral-setting.update') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.setting.genral-setting.update') }}" method="POST">
             @csrf
             @method('PUT')
-
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
-                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">Site Logo</h2>
-                </div>
-                <div class="p-8">
-                    <x-forms.image-dropzone
-                        name="site_logo"
-                        label="Site Logo"
-                        :existingImageUrl="$logoUrl"
-                        :existingImageId="$logoId"
-                    />
-                </div>
-            </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                 <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
