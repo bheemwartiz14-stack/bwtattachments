@@ -44,7 +44,6 @@ class ResellerApplicationForm extends Component
         $application = ResellerApplication::create($data);
 
         ResellerApplicationSubmitted::dispatch($application);
-
         $this->reset([
             'company_name', 'contact_person', 'address', 'postal_code',
             'place', 'country', 'telephone', 'email', 'website',

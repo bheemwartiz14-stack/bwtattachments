@@ -11,7 +11,7 @@ class SendResellerApplicationMail
 {
     public function handle(ResellerApplicationSubmitted $event): void
     {
-        Mail::to(config('mail.from.address'))->send(
+        Mail::to(config('mail.from.admin_email'))->send(
             new ResellerApplicationMail($event->application)
         );
     }
