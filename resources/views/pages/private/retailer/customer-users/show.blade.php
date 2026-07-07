@@ -118,10 +118,15 @@
                                 <dd class="mt-1 text-sm font-mono font-medium text-slate-900 dark:text-neutral-100">{{ $user->username }}</dd>
                             </div>
                             <div class="md:col-span-2">
+                                 @php
+                                    $decryptedPass = \App\Helpers\PasswordHelper::isEncrypted($meta['plain_password'])
+                                        ? \App\Helpers\PasswordHelper::decrypt($meta['plain_password'])
+                                        : $meta['plain_password'];
+                                @endphp
                                 <x-forms.password
                                     name="password"
                                     label="Password"
-                                    :value="$meta['plain_password'] ?? ''"
+                                    :value="$decryptedPass"
                                     readonly
                                     :showGenerator="false"
                                     :showToggle="true"

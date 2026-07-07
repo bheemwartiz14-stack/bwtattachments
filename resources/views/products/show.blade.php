@@ -20,7 +20,7 @@
 
                 {{-- Left: Gallery --}}
                 <div class="space-y-4">
-                    <div class="relative group overflow-hidden rounded-2xl bg-slate-100">
+                    <div class="relative group overflow-hidden rounded-2xl bg-slate-50">
                         @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
                         @if($featureImage)
                             <img src="{{ $featureImage }}"
@@ -47,7 +47,7 @@
                         <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                             @foreach($gallery as $media)
                                 <button onclick="switchImage('{{ $media->getUrl() }}', this)"
-                                        class="thumb flex-shrink-0 w-24 aspect-[15/10] rounded-xl overflow-hidden border-2 transition-all duration-200 {{ $loop->first ? 'border-bwtblue ring-2 ring-bwtblue/20' : 'border-slate-200 hover:border-slate-400' }} bg-slate-100">
+                                        class="thumb flex-shrink-0 w-28 aspect-[15/10] rounded-xl overflow-hidden ring-1 transition-all duration-200 {{ $loop->first ? 'ring-2 ring-bwtblue' : 'ring-slate-200 hover:ring-slate-400' }} bg-slate-50">
                                     <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
                                 </button>
                             @endforeach

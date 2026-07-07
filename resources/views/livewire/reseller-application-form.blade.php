@@ -11,74 +11,34 @@
 
     <form wire:submit="submit" class="space-y-5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-                <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1.5">Company name *</label>
-                <input id="company_name" type="text" wire:model.blur="company_name"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('company_name') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="Your company name">
-                @error('company_name') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="contact_person" class="block text-sm font-medium text-gray-700 mb-1.5">Contact person *</label>
-                <input id="contact_person" type="text" wire:model.blur="contact_person"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('contact_person') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="Full name">
-                @error('contact_person') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="address" class="block text-sm font-medium text-gray-700 mb-1.5">Address *</label>
-                <input id="address" type="text" wire:model.blur="address"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('address') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="Street and number">
-                @error('address') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="postal_code" class="block text-sm font-medium text-gray-700 mb-1.5">Postal code *</label>
-                <input id="postal_code" type="text" wire:model.blur="postal_code"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('postal_code') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="e.g. 1234 AB">
-                @error('postal_code') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="place" class="block text-sm font-medium text-gray-700 mb-1.5">Place *</label>
-                <input id="place" type="text" wire:model.blur="place"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('place') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="City">
-                @error('place') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="country" class="block text-sm font-medium text-gray-700 mb-1.5">Country *</label>
-                <input id="country" type="text" wire:model.blur="country"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('country') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="Country">
-                @error('country') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="telephone" class="block text-sm font-medium text-gray-700 mb-1.5">Telephone *</label>
-                <input id="telephone" type="text" wire:model.blur="telephone"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('telephone') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="+31 (0) ...">
-                @error('telephone') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email *</label>
-                <input id="email" type="email" wire:model.blur="email"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('email') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="name@company.com">
-                @error('email') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="website" class="block text-sm font-medium text-gray-700 mb-1.5">Website</label>
-                <input id="website" type="text" wire:model.blur="website"
-                    class="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-all @error('website') border-red-400 ring-2 ring-red-200 @else border-gray-300 focus:ring-2 focus:ring-bwtblue focus:border-bwtblue @enderror"
-                    placeholder="https://">
-                @error('website') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+            <x-forms.input name="company_name" label="Company name" placeholder="Company name" :required="true" wire:model.blur="company_name" />
+            <x-forms.input name="contact_person" label="Contact person" placeholder="Contact person" :required="true" wire:model.blur="contact_person" />
+
+            <x-forms.input name="address" label="Address" placeholder="Address" wire:model.blur="address" />
+            <x-forms.input name="postal_code" label="Postal code" placeholder="Postal code" wire:model.blur="postal_code" />
+
+            <x-forms.input name="place" label="City" placeholder="City" wire:model.blur="place" />
+            <x-forms.input name="country" label="Country" placeholder="Country" wire:model.blur="country" />
+
+            <x-forms.input name="email" label="Email address" type="email" placeholder="Email address" :required="true" wire:model.blur="email" />
+            <x-forms.input name="telephone" label="Telephone number" type="tel" placeholder="Telephone number" wire:model.blur="telephone" />
+
+            <x-forms.input name="website" label="Website" type="url" placeholder="Website" wire:model.blur="website" />
+            <x-forms.input name="vat_number" label="VAT Number" placeholder="VAT Number" wire:model.blur="vat_number" />
+
+            <x-forms.input name="chamber_of_commerce" label="Chamber of commerce number" placeholder="Chamber of commerce number" wire:model.blur="chamber_of_commerce" />
+            <div></div>
+
+            <div class="sm:col-span-2">
+                <x-forms.textarea name="additional_info" label="Additional information" placeholder="Additional information" :rows="5" wire:model.blur="additional_info" />
             </div>
         </div>
 
-        <button type="submit" class="bg-bwtblue hover:bg-bwtblue2 text-white font-semibold text-sm px-8 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed" wire:loading.attr="disabled">
-            <span wire:loading.remove>Submit Application</span>
-            <span wire:loading>Sending...</span>
-        </button>
+        <div class="flex justify-end">
+            <button type="submit" class="bg-bwtblue hover:bg-bwtblue2 text-white font-semibold text-sm px-8 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed" wire:loading.attr="disabled">
+                <span wire:loading.remove>Submit application</span>
+                <span wire:loading>Sending...</span>
+            </button>
+        </div>
     </form>
 </div>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Profile;
+namespace App\Http\Requests\Retailer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -15,9 +15,6 @@ class UpdateProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        $user = $this->user();
-        $userId = $user?->id;
-
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],

@@ -17,5 +17,8 @@ class ResellerApplication extends Model
         'telephone',
         'email',
         'website',
+        'vat_number',
+        'chamber_of_commerce',
+        'additional_info',
     ];
 }

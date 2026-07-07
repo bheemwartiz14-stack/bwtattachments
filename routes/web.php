@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ConnectionController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
 use App\Http\Controllers\Admin\SubcategoryController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -16,6 +17,8 @@ use App\Http\Controllers\Client\DashboardController as ClientDashboardController
 use App\Http\Controllers\Client\RetailerClientUserController as RetailerUserController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\QuotationController as ClientQuotationController;
+use App\Http\Controllers\Client\ProfileController as ClientProfileController;
+use App\Http\Controllers\Retailer\ProfileController as RetailerProfileController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
 use App\Http\Controllers\Public\ContactController;
@@ -30,6 +33,7 @@ use App\Http\Controllers\Retailer\CustomerQuotationController;
 // Customers Routes
 use App\Http\Controllers\Customers\CustomerDashboardController;
 use App\Http\Controllers\Customers\CustomerProductController;
+use App\Http\Controllers\Customers\ProfileController as CustomerProfileController;
 
 
 
@@ -67,11 +71,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
         Route::resource('connections', ConnectionController::class)->except(['show']);
         Route::resource('products', AdminProductController::class);
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-        Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
-        Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
+        Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/avatar', [AdminProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+        Route::delete('/profile/avatar', [AdminProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
         Route::get('/setting/genral-setting', [SettingController::class, 'index'])->name('setting.genral-setting');
         Route::put('/setting/genral-setting', [SettingController::class, 'update'])->name('setting.genral-setting.update');
     });
@@ -86,12 +90,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('quotations', ClientQuotationController::class)->except(['delete']);
         Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
         Route::get('/quotations/{quotation}/preview', [ClientQuotationController::class, 'preview'])->name('quotations.preview');
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-        Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
-        Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
-        Route::delete('/profile/logo/wholesale', [ProfileController::class, 'deleteWholesaleClientLogo'])->name('profile.logo.wholesale.delete');
+        Route::get('/profile', [ClientProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [ClientProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/avatar', [ClientProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+        Route::delete('/profile/avatar', [ClientProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
+        Route::delete('/profile/logo/wholesale', [ClientProfileController::class, 'deleteWholesaleClientLogo'])->name('profile.logo.wholesale.delete');
     });
 
     // Retailer routes
@@ -107,25 +111,23 @@ Route::middleware(['auth'])->group(function () {
             Route::get('{quotation}/download', 'download')->name('download');
             Route::get('{quotation}/preview', 'preview')->name('preview');
         });
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-        Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
-        Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
-        Route::delete('/profile/logo/retailer', [ProfileController::class, 'deleteRetailerClientLogo'])->name('profile.logo.retailer.delete');
+        Route::get('/profile', [RetailerProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [RetailerProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [RetailerProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/avatar', [RetailerProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+        Route::delete('/profile/avatar', [RetailerProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
+        Route::delete('/profile/logo/retailer', [RetailerProfileController::class, 'deleteRetailerClientLogo'])->name('profile.logo.retailer.delete');
     });
 
     // customer Routes
     Route::middleware(['role:customer'])->prefix('customer')->name('customer.')->group(function () {
         Route::get('/', [CustomerDashboardController::class, 'index'])->name('dashboard');
-        Route::controller(ProfileController::class)->group(function () {
-            Route::get('/profile', 'edit')->name('profile.edit');
-            Route::put('/profile', 'update')->name('profile.update');
-            Route::put('/profile/password', 'updatePassword')->name('profile.password');
-            Route::post('/profile/avatar', 'uploadAvatar')->name('profile.avatar.upload');
-            Route::delete('/profile/avatar', 'deleteAvatar')->name('profile.avatar.delete');
-            Route::delete('/profile/logo/retailer', 'deleteRetailerClientLogo')  ->name('profile.logo.retailer.delete');
-        });
+        Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [CustomerProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [CustomerProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::post('/profile/avatar', [CustomerProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
+        Route::delete('/profile/avatar', [CustomerProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
+        Route::delete('/profile/logo/retailer', [CustomerProfileController::class, 'deleteLogo'])->name('profile.logo.retailer.delete');
         Route::get('/products', [CustomerProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product}', [CustomerProductController::class, 'show'])->name('products.show');
     });

@@ -176,7 +176,7 @@ class UserRepository
             [
                 'metadata' => array_merge(
                     $user->userMeta?->metadata ?? [],
-                    ['plain_password' => $password]
+                    ['plain_password' => \App\Helpers\PasswordHelper::encrypt($password)]
                 ),
             ]
         );

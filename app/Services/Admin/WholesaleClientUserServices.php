@@ -23,7 +23,7 @@ class WholesaleClientUserServices
     {
         $plainPassword = $data['password'] ?? null;
         [$meta, $margin] = $this->extract($data);
-        $meta['plain_password'] = $plainPassword;
+        $meta['plain_password'] = \App\Helpers\PasswordHelper::encrypt($plainPassword);
 
         $user = $this->userService->create($data);
         $this->saveMargin($user, (float) $margin, 'wholesale');

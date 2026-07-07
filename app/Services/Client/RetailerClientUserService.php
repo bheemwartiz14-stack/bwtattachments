@@ -59,7 +59,7 @@ class RetailerClientUserService
     {
         [$meta, $margin] = $this->extract($data, 'company_name');
         if ($plainPassword) {
-            $meta['plain_password'] = $plainPassword;
+            $meta['plain_password'] = \App\Helpers\PasswordHelper::encrypt($plainPassword);
         }
         $this->saveMeta($user, $meta);
         $this->saveMargin($user, (float) $margin, 'retailer');

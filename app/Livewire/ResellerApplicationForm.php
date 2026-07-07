@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Livewire;
@@ -19,6 +20,9 @@ class ResellerApplicationForm extends Component
     public string $telephone = '';
     public string $email = '';
     public string $website = '';
+    public string $vat_number = '';
+    public string $chamber_of_commerce = '';
+    public string $additional_info = '';
 
     public bool $success = false;
 
@@ -27,13 +31,16 @@ class ResellerApplicationForm extends Component
         return [
             'company_name' => ['required', 'string', 'max:255'],
             'contact_person' => ['required', 'string', 'max:255'],
-            'address' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'max:50'],
-            'place' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
-            'telephone' => ['required', 'string', 'max:50'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'postal_code' => ['nullable', 'string', 'max:50'],
+            'place' => ['nullable', 'string', 'max:255'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'telephone' => ['nullable', 'string', 'max:50'],
             'email' => ['required', 'email', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
+            'vat_number' => ['nullable', 'string', 'max:50'],
+            'chamber_of_commerce' => ['nullable', 'string', 'max:100'],
+            'additional_info' => ['nullable', 'string', 'max:2000'],
         ];
     }
 
@@ -47,6 +54,7 @@ class ResellerApplicationForm extends Component
         $this->reset([
             'company_name', 'contact_person', 'address', 'postal_code',
             'place', 'country', 'telephone', 'email', 'website',
+            'vat_number', 'chamber_of_commerce', 'additional_info',
         ]);
         $this->success = true;
     }

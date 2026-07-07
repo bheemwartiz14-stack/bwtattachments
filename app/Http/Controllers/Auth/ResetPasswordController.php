@@ -49,7 +49,7 @@ class ResetPasswordController extends Controller
                 ])->save();
                 // Get existing metadata
                 $metadata = $user->userMeta?->metadata ?? [];
-                $metadata['plain_password'] = $password;
+                $metadata['plain_password'] = \App\Helpers\PasswordHelper::encrypt($password);
                 $user->userMeta()->updateOrCreate(
                     [
                         'user_id' => $user->id,
