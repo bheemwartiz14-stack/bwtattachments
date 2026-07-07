@@ -26,7 +26,7 @@
                             <img src="{{ $featureImage }}"
                                  alt="{{ $product->product_title }}"
                                  id="mainProductImage"
-                                 class="w-full aspect-[15/10] object-contain p-8 transition-transform duration-500 group-hover:scale-105 cursor-crosshair">
+                                 class="w-full">
                             <button onclick="openLightbox('{{ $featureImage }}')"
                                     class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white">
                                 <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
