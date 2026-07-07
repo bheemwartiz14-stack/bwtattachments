@@ -237,7 +237,7 @@
                                 @role('Wholesale Client')
                                     @if ($product->getFirstMedia('pdfs'))
                                         <a href="{{ $product->getFirstMediaUrl('pdfs') }}" target="_blank"
-                                            class="inline-block bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
+                                            class="inline-block bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
                                             Download Technical PDF
                                         </a>
                                     @endif
