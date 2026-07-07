@@ -27,7 +27,7 @@ class RetailerClientUserController extends Controller
         $filters = $request->only(['search', 'role', 'status']);
         $users = $this->retailerClientUserService->paginate(10, $filters);
         $roles = $this->roleService->getByNames(['Retailer']);
-        return view('client.retailer-users.index', compact(
+        return view('pages.private.client.retailer-users.index', compact(
             'users',
             'roles',
         ));
@@ -39,7 +39,7 @@ class RetailerClientUserController extends Controller
     public function create()
     {
         $roles = $this->roleService->getByNames(['Retailer']);
-        return view('client.retailer-users.form', compact('roles'));
+        return view('pages.private.client.retailer-users.form', compact('roles'));
     }
 
     /**
@@ -61,7 +61,7 @@ class RetailerClientUserController extends Controller
     {
         $user = $this->retailerClientUserService->findById($id);
         $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)]);
-        return view('client.retailer-users.show', compact('user'));
+        return view('pages.private.client.retailer-users.show', compact('user'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -71,7 +71,7 @@ class RetailerClientUserController extends Controller
         $user = $this->retailerClientUserService->findById($id);
         $userRole = $user->roles->first()?->name ?? 'Retailer';
         $meta = $user->userMeta?->metadata ?? [];
-        return view('client.retailer-users.form', compact('user', 'userRole', 'meta'));
+        return view('pages.private.client.retailer-users.form', compact('user', 'userRole', 'meta'));
     }
 
     public function update(UpdateRetailerClientUserRequest $request, string $id): RedirectResponse

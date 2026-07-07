@@ -51,7 +51,7 @@ class CustomerDashboardController extends Controller
             ->sortByDesc(fn ($n) => $n['time'])
             ->take(5);
 
-        return view('customer.dashboard', compact(   'stats', 'recentQuotations', 'notifications',   'companyName', 'lastLogin', 'user'
+        return view('pages.private.customer.dashboard', compact(   'stats', 'recentQuotations', 'notifications',   'companyName', 'lastLogin', 'user'
         ));
     }
 }

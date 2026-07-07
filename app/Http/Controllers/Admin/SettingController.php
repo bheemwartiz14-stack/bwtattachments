@@ -18,7 +18,7 @@ class SettingController extends Controller
     public function index(): View
     {
         $settings = $this->settingService->getAll();
-        return view('admin.setting.genral-setting', compact('settings'));
+        return view('pages.private.admin.setting.genral-setting', compact('settings'));
     }
 
     public function update(Request $request): RedirectResponse

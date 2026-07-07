@@ -1,11 +1,10 @@
 <x-layouts.app>
     <x-slot:title>{{ $product->product_title }} - BWT</x-slot:title>
     <x-breadcrumb :items="[
-        ['label' => 'Customer Dashborad', 'url' => route('customer.dashboard')],
-        ['label' => 'View All Products', 'url' => route('customer.products.index')],
+        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Products', 'url' => route('admin.products.index')],
         ['label' => $product->product_code],
     ]" />
-
     @if (session('success'))
         <div
             class="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-300">
@@ -23,7 +22,7 @@
             <div class="relative flex flex-col md:flex-row">
                 <div class="shrink-0 w-full md:w-80 md:h-auto bg-slate-800/50">
                     @if ($product->getFirstMediaUrl('images'))
-                        <div class="aspect-[3/2] md:aspect-auto md:h-full">
+                        <div class="aspect-[15/10] md:aspect-auto md:h-full">
                             <img src="{{ $product->getFirstMediaUrl('images', 'large') }}"
                                 class="w-full h-full object-contain p-4">
                         </div>
@@ -74,7 +73,7 @@
                         @endif
                     </div>
                     <div class="mt-6 flex items-center gap-3">
-                        <a href="{{ route('customer.products.index') }}"
+                        <a href="{{ route('client.products.index') }}"
                             class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white/80 shadow-sm transition-all hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">
@@ -110,8 +109,7 @@
                         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Width</p>
                         <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">{{ $product->width ?? '' }}
-                            <span class="text-sm font-normal text-slate-400">mm</span>
-                        </p>
+                            <span class="text-sm font-normal text-slate-400">mm</span></p>
                     </div>
                     <div
                         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
@@ -263,7 +261,7 @@
                     @if ($allImages->count() > 0)
                         <div class="space-y-4">
                             <div
-                                class="relative aspect-[3/2] overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
+                                class="relative aspect-[15/10] overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
                                 <img id="adminMainImage" src="{{ $featureImage ?: $allImages->first()->getUrl() }}"
                                     alt="{{ $product->product_title }}"
                                     class="w-full h-full object-contain cursor-pointer transition-opacity duration-300"
@@ -281,10 +279,10 @@
                             </div>
                             <div class="flex gap-3 overflow-x-auto pb-2">
                                 @foreach ($allImages as $index => $media)
-                                    <div class="shrink-0 w-24 aspect-[3/2] rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-80 {{ $index === 0 ? 'ring-2 ring-emerald-500' : 'opacity-60 hover:opacity-100' }}"
+                                    <div class="shrink-0 w-24 aspect-[15/10] rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-80 {{ $index === 0 ? 'ring-2 ring-emerald-500' : 'opacity-60 hover:opacity-100' }}"
                                         data-img-src="{{ $media->getUrl() }}"
                                         onclick="switchAdminImage(this, '{{ $media->getUrl() }}', '{{ $media->getUrl() }}')">
-                                        <img src="{{ $media->getUrl() }}" alt=class="w-full h-full object-cover">
+                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
                                     </div>
                                 @endforeach
                             </div>
@@ -317,7 +315,7 @@
                             </div>
                             <h2 class="text-base font-semibold text-slate-900 dark:text-white">Datasheet</h2>
                         </div>
-                        <a href="{{ $product->getFirstMediaUrl('pdfs') }}" target="_blank"
+                        <a href="{{ route('public.products.pdf', $product) }}" target="_blank"
                             class="group flex items-center gap-3.5 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50 dark:hover:border-emerald-700 dark:hover:bg-emerald-900/20">
                             <div
                                 class="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/50">

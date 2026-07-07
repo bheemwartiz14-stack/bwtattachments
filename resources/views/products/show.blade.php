@@ -20,13 +20,13 @@
 
                 {{-- Left: Gallery --}}
                 <div class="space-y-4">
-                    <div class="relative group overflow-hidden rounded-2xl bg-slate-100 border border-slate-200">
+                    <div class="relative group overflow-hidden rounded-2xl bg-slate-100">
                         @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
                         @if($featureImage)
                             <img src="{{ $featureImage }}"
                                  alt="{{ $product->product_title }}"
                                  id="mainProductImage"
-                                 class="w-full aspect-[4/3] object-contain p-8 transition-transform duration-500 group-hover:scale-105 cursor-crosshair">
+                                 class="w-full aspect-[15/10] object-contain p-8 transition-transform duration-500 group-hover:scale-105 cursor-crosshair">
                             <button onclick="openLightbox('{{ $featureImage }}')"
                                     class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white">
                                 <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -34,7 +34,7 @@
                                 </svg>
                             </button>
                         @else
-                            <div class="w-full aspect-[4/3] flex items-center justify-center text-slate-400">
+                            <div class="w-full aspect-[15/10] flex items-center justify-center text-slate-400">
                                 <svg class="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
@@ -47,8 +47,8 @@
                         <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                             @foreach($gallery as $media)
                                 <button onclick="switchImage('{{ $media->getUrl() }}', this)"
-                                        class="thumb flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 {{ $loop->first ? 'border-bwtblue ring-2 ring-bwtblue/20' : 'border-slate-200 hover:border-slate-400' }} bg-slate-100">
-                                    <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-cover">
+                                        class="thumb flex-shrink-0 w-24 aspect-[15/10] rounded-xl overflow-hidden border-2 transition-all duration-200 {{ $loop->first ? 'border-bwtblue ring-2 ring-bwtblue/20' : 'border-slate-200 hover:border-slate-400' }} bg-slate-100">
+                                    <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
                                 </button>
                             @endforeach
                         </div>
@@ -151,12 +151,6 @@
                             @endauth
 
                             <div class="flex flex-wrap gap-3 mt-4">
-                                @if($product->getFirstMedia('pdfs'))
-                                    <a href="{{ $product->getFirstMediaUrl('pdfs') }}" target="_blank" class="inline-block bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
-                                        Download Technical PDF
-                                    </a>
-                                @endif
-
                                 @auth
                                     <a href="#" class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
                                         Add To Quotation

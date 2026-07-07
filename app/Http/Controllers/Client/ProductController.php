@@ -39,7 +39,7 @@ class ProductController extends Controller
             ])
         );
         $products = $this->productService->paginate(12, $filter);
-        return view('client.products.index', compact('products', 'categories', 'subcategories', 'connections'));
+        return view('pages.private.client.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
        public function show(string $id): View
@@ -48,6 +48,6 @@ class ProductController extends Controller
         $userPrice = $product->productPrices->where('user_id', auth()->id())->first();
         $displayPrice = $userPrice ? $userPrice->final_price : $product->ddp_price;
         $product->load(['category', 'subcategory', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', auth()->id())]);
-        return view('client.products.show', compact('product', 'userPrice', 'displayPrice'));
+        return view('pages.private.client.products.show', compact('product', 'userPrice', 'displayPrice'));
     }
 }

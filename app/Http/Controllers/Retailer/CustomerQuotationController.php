@@ -20,7 +20,7 @@ class CustomerQuotationController extends Controller
     public function index(): View
     {
         $quotations = $this->quotationService->findByUser(auth()->id());
-        return view('retailer.quotations.index', compact('quotations'));
+        return view('pages.private.retailer.quotations.index', compact('quotations'));
     }
 
     public function create(): View
@@ -28,7 +28,7 @@ class CustomerQuotationController extends Controller
         $resellers = $this->userService->getMyCustomers(auth()->id());
         $quotationNumber = $this->quotationService->generateQuotationNumber(auth()->id());
 
-        return view('retailer.quotations.create', compact('resellers', 'quotationNumber'));
+        return view('pages.private.retailer.quotations.create', compact('resellers', 'quotationNumber'));
     }
 
     public function store(StoreQuotationRequest $request): RedirectResponse

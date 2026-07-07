@@ -25,7 +25,7 @@ class SubcategoryController extends Controller
     {
         $subcategories = $this->subcategoryService->paginate(10);
 
-        return view('admin.subcategories.index', compact('subcategories'));
+        return view('pages.private.admin.subcategories.index', compact('subcategories'));
     }
 
     /**
@@ -34,8 +34,8 @@ class SubcategoryController extends Controller
     public function create(): View
     {
         $categories = $this->categoryService->getAll();
-        
-        return view('admin.subcategories.form', compact('categories'));
+
+        return view('pages.private.admin.subcategories.form', compact('categories'));
     }
 
     /**
@@ -61,7 +61,7 @@ class SubcategoryController extends Controller
 
         $categories = $this->categoryService->getAll();
 
-        return view('admin.subcategories.form', compact('subcategory', 'categories'));
+        return view('pages.private.admin.subcategories.form', compact('subcategory', 'categories'));
     }
 
     /**

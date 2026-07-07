@@ -19,7 +19,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryService->getAll();
 
-        return view('public.categories.index', compact('categories'));
+        return view('pages.public.categories.index', compact('categories'));
     }
 
     public function show(string $id): View
@@ -27,6 +27,6 @@ class CategoryController extends Controller
         $category = $this->categoryService->findById($id);
         $products = $this->productService->findByCategory($id);
 
-        return view('public.categories.show', compact('category', 'products'));
+        return view('pages.public.categories.show', compact('category', 'products'));
     }
 }

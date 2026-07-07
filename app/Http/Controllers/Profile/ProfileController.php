@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Profile\{
-    UpdateAvatarRequest,
-    UpdateNotificationRequest,
-    UpdatePasswordRequest,
-    UpdateProfileRequest
-};
+use App\Http\Requests\Profile\UpdateAvatarRequest;
+use App\Http\Requests\Profile\UpdateNotificationRequest;
+use App\Http\Requests\Profile\UpdatePasswordRequest;
+use App\Http\Requests\Profile\UpdateProfileRequest;
 use App\Models\User;
 use App\Services\Profile\ProfileService;
 use Illuminate\Http\RedirectResponse;
@@ -56,19 +54,20 @@ class ProfileController extends Controller
             default => [],
         };
 
-        if (!empty($roleData)) {
+        if (! empty($roleData)) {
             $viewData['company_name'] = $roleData['company_name'] ?? '';
             $viewData['logo'] = $roleData['logo']?->getUrl();
             $viewData['logo_id'] = $roleData['logo']?->id;
         }
-        return view('profile.edit', $viewData);
+
+        return view('pages.private.profile.edit', $viewData);
     }
 
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
         return $this->handleUpdate(
             $request,
-            fn($user, $data) => $this->profileService->updateProfile($user, $data),
+            fn ($user, $data) => $this->profileService->updateProfile($user, $data),
             'Profile updated successfully.'
         );
     }
@@ -77,7 +76,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        if (!$this->profileService->changePassword(
+        if (! $this->profileService->changePassword(
             $user,
             $request->input('current_password'),
             $request->input('password'),
@@ -92,7 +91,7 @@ class ProfileController extends Controller
     {
         return $this->handleUpdate(
             $request,
-            fn($user, $data) => $this->profileService->uploadAvatar($user, $data),
+            fn ($user, $data) => $this->profileService->uploadAvatar($user, $data),
             'Avatar uploaded successfully.'
         );
     }
@@ -116,7 +115,7 @@ class ProfileController extends Controller
     {
         return $this->handleUpdate(
             $request,
-            fn($user, $data) => $this->profileService->updateNotificationPreference($user, $data),
+            fn ($user, $data) => $this->profileService->updateNotificationPreference($user, $data),
             'Notification preferences updated successfully.'
         );
     }
@@ -142,7 +141,7 @@ class ProfileController extends Controller
     private function successRedirect(User $user, string $message): RedirectResponse
     {
         return redirect()
-            ->route($this->resolveRoutePrefix($user) . '.profile.edit')
+            ->route($this->resolveRoutePrefix($user).'.profile.edit')
             ->with('success', $message);
     }
 

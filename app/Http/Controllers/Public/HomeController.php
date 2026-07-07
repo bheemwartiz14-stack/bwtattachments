@@ -35,7 +35,7 @@ class HomeController extends Controller
         $categories = $this->categoryService->getAll();
         $subcategories = $this->subcategoryService->getAllWithCategory();
         $connections = $this->connectionService->getAll();
-        return view('public.home.index', compact('products', 'categories', 'subcategories', 'connections'));
+        return view('pages.public.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
     public function testPdf()

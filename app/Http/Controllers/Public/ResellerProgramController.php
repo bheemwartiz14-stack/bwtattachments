@@ -10,6 +10,6 @@ class ResellerProgramController extends Controller
 {
     public function index(): View
     {
-        return view('public.reseller-program.index');
+        return view('pages.public.reseller-program.index');
     }
 }

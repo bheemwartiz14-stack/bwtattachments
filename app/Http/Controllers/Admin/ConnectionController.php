@@ -19,12 +19,12 @@ class ConnectionController extends Controller
     {
         $connections = $this->connectionService->paginate(10);
 
-        return view('admin.connections.index', compact('connections'));
+        return view('pages.private.admin.connections.index', compact('connections'));
     }
 
     public function create(): View
     {
-        return view('admin.connections.form');
+        return view('pages.private.admin.connections.form');
     }
 
     public function store(StoreConnectionRequest $request): RedirectResponse
@@ -38,7 +38,7 @@ class ConnectionController extends Controller
     {
         $connection = $this->connectionService->findById($id);
 
-        return view('admin.connections.form', compact('connection'));
+        return view('pages.private.admin.connections.form', compact('connection'));
     }
 
     public function update(UpdateConnectionRequest $request, string $id): RedirectResponse

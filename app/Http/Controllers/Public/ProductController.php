@@ -9,6 +9,7 @@ use App\Services\ConnectionService;
 use App\Services\ProductService;
 use App\Services\SubcategoryService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -34,7 +35,7 @@ class ProductController extends Controller
         $subcategories = $this->subcategoryService->getAllWithCategory();
         $connections = $this->connectionService->getAll();
 
-        return view('products.index', compact('products', 'categories', 'subcategories', 'connections'));
+        return view('pages.public.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
     public function show(string $id): View
@@ -43,5 +44,23 @@ class ProductController extends Controller
         $product->load('category', 'subcategory', 'connection', 'media');
 
         return view('products.show', compact('product'));
+    }
+
+    public function downloadPdf(string $id): Response
+    {
+        $product = $this->productService->findById($id);
+        $media = $product->getFirstMedia('pdfs');
+
+        if (!$media) {
+            abort(404);
+        }
+
+        $user = auth()->user();
+
+        if (!$user || !($user->hasRole('Wholesale Client') || $user->hasRole('Super Admin'))) {
+            abort(403, 'Unauthorized. Only wholesale clients can download PDF drawings.');
+        }
+
+        return response()->download($media->getPath(), $media->file_name);
     }
 }

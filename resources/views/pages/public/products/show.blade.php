@@ -27,7 +27,7 @@
                     @endphp
                     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
                          x-data="{ current: 0, images: {{ json_encode($allImages) }} }">
-                        <div class="relative aspect-[3/2] bg-slate-100">
+                        <div class="relative aspect-[15/10] bg-slate-100">
                             <template x-if="images.length">
                                 <template x-for="(img, i) in images" :key="i">
                                     <img x-show="current === i"
@@ -78,8 +78,8 @@
                                 <template x-for="(img, i) in images" :key="i">
                                     <button @click="current = i"
                                             :class="current === i ? 'ring-2 ring-emerald-500 opacity-100' : 'opacity-50 hover:opacity-80'"
-                                            class="w-20 aspect-[3/2] flex-shrink-0 rounded-lg overflow-hidden transition-all cursor-pointer bg-slate-100">
-                                        <img :src="img.thumb || img.url" alt="" class="w-full h-full object-cover">
+                                            class="w-20 aspect-[15/10] flex-shrink-0 rounded-lg overflow-hidden transition-all cursor-pointer bg-slate-100">
+                                        <img :src="img.thumb || img.url" alt="" class="w-full h-full object-contain">
                                     </button>
                                 </template>
                             </div>

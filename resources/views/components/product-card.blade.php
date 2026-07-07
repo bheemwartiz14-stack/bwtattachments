@@ -1,5 +1,5 @@
 <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-200 group hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950">
-    <div class="relative aspect-[3/2] overflow-hidden bg-slate-100 dark:bg-neutral-900">
+    <div class="relative aspect-[15/10] overflow-hidden bg-slate-100 dark:bg-neutral-900">
         @if(isset($image) && $image)
             <img src="{{ $image }}" alt="{{ $title ?? '' }}" class="absolute inset-0 w-full h-full object-contain">
         @else

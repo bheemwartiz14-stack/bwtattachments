@@ -37,7 +37,7 @@ class RetailerProductController extends Controller
             ])
         );
         $products = $this->productService->paginate($per_page, $filter);
-        return view('retailer.products.index', compact('products', 'categories', 'subcategories', 'connections'));
+        return view('pages.private.retailer.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
         public function show(string $id): View
@@ -46,6 +46,6 @@ class RetailerProductController extends Controller
         $userPrice = $product->productPrices->where('user_id', auth()->id())->first();
         $displayPrice = $userPrice ? $userPrice->final_price : $product->ddp_price;
         $product->load(['category', 'subcategory', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', auth()->id())]);
-        return view('retailer.products.show', compact('product', 'userPrice', 'displayPrice'));
+        return view('pages.private.retailer.products.show', compact('product', 'userPrice', 'displayPrice'));
     }
 }

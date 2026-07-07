@@ -16,17 +16,22 @@
         'Profile' => 'heroicon-o-user',
     ];
 
-    $rolePrefix = match(true) {
+    $rolePrefix = match (true) {
         $user->hasRole('Super Admin') => 'admin',
         $user->hasRole('Wholesale Client') => 'client',
         $user->hasRole('Retailer') => 'retailer',
+        $user->hasRole('customer') => 'customer',
         default => null,
     };
 
     if ($user->hasRole('Super Admin')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin.dashboard'],
-            ['label' => 'Manage WholeSale Client', 'route' => 'admin.wholesale-client-users.index', 'pattern' => 'admin.wholesale-client-users.*'],
+            [
+                'label' => 'Manage WholeSale Client',
+                'route' => 'admin.wholesale-client-users.index',
+                'pattern' => 'admin.wholesale-client-users.*',
+            ],
             ['label' => 'Categories', 'route' => 'admin.categories.index', 'pattern' => 'admin.categories.*'],
             ['label' => 'Subcategories', 'route' => 'admin.subcategories.index', 'pattern' => 'admin.subcategories.*'],
             ['label' => 'Connections', 'route' => 'admin.connections.index', 'pattern' => 'admin.connections.*'],
@@ -36,23 +41,30 @@
     } elseif ($user->hasRole('Wholesale Client')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
-            ['label' => 'Manage Retailer Users', 'route' => 'client.retailer-users.index', 'pattern' => 'client.retailer-users.*'],
+            [
+                'label' => 'Manage Retailer Users',
+                'route' => 'client.retailer-users.index',
+                'pattern' => 'client.retailer-users.*',
+            ],
             ['label' => 'Products', 'route' => 'client.products.index', 'pattern' => 'client.products.*'],
             ['label' => 'Quotations', 'route' => 'client.quotations.index', 'pattern' => 'client.quotations.*'],
         ];
     } elseif ($user->hasRole('Retailer')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'retailer.dashboard', 'pattern' => 'retailer.dashboard'],
-            ['label' => 'Manage Customer Users', 'route' => 'retailer.customer-users.index', 'pattern' => 'retailer.customer-users.*'],
+            [
+                'label' => 'Manage Customer Users',
+                'route' => 'retailer.customer-users.index',
+                'pattern' => 'retailer.customer-users.*',
+            ],
             ['label' => 'Products', 'route' => 'retailer.products.index', 'pattern' => 'retailer.products.*'],
-             ['label' => 'Quotations', 'route' => 'retailer.quotations.index', 'pattern' => 'retailer.quotations.*'],
+            ['label' => 'Quotations', 'route' => 'retailer.quotations.index', 'pattern' => 'retailer.quotations.*'],
         ];
     } elseif ($user->hasRole('customer')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'customer.dashboard', 'pattern' => 'customer.dashboard'],
             ['label' => 'Products', 'route' => 'customer.products.index', 'pattern' => 'customer.products.*'],
         ];
-
     } else {
         $sidebarItems = [];
     }

@@ -36,7 +36,7 @@ class ManageAdminProductController extends Controller
 
     public function index(Request $request): View
     {
-        return view('admin.products.index', [
+        return view('pages.private.admin.products.index', [
             'products' => $this->productService->paginate(
                 (int) $request->query('per_page', 15),
                 $request->only(['search', 'category', 'subcategory', 'connection', 'machine_class', 'status'])
@@ -49,7 +49,7 @@ class ManageAdminProductController extends Controller
 
     public function create(): View
     {
-        return view('admin.products.form', ['product' => null] + $this->formData());
+        return view('pages.private.admin.products.form', ['product' => null] + $this->formData());
     }
 
     public function store(StoreProductRequest $request): RedirectResponse
@@ -60,19 +60,19 @@ class ManageAdminProductController extends Controller
 
     public function show(string $id): View
     {
-        return view('admin.products.show', ['product' => $this->productService->findById($id)]);
+        return view('pages.private.admin.products.show', ['product' => $this->productService->findById($id)]);
     }
 
     public function edit(string $id): View
     {
-        return view('admin.products.form', ['product' => $this->productService->findById($id)] + $this->formData());
+        return view('pages.private.admin.products.form', ['product' => $this->productService->findById($id)] + $this->formData());
     }
 
     public function update(UpdateProductRequest $request, string $id): RedirectResponse
     {
-        
+
         $this->productService->update($id, $request->validated());
-       
+
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
 

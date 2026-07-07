@@ -24,7 +24,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryService->paginate(10);
 
-        return view('admin.categories.index', compact('categories'));
+        return view('pages.private.admin.categories.index', compact('categories'));
     }
 
     /**
@@ -32,7 +32,7 @@ class CategoryController extends Controller
      */
     public function create(): View
     {
-        return view('admin.categories.form');
+        return view('pages.private.admin.categories.form');
     }
 
     /**
@@ -56,7 +56,7 @@ class CategoryController extends Controller
 
         abort_if(!$category, 404);
 
-        return view('admin.categories.form', compact('category'));
+        return view('pages.private.admin.categories.form', compact('category'));
     }
 
     /**

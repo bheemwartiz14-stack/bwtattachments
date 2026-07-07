@@ -54,7 +54,7 @@ class Product extends Model implements HasMedia
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
         $this->addMediaCollection('pdfs')
-            ->useDisk('public')
+            ->useDisk('local')
             ->acceptsMimeTypes(['application/pdf']);
     }
 

@@ -22,7 +22,7 @@ class CustomerUserController extends Controller
     {
         $filters = $request->only(['search', 'role', 'status']);
          $users = $this->customerService->paginate(10, $filters);
-         return view('retailer.customer-users.index', compact(
+         return view('pages.private.retailer.customer-users.index', compact(
             'users',
         ));
 
@@ -35,7 +35,7 @@ class CustomerUserController extends Controller
     public function create()
     {
         $roles = $this->roleService->getByNames(['customer']);
-        return view('retailer.customer-users.form', compact('roles'));
+        return view('pages.private.retailer.customer-users.form', compact('roles'));
         //
     }
 
@@ -55,9 +55,8 @@ class CustomerUserController extends Controller
     {
          $user = $this->customerService->findById($id);
          $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)]);
-        return view('retailer.customer-users.show', compact('user'));
+        return view('pages.private.retailer.customer-users.show', compact('user'));
     }
-        //
 
 
     /**
@@ -68,7 +67,7 @@ class CustomerUserController extends Controller
          $user = $this->customerService->findById($id);
           $userRole = $user->roles->first()?->name;
            $meta = $user->userMeta?->metadata ?? [];
-           return view('retailer.customer-users.form', compact('user', 'userRole', 'meta'));
+           return view('pages.private.retailer.customer-users.form', compact('user', 'userRole', 'meta'));
         //
     }
 

@@ -23,7 +23,7 @@ class QuotationController extends Controller
     public function index(): View
     {
         $quotations = $this->quotationService->findByUser(auth()->id());
-        return view('client.quotations.index', compact('quotations'));
+        return view('pages.private.client.quotations.index', compact('quotations'));
     }
 
     public function create(): View
@@ -34,7 +34,7 @@ class QuotationController extends Controller
             ->get(['id', 'name', 'email', 'phone']);
 
         $quotationNumber = $this->quotationService->generateQuotationNumber();
-        return view('client.quotations.create', compact('resellers', 'quotationNumber'));
+        return view('pages.private.client.quotations.create', compact('resellers', 'quotationNumber'));
     }
 
     public function store(StoreQuotationRequest $request): RedirectResponse
@@ -84,7 +84,7 @@ class QuotationController extends Controller
             // dd($quotation);
         $quotation->load('items.product');
 
-        return view('client.quotations.show', compact('quotation'));
+        return view('pages.private.client.quotations.show', compact('quotation'));
     }
 
     public function download(string $id): StreamedResponse|RedirectResponse

@@ -43,6 +43,6 @@ class DashboardController extends Controller
         $recentProducts = Product::latest()->take(5)->get();
         $recentQuotations = Quotation::with('user')->latest()->take(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'recentProducts', 'recentQuotations'));
+        return view('pages.private.admin.dashboard', compact('stats', 'recentProducts', 'recentQuotations'));
     }
 }

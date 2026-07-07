@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
 Route::get('/test-pdf', [HomeController::class, 'testPdf'])->name('public.test-pdf');
 Route::get('/products/{product}', [PublicProductController::class, 'show'])->name('public.products.show');
+Route::get('/products/{product}/pdf', [PublicProductController::class, 'downloadPdf'])->name('public.products.pdf');
 Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories.index');
 Route::get('/categories/{category}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('public.contact.index');

@@ -41,7 +41,7 @@ readonly class ProductMediaService
         $product
             ->addMedia($file)
             ->preservingOriginal()
-            ->toMediaCollection('pdfs', 'public');
+            ->toMediaCollection('pdfs');
     }
 
     private function processImage(UploadedFile $file): UploadedFile

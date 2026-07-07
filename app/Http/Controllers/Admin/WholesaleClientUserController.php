@@ -23,12 +23,12 @@ class WholesaleClientUserController extends Controller
     {
         $filters = $request->only(['search', 'role', 'status']);
         $users = $this->wholesaleClientUserServices->paginate(10, $filters);
-        return view('admin.wholesale-client-users.index', compact('users'));
+        return view('pages.private.admin.wholesale-client-users.index', compact('users'));
     }
     public function create(): View
     {
         $roles = $this->roleService->getByNames(['Wholesale Client']);
-        return view('admin.wholesale-client-users.form', compact('roles'));
+        return view('pages.private.admin.wholesale-client-users.form', compact('roles'));
     }
 
     public function store(StoreWholesaleClientUserRequest $request): RedirectResponse
@@ -41,7 +41,7 @@ class WholesaleClientUserController extends Controller
     {
         $user = $this->wholesaleClientUserServices->findById($id);
         $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)]);
-        return view('admin.wholesale-client-users.show', compact('user'));
+        return view('pages.private.admin.wholesale-client-users.show', compact('user'));
     }
 
     public function edit(string $id): View
@@ -49,7 +49,7 @@ class WholesaleClientUserController extends Controller
         $user = $this->wholesaleClientUserServices->findById($id);
         $userRole = $user->roles->first()?->name;
         $roles = $this->roleService->getByNames(['Wholesale Client']);
-        return view('admin.wholesale-client-users.form', compact('user', 'roles', 'userRole'));
+        return view('pages.private.admin.wholesale-client-users.form', compact('user', 'roles', 'userRole'));
     }
 
     public function update(UpdateWholesaleClientUserRequest $request, string $id): RedirectResponse
