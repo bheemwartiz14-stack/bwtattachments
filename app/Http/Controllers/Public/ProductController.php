@@ -43,7 +43,7 @@ class ProductController extends Controller
         $product = $this->productService->findById($id);
         $product->load('category', 'subcategory', 'connection', 'media');
 
-        return view('products.show', compact('product'));
+        return view('pages.public.products.show', compact('product'));
     }
 
     public function downloadPdf(string $id): Response
