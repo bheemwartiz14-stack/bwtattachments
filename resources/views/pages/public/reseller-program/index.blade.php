@@ -1,6 +1,55 @@
 <x-layouts.public>
     <x-slot:title>BWT Attachments | Become a Reseller</x-slot:title>
-
+  <style>
+      body {
+        font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .form-input {
+        width: 100%;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+        background-color: #fff;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        color: #374151;
+        outline: none;
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .form-input::placeholder {
+        color: #9ca3af;
+      }
+      .form-input:focus {
+        border-color: #1a5faa;
+        box-shadow: 0 0 0 3px rgba(26, 95, 170, 0.2);
+      }
+      .nav-link {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.9);
+        transition: color 150ms;
+      }
+      .nav-link:hover {
+        color: #fff;
+      }
+      .section-heading {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+      }
+      .bullet-list li {
+        position: relative;
+        padding-left: 1rem;
+        font-size: 15px;
+        line-height: 1.75rem;
+        color: #374151;
+      }
+      .bullet-list li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #6b7280;
+      }
+    </style>
     <main class="mx-auto max-w-[1440px] px-4 sm:px-8 py-12">
         {{-- Page Title --}}
         <div class="mb-14 border-b border-gray-300 pb-8 text-center">

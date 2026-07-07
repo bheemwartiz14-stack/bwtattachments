@@ -9,28 +9,27 @@
         </div>
     @endif
 
-    <form wire:submit="submit" class="space-y-5">
+    <form wire:submit="submit" class="mt-8 space-y-5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <x-forms.input name="company_name" label="Company name" placeholder="Company name" :required="true" wire:model.blur="company_name" />
-            <x-forms.input name="contact_person" label="Contact person" placeholder="Contact person" :required="true" wire:model.blur="contact_person" />
+            <x-forms.input name="company_name"  placeholder="Company name" :required="true" wire:model.blur="company_name" class="form-input" />
+            <x-forms.input name="contact_person"  placeholder="Contact person" :required="true" wire:model.blur="contact_person" class="form-input"  />
 
-            <x-forms.input name="address" label="Address" placeholder="Address" wire:model.blur="address" />
-            <x-forms.input name="postal_code" label="Postal code" placeholder="Postal code" wire:model.blur="postal_code" />
+            <x-forms.input name="address"  placeholder="Address" wire:model.blur="address" class="form-input" />
+            <x-forms.input name="postal_code"  placeholder="Postal code" wire:model.blur="postal_code" class="form-input" />
 
-            <x-forms.input name="place" label="City" placeholder="City" wire:model.blur="place" />
-            <x-forms.input name="country" label="Country" placeholder="Country" wire:model.blur="country" />
+            <x-forms.input name="place" placeholder="City" wire:model.blur="place"  class="form-input"/>
+            <x-forms.input name="country"  placeholder="Country" wire:model.blur="country" class="form-input" />
 
-            <x-forms.input name="email" label="Email address" type="email" placeholder="Email address" :required="true" wire:model.blur="email" />
-            <x-forms.input name="telephone" label="Telephone number" type="tel" placeholder="Telephone number" wire:model.blur="telephone" />
+            <x-forms.input name="email" type="email" placeholder="Email address" :required="true" wire:model.blur="email" class="form-input"/>
+            <x-forms.input name="telephone"  type="tel" placeholder="Telephone number" wire:model.blur="telephone"  class="form-input"/>
 
-            <x-forms.input name="website" label="Website" type="url" placeholder="Website" wire:model.blur="website" />
-            <x-forms.input name="vat_number" label="VAT Number" placeholder="VAT Number" wire:model.blur="vat_number" />
+            <x-forms.input name="website"  type="url" placeholder="Website" wire:model.blur="website" class="form-input" />
+            <x-forms.input name="vat_number"  placeholder="VAT Number" wire:model.blur="vat_number" class="form-input" />
 
-            <x-forms.input name="chamber_of_commerce" label="Chamber of commerce number" placeholder="Chamber of commerce number" wire:model.blur="chamber_of_commerce" />
-            <div></div>
-
+            <x-forms.input name="chamber_of_commerce" placeholder="Chamber of commerce number" wire:model.blur="chamber_of_commerce" class="form-input md:col-span-1" />
+             <div class="hidden md:block"></div>
             <div class="sm:col-span-2">
-                <x-forms.textarea name="additional_info" label="Additional information" placeholder="Additional information" :rows="5" wire:model.blur="additional_info" />
+                <x-forms.textarea name="additional_info" placeholder="Additional information" :rows="5" wire:model.blur="additional_info" class="form-input resize-none md:col-span-2" />
             </div>
         </div>
 
