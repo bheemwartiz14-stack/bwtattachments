@@ -10,6 +10,7 @@ use App\Services\ProductService;
 use App\Services\SubcategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -46,7 +47,7 @@ class ProductController extends Controller
         return view('pages.public.products.show', compact('product'));
     }
 
-    public function downloadPdf(string $id): Response
+    public function downloadPdf(string $id): BinaryFileResponse
     {
         $product = $this->productService->findById($id);
         $media = $product->getFirstMedia('pdfs');
