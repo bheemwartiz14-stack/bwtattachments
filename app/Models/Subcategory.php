@@ -7,11 +7,21 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
-#[Fillable(['category_id', 'name'])]
+#[Fillable(['category_id', 'name', 'slug'])]
 class Subcategory extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, HasSlug;
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
+    }
     protected function casts(): array
     {
         return [

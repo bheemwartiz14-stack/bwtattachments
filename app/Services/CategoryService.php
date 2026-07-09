@@ -8,7 +8,6 @@ use App\Repositories\SubcategoryRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class CategoryService
 {
@@ -36,10 +35,6 @@ class CategoryService
 
     public function create(array $data): Model
     {
-        if (empty($data['slug']) && !empty($data['name'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
-
         $result = $this->categoryRepository->create($data);
         Cache::forget('categories:all');
         return $result;
@@ -47,10 +42,6 @@ class CategoryService
 
     public function update(string|int $id, array $data): Model
     {
-        if (empty($data['slug']) && isset($data['name'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
-
         $result = $this->categoryRepository->update($id, $data);
         Cache::forget('categories:all');
         return $result;

@@ -44,10 +44,10 @@ Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
 Route::get('/test-pdf', [HomeController::class, 'testPdf'])->name('public.test-pdf');
 Route::get('/test-mail', [HomeController::class, 'testEmail'])->name('public.test-mail');
 
-Route::get('/products/{product}', [PublicProductController::class, 'show'])->name('public.products.show');
-Route::get('/products/{product}/pdf', [PublicProductController::class, 'downloadPdf'])->name('public.products.pdf');
+Route::get('/products/{product:slug}', [PublicProductController::class, 'show'])->name('public.products.show');
+Route::get('/products/{product:slug}/pdf', [PublicProductController::class, 'downloadPdf'])->name('public.products.pdf');
 Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories.index');
-Route::get('/categories/{category}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
+Route::get('/categories/{category:slug}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('public.contact.index');
 Route::get('/reseller-program', [ResellerProgramController::class, 'index'])->name('public.reseller-program.index');
 // Guest-only routes

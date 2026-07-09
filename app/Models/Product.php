@@ -10,6 +10,8 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 #[Fillable([
     'category_id',
     'subcategory_id',
@@ -38,10 +40,20 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
     'product_gallery_images',
     'product_pdf',
     'drawing_number',
+    'slug',
 ])]
 class Product extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, HasUuids;
+    use HasFactory, InteractsWithMedia, HasUuids, HasSlug;
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('product_title')
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
