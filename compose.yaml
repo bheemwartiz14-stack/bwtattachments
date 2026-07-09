@@ -1,11 +1,11 @@
 services:
     laravel.test:
         build:
-            context: ./docker/8.3
+            context: ./docker/8.5
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: sail-8.3/app
+        image: sail-8.5/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -77,7 +77,7 @@ services:
         ports:
             - '${FORWARD_PHPMYADMIN_PORT:-8080}:80'
         environment:
-            PMA_HOST: 'mysql'
+            PMA_HOST: mysql
             PMA_PORT: 3306
             PMA_USER: '${DB_USERNAME}'
             PMA_PASSWORD: '${DB_PASSWORD}'

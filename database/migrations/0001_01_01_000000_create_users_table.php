@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('parent_id') ->nullable()->constrained('users')->nullOnDelete();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email', 191)->unique();
             $table->string('username', 50)->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
