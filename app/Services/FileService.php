@@ -23,7 +23,7 @@ class FileService
         $mimeType = $file->getMimeType();
 
         if (str_starts_with($mimeType, 'image/')) {
-            $image = Image::decode($file)->cover(1200, 800, 'center');
+            $image = Image::decodeBinary($file->get())->cover(1200, 800, 'center');
             $filename = Str::uuid() . '.webp';
             $path = "temp/{$token}/{$filename}";
             $encodedImage = (string) $image->encodeUsingFormat(Format::WEBP, 85);
