@@ -111,7 +111,6 @@ class QuotationController extends Controller
 
         return back()->with('success', 'PDF generated successfully.');
     }
-
     public function sendEmail(string $id): RedirectResponse
     {
         $quotation = $this->quotationService->findById($id);
@@ -127,7 +126,21 @@ class QuotationController extends Controller
         }
 
         $this->quotationService->sendEmail($quotation);
+        $this->quotationService->update($id, ['status' => 'sent']);
 
-        return back()->with('success', 'Quotation PDF sent to reseller successfully.');
+        return back()->with('success', 'Quotation sent successfully.');
+    }
+
+    public function updateStatus(Request $request, string $id): RedirectResponse
+    {
+        $quotation = $this->quotationService->findById($id);
+
+        if ($quotation->user_id !== auth()->id()) {
+            abort(403);
+        }
+        $status = 'Sent';
+        $this->quotationService->update($id, ['status' => $status]);
+
+        return back()->with('success', "Quotation status updated to " . ucfirst($status) . ".");
     }
 }

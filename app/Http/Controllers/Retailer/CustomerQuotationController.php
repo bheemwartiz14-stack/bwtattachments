@@ -7,6 +7,7 @@ use App\Http\Requests\Retailer\Quotations\StoreQuotationRequest;
 use App\Services\QuotationService;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\View\View;
 
@@ -93,5 +94,45 @@ class CustomerQuotationController extends Controller
         }
 
         return $this->quotationService->downloadPdf($quotation);
+    }
+
+    public function sendEmail(string $id): RedirectResponse
+    {
+        $quotation = $this->quotationService->findById($id);
+
+        if ($quotation->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $quotation->load('reseller');
+
+        if (!$quotation->pdf_file) {
+            $this->quotationService->generatePdf($quotation);
+        }
+
+        $this->quotationService->sendEmail($quotation);
+        $this->quotationService->update($id, ['status' => 'sent']);
+
+        return back()->with('success', 'Quotation sent successfully.');
+    }
+
+    public function updateStatus(Request $request, string $id): RedirectResponse
+    {
+        $quotation = $this->quotationService->findById($id);
+
+        if ($quotation->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validStatuses = ['draft', 'pending', 'approved', 'rejected', 'submitted'];
+        $status = $request->input('status');
+
+        if (!in_array($status, $validStatuses)) {
+            return back()->with('error', 'Invalid status selected.');
+        }
+
+        $this->quotationService->update($id, ['status' => $status]);
+
+        return back()->with('success', "Quotation status updated to " . ucfirst($status) . ".");
     }
 }

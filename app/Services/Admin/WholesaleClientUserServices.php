@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Admin;
 use App\Data\UserData;
 use App\Events\UpdateUserMargins;
-use App\Events\WholesaleClientsRegistered;
+use App\Events\WelcomeOnboardingUser;
 use App\Services\UserService;
 use App\Traits\ExtractsUserMeta;
 use App\Traits\ResolvesTempFiles;
@@ -28,12 +28,12 @@ class WholesaleClientUserServices
         $user = $this->userService->create($data);
         $this->saveMargin($user, (float) $margin, 'wholesale');
         $this->saveMeta($user, $meta);
-
         $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
         if ($logo) {
             $user->addMedia($logo)->toMediaCollection('wholesale_client_logo');
         }
-        event(new WholesaleClientsRegistered($user, $plainPassword));
+        $user->load(['userMeta']);
+        event(new WelcomeOnboardingUser($user, $plainPassword, 'wholesale'));
         return $user;
     }
 

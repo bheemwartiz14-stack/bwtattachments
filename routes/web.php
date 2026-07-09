@@ -92,6 +92,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('quotations', ClientQuotationController::class)->except(['delete']);
         Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
         Route::get('/quotations/{quotation}/preview', [ClientQuotationController::class, 'preview'])->name('quotations.preview');
+        Route::post('/quotations/{quotation}/send-email', [ClientQuotationController::class, 'sendEmail'])->name('quotations.send-email');
+        Route::patch('/quotations/{quotation}/status', [ClientQuotationController::class, 'updateStatus'])->name('quotations.update-status');
         Route::get('/profile', [ClientProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [ClientProfileController::class, 'updatePassword'])->name('profile.password');
@@ -112,6 +114,8 @@ Route::middleware(['auth'])->group(function () {
         Route::controller(CustomerQuotationController::class) ->prefix('quotations') ->name('quotations.')->group(function () {
             Route::get('{quotation}/download', 'download')->name('download');
             Route::get('{quotation}/preview', 'preview')->name('preview');
+            Route::post('{quotation}/send-email', 'sendEmail')->name('send-email');
+            Route::patch('{quotation}/status', 'updateStatus')->name('update-status');
         });
         Route::get('/profile', [RetailerProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [RetailerProfileController::class, 'update'])->name('profile.update');

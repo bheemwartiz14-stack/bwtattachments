@@ -5,7 +5,7 @@ namespace App\Services\Client;
 
 use App\Data\UserData;
 use App\Events\UpdateUserMargins;
-use App\Events\RetailerClientInvited;
+use App\Events\WelcomeOnboardingUser;
 use App\Services\UserService;
 use App\Traits\ExtractsUserMeta;
 use App\Traits\ResolvesTempFiles;
@@ -26,7 +26,8 @@ class RetailerClientUserService
             $plainPassword = $data['password'] ?? '';
             $user = $this->userService->create($data);
             $this->processMetaAndMargin($user, $data, $plainPassword);
-            event(new RetailerClientInvited($user, $plainPassword));
+            $user->load(['userMeta']);
+            event(new WelcomeOnboardingUser($user, $plainPassword, 'retailer'));
             return $user;
         });
     }
