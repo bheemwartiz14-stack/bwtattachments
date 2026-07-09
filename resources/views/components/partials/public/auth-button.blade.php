@@ -14,7 +14,7 @@
             default => 'admin.dashboard',
         };
     @endphp
-    <a href="{{ route($dashboardRoute) }}" class="{{ $class }}">Dashboard</a>
+    <a href="{{ route($dashboardRoute) }}" wire:navigate class="{{ $class }}">Dashboard</a>
 @else
-    <a href="{{ route('login') }}" class="{{ $class }}">Reseller Login</a>
+    <a href="{{ route('login') }}" wire:navigate class="{{ $class }}">Reseller Login</a>
 @endauth

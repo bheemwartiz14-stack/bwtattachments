@@ -9,7 +9,7 @@
             @if(count($categories))
                 <div class="products">
                     @foreach($categories as $id => $name)
-                        <a href="{{ route('public.categories.show', $id) }}" class="product-card">
+                        <a href="{{ route('public.categories.show', $id) }}" wire:navigate class="product-card">
                             <div class="product-body" style="padding:30px;text-align:center;">
                                 <div style="font-size:18px;font-weight:bold;color:#1d2939;margin-bottom:8px;">{{ $name }}</div>
                                 <span class="view-btn" style="display:inline-block;width:auto;padding:8px 24px;">View Products</span>

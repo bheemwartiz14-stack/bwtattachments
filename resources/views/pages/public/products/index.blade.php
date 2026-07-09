@@ -20,7 +20,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="font-semibold text-slate-900">Filters</h3>
                             @if(request()->anyFilled(['category', 'subcategory', 'connection', 'search']))
-                                <a href="{{ route('public.products.index') }}" class="text-xs font-medium text-red-500 hover:text-red-600 no-underline">Clear all</a>
+                                <a href="{{ route('public.products.index') }}" wire:navigate class="text-xs font-medium text-red-500 hover:text-red-600 no-underline">Clear all</a>
                             @endif
                         </div>
 
@@ -98,7 +98,7 @@
                         </button>
                         @if(request()->anyFilled(['search', 'category', 'subcategory', 'connection']))
                             <a href="{{ route('public.products.index') }}"
-                               class="text-xs text-slate-400 hover:text-red-500 no-underline transition-colors">Clear</a>
+                             wire:navigate  class="text-xs text-slate-400 hover:text-red-500 no-underline transition-colors">Clear</a>
                         @endif
                     </form>
 

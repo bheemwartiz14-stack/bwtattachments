@@ -5,7 +5,7 @@
     <div class="space-y-6">
         <x-ui.hero title="Retailer Clients" subtitle="Manage your retailer client user accounts">
             <x-slot:actions>
-                <a href="{{ route('client.retailer-users.create') }}"
+                <a href="{{ route('client.retailer-users.create') }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                     Add Client User
@@ -44,7 +44,7 @@
                     </div>
                     <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Search</button>
                     @if(request('search'))
-                        <a href="{{ route('client.retailer-users.index') }}" class="text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-neutral-400">Clear</a>
+                        <a href="{{ route('client.retailer-users.index') }}" wire:navigateclass="text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-neutral-400">Clear</a>
                     @endif
                 </form>
             </div>
@@ -67,14 +67,14 @@
                             <tr class="transition-colors hover:bg-slate-50/80 dark:hover:bg-neutral-800/30">
                                 <td class="px-5 py-4">
                                     <div class="flex items-center gap-3">
-                                          <a href="{{ route('client.retailer-users.show', $user) }}" title="View"
+                                          <a href="{{ route('client.retailer-users.show', $user) }}" wire:navigate title="View"
                                                 class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
 
                                         <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
                                             {!! Avatar::create($user->name)->setDimension(36)->setFontSize(14)->toSvg() !!}
                                         </div>
                                            </a>
-                                        <a href="{{ route('client.retailer-users.show', $user) }}"
+                                        <a href="{{ route('client.retailer-users.show', $user) }}" wire:navigate
                                         class="truncate text-sm font-medium text-slate-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400">
                                             {{ $user->name }}
                                         </a>
@@ -113,11 +113,11 @@
                                 </td>
                                 <td class="px-5 py-4 text-right">
                                         <div class="flex items-center justify-end gap-1">
-                                            <a href="{{ route('client.retailer-users.show', $user) }}" title="View"
+                                            <a href="{{ route('client.retailer-users.show', $user) }}" wire:navigate title="View"
                                                 class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                             </a>
-                                            <a href="{{ route('client.retailer-users.edit', $user) }}" title="Edit"
+                                            <a href="{{ route('client.retailer-users.edit', $user) }}" wire:navigate title="Edit"
                                                 class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                                             </a>
@@ -139,7 +139,7 @@
                                         <svg class="h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
                                         <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">No Retailer Clients found</h3>
                                         <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Get started by creating a new retailer client user.</p>
-                                        <a href="{{ route('client.retailer-users.create') }}" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">
+                                        <a href="{{ route('client.retailer-users.create') }}" wire:navigate class="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                                             Add Client User
                                         </a>

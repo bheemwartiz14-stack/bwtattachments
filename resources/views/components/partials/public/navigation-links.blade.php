@@ -9,15 +9,15 @@
 @endphp
 
 @foreach ($cats as $category)
-        <a href="{{ route('public.categories.show', $category) }}" class="{{ $linkClass }}">
+        <a href="{{ route('public.categories.show', $category) }}" wire:navigate class="{{ $linkClass }}">
             {{ $category->name }}
         </a>
 @endforeach
 
-<a href="{{ route('public.reseller-program.index') }}" class="{{ $linkClass }}">
+<a href="{{ route('public.reseller-program.index') }}" wire:navigate class="{{ $linkClass }}">
     Reseller Program
 </a>
 
-<a href="{{ route('public.contact.index') }}" class="{{ $linkClass }}">
+<a href="{{ route('public.contact.index') }}" wire:navigate class="{{ $linkClass }}">
     Contact
 </a>

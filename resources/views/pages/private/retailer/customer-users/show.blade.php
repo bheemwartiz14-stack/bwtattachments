@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('retailer.customer-users.edit', $user) }}"
+                <a href="{{ route('retailer.customer-users.edit', $user) }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-500">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                     Edit User
@@ -78,7 +78,7 @@
                                 <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Website</dt>
                                 <dd class="mt-1 text-sm">
                                     @if(!empty($meta['website']))
-                                        <a href="{{ $meta['website'] }}" target="_blank" class="inline-flex items-center gap-1.5 font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300">
+                                        <a href="{{ $meta['website'] }}" wire:navigate target="_blank" class="inline-flex items-center gap-1.5 font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300">
                                             {{ $meta['website'] }}
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                                         </a>

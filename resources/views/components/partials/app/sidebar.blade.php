@@ -102,7 +102,7 @@
                                     $isChildActive = request()->routeIs($child['pattern']);
                                     $href = Route::has($child['route']) ? route($child['route']) : '#';
                                 @endphp
-                                <a href="{{ $href }}"
+                                <a href="{{ $href }}" wire:navigate
                                     class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all {{ $isChildActive ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
                                     <span
                                         class="h-1.5 w-1.5 rounded-full {{ $isChildActive ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-neutral-600' }}"></span>
@@ -117,7 +117,7 @@
                     $isActive = request()->routeIs($item['pattern']);
                     $href = Route::has($item['route']) ? route($item['route']) : '#';
                 @endphp
-                <a href="{{ $href }}"
+                <a href="{{ $href }}" wire:navigate
                     class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all {{ $isActive ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
                     <span class="flex h-5 w-5 items-center justify-center">
                         @svg($icon, 'h-5 w-5')

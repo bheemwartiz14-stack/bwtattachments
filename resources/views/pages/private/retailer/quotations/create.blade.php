@@ -271,7 +271,7 @@
 
         {{-- Actions --}}
         <div class="flex flex-wrap items-center justify-end gap-3">
-            <a href="{{ route('retailer.quotations.index') }}"
+            <a href="{{ route('retailer.quotations.index') }}" wire:navigate
                 class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800">
                 Cancel
             </a>

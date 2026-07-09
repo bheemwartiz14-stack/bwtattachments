@@ -6,13 +6,13 @@
 
             {{-- Breadcrumb --}}
             <nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
-                <a href="{{ route('public.home.index') }}"
+                <a href="{{ route('public.home.index') }}" wire:navigate
                     class="hover:text-bwtblue transition-colors no-underline">Products</a>
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
                 @if ($product->category)
-                    <a href="{{ route('public.categories.show', $product->category) }}"
+                    <a href="{{ route('public.categories.show', $product->category) }}" wire:navigate
                         class="hover:text-bwtblue transition-colors no-underline">{{ $product->category->name }}</a>
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -236,18 +236,18 @@
                             @auth
                                 @role('Wholesale Client')
                                     @if ($product->getFirstMedia('pdfs'))
-                                       <a href="{{ route('public.products.pdf', $product) }}" target="_blank"
+                                       <a href="{{ route('public.products.pdf', $product) }}" wire:navigate target="_blank"
                                             class="inline-block bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
                                             Download Technical PDF
                                         </a>
                                     @endif
                                 @endrole
-                                <a href="#"
+                                <a href="/" wire:navigate
                                     class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
                                     Add To Quotation
                                 </a>
                             @else
-                                <a href="{{ route('login') }}"
+                                <a href="{{ route('login') }}" wire:navigate
                                     class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
                                     Login to View Pricing
                                 </a>

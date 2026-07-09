@@ -5,7 +5,7 @@
     <div class="space-y-6">
         <x-ui.hero title="Wholesale Clients" subtitle="Manage your wholesale client user accounts">
             <x-slot:actions>
-                <a href="{{ route('admin.wholesale-client-users.create') }}"
+                <a href="{{ route('admin.wholesale-client-users.create') }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                     Add Client User
@@ -94,7 +94,7 @@
                                     <div class="min-w-0 flex-1">
                                         <div class="flex items-center gap-2">
                                          @if($roleName === 'Wholesale Client')
-    <a href="{{ route('admin.wholesale-client-users.show', $user) }}"
+    <a href="{{ route('admin.wholesale-client-users.show', $user) }}" wire:navigate
        class="truncate text-sm font-medium text-slate-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400">
         {{ $user->name }}
     </a>
@@ -125,7 +125,7 @@
                                 <div class="flex shrink-0 items-center gap-1">
 
                                       @if($roleName === 'Wholesale Client')
-                                    <a href="{{ route('admin.wholesale-client-users.edit', $user) }}" title="Edit"
+                                    <a href="{{ route('admin.wholesale-client-users.edit', $user) }}" wire:navigate title="Edit"
                                         class="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-white">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                                     </a>

@@ -15,8 +15,19 @@ function toggleDarkMode() {
     localStorage.setItem('dark', dark);
 }
 
+function reapplyDarkMode() {
+    const dark = localStorage.getItem('dark') === 'true';
+    if (dark) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+}
+
 $(document).on('click', '[data-toggle-dark]', toggleDarkMode);
 $(document).on('toggle-dark-mode', toggleDarkMode);
+
+document.addEventListener('livewire:navigated', reapplyDarkMode);
 
 // Sidebar
 $(document).on('click', '[data-toggle-sidebar]', function() {

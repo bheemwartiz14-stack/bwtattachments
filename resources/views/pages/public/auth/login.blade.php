@@ -81,7 +81,7 @@
 
                 <p class="mt-6 text-center text-sm text-slate-600 dark:text-neutral-400">
                     Having trouble?
-                    <a href="{{ route('password.request') }}" class="font-semibold text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300">Reset your password</a>
+                    <a href="{{ route('password.request') } }" wire:navigate class="font-semibold text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300">Reset your password</a>
                 </p>
             </div>
         </div>

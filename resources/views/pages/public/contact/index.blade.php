@@ -66,7 +66,7 @@
                                 </div>
                                 <div>
                                     <p class="font-medium text-gray-900">Email</p>
-                                    <a href="mailto:{{ $siteSettings['contact_email'] ?? 'info@bigworktools.com' }}" class="text-bwtblue hover:text-bwtblue2 transition-colors no-underline">{{ $siteSettings['contact_email'] ?? 'info@bigworktools.com' }}</a>
+                                    <a href="mailto:{{ $siteSettings['contact_email'] ?? 'info@bigworktools.com' }}" wire:navigate class="text-bwtblue hover:text-bwtblue2 transition-colors no-underline">{{ $siteSettings['contact_email'] ?? 'info@bigworktools.com' }}</a>
                                 </div>
                             </div>
                             <div class="flex items-start gap-3">
@@ -75,7 +75,7 @@
                                 </div>
                                 <div>
                                     <p class="font-medium text-gray-900">Phone</p>
-                                    <a href="tel:{{ $siteSettings['contact_phone'] ?? '+1 (555) 123-4567' }}" class="text-bwtblue hover:text-bwtblue2 transition-colors no-underline">{{ $siteSettings['contact_phone'] ?? '+1 (555) 123-4567' }}</a>
+                                    <a href="tel:{{ $siteSettings['contact_phone'] ?? '+1 (555) 123-4567' }}" wire:navigate class="text-bwtblue hover:text-bwtblue2 transition-colors no-underline">{{ $siteSettings['contact_phone'] ?? '+1 (555) 123-4567' }}</a>
                                 </div>
                             </div>
                             <div class="flex items-start gap-3">
@@ -96,7 +96,7 @@
                         </div>
                         <h3 class="font-semibold mb-1">Reseller Program</h3>
                         <p class="text-sm text-blue-200 mb-4">Interested in becoming a reseller? Contact us to learn about our partnership program.</p>
-                        <a href="{{ route('public.reseller-program.index') }}" class="inline-flex items-center gap-1.5 bg-white text-bwtblue text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-blue-50 transition-colors no-underline">
+                        <a href="{{ route('public.reseller-program.index') }}" wire:navigate class="inline-flex items-center gap-1.5 bg-white text-bwtblue text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-blue-50 transition-colors no-underline">
                             Learn More
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>

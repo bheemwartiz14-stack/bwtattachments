@@ -74,28 +74,28 @@
         <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
             <h2 class="text-sm font-semibold text-slate-950 dark:text-neutral-100">Quick Actions</h2>
             <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <a href="{{ route('client.products.index') }}" class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-emerald-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-emerald-800">
+                <a href="{{ route('client.products.index') }}" wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-emerald-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-emerald-800">
                     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 transition-colors group-hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:group-hover:bg-emerald-900/50">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                     </span>
                     <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-neutral-100">Browse Products</p>
                     <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">View catalog</p>
                 </a>
-                <a href="{{ route('client.quotations.create') }}" class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-blue-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-blue-800">
+                <a href="{{ route('client.quotations.create') }}" wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-blue-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-blue-800">
                     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors group-hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:group-hover:bg-blue-900/50">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     </span>
                     <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-neutral-100">Create Quotation</p>
                     <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">New quote</p>
                 </a>
-                <a href="{{ route('client.quotations.index', ['status' => 'draft']) }}" class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-amber-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-amber-800">
+                <a href="{{ route('client.quotations.index', ['status' => 'draft']) }}" wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-amber-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-amber-800">
                     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-amber-50 text-amber-600 transition-colors group-hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:group-hover:bg-amber-900/50">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     </span>
                     <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-neutral-100">Saved Drafts</p>
                     <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">{{ $stats['draft_quotations'] }} pending</p>
                 </a>
-                <a href="{{ route('client.quotations.index') }}" class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-purple-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-purple-800">
+                <a href="{{ route('client.quotations.index') }}"  wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-purple-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-purple-800">
                     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-purple-50 text-purple-600 transition-colors group-hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:group-hover:bg-purple-900/50">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     </span>
@@ -125,7 +125,7 @@
         <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
             <div class="flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-slate-950 dark:text-neutral-100">Recent Quotations</h2>
-                <a href="{{ route('client.quotations.index') }}" class="text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400 dark:hover:text-neutral-200">View all</a>
+                <a href="{{ route('client.quotations.index') }}" wire:navigate class="text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400 dark:hover:text-neutral-200">View all</a>
             </div>
             <div class="mt-4 overflow-x-auto">
                 <table class="w-full text-sm">
@@ -142,7 +142,7 @@
                         @forelse($recentQuotations ?? [] as $quotation)
                             <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-neutral-900/50">
                                 <td class="px-4 py-4">
-                                    <a href="{{ route('client.quotations.show', $quotation) }}" class="font-mono text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400">
+                                    <a href="{{ route('client.quotations.show', $quotation) }}" wire:navigate class="font-mono text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400">
                                         {{ $quotation->quotation_number }}
                                     </a>
                                 </td>
@@ -165,7 +165,7 @@
                                 <td colspan="5" class="px-4 py-12 text-center">
                                     <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     <p class="mt-3 text-sm text-gray-400 dark:text-neutral-500">No quotations yet</p>
-                                    <a href="{{ route('client.quotations.create') }}" class="mt-3 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-slate-600">Create your first quotation</a>
+                                    <a href="{{ route('client.quotations.create') }}" wire:navigate class="mt-3 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-slate-600">Create your first quotation</a>
                                 </td>
                             </tr>
                         @endforelse

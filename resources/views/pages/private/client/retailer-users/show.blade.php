@@ -63,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('client.retailer-users.edit', $user) }}"
+                <a href="{{ route('client.retailer-users.edit', $user) }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-500">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -109,7 +109,7 @@
                                     Website</dt>
                                 <dd class="mt-1 text-sm">
                                     @if (!empty($meta['website']))
-                                        <a href="{{ $meta['website'] }}" target="_blank"
+                                        <a href="{{ $meta['website'] }}" wire:navigate target="_blank"
                                             class="inline-flex items-center gap-1.5 font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300">
                                             {{ $meta['website'] }}
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"

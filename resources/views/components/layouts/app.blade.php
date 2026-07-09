@@ -11,4 +11,23 @@
         </div>
         <x-partials.app.footer />
     </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('livewire:init', function() {
+                document.querySelectorAll('a[href^="/"], a[href^="' + window.location.origin + '"]').forEach(function(link) {
+                    if (!link.hasAttribute('wire:navigate') && !link.hasAttribute('target') && !link.hasAttribute('download')) {
+                        link.setAttribute('wire:navigate', '');
+                    }
+                });
+                new MutationObserver(function() {
+                    document.querySelectorAll('a[href^="/"], a[href^="' + window.location.origin + '"]').forEach(function(link) {
+                        if (!link.hasAttribute('wire:navigate') && !link.hasAttribute('target') && !link.hasAttribute('download')) {
+                            link.setAttribute('wire:navigate', '');
+                        }
+                    });
+                }).observe(document.body, { childList: true, subtree: true });
+            });
+        </script>
+    @endpush
 </x-layouts.base>

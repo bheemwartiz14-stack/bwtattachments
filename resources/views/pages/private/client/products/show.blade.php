@@ -73,7 +73,7 @@
                         @endif
                     </div>
                     <div class="mt-6 flex items-center gap-3">
-                        <a href="{{ route('client.products.index') }}"
+                        <a href="{{ route('client.products.index') }}" wire:navigate
                             class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white/80 shadow-sm transition-all hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">
@@ -315,7 +315,7 @@
                             </div>
                             <h2 class="text-base font-semibold text-slate-900 dark:text-white">Datasheet</h2>
                         </div>
-                        <a href="{{ route('public.products.pdf', $product) }}" target="_blank"
+                        <a href="{{ route('public.products.pdf', $product) }}" wire:navigate target="_blank"
                             class="group flex items-center gap-3.5 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50 dark:hover:border-emerald-700 dark:hover:bg-emerald-900/20">
                             <div
                                 class="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/50">

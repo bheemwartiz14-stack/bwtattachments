@@ -44,7 +44,7 @@
                 </form>
 
                 <p class="mt-6 text-center text-sm text-slate-600 dark:text-neutral-400">
-                    <a href="{{ route('login') }}" class="font-semibold text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300">Back to sign in</a>
+                    <a href="{{ route('login') }}"  wire:navigate class="font-semibold text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300">Back to sign in</a>
                 </p>
             </div>
         </div>

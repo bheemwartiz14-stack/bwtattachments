@@ -21,7 +21,7 @@
                     @svg('heroicon-o-bars-3', 'h-5 w-5')
                 </button>
 
-                <a href="{{ $dashboardRoute }}" class="flex items-center gap-3">
+                <a href="{{ $dashboardRoute }}" wire:navigate class="flex items-center gap-3">
                     <img src="{{ asset('images/bwt-logo.jpg') }}" alt="BWT Logo" class="h-10 w-13 object-contain">
 
                 </a>
@@ -61,7 +61,7 @@
                             </p>
                             <p class="truncate text-xs text-slate-500 dark:text-neutral-400">{{ $user->email }}</p>
                         </div>
-                        <a href="{{ $profileRoute }}"
+                        <a href="{{ $profileRoute }}" wire:navigate
                             class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50 dark:text-neutral-300 dark:hover:bg-neutral-900">
                             @svg('heroicon-o-cog-6-tooth', 'h-4 w-4')
                             Profile Settings

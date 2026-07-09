@@ -41,8 +41,6 @@ use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 // Public routes (guest + authenticated)
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
-Route::get('/test-pdf', [HomeController::class, 'testPdf'])->name('public.test-pdf');
-Route::get('/test-mail', [HomeController::class, 'testEmail'])->name('public.test-mail');
 
 Route::get('/products/{product:slug}', [PublicProductController::class, 'show'])->name('public.products.show');
 Route::get('/products/{product:slug}/pdf', [PublicProductController::class, 'downloadPdf'])->name('public.products.pdf');
