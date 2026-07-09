@@ -10,6 +10,7 @@ use App\Services\ProductService;
 use App\Services\SubcategoryService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Mail;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class HomeController extends Controller
@@ -36,6 +37,22 @@ class HomeController extends Controller
         $subcategories = $this->subcategoryService->getAllWithCategory();
         $connections = $this->connectionService->getAll();
         return view('pages.public.index', compact('products', 'categories', 'subcategories', 'connections'));
+    }
+
+    public function testEmail(): \Illuminate\Http\RedirectResponse
+    {
+        $email = "bheem.wartiz14@gmail.com";
+        $name = config('app.name');
+        try {
+            Mail::raw('This is a test email from ' . $name . '. If you received this, email is working correctly.', function ($message) use ($email) {
+                $message->to($email)
+                    ->subject('Test Email from ' . config('app.name'));
+            });
+        } catch (\Throwable $e) {
+            return redirect('/')->with('error', 'Email sending failed: ' . $e->getMessage());
+        }
+
+        return redirect('/')->with('success', 'Test email sent to ' . $email);
     }
 
     public function testPdf()
