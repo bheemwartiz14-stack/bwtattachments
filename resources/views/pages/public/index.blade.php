@@ -54,41 +54,41 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Category</label>
-                                <select id="filterCategory" name="category"
-                                    class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
-                                    <option value="">All Categories</option>
-                                    @foreach ($categories ?? [] as $id => $name)
-                                        <option value="{{ $id }}"
-                                            {{ (string) request('category') === (string) $id ? 'selected' : '' }}>
-                                            {{ $name }}</option>
-                                    @endforeach
-                                </select>
+                                    <select id="filterCategory" name="category"
+                                        class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                                        <option value="">All Categories</option>
+                                        @foreach ($categories ?? [] as $slug => $name)
+                                            <option value="{{ $slug }}"
+                                                {{ (string) request('category') === (string) $slug ? 'selected' : '' }}>
+                                                {{ $name }}</option>
+                                        @endforeach
+                                    </select>
                             </div>
 
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Subcategory</label>
-                                <select id="filterSubcategory" name="subcategory"
-                                    class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
-                                    <option value="">All Subcategories</option>
-                                    @foreach ($subcategories ?? [] as $sub)
-                                        <option value="{{ $sub->id }}" data-category-id="{{ $sub->category_id }}"
-                                            {{ (string) request('subcategory') === (string) $sub->id ? 'selected' : '' }}>
-                                            {{ $sub->name }}</option>
-                                    @endforeach
-                                </select>
+                                    <select id="filterSubcategory" name="subcategory"
+                                        class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                                        <option value="">All Subcategories</option>
+                                        @foreach ($subcategories ?? [] as $sub)
+                                            <option value="{{ $sub->slug }}" data-category-slug="{{ $sub->category?->slug }}"
+                                                {{ (string) request('subcategory') === (string) $sub->slug ? 'selected' : '' }}>
+                                                {{ $sub->name }}</option>
+                                        @endforeach
+                                    </select>
                             </div>
 
                             <div>
                                 <label class="block text-xs font-medium text-gray-500 mb-1.5">Connection</label>
-                                <select name="connection"
-                                    class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
-                                    <option value="">All Connections</option>
-                                    @foreach ($connections ?? [] as $id => $name)
-                                        <option value="{{ $id }}"
-                                            {{ (string) request('connection') === (string) $id ? 'selected' : '' }}>
-                                            {{ $name }}</option>
-                                    @endforeach
-                                </select>
+                                    <select name="connection"
+                                        class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                                        <option value="">All Connections</option>
+                                        @foreach ($connections ?? [] as $slug => $name)
+                                            <option value="{{ $slug }}"
+                                                {{ (string) request('connection') === (string) $slug ? 'selected' : '' }}>
+                                                {{ $name }}</option>
+                                        @endforeach
+                                    </select>
                             </div>
 
                             <div>
@@ -219,7 +219,7 @@
             const subSelect = document.getElementById('filterSubcategory');
             const options = subSelect.querySelectorAll('option');
             options.forEach(opt => {
-                if (!opt.value || opt.dataset.categoryId === selected || !selected) {
+                if (!opt.value || opt.dataset.categorySlug === selected || !selected) {
                     opt.style.display = '';
                 } else {
                     opt.style.display = 'none';

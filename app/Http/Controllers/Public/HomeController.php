@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Connection;
+use App\Models\Subcategory;
 use App\Services\CategoryService;
 use App\Services\ConnectionService;
 use App\Services\ProductService;
@@ -26,16 +29,19 @@ class HomeController extends Controller
     {
         $filters = array_filter([
             'search' => $request->input('search'),
-            'category' => $request->input('category'),
-            'subcategory' => $request->input('subcategory'),
-            'connection' => $request->input('connection'),
+            'category' => $this->resolveSlug(Category::class, $request->input('category')),
+            'subcategory' => $this->resolveSlug(Subcategory::class, $request->input('subcategory')),
+            'connection' => $this->resolveSlug(Connection::class, $request->input('connection')),
             'machine_class' => $request->input('machine_class'),
             'status' => "1",
         ]);
         $products = $this->productService->paginate(12, $filters);
-        $categories = $this->categoryService->getAll();
-        $subcategories = $this->subcategoryService->getAllWithCategory();
-        $connections = $this->connectionService->getAll();
+        $categories = Category::query()->orderBy('name')->pluck('name', 'slug')->toArray();
+        $subcategories = Subcategory::query()
+            ->with('category:id,name,slug')
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug', 'category_id']);
+        $connections = Connection::query()->orderBy('name')->pluck('name', 'slug')->toArray();
         return view('pages.public.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
@@ -53,6 +59,21 @@ class HomeController extends Controller
         }
 
         return redirect('/')->with('success', 'Test email sent to ' . $email);
+    }
+
+    private function resolveSlug(string $modelClass, ?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $value)) {
+            return $value;
+        }
+
+        $record = $modelClass::where('slug', $value)->first();
+
+        return $record?->getKey();
     }
 
     public function testPdf()

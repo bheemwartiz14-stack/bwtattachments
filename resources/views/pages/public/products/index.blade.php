@@ -30,11 +30,11 @@
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Category</label>
                                 <div class="space-y-1.5">
-                                    @foreach($categories ?? [] as $id => $name)
+                                    @foreach($categories ?? [] as $slug => $name)
                                         <label class="flex items-center gap-2.5 cursor-pointer group">
-                                            <input type="radio" name="category" value="{{ $id }}"
+                                            <input type="radio" name="category" value="{{ $slug }}"
                                                    class="category-radio w-4 h-4 text-bwtblue border-slate-300 focus:ring-bwtblue/30"
-                                                   {{ (string)request('category') === (string)$id ? 'checked' : '' }}>
+                                                   {{ (string)request('category') === (string)$slug ? 'checked' : '' }}>
                                             <span class="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">{{ $name }}</span>
                                         </label>
                                     @endforeach
@@ -47,10 +47,10 @@
                                 <div id="subcategory-list" class="space-y-1.5 max-h-48 overflow-y-auto scrollbar-thin">
                                     @foreach($subcategories ?? [] as $subcategory)
                                         <label class="subcategory-item flex items-center gap-2.5 cursor-pointer group"
-                                               data-category-id="{{ $subcategory->category_id }}">
-                                            <input type="checkbox" name="subcategory[]" value="{{ $subcategory->id }}"
+                                               data-category-slug="{{ $subcategory->category?->slug }}">
+                                            <input type="checkbox" name="subcategory[]" value="{{ $subcategory->slug }}"
                                                    class="w-4 h-4 text-bwtblue border-slate-300 rounded focus:ring-bwtblue/30"
-                                                   {{ in_array((string)$subcategory->id, (array)request('subcategory', [])) ? 'checked' : '' }}>
+                                                   {{ in_array((string)$subcategory->slug, (array)request('subcategory', [])) ? 'checked' : '' }}>
                                             <span class="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">{{ $subcategory->name }}</span>
                                         </label>
                                     @endforeach
@@ -61,11 +61,11 @@
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Connection</label>
                                 <div class="space-y-1.5">
-                                    @foreach($connections ?? [] as $id => $name)
+                                    @foreach($connections ?? [] as $slug => $name)
                                         <label class="flex items-center gap-2.5 cursor-pointer group">
-                                            <input type="checkbox" name="connection[]" value="{{ $id }}"
+                                            <input type="checkbox" name="connection[]" value="{{ $slug }}"
                                                    class="w-4 h-4 text-bwtblue border-slate-300 rounded focus:ring-bwtblue/30"
-                                                   {{ in_array($id, (array)request('connection', [])) ? 'checked' : '' }}>
+                                                   {{ in_array($slug, (array)request('connection', [])) ? 'checked' : '' }}>
                                             <span class="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">{{ $name }}</span>
                                         </label>
                                     @endforeach
@@ -155,12 +155,12 @@
                 });
 
                 subcategoryItems.forEach(function(item) {
-                    var catId = item.getAttribute('data-category-id');
+                    var catSlug = item.getAttribute('data-category-slug');
                     if (selected === null) {
                         item.style.display = '';
                     } else {
-                        item.style.display = selected === catId ? '' : 'none';
-                        if (selected !== catId) {
+                        item.style.display = selected === catSlug ? '' : 'none';
+                        if (selected !== catSlug) {
                             var checkbox = item.querySelector('input[type="checkbox"]');
                             if (checkbox) checkbox.checked = false;
                         }

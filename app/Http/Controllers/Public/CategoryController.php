@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Services\CategoryService;
 use App\Services\ProductService;
 use Illuminate\View\View;
@@ -22,10 +23,10 @@ class CategoryController extends Controller
         return view('pages.public.categories.index', compact('categories'));
     }
 
-    public function show(string $id): View
+    public function show(Category $category): View
     {
-        $category = $this->categoryService->findById($id);
-        $products = $this->productService->findByCategory($id);
+        $category->load('subcategories');
+        $products = $this->productService->findByCategory($category->id);
 
         return view('pages.public.categories.show', compact('category', 'products'));
     }
