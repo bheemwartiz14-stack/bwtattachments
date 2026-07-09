@@ -17,7 +17,7 @@
         </x-ui.hero>
 
         {{-- Errors --}}
-        <x-ui.error-alert />
+       
 
         {{-- Form --}}
         <form action="{{ $isEdit ? route('admin.subcategories.update', $subcategory) : route('admin.subcategories.store') }}" method="POST">

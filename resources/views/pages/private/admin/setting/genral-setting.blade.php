@@ -16,7 +16,7 @@
             </x-slot:icon>
         </x-ui.hero>
 
-        <x-ui.error-alert />
+       
 
         <form action="{{ route('admin.setting.genral-setting.update') }}" method="POST">
             @csrf

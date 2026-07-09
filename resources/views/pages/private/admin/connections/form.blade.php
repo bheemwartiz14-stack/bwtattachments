@@ -17,7 +17,7 @@
         </x-ui.hero>
 
         {{-- Errors --}}
-        <x-ui.error-alert />
+       
 
         {{-- Form --}}
         <form action="{{ $isEdit ? route('admin.connections.update', $connection) : route('admin.connections.store') }}" method="POST">
