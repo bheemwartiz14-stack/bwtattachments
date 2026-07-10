@@ -53,10 +53,10 @@
 
                     @php $gallery = $product->getMedia('gallery'); @endphp
                     @if ($gallery->count() > 0)
-                        <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+                        <div class="flex gap-3 overflow-x-auto pb-2">
                             @foreach ($gallery as $media)
                                 <button onclick="switchImage('{{ $media->getUrl() }}', this)"
-                                    class="thumb flex-shrink-0 w-28 aspect-[15/10] rounded-xl overflow-hidden ring-1 transition-all duration-200 {{ $loop->first ? 'ring-2 ring-bwtblue' : 'ring-slate-200 hover:ring-slate-400' }} bg-slate-50">
+                                    class="thumb flex-shrink-0 w-28 aspect-[15/10] ">
                                     <img src="{{ $media->getUrl() }}" alt=""
                                         class="w-full h-full object-contain">
                                 </button>
