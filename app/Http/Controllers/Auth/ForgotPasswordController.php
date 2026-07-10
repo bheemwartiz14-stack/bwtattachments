@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ForgotPasswordController extends Controller
@@ -23,38 +22,61 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * Send reset password link.
+     * Send the password reset link.
      */
     public function sendResetLink(Request $request): RedirectResponse
     {
+        Log::info('Forgot password request received.', [
+            'email' => $request->email,
+            'ip' => $request->ip(),
+        ]);
+
         $request->validate([
             'email' => ['required', 'email'],
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        Log::info('Validation passed.', [
+            'email' => $request->email,
+        ]);
 
-        if (! $user) {
-            return back()->withErrors([
-                'email' => __('We can\'t find a user with that email address.'),
+        try {
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+
+            Log::info('Password::sendResetLink() executed.', [
+                'email' => $request->email,
+                'status' => $status,
             ]);
-        }
 
-        // Create reset token
-        $token = Password::broker()->createToken($user);
+            if ($status === Password::RESET_LINK_SENT) {
+                Log::info('Password reset email sent successfully.', [
+                    'email' => $request->email,
+                ]);
 
-        // Generate reset URL
-        $resetUrl = route('password.reset', [
-            'token' => $token,
-            'email' => $user->email,
-        ]);
-        // Send email normally
-        $status = Password::sendResetLink([
-            'email' => $user->email,
-        ]);
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
-            : back()->withErrors([
+                return back()->with('status', __($status));
+            }
+
+            Log::warning('Password reset email was not sent.', [
+                'email' => $request->email,
+                'status' => $status,
+            ]);
+
+            return back()->withErrors([
                 'email' => __($status),
             ]);
+        } catch (\Throwable $e) {
+            Log::error('Exception while sending password reset link.', [
+                'email' => $request->email,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->withErrors([
+                'email' => 'An unexpected error occurred while sending the reset link.',
+            ]);
+        }
     }
 }
