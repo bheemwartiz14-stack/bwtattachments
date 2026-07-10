@@ -1,10 +1,7 @@
 <x-layouts.public>
     <x-slot:title>BWT Attachments | Become a Reseller</x-slot:title>
   <style>
-      body {
-        font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-        -webkit-font-smoothing: antialiased;
-      }
+
       .form-input {
         width: 100%;
         border-radius: 0.375rem;
