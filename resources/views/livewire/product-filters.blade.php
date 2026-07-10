@@ -20,6 +20,7 @@
         localConnection: '{{ $connection }}',
         localMachineClass: '{{ $machine_class }}',
         init() {
+            this.filterSubcategories();
             this.$watch('localCategory', (value, oldValue) => {
                 this.filterSubcategories();
             });
@@ -118,7 +119,7 @@
                     <button type="button" @click="applyFilters()" wire:loading.attr="disabled"
                         class="inline-flex items-center gap-2 bg-black hover:bg-gray-800 transition-colors text-white font-medium text-sm px-6 py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
                         <span wire:loading.remove.delay.200>Apply Filters</span>
-                    
+
                     </button>
                     @if ($search || $category || $subcategory || $connection || $machine_class)
                         <button type="button" wire:click="clearFilters" wire:loading.attr="disabled"
@@ -131,17 +132,15 @@
         </div>
     </div>
 
-    <div wire:loading.delay.longest wire:target="applyFilters, search" class="flex items-center justify-center py-12">
-        <svg class="h-8 w-8 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    <div wire:loading.delay.longest wire:target="applyFilters, search" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95">
+        <svg class="h-16 w-auto animate-pulse" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="32" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="800" fill="#0b5cab" letter-spacing="-0.5">BWT</text>
         </svg>
-        <span class="ml-3 text-gray-500 text-sm">Loading products...</span>
     </div>
 
     <div wire:loading.remove.delay.longest wire:target="applyFilters, search">
         @if ($products->count())
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach ($products as $product)
                     @php $img = $product->getFirstMediaUrl('images'); @endphp
                     <div class="product-card bg-white rounded-md shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
@@ -192,10 +191,6 @@
 
             <div class="mt-8">
                 {{ $products->links() }}
-            </div>
-        @else
-            <div class="text-center text-gray-500 py-16 text-lg">
-                No products match your search.
             </div>
         @endif
     </div>

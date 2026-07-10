@@ -60,7 +60,8 @@ class ProductFilters extends Component
             'status' => '1',
         ]);
 
-        $products = $productService->paginate(12, $filters);
+        $hasFilters = $this->search !== '' || $this->category !== '' || $this->subcategory !== '' || $this->connection !== '' || $this->machine_class !== '';
+        $products = $hasFilters ? $productService->paginate(12, $filters) : collect();
         $categories = Category::query()->orderBy('name')->pluck('name', 'slug')->toArray();
         $subcategories = Subcategory::query()
             ->with('category:id,name,slug')
@@ -68,7 +69,7 @@ class ProductFilters extends Component
             ->get(['id', 'name', 'slug', 'category_id']);
         $connections = Connection::query()->orderBy('name')->pluck('name', 'slug')->toArray();
 
-        return view('livewire.product-filters', compact('products', 'categories', 'subcategories', 'connections'));
+        return view('livewire.product-filters', compact('products', 'categories', 'subcategories', 'connections', 'hasFilters'));
     }
 
     private function resolveSlug(string $modelClass, ?string $value): ?string
