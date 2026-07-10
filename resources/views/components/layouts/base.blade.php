@@ -17,6 +17,7 @@
     <link rel="manifest" href="{{ config('app.asset_url') }}/site.webmanifest">
 
     <link rel="stylesheet" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
     <style>
         input:-webkit-autofill,
         input:-webkit-autofill:focus {
@@ -43,6 +44,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     @livewireScripts
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-out-cubic',
+                once: true,
+                offset: 50,
+            });
+        });
+        document.addEventListener('livewire:navigated', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-out-cubic',
+                once: true,
+                offset: 50,
+            });
+        });
+    </script>
     @stack('scripts')
 </body>
 

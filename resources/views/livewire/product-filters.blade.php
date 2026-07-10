@@ -144,7 +144,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($products as $product)
                     @php $img = $product->getFirstMediaUrl('images'); @endphp
-                    <div class="product-card bg-white rounded-md shadow-sm overflow-hidden flex flex-col">
+                    <div class="product-card bg-white rounded-md shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                         <div class="p-6 pb-2 flex items-center justify-center">
                             @if ($img)
                                 <img src="{{ $img }}" alt="{{ $product->product_title }}" class="h-40 object-contain" />
@@ -182,7 +182,7 @@
                             </div>
 
                             <a href="{{ route('public.products.show', $product) }}" wire:navigate
-                                class="mt-auto w-full bg-bwtblue hover:bg-bwtblue2 transition-colors text-white font-medium py-3 rounded text-center no-underline block">
+                                class="mt-auto w-full bg-bwtblue hover:bg-bwtblue2 transition-all duration-300 text-white font-medium py-3 rounded text-center no-underline block hover:shadow-md hover:brightness-110">
                                 View details
                             </a>
                         </div>
