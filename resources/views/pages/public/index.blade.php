@@ -1,13 +1,17 @@
 <x-layouts.public>
     <x-slot:title>BWT | Wholesale Attachment Product Database</x-slot:title>
 
-    <section class="text-center pt-8 pb-6 px-4">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up">Wholesale Attachment Product Database</h1>
+    <section class="text-center pt-8 max-w-[1700px] mx-auto px-5 sm:px-8 aos-init aos-animate">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up">Wholesale Attachment Product Database
+        </h1>
         <p class="text-gray-600 mt-2 text-lg" data-aos="fade-up" data-aos-delay="100">
             Browse Excavator attachments, Wheel Loader attachments, Wear- and Spare parts. Reseller login required to
             view prices.
         </p>
-        <img src="{{ asset('images/unnamed.jpg') }}" alt="Attachments" class="mx-auto mt-6 max-w-full h-auto rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+        <div class="">
+            <img src="{{ asset('images/unnamed.jpg') }}" alt="Attachments"
+                class="mx-auto mt-6 max-w-full h-auto rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+        </div>
     </section>
 
     <main class="bg-gray-100 pt-8 pb-14">

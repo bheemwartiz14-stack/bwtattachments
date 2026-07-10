@@ -20,13 +20,19 @@
                     class="flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-slate-100 dark:text-neutral-400 dark:hover:bg-neutral-900 lg:hidden">
                     @svg('heroicon-o-bars-3', 'h-5 w-5')
                 </button>
-
-                <a href="{{ $dashboardRoute }}" wire:navigate class="flex items-center gap-3">
-                    <img src="{{ asset('images/bwt-logo.jpg') }}" alt="BWT Logo" class="h-10 w-13 object-contain">
-
-                </a>
+                <div class="flex items-center gap-2">
+                    <a href="{{ $dashboardRoute }}" wire:navigate
+                        class="inline-flex items-center no-underline text-black dark:text-white transition-colors">
+                        <svg class="h-10 w-auto" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg"
+                            aria-label="{{ config('app.name') }}">
+                            <text x="0" y="32" fill="currentColor" font-family="Inter, system-ui, sans-serif"
+                                font-size="32" font-weight="800" letter-spacing="-0.5">
+                                BWT
+                            </text>
+                        </svg>
+                    </a>
+                </div>
             </div>
-
             <div class="flex items-center gap-2">
                 <button data-toggle-dark
                     class="flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-slate-100 dark:text-neutral-400 dark:hover:bg-neutral-900">

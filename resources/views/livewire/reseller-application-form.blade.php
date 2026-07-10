@@ -1,7 +1,4 @@
 <div class="bg-white rounded-xl shadow-sm p-8">
-    <h2 class="text-2xl font-bold text-gray-900 mb-2">Apply to Become a Reseller</h2>
-    <p class="text-gray-600 text-sm mb-6">Please fill in the required fields and we will contact you.</p>
-
     @if($success)
         <div class="mb-6 bg-green-50 border border-green-200 text-green-700 rounded-lg px-5 py-4 text-sm flex items-start gap-3">
             <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

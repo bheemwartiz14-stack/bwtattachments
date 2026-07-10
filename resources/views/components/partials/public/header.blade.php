@@ -1,6 +1,6 @@
 <header class="bg-bwtblue text-white">
     <div class="max-w-[1700px] mx-auto flex items-center justify-between px-4 sm:px-8 py-4">
-        <x-partials.public.logo />
+        <x-partials.public.logo :url="url('/')" />
 
         <x-partials.public.navigation />
         <div class="flex items-center gap-3">
