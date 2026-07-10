@@ -1,5 +1,14 @@
 <x-layouts.app>
-    @php $isEdit = !empty($product); @endphp
+    @php $isEdit = !empty($product);
+    $pdfMedia = $product?->getFirstMedia('pdfs');
+
+    if($pdfMedia){
+        $pdfUrl = url('public/storage/' . $pdfMedia->getPathRelativeToRoot());
+    }else{
+        $pdfUrl = '';
+    }
+
+    @endphp
 
     <x-slot:title>{{ $isEdit ? 'Edit Product' : 'Create Product' }} - BWT</x-slot:title>
 
@@ -94,7 +103,7 @@
                         />
                     <x-forms.pdf-upload
                         :existingFile="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->file_name : null"
-                        :existingUrl="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->getUrl() : null"
+                        :existingUrl="$isEdit && $product->getFirstMedia('pdfs') ? $pdfUrl : null"
                         :existingSize="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->size : null"
                         :existingFileId="$isEdit && $product->getFirstMedia('pdfs') ? $product->getFirstMedia('pdfs')->id : null"
                         name="product_pdf"

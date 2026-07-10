@@ -148,6 +148,7 @@
         }
 
         function showPreview(name, size, showDownload, downloadHref) {
+            console.log(downloadHref);
             $dropzone.addClass('hidden');
             $uploading.addClass('hidden');
             $preview.removeClass('hidden');
