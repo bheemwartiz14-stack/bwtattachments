@@ -11,6 +11,8 @@ class ContactForm extends Component
 {
     public string $name = '';
     public string $email = '';
+    public string $company = '';
+    public string $phone = '';
     public string $subject = '';
     public string $message = '';
 
@@ -21,6 +23,8 @@ class ContactForm extends Component
         return [
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
+            'company' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:255'],
             'subject' => ['required', 'string', 'min:3', 'max:255'],
             'message' => ['required', 'string', 'min:10', 'max:5000'],
         ];
@@ -32,7 +36,7 @@ class ContactForm extends Component
 
         $contactMessageService->create($data);
 
-        $this->reset(['name', 'email', 'subject', 'message']);
+        $this->reset(['name', 'email', 'company', 'phone', 'subject', 'message']);
         $this->success = true;
     }
 

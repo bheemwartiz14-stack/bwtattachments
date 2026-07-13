@@ -39,8 +39,8 @@
         <main class="max-w-[1440px] mx-auto px-4 sm:px-8 py-12">
             {{-- Page Title --}}
             <div class="mb-14 border-b border-gray-300 pb-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-900">Contact Us</h1>
-                <p class="mt-2 text-[15px] text-gray-600">Get in touch with our team for inquiries about products, pricing, or partnership opportunities.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Contact Us</h1>
+            <p class="mt-2 text-lg text-gray-600">Get in touch with our team for inquiries about products, pricing, or partnership opportunities.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
