@@ -236,13 +236,24 @@
                             @auth
                                 @role('Wholesale Client')
                                     @if ($product->getFirstMedia('pdfs'))
-                                       <a href="{{ route('public.products.pdf', $product) }}" wire:navigate target="_blank"
+                                        <a href="{{ route('public.products.pdf', $product) }}" wire:navigate target="_blank"
                                             class="inline-block bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
                                             Download Technical PDF
                                         </a>
                                     @endif
                                 @endrole
-                                <a href="/" wire:navigate
+                                @php
+                                    $quotationRoute = null;
+
+                                    if (auth()->check()) {
+                                        if (auth()->user()->hasRole('Wholesale Client')) {
+                                            $quotationRoute = route('client.quotations.create');
+                                        } elseif (auth()->user()->hasRole('Reseller')) {
+                                            $quotationRoute = route('reseller.quotations.create');
+                                        }
+                                    }
+                                @endphp
+                                <a href="{{ $quotationRoute }}" wire:navigate
                                     class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
                                     Add To Quotation
                                 </a>
