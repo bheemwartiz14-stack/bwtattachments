@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Reseller;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Retailer\UpdateProfileRequest;
+use App\Http\Requests\Reseller\Profile\UpdateProfileRequest;
 use App\Models\User;
 use App\Services\Profile\ProfileService;
 use Illuminate\Http\RedirectResponse;
@@ -38,11 +38,11 @@ class ProfileController extends Controller
         $viewData['logo'] = $logo?->getUrl();
         $viewData['logo_id'] = $logo?->id;
 
-        $viewData['prefix'] = 'retailer';
-        $viewData['breadcrumbLabel'] = 'Retailer Portal';
-        $viewData['breadcrumbRoute'] = 'retailer.dashboard';
+        $viewData['prefix'] = 'reseller';
+        $viewData['breadcrumbLabel'] = 'Reseller Portal';
+        $viewData['breadcrumbRoute'] = 'reseller.dashboard';
         $viewData['hasCompany'] = true;
-        $viewData['roleLabel'] = 'Retailer';
+        $viewData['roleLabel'] = 'Reseller';
 
 
         return view('pages.private.profile.edit', $viewData);
@@ -54,7 +54,7 @@ class ProfileController extends Controller
         $this->profileService->updateProfile($user, $request->validated());
 
         return redirect()
-            ->route('retailer.profile.edit', ['tab' => 'personal'])
+            ->route('reseller.profile.edit', ['tab' => 'personal'])
             ->with('success', 'Profile updated successfully.');
     }
 
@@ -93,7 +93,7 @@ class ProfileController extends Controller
         $this->profileService->uploadAvatar($request->user(), $data);
 
         return redirect()
-            ->route('retailer.profile.edit')
+            ->route('reseller.profile.edit')
             ->with('success', 'Avatar uploaded successfully.');
     }
 
@@ -102,7 +102,7 @@ class ProfileController extends Controller
         $this->profileService->deleteAvatar($request->user());
 
         return redirect()
-            ->route('retailer.profile.edit')
+            ->route('reseller.profile.edit')
             ->with('success', 'Avatar deleted successfully.');
     }
 
@@ -111,7 +111,7 @@ class ProfileController extends Controller
         $this->profileService->deleteRetailerClientLogo($request->user());
 
         return redirect()
-            ->route('retailer.profile.edit', ['tab' => 'company'])
+            ->route('reseller.profile.edit', ['tab' => 'company'])
             ->with('success', 'Company logo removed successfully.');
     }
 }

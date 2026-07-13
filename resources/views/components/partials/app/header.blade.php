@@ -3,7 +3,7 @@
     $rolePrefix = match (true) {
         $user->hasRole('Super Admin') => 'admin',
         $user->hasRole('Wholesale Client') => 'client',
-        $user->hasRole('Retailer') => 'retailer',
+        $user->hasRole('Reseller') => 'reseller',
         $user->hasRole('customer') => 'customer',
         default => 'client',
     };
