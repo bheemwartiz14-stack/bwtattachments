@@ -61,7 +61,7 @@ class ProductFilters extends Component
         ]);
 
         $hasFilters = $this->search !== '' || $this->category !== '' || $this->subcategory !== '' || $this->connection !== '' || $this->machine_class !== '';
-        $products = $hasFilters ? $productService->paginate(12, $filters) : collect();
+        $products = $hasFilters ? $productService->paginate(28, $filters) : collect();
         $categories = Category::query()->orderBy('name')->pluck('name', 'slug')->toArray();
         $subcategories = Subcategory::query()
             ->with('category:id,name,slug')

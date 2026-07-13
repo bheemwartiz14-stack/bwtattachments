@@ -140,7 +140,7 @@
 
     <div wire:loading.remove.delay.longest wire:target="applyFilters, search">
         @if ($products->count())
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($products as $product)
                     @php $img = $product->getFirstMediaUrl('images'); @endphp
                     <div class="product-card bg-white rounded-md shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
