@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductContr
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TermController as AdminTermController;
 use App\Http\Controllers\Admin\WholesaleClientUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -19,9 +20,10 @@ use App\Http\Controllers\Client\ResellerClientUserController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\QuotationController as ClientQuotationController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
-use App\Http\Controllers\Retailer\ProfileController as RetailerProfileController;
+use App\Http\Controllers\Reseller\ProfileController as RetailerProfileController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
+use App\Http\Controllers\TermController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\ResellerProgramController;
@@ -63,6 +65,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/upload-temp', [FileController::class, 'store'])->name('upload-temp')->middleware('auth');
 Route::delete('/media/{media}', [FileController::class, 'destroy'])->name('media.destroy')->middleware('auth');
 Route::middleware(['auth'])->group(function () {
+    Route::get('/terms', [TermController::class, 'index'])->name('terms.index');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     // Admin routes
     Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -80,6 +83,12 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/profile/avatar', [AdminProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
         Route::get('/setting/genral-setting', [SettingController::class, 'index'])->name('setting.genral-setting');
         Route::put('/setting/genral-setting', [SettingController::class, 'update'])->name('setting.genral-setting.update');
+        Route::get('/terms', [AdminTermController::class, 'index'])->name('terms.index');
+        Route::get('/terms/create', [AdminTermController::class, 'create'])->name('terms.create');
+        Route::post('/terms', [AdminTermController::class, 'store'])->name('terms.store');
+        Route::get('/terms/{term}/edit', [AdminTermController::class, 'edit'])->name('terms.edit');
+        Route::put('/terms/{term}', [AdminTermController::class, 'update'])->name('terms.update');
+        Route::delete('/terms/{term}', [AdminTermController::class, 'destroy'])->name('terms.destroy');
     });
 
     // Client routes (Wholesale Client)

@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             SubcategorySeeder::class,
             AdminUserSeeder::class,
             SiteSettingSeeder::class,
+            TermSeeder::class,
         ]);
     }
 }

@@ -12,6 +12,7 @@
         'Products' => 'heroicon-o-cube',
         'Contact Messages' => 'heroicon-o-envelope',
         'Site Settings' => 'heroicon-o-cog-6-tooth',
+        'Terms & Conditions' => 'heroicon-o-document-text',
         'Quotations' => 'heroicon-o-document-text',
         'Profile' => 'heroicon-o-user',
     ];
@@ -37,6 +38,7 @@
             ['label' => 'Connections', 'route' => 'admin.connections.index', 'pattern' => 'admin.connections.*'],
             ['label' => 'Products', 'route' => 'admin.products.index', 'pattern' => 'admin.products.*'],
             ['label' => 'Site Settings', 'route' => 'admin.setting.genral-setting', 'pattern' => 'admin.setting.*'],
+            ['label' => 'Terms & Conditions', 'route' => 'admin.terms.index', 'pattern' => 'admin.terms.*'],
         ];
     } elseif ($user->hasRole('Wholesale Client')) {
         $sidebarItems = [
@@ -48,6 +50,7 @@
             ],
             ['label' => 'Products', 'route' => 'client.products.index', 'pattern' => 'client.products.*'],
             ['label' => 'Quotations', 'route' => 'client.quotations.index', 'pattern' => 'client.quotations.*'],
+            ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
         ];
     } elseif ($user->hasRole('Reseller')) {
         $sidebarItems = [
@@ -59,11 +62,13 @@
             ],
             ['label' => 'Products', 'route' => 'reseller.products.index', 'pattern' => 'reseller.products.*'],
             ['label' => 'Quotations', 'route' => 'reseller.quotations.index', 'pattern' => 'reseller.quotations.*'],
+            ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
         ];
     } elseif ($user->hasRole('customer')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'customer.dashboard', 'pattern' => 'customer.dashboard'],
             ['label' => 'Products', 'route' => 'customer.products.index', 'pattern' => 'customer.products.*'],
+            ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
         ];
     } else {
         $sidebarItems = [];
