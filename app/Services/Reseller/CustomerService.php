@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Client;
-
+namespace App\Services\Reseller;
 use App\Data\UserData;
 use App\Events\UpdateUserMargins;
 use App\Events\WelcomeOnboardingUser;
@@ -11,11 +10,9 @@ use App\Traits\ExtractsUserMeta;
 use App\Traits\ResolvesTempFiles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-
-class RetailerClientUserService
+class CustomerService
 {
     use ExtractsUserMeta, ResolvesTempFiles;
-
     public function __construct(
         protected UserService $userService
     ) {}
@@ -27,7 +24,7 @@ class RetailerClientUserService
             $user = $this->userService->create($data);
             $this->processMetaAndMargin($user, $data, $plainPassword);
             $user->load(['userMeta']);
-            event(new WelcomeOnboardingUser($user, $plainPassword, 'retailer'));
+            event(new WelcomeOnboardingUser($user, $plainPassword, 'customer'));
             return $user;
         });
     }
@@ -53,7 +50,7 @@ class RetailerClientUserService
 
     public function paginate(int $perPage = 10, array $filters = []): mixed
     {
-        return $this->userService->fetchUsers('Reseller', $perPage, $filters['search'] ?? null, auth()->id());
+        return $this->userService->fetchUsers('customer', $perPage, $filters['search'] ?? null, auth()->id());
     }
 
     private function processMetaAndMargin(Model $user, array $data, ?string $plainPassword = null): void
@@ -63,11 +60,11 @@ class RetailerClientUserService
             $meta['plain_password'] = \App\Helpers\PasswordHelper::encrypt($plainPassword);
         }
         $this->saveMeta($user, $meta);
-        $this->saveMargin($user, (float) $margin, 'retailer');
-        $logo = $this->resolveTempImage($data, 'retailer_client_logo');
+        $this->saveMargin($user, (float) $margin, 'customer');
+        $logo = $this->resolveTempImage($data, 'customer_logo');
         if ($logo) {
-            $user->clearMediaCollection('retailer_client_logo');
-            $user->addMedia($logo)->toMediaCollection('retailer_client_logo');
+            $user->clearMediaCollection('customer_logo');
+            $user->addMedia($logo)->toMediaCollection('customer_logo');
         }
         $this->dispatchMarginEvent($user, (float) $margin);
     }
@@ -80,7 +77,7 @@ class RetailerClientUserService
             role_name: $user->roles->pluck('name')->first(),
             name: $user->name,
             margin_type: 'percentage',
-            type: 'retailer',
+            type: 'customer',
             margin_value: $margin,
         )));
     }

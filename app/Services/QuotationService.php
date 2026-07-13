@@ -141,6 +141,17 @@ class QuotationService
         );
     }
 
+    public function downloadPdf(Quotation $quotation): BinaryFileResponse
+    {
+        $quotation = $this->generatePdf($quotation);
+
+        return response()->download(
+            Storage::disk('public')->path($quotation->pdf_file),
+            basename($quotation->pdf_file),
+            ['Content-Type' => 'application/pdf']
+        );
+    }
+
     public function sendEmail(Quotation $quotation): void
     {
         $to = $quotation->contact_email ?: $quotation->reseller?->email;

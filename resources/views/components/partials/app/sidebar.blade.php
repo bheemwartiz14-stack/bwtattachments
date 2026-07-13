@@ -42,23 +42,23 @@
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
             [
-                'label' => 'Manage Retailer Users',
-                'route' => 'client.retailer-users.index',
-                'pattern' => 'client.retailer-users.*',
+                'label' => 'Manage Reseller Users',
+                'route' => 'client.reseller-users.index',
+                'pattern' => 'client.reseller-users.*',
             ],
             ['label' => 'Products', 'route' => 'client.products.index', 'pattern' => 'client.products.*'],
             ['label' => 'Quotations', 'route' => 'client.quotations.index', 'pattern' => 'client.quotations.*'],
         ];
-    } elseif ($user->hasRole('Retailer')) {
+    } elseif ($user->hasRole('Reseller')) {
         $sidebarItems = [
-            ['label' => 'Dashboard', 'route' => 'retailer.dashboard', 'pattern' => 'retailer.dashboard'],
+            ['label' => 'Dashboard', 'route' => 'reseller.dashboard', 'pattern' => 'reseller.dashboard'],
             [
                 'label' => 'Manage Customer Users',
-                'route' => 'retailer.customer-users.index',
-                'pattern' => 'retailer.customer-users.*',
+                'route' => 'reseller.customer-users.index',
+                'pattern' => 'reseller.customer-users.*',
             ],
-            ['label' => 'Products', 'route' => 'retailer.products.index', 'pattern' => 'retailer.products.*'],
-            ['label' => 'Quotations', 'route' => 'retailer.quotations.index', 'pattern' => 'retailer.quotations.*'],
+            ['label' => 'Products', 'route' => 'reseller.products.index', 'pattern' => 'reseller.products.*'],
+            ['label' => 'Quotations', 'route' => 'reseller.quotations.index', 'pattern' => 'reseller.quotations.*'],
         ];
     } elseif ($user->hasRole('customer')) {
         $sidebarItems = [

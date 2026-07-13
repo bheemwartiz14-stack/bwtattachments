@@ -40,8 +40,8 @@ class LoginController extends Controller
         if ($user->hasRole('Super Admin')) {
             return redirect()->route('admin.dashboard');
         }
-        if ($user->hasRole('Retailer')) {
-            return redirect()->route('retailer.dashboard');
+        if ($user->hasRole('Reseller')) {
+            return redirect()->route('reseller.dashboard');
         }
          if ($user->hasRole('customer')) {
             return redirect()->route('customer.dashboard');

@@ -12,9 +12,10 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
+
 // Client CONTROLLERS
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
-use App\Http\Controllers\Client\RetailerClientUserController as RetailerUserController;
+use App\Http\Controllers\Client\ResellerClientUserController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\QuotationController as ClientQuotationController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
@@ -25,11 +26,12 @@ use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\ResellerProgramController;
 use App\Http\Controllers\Public\ProductController as PublicProductController;
-use App\Http\Controllers\Retailer\DashboardController as RetailerDashboardController;
-// Retailer Product Controller
-use App\Http\Controllers\Retailer\CustomerUserController;
-use App\Http\Controllers\Retailer\RetailerProductController;
-use App\Http\Controllers\Retailer\CustomerQuotationController;
+
+// Retailer  Controller
+use App\Http\Controllers\Reseller\RetailerDashboardController;
+use App\Http\Controllers\Reseller\CustomerUserController;
+use App\Http\Controllers\Reseller\RetailerProductController;
+use App\Http\Controllers\Reseller\CustomerQuotationController;
 // Customers Routes
 use App\Http\Controllers\Customers\CustomerDashboardController;
 use App\Http\Controllers\Customers\CustomerProductController;
@@ -83,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
     // Client routes (Wholesale Client)
     Route::middleware(['role:Wholesale Client'])->prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('retailer-users', RetailerUserController::class);
+        Route::resource('reseller-users', ResellerClientUserController::class);
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product}', [ClientProductController::class, 'show'])->name('products.show');
         // quotations Roures
@@ -101,7 +103,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Retailer routes
-    Route::middleware(['role:Retailer'])->prefix('retailer')->name('retailer.')->group(function () {
+    Route::middleware(['role:Reseller'])->prefix('reseller')->name('reseller.')->group(function () {
         Route::get('/', [RetailerDashboardController::class, 'index'])->name('dashboard');
         // Manager CUSTOMER Via Retailer
         Route::resource('customer-users', CustomerUserController::class);
