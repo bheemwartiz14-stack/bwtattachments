@@ -1,10 +1,12 @@
 <div>
     <div class="flex items-stretch overflow-hidden rounded-xl border border-gray-300 bg-white shadow-sm mb-4">
         <div class="flex flex-1 items-center gap-3 px-5">
-            <svg class="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search product code or description"
+            <input type="text" wire:model.live.debounce.300ms="search"
+                placeholder="Search product code or description"
                 class="min-w-0 flex-1 border-0 bg-transparent py-3.5 sm:py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0" />
         </div>
         <button type="submit"
@@ -58,12 +60,9 @@
             </button>
         </div>
 
-        <div x-show="filtersOpen"
-            x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 -translate-y-2"
-            x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-150"
-            x-transition:leave-start="opacity-100 translate-y-0"
+        <div x-show="filtersOpen" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-2">
             <div class="p-5 sm:p-6 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -84,7 +83,8 @@
                             class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             <option value="">All Subcategories</option>
                             @foreach ($subcategories ?? [] as $sub)
-                                <option value="{{ $sub->slug }}" data-category-slug="{{ $sub->category?->slug }}">{{ $sub->name }}</option>
+                                <option value="{{ $sub->slug }}" data-category-slug="{{ $sub->category?->slug }}">
+                                    {{ $sub->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -132,9 +132,11 @@
         </div>
     </div>
 
-    <div wire:loading.delay.longest wire:target="applyFilters, search" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95">
+    <div wire:loading.delay.longest wire:target="applyFilters, search"
+        class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95">
         <svg class="h-16 w-auto animate-pulse" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <text x="0" y="32" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="800" fill="#0b5cab" letter-spacing="-0.5">BWT</text>
+            <text x="0" y="32" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="800"
+                fill="#0b5cab" letter-spacing="-0.5">BWT</text>
         </svg>
     </div>
 
@@ -142,50 +144,7 @@
         @if ($products->count())
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($products as $product)
-                    @php $img = $product->getFirstMediaUrl('images'); @endphp
-                    <div class="product-card bg-white rounded-md shadow-sm overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                        <div class="p-6 pb-2 flex items-center justify-center">
-                            @if ($img)
-                                <img src="{{ $img }}" alt="{{ $product->product_title }}" class="h-40 object-contain" />
-                            @else
-                                <div class="h-40 flex items-center justify-center text-gray-400 text-sm">No Image</div>
-                            @endif
-                        </div>
-                        <div class="px-6 pt-2 flex-1 flex flex-col">
-                            <h3 class="font-bold text-[15px] text-gray-900 leading-snug">{{ $product->product_title }}</h3>
-                            <div class="flex flex-wrap gap-2 mb-3">
-                                @if ($product->category)
-                                    <span class="bg-blue-50 text-bwtblue text-xs font-medium px-2.5 py-1 rounded">{{ $product->category->name }}</span>
-                                @endif
-                                @if ($product->subcategory)
-                                    <span class="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded">{{ $product->subcategory->name }}</span>
-                                @endif
-                            </div>
-
-                            <div class="text-sm text-gray-700 space-y-0.5 mb-4">
-                                @if ($product->machine_class)
-                                    <p><span class="text-gray-500">Machine Class:</span> {{ $product->machine_class }} t</p>
-                                @endif
-                                @if ($product->connection)
-                                    <p><span class="text-gray-500">Connection:</span> {{ $product->connection->name }}</p>
-                                @endif
-                                @if ($product->weight)
-                                    <p><span class="text-gray-500">Weight:</span> {{ rtrim(rtrim(number_format($product->weight, 2, '.', ''), '0'), '.') }} kg</p>
-                                @endif
-                                @if ($product->width)
-                                    <p><span class="text-gray-500">Width:</span> {{ rtrim(rtrim(number_format($product->width, 2, '.', ''), '0'), '.') }} mm</p>
-                                @endif
-                                @if ($product->volume)
-                                    <p><span class="text-gray-500">Volume:</span> {{ rtrim(rtrim(number_format($product->volume, 2, '.', ''), '0'), '.') }} m³</p>
-                                @endif
-                            </div>
-
-                            <a href="{{ route('public.products.show', $product) }}" wire:navigate
-                                class="mt-auto w-full bg-bwtblue hover:bg-bwtblue2 transition-all duration-300 text-white font-medium py-3 rounded text-center no-underline block hover:shadow-md hover:brightness-110">
-                                View details
-                            </a>
-                        </div>
-                    </div>
+                    <x-product.product-card :product="$product"/>
                 @endforeach
             </div>
 
