@@ -1,8 +1,8 @@
 <x-layouts.public>
-    <x-slot:title>BWT | Wholesale Attachment Product Database</x-slot:title>
+    <x-slot:title>BWT | Attachment Dealer Network</x-slot:title>
 
     <section class="text-center pt-8 max-w-[1700px] mx-auto px-5 sm:px-8 aos-init aos-animate">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up">Wholesale Attachment Product Database
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up">Attachment Dealer Network
         </h1>
         <p class="text-gray-600 mt-2 text-lg" data-aos="fade-up" data-aos-delay="100">
             Browse Excavator attachments, Wheel Loader attachments, Wear- and Spare parts. Reseller login required to
