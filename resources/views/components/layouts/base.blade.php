@@ -35,7 +35,6 @@
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="{{ asset('assets/js/product.js') }}"></script>
     @livewireStyles
     @stack('styles')
 </head>
@@ -44,6 +43,7 @@
     {{ $slot }}
     <x-toast />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ asset('assets/js/product.js') }}"></script>
 
     @livewireScripts
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
