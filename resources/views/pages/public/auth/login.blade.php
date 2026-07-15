@@ -52,8 +52,7 @@
                                 autocomplete="current-password" placeholder="Enter your password"
                                 class="block w-full rounded-xl border bg-white px-4 py-3 pr-10 text-sm text-black placeholder-slate-400 shadow-sm outline-none transition-colors focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 @error('password') border-red-400 ring-2 ring-red-200 @enderror dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100 dark:placeholder-neutral-500">
                             <button type="button"
-                                onclick="const p=this.previousElementSibling;p.type=p.type==='password'?'text':'password'"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-neutral-500 dark:hover:text-neutral-300">
+                                class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-neutral-500 dark:hover:text-neutral-300">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="1.8">
                                     <path
@@ -91,40 +90,20 @@
                         Reset your password
                     </a>
                 </p>
+                <div class="mt-6 text-center">
+                    <a href="{{ route('public.home.index') }}" wire:navigate
+                        class="inline-flex items-center gap-1 text-xs text-slate-400 transition-colors hover:text-slate-600 dark:text-neutral-500 dark:hover:text-neutral-300">
+                        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Back to home
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const login = document.getElementById('login');
-            const password = document.getElementById('password');
-            const loginError = document.getElementById('loginError');
-            const passwordError = document.getElementById('passwordError');
-            let valid = true;
-
-            loginError.classList.add('hidden');
-            passwordError.classList.add('hidden');
-            login.classList.remove('border-red-400', 'ring-2', 'ring-red-200');
-            password.classList.remove('border-red-400', 'ring-2', 'ring-red-200');
-
-            if (!login.value.trim()) {
-                loginError.textContent = 'Please enter your email or username.';
-                loginError.classList.remove('hidden');
-                login.classList.add('border-red-400', 'ring-2', 'ring-red-200');
-                valid = false;
-            }
-
-            if (!password.value.trim()) {
-                passwordError.textContent = 'Please enter your password.';
-                passwordError.classList.remove('hidden');
-                password.classList.add('border-red-400', 'ring-2', 'ring-red-200');
-                valid = false;
-            }
-
-            if (!valid) {
-                e.preventDefault();
-            }
-        });
-    </script>
+    @push('scripts')
+        <script src="{{ asset('assets/js/login.js') }}"></script>
+    @endpush
 </x-guest-layout>
