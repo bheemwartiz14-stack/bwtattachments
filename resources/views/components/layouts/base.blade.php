@@ -35,6 +35,7 @@
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="{{ asset('assets/js/product.js') }}"></script>
     @livewireStyles
     @stack('styles')
 </head>
