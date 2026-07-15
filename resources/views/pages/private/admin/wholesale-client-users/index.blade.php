@@ -46,7 +46,7 @@
                         class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300">
                         <option value="">All Roles</option>
                         <option value="Wholesale Client" {{ request('role') === 'Wholesale Client' ? 'selected' : '' }}>Wholesale Client</option>
-                        <option value="Reseller" {{ request('role') === 'Reseller' ? 'selected' : '' }}>Retailer</option>
+                        <option value="Reseller" {{ request('role') === 'Reseller' ? 'selected' : '' }}>Reseller</option>
                         <option value="Super Admin" {{ request('role') === 'Super Admin' ? 'selected' : '' }}>Super Admin</option>
                     </select>
                     <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Search</button>
