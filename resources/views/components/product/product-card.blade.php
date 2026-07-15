@@ -90,6 +90,7 @@
             {{-- Right --}}
             <div class="text-right flex flex-col">
 
+                 @auth
                 <div>
                     <div class="text-xs text-gray-600 font-semibold uppercase">
                         Wholesale Price
@@ -120,6 +121,8 @@
                         Add To Quotation
                     </a>
                 @endif
+                @endauth
+
             </div>
 
         </div>
