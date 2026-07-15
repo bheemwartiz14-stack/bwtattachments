@@ -59,7 +59,7 @@
         <div class="preview-area rounded-xl border bg-slate-50 p-4 transition-colors dark:bg-neutral-900/50 border-slate-200 dark:border-neutral-800 {{ $hasExisting ? '' : 'hidden' }}">
             <div class="flex items-center gap-4">
                 <div class="shrink-0">
-                    <img class="preview-img h-24 w-24 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-neutral-700"
+                    <img class="preview-img h-24 w-24 rounded-lg object-contain ring-1 ring-slate-200 dark:ring-neutral-700"
                         src="{{ $existingImageUrl ?? '' }}">
                 </div>
                 <div class="min-w-0 flex-1">

@@ -1,22 +1,38 @@
 @php
     $img = $product->getFirstMediaUrl('images');
+    $isFavorited = auth()->check() && $product->favoritedByUsers()->where('user_id', auth()->id())->exists();
 @endphp
 
 <div
     class="bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
 
     {{-- Image --}}
-    <a href="{{ route('public.products.show', $product) }}" wire:navigate>
-        <div class="h-56 flex items-center justify-center p-6 bg-white">
-            @if ($img)
-                <img src="{{ $img }}" alt="{{ $product->product_title }}" class="max-h-44 object-contain">
-            @else
-                <div class="text-gray-400 text-sm">
-                    No Image
-                </div>
-            @endif
-        </div>
-    </a>
+    <div class="relative">
+        <a href="{{ route('public.products.show', $product) }}" wire:navigate>
+            <div class="h-56 flex items-center justify-center p-6 bg-white">
+                @if ($img)
+                    <img src="{{ $img }}" alt="{{ $product->product_title }}" class="max-h-44 object-contain">
+                @else
+                    <div class="text-gray-400 text-sm">
+                        No Image
+                    </div>
+                @endif
+            </div>
+        </a>
+        @auth
+            <button type="button"
+                data-favorite="{{ $product->id }}"
+                data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
+                onclick="toggleFavorite(this)"
+                class="absolute bottom-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm backdrop-blur-sm transition-all hover:scale-110 "
+                title="{{ $isFavorited ? 'Remove from favorites' : 'Add to favorites' }}">
+                <svg class="h-4 w-4 transition-colors {{ $isFavorited ? 'text-red-500 fill-red-500' : 'text-slate-500 dark:text-neutral-400' }}"
+                    viewBox="0 0 24 24" fill="{{ $isFavorited ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </button>
+        @endauth
+    </div>
 
     <div class="px-4 pb-4 flex flex-col flex-1">
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Services\CategoryService;
 use App\Services\ConnectionService;
 use App\Services\ProductService;
@@ -39,7 +40,8 @@ class ProductController extends Controller
             ])
         );
         $products = $this->productService->paginate(12, $filter);
-        return view('pages.private.client.products.index', compact('products', 'categories', 'subcategories', 'connections'));
+        $favoritedIds = auth()->user()->favoriteProducts()->pluck('product_id')->toArray();
+        return view('pages.private.client.products.index', compact('products', 'categories', 'subcategories', 'connections', 'favoritedIds'));
     }
 
        public function show(string $id): View

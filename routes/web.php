@@ -41,6 +41,7 @@ use App\Http\Controllers\Customers\ProfileController as CustomerProfileControlle
 
 
 
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 // Public routes (guest + authenticated)
@@ -67,6 +68,7 @@ Route::delete('/media/{media}', [FileController::class, 'destroy'])->name('media
 Route::middleware(['auth'])->group(function () {
     Route::get('/terms', [TermController::class, 'index'])->name('terms.index');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/favorites/toggle/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
     // Admin routes
     Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');

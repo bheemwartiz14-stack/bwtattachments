@@ -193,3 +193,38 @@ $(document).on('click', '[data-view-toggle]', function() {
 $(document).on('focus', 'input[data-select-all]', function() {
     $(this).select();
 });
+
+// Favorite toggle
+window.toggleFavorite = function(btn) {
+    const productId = $(btn).data('favorite');
+    const wasFavorited = $(btn).data('favorited') === 'true';
+    const url = '/favorites/toggle/' + productId;
+
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res) {
+            $(btn).data('favorited', res.favorited ? 'true' : 'false');
+            $(btn).attr('title', res.favorited ? 'Remove from favorites' : 'Add to favorites');
+            const svg = $(btn).find('svg');
+            if (res.favorited) {
+                svg.addClass('text-red-500 fill-red-500').removeClass('text-slate-500 dark:text-neutral-400');
+                svg.attr('fill', 'currentColor');
+            } else {
+                svg.removeClass('text-red-500 fill-red-500').addClass('text-slate-500 dark:text-neutral-400');
+                svg.attr('fill', 'none');
+            }
+            if (window.showToast) {
+                window.showToast(res.message, res.favorited ? 'success' : 'info');
+            }
+        },
+        error: function() {
+            if (window.showToast) {
+                window.showToast('Failed to update favorite', 'error');
+            }
+        }
+    });
+};

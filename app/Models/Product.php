@@ -125,4 +125,10 @@ class Product extends Model implements HasMedia
     {
         return $this->hasMany(ProductPrices::class);
     }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'product_user')
+            ->withTimestamps();
+    }
 }

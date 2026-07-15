@@ -170,6 +170,19 @@
                                     {{ config('app.currency_symbol') }}{{ number_format($price, 2) }}
                                 </td>
                                  <td class="px-6 py-4 text-right">
+                                        @auth
+                                            <button type="button"
+                                                data-favorite="{{ $product->id }}"
+                                                data-favorited="{{ in_array($product->id, $favoritedIds ?? []) ? 'true' : 'false' }}"
+                                                onclick="toggleFavorite(this)"
+                                                class="inline-flex items-center justify-center rounded-lg p-2 transition-colors hover:scale-110 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                                                title="{{ in_array($product->id, $favoritedIds ?? []) ? 'Remove from favorites' : 'Add to favorites' }}">
+                                                <svg class="h-4 w-4 transition-colors {{ in_array($product->id, $favoritedIds ?? []) ? 'text-red-500 fill-red-500' : 'text-slate-500 dark:text-neutral-400' }}"
+                                                    viewBox="0 0 24 24" fill="{{ in_array($product->id, $favoritedIds ?? []) ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                </svg>
+                                            </button>
+                                        @endauth
                                         <a href="{{ route('customer.products.show', $product) }}" title="View" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                         </a>

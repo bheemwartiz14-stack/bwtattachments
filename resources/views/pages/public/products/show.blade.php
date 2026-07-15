@@ -25,44 +25,61 @@
             {{-- Main Content --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-14">
 
-                {{-- Left: Gallery --}}
-                <div class="space-y-4">
+                {{-- Left: Gallery Slider --}}
+                @php
+                    $featureMedia = $product->getFirstMedia('images');
+                    $galleryMedia = $product->getMedia('gallery');
+                    $allImages = collect();
+                    if ($featureMedia) {
+                        $allImages->push($featureMedia);
+                    }
+                    foreach ($galleryMedia as $m) {
+                        $allImages->push($m);
+                    }
+                @endphp
+                <div class="space-y-4" x-data="gallerySlider({{ $allImages->pluck('id') }})">
                     <div class="relative group overflow-hidden rounded-2xl bg-slate-50">
-                        @php $featureImage = $product->getFirstMediaUrl('images', 'large'); @endphp
-                        @if ($featureImage)
-                            <img src="{{ $featureImage }}" alt="{{ $product->product_title }}" id="mainProductImage"
+                        <template x-for="(img, i) in images" :key="i">
+                            <img :src="img.url" :alt="img.alt"
+                                x-show="i === current"
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0"
+                                x-transition:enter-end="opacity-100"
                                 class="w-full">
-                            <button onclick="openLightbox('{{ $featureImage }}')"
-                                class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white">
-                                <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                                </svg>
-                            </button>
-                        @else
-                            <div class="w-full aspect-[15/10] flex items-center justify-center text-slate-400">
-                                <svg class="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                    stroke-width="1">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                        @endif
-                    </div>
+                        </template>
 
-                    @php $gallery = $product->getMedia('gallery'); @endphp
-                    @if ($gallery->count() > 0)
-                        <div class="flex gap-3 overflow-x-auto pb-2">
-                            @foreach ($gallery as $media)
-                                <button onclick="switchImage('{{ $media->getUrl() }}', this)"
-                                    class="thumb flex-shrink-0 w-28 aspect-[15/10] ">
-                                    <img src="{{ $media->getUrl() }}" alt=""
-                                        class="w-full h-full object-contain">
+                        <button @click="openLightbox()"
+                            class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white">
+                            <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                        </button>
+
+                        <template x-if="images.length > 1">
+                            <div class="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button @click="prev()"
+                                    class="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm hover:bg-white transition-all">
+                                    <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
                                 </button>
-                            @endforeach
-                        </div>
-                    @endif
+                                <button @click="next()"
+                                    class="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm hover:bg-white transition-all">
+                                    <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                                </button>
+                            </div>
+                        </template>
+
+                        <template x-if="images.length > 1">
+                            <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                <template x-for="(img, i) in images" :key="i">
+                                    <button @click="goTo(i)"
+                                        :class="i === current ? 'bg-white w-5' : 'bg-white/50 w-2'"
+                                        class="h-2 rounded-full transition-all duration-300"></button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
                 </div>
 
                 {{-- Right: Info --}}
@@ -272,49 +289,125 @@
 
     {{-- Lightbox Modal --}}
     <div id="lightbox"
-        class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
-        <button onclick="closeLightbox()"
+        class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300"
+        onclick="if(event.target === this) galleryCloseLightbox()">
+        <button onclick="galleryCloseLightbox()"
             class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors">
             <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
-        <img id="lightboxImage" src="" alt=""
-            class="max-w-[90vw] max-h-[90vh] object-contain rounded-2xl">
+        <div class="relative flex items-center">
+            <button onclick="galleryPrevLightbox()"
+                class="absolute -left-16 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <img id="lightboxImage" src="" alt=""
+                class="max-w-[90vw] max-h-[90vh] object-contain rounded-2xl">
+            <button onclick="galleryNextLightbox()"
+                class="absolute -right-16 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </button>
+        </div>
     </div>
 
     <script>
-        function switchImage(url, el) {
-            document.getElementById('mainProductImage').src = url;
-            document.querySelectorAll('.thumb').forEach(t => {
-                t.classList.remove('border-bwtblue', 'ring-2', 'ring-bwtblue/20');
-                t.classList.add('border-slate-200');
-            });
-            el.classList.remove('border-slate-200');
-            el.classList.add('border-bwtblue', 'ring-2', 'ring-bwtblue/20');
-        }
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('gallerySlider', (imageIds) => ({
+                images: [],
+                current: 0,
+                lightboxOpen: false,
 
-        function openLightbox(url) {
-            const lb = document.getElementById('lightbox');
-            document.getElementById('lightboxImage').src = url;
-            lb.classList.remove('opacity-0', 'pointer-events-none');
-            lb.classList.add('opacity-100');
-            document.body.style.overflow = 'hidden';
-        }
+                init() {
+                    @php
+                        $allImgs = $allImages ?? collect();
+                    @endphp
+                    this.images = [
+                        @foreach ($allImgs as $img)
+                            {
+                                id: '{{ $img->id }}',
+                                url: '{{ $img->getUrl() }}',
+                                alt: '{{ $product->product_title }}',
+                            },
+                        @endforeach
+                    ];
+                },
 
-        function closeLightbox() {
-            const lb = document.getElementById('lightbox');
-            lb.classList.remove('opacity-100');
-            lb.classList.add('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = '';
-        }
+                goTo(i) {
+                    if (i >= 0 && i < this.images.length) {
+                        this.current = i;
+                    }
+                },
 
-        document.getElementById('lightbox')?.addEventListener('click', function(e) {
-            if (e.target === this) closeLightbox();
+                prev() {
+                    this.goTo(this.current - 1 < 0 ? this.images.length - 1 : this.current - 1);
+                },
+
+                next() {
+                    this.goTo(this.current + 1 >= this.images.length ? 0 : this.current + 1);
+                },
+
+                openLightbox() {
+                    if (!this.images.length) return;
+                    const lb = document.getElementById('lightbox');
+                    document.getElementById('lightboxImage').src = this.images[this.current].url;
+                    lb.classList.remove('opacity-0', 'pointer-events-none');
+                    lb.classList.add('opacity-100');
+                    document.body.style.overflow = 'hidden';
+                    this.lightboxOpen = true;
+                },
+
+                closeLightbox() {
+                    const lb = document.getElementById('lightbox');
+                    lb.classList.remove('opacity-100');
+                    lb.classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
+                    this.lightboxOpen = false;
+                },
+
+                prevLightbox() {
+                    this.prev();
+                    document.getElementById('lightboxImage').src = this.images[this.current].url;
+                },
+
+                nextLightbox() {
+                    this.next();
+                    document.getElementById('lightboxImage').src = this.images[this.current].url;
+                },
+            }));
         });
 
+        function getGalleryData() {
+            const el = document.querySelector('[x-data^="gallerySlider"]');
+            return el ? Alpine.$data(el) : null;
+        }
+
+        window.galleryCloseLightbox = function() {
+            getGalleryData()?.closeLightbox();
+        };
+
+        window.galleryPrevLightbox = function() {
+            const data = getGalleryData();
+            if (data) { data.prevLightbox(); }
+        };
+
+        window.galleryNextLightbox = function() {
+            const data = getGalleryData();
+            if (data) { data.nextLightbox(); }
+        };
+
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeLightbox();
+            const lb = document.getElementById('lightbox');
+            const isOpen = lb && !lb.classList.contains('opacity-0');
+            if (!isOpen) return;
+
+            if (e.key === 'Escape') {
+                document.querySelector('[x-data]')?.__x.$data.closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                document.querySelector('[x-data]')?.__x.$data.prevLightbox();
+            } else if (e.key === 'ArrowRight') {
+                document.querySelector('[x-data]')?.__x.$data.nextLightbox();
+            }
         });
     </script>
 </x-layouts.public>

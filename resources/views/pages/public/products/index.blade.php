@@ -122,6 +122,8 @@
                                     :width="$product->width ? $product->width . ' mm' : null"
                                     :machineClass="$product->machine_class ? $product->machine_class . ' t' : null"
                                     detailsUrl="{{ route('public.products.show', $product) }}"
+                                    :productId="$product->id"
+                                    :favorited="in_array($product->id, $favoritedIds ?? [])"
                                 />
                             @endforeach
                         </div>

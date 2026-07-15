@@ -68,7 +68,6 @@ class ProductFilters extends Component
             ->orderBy('name')
             ->get(['id', 'name', 'slug', 'category_id']);
         $connections = Connection::query()->orderBy('name')->pluck('name', 'slug')->toArray();
-
         return view('livewire.product-filters', compact('products', 'categories', 'subcategories', 'connections', 'hasFilters'));
     }
 
