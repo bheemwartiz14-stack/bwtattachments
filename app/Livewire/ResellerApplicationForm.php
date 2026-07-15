@@ -44,6 +44,11 @@ class ResellerApplicationForm extends Component
         ];
     }
 
+    public function updated($propertyName): void
+    {
+        $this->validateOnly($propertyName);
+    }
+
     public function submit(): void
     {
         $data = $this->validate();

@@ -14,6 +14,8 @@
     });
 
     document.addEventListener('livewire:navigated', function () {
+        $('#lightbox').removeClass('opacity-100').addClass('opacity-0 pointer-events-none');
+        $('body').css('overflow', '');
         initProductGallery();
     });
 })();
