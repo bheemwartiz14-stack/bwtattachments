@@ -87,15 +87,16 @@
                 <div class="space-y-6">
                     {{-- Code & Title --}}
                     <div>
-                        <span
-                            class="inline-block font-mono text-xs font-semibold tracking-widest text-bwtblue uppercase bg-blue-50 px-3 py-1 rounded-full">{{ $product->product_code ?? 'N/A' }}</span>
                         <h1 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-3 leading-tight">
                             {{ $product->product_title ?? 'Product' }}</h1>
                     </div>
 
                     {{-- Tags --}}
-                    @if ($product->category || $product->subcategory || $product->connection)
-                        <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="inline-flex items-center gap-1.5 bg-blue-50 text-bwtblue text-xs font-medium px-3 py-1.5 rounded-full border border-blue-200 font-mono tracking-widest uppercase">
+                            {{ $product->product_code ?? 'N/A' }}
+                        </span>
                             @if ($product->category)
                                 <span
                                     class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-medium px-3 py-1.5 rounded-full border border-emerald-200">
@@ -130,7 +131,6 @@
                                 </span>
                             @endif
                         </div>
-                    @endif
 
                     {{-- Description --}}
                     @if ($product->product_description)
