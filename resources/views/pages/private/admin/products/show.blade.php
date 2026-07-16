@@ -125,7 +125,7 @@
                         @if($product->product_description)
                             <div class="sm:col-span-2">
                                 <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Description</dt>
-                                <dd class="mt-1 text-sm leading-relaxed text-slate-600 break-words dark:text-neutral-300">{!! Str::cleanHtml($product->product_description) !!}</dd>
+                                <dd class="mt-1 text-sm leading-relaxed text-slate-700 break-words dark:text-neutral-300">{!! Str::cleanHtml($product->product_description) !!}</dd>
                             </div>
                         @endif
                           @if($product->internal_notes)
