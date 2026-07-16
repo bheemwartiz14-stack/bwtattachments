@@ -41,43 +41,30 @@
                     <div class="relative group overflow-hidden rounded-2xl bg-slate-50">
                         @foreach ($allImages as $i => $img)
                             <img src="{{ $img->getUrl() }}" alt="{{ $product->product_title }}"
-                                data-index="{{ $i }}"
-                                class="gallery-image w-full @if ($i > 0) hidden @endif">
+                                 data-index="{{ $i }}"
+                                 class="gallery-image w-full @if($i > 0) hidden @endif">
                         @endforeach
 
-                        <button type="button"
-                            class="gallery-expand absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-white">
-                            <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                        <button type="button" class="gallery-expand absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-white">
+                            <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                             </svg>
                         </button>
 
                         @if ($allImages->count() > 1)
-                            <div
-                                class="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                                <button type="button"
-                                    class="gallery-prev bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm hover:bg-white transition-all">
-                                    <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                                    </svg>
+                            <div class="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                <button type="button" class="gallery-prev bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm hover:bg-white transition-all">
+                                    <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
                                 </button>
-                                <button type="button"
-                                    class="gallery-next bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm hover:bg-white transition-all">
-                                    <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                                    </svg>
+                                <button type="button" class="gallery-next bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm hover:bg-white transition-all">
+                                    <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                                 </button>
                             </div>
 
                             <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                                 @foreach ($allImages as $i => $img)
-                                    <button type="button"
-                                        class="gallery-dot h-2 rounded-full transition-all duration-300 @if ($i === 0) bg-white w-5 @else bg-white/50 w-2 @endif"
-                                        data-index="{{ $i }}"></button>
+                                    <button type="button" class="gallery-dot h-2 rounded-full transition-all duration-300 @if($i === 0) bg-white w-5 @else bg-white/50 w-2 @endif"
+                                            data-index="{{ $i }}"></button>
                                 @endforeach
                             </div>
                         @endif
@@ -88,7 +75,7 @@
                         <div class="flex gap-2 overflow-x-auto pb-1">
                             @foreach ($allImages as $i => $img)
                                 <button type="button" onclick="showGalleryImage({{ $i }})"
-                                    class="gallery-thumb flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md @if ($i === 0) ring-2 ring-bwtblue @else ring-0 hover:ring-1 hover:ring-slate-300 @endif">
+                                    class="gallery-thumb flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md @if($i === 0) ring-2 ring-bwtblue @else ring-0 hover:ring-1 hover:ring-slate-300 @endif">
                                     <img src="{{ $img->getUrl() }}" alt="" class="w-full h-full object-cover">
                                 </button>
                             @endforeach
@@ -100,8 +87,7 @@
                 <div class="space-y-6">
                     {{-- Code & Title --}}
                     <div>
-                        <span
-                            class="inline-block font-mono text-xs font-semibold tracking-widest text-bwtblue uppercase bg-blue-50 px-3 py-1 rounded-full">{{ $product->product_code ?? 'N/A' }}</span>
+                        <span class="inline-block font-mono text-xs font-semibold tracking-widest text-bwtblue uppercase bg-blue-50 px-3 py-1 rounded-full">{{ $product->product_code ?? 'N/A' }}</span>
                         <h1 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-3 leading-tight">
                             {{ $product->product_title ?? 'Product' }}</h1>
                     </div>
@@ -148,10 +134,10 @@
 
                     {{-- Description --}}
                     @if ($product->product_description)
-                        <div class="sm:col-span-2">
-                            <dd
-                                class="mt-1 text-sm leading-relaxed text-slate-600 break-words whitespace-pre-wrap dark:text-neutral-300">
-                                {!! Str::cleanHtml($product->product_description) !!}</dd>
+                        <div
+                            class="text-sm leading-relaxed ">
+                              <dd class="mt-1 text-sm leading-relaxed  break-words whitespace-pre-wrap ">{!! Str::cleanHtml($product->product_description) !!}</dd>
+                            {{-- {!! Str::cleanHtml($product->product_description) !!} --}}
                         </div>
                     @endif
 
@@ -316,17 +302,13 @@
         <div class="relative flex items-center">
             <button onclick="galleryPrevLightbox()"
                 class="absolute -left-16 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors">
-                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
             </button>
             <img id="lightboxImage" src="" alt=""
                 class="max-w-[90vw] max-h-[90vh] object-contain rounded-2xl">
             <button onclick="galleryNextLightbox()"
                 class="absolute -right-16 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors">
-                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </button>
         </div>
     </div>
