@@ -148,13 +148,11 @@
 
                     {{-- Description --}}
                     @if ($product->product_description)
-                        <div class="text-sm leading-relaxed ">
-                            <dd class="mt-1 text-sm leading-relaxed  break-words whitespace-pre-wrap ">
-                                {!! Str::cleanHtml($product->product_description) !!}</dd>
-                            {{-- {!! Str::cleanHtml($product->product_description) !!} --}}
+                        <div
+                            class="text-sm leading-relaxed text-slate-700 break-words whitespace-pre-wrap">
+                            {!! Str::cleanHtml($product->product_description) !!}
                         </div>
                     @endif
-
                     {{-- Specs Grid --}}
                     @php
                         $specs = [
