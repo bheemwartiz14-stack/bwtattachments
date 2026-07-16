@@ -148,8 +148,21 @@
 
                     {{-- Description --}}
                     @if ($product->product_description)
+                        @php
+                            $description = trim($product->product_description);
+
+                            // Detect HTML tags
+                            $isHtml = $description !== strip_tags($description);
+                        @endphp
+
                         <div class="product-description prose max-w-none">
-                            {!! Str::cleanHtml($product->product_description) !!}
+                            @if ($isHtml)
+                                <dd class="mt-1 text-sm leading-relaxed  break-words whitespace-pre-wrap ">
+                                    {!! Str::cleanHtml($product->product_description) !!}</dd>
+                            @else
+                                {{-- Plain Text --}}
+                                {!! nl2br(e($description)) !!}
+                            @endif
                         </div>
                     @endif
                     {{-- Specs Grid --}}
