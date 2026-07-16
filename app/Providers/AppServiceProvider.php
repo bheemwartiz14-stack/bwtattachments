@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\SiteSetting;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +24,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-           Schema::defaultStringLength(191);
+        Str::macro('cleanHtml', function (string $html): string {
+            $html = preg_replace('/<span\s[^>]*class="ql-ui"[^>]*><\/span>/', '', $html);
+            $html = preg_replace('/\s+data-list="[^"]*"/', '', $html);
+            $html = preg_replace('/\s+contenteditable="[^"]*"/', '', $html);
+            $html = preg_replace('/\bql-[a-zA-Z0-9-]+\b/', '', $html);
+            $html = preg_replace('/\s+class=""/', '', $html);
+            return $html;
+        });
+
+        Schema::defaultStringLength(191);
         
         // Mail views
         View::addNamespace('mail', resource_path('views/vendor/mail'));
