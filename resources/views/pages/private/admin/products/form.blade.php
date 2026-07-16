@@ -70,7 +70,7 @@
                         <x-forms.input name="drawing_number" label="Drawing Number" required
                             :value="$product->drawing_number ?? ''" placeholder="Enter drawing number" />
                     </div>
-                    <x-forms.textarea name="product_description" label="Product Description" required rows="5"
+                    <x-forms.trix name="product_description" label="Product Description" description="Add product details and specifications" required
                         :value="$product->product_description ?? ''" placeholder="Enter product description" />
                     <x-forms.textarea name="internal_notes" label="Additional Info" rows="3"
                         :value="$product->internal_notes ?? ''" placeholder="Internal notes for admin reference"
@@ -152,8 +152,4 @@
         </form>
     </div>
 
-    @push('scripts')
-
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    @endpush
 </x-layouts.app>

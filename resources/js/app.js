@@ -1,7 +1,7 @@
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 import "./libs/lexxy";
-import $ from 'jquery';
-
-window.$ = window.jQuery = $;
+window.Quill = Quill;
 
 // Dark Mode
 function initDarkMode() {

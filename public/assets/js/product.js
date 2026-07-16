@@ -62,15 +62,16 @@ function initCategorySubcategory() {
 
 function initTrix() {
     var $editor = $('trix-editor');
-    if (!$editor.length) return;
-    var inputId = $editor.attr('input');
-    var $input = $('#' + inputId);
-    if (!$input.length) return;
-    $editor.on('trix-initialize', function () {
-        if ($input.val() && !this.editor.getValue()) {
-            this.editor.loadHTML($input.val());
-        }
-    });
+    console.log('zxcxzcxzxzc');
+    // if (!$editor.length) return;
+    // var inputId = $editor.attr('input');
+    // var $input = $('#' + inputId);
+    // if (!$input.length) return;
+    // $editor.on('trix-initialize', function () {
+    //     if ($input.val() && !this.editor.getValue()) {
+    //         this.editor.loadHTML($input.val());
+    //     }
+    // });
 }
 
 window.toggleFavorite = function(btn) {

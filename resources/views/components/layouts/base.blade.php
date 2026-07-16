@@ -12,11 +12,8 @@
     <link rel="icon" type="image/svg+xml" href="{{ config('app.asset_url') }}/favicon.svg">
     <link rel="shortcut icon" href="{{ config('app.asset_url') }}/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ config('app.asset_url') }}/apple-touch-icon.png">
-
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <link rel="manifest" href="{{ config('app.asset_url') }}/site.webmanifest">
-
-    <link rel="stylesheet" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
     <style>
         input:-webkit-autofill,
@@ -33,7 +30,6 @@
             caret-color: #d4d4d4 !important;
         }
     </style>
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('styles')
@@ -42,9 +38,7 @@
 <body {{ $attributes }}>
     {{ $slot }}
     <x-toast />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="{{ asset('assets/js/product.js') }}"></script>
-
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
     @livewireScripts
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
