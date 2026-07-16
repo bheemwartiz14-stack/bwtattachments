@@ -120,6 +120,7 @@
                     @endphp
                     <tr style="vertical-align:top;">
                         <td style="padding:12px 14px;font-size:15px;border-bottom:1px solid #b3b3b3;">
+                            <div style="font-size:12px;color:#666;margin-bottom:2px;">{{ $item->product->product_code }}</div>
                             {{ $item->product->product_title }}
                         </td>
                         <td style="padding:12px 14px;font-size:15px;border-bottom:1px solid #b3b3b3;">

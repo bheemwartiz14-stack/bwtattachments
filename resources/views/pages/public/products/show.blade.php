@@ -69,6 +69,18 @@
                             </div>
                         @endif
                     </div>
+
+                    {{-- Thumbnail Strip --}}
+                    @if ($allImages->count() > 1)
+                        <div class="flex gap-2 overflow-x-auto pb-1">
+                            @foreach ($allImages as $i => $img)
+                                <button type="button" onclick="showGalleryImage({{ $i }})"
+                                    class="gallery-thumb flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md @if($i === 0) ring-2 ring-bwtblue @else ring-0 hover:ring-1 hover:ring-slate-300 @endif">
+                                    <img src="{{ $img->getUrl() }}" alt="" class="w-full h-full object-cover">
+                                </button>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Right: Info --}}

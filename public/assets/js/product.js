@@ -1,125 +1,96 @@
-(function () {
-    function ready(fn) {
-        if (document.readyState !== 'loading') {
-            fn();
-        } else {
-            document.addEventListener('DOMContentLoaded', fn);
-        }
-    }
+/**
+ * --------------------------------------------------------------------------
+ * BWT Attachments — Product Module
+ * --------------------------------------------------------------------------
+ * Handles: category/subcategory chained selects, Trix editor sync,
+ * favorite toggling, product image gallery, lightbox, and file preview.
+ * Written with full jQuery.
+ * --------------------------------------------------------------------------
+ */
 
-    ready(function () {
-        initCategorySubcategory();
-        initTrix();
-        initProductGallery();
-    });
+// Init on DOM ready
+$(function () {
+    initCategorySubcategory();
+    initTrix();
+    initProductGallery();
+});
 
-    document.addEventListener('livewire:navigated', function () {
-        $('#lightbox').removeClass('opacity-100').addClass('opacity-0 pointer-events-none');
-        $('body').css('overflow', '');
-        initProductGallery();
-    });
-})();
+// Re-init gallery after Livewire navigation
+$(document).on('livewire:navigated', function () {
+    $('#lightbox').removeClass('opacity-100').addClass('opacity-0 pointer-events-none');
+    $('body').css('overflow', '');
+    initProductGallery();
+});
 
+/**
+ * Category / Subcategory chained dropdowns
+ * Loads subcategories via AJAX when a category is selected.
+ */
 function initCategorySubcategory() {
-    var category = document.getElementById('category_id');
-    var subcategory = document.getElementById('subcategory_id');
-    if (!category || !subcategory) return;
+    var $category = $('#category_id');
+    var $subcategory = $('#subcategory_id');
+    if (!$category.length || !$subcategory.length) return;
 
     function loadSubcategories(id, selected) {
-        subcategory.innerHTML = '<option value="">Loading...</option>';
-        subcategory.disabled = true;
+        $subcategory.html('<option value="">Loading...</option>').prop('disabled', true);
 
         if (!id) {
-            subcategory.innerHTML = '<option value="">Select Category first</option>';
-            subcategory.disabled = true;
+            $subcategory.html('<option value="">Select Category first</option>').prop('disabled', true);
             return;
         }
 
-        var xhr = new XMLHttpRequest();
-        var base = window.BASE_URL || '';
-        xhr.open('GET', base + '/admin/categories/' + id + '/subcategories');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var res = JSON.parse(xhr.responseText);
-                subcategory.innerHTML = '<option value="">Select Subcategory</option>';
-                if (res.data) {
-                    Object.keys(res.data).forEach(function (id) {
-                        var opt = document.createElement('option');
-                        opt.value = id;
-                        opt.textContent = res.data[id];
-                        if (selected && id === selected) opt.selected = true;
-                        subcategory.appendChild(opt);
-                    });
-                }
-                subcategory.disabled = false;
+        $.get('/admin/categories/' + id + '/subcategories', function (res) {
+            $subcategory.html('<option value="">Select Subcategory</option>').prop('disabled', false);
+            if (res.data) {
+                $.each(res.data, function (id, name) {
+                    $subcategory.append($('<option>', { value: id, text: name }));
+                });
+                if (selected) $subcategory.val(selected);
             }
-        };
-        xhr.send();
+        });
     }
 
-    category.addEventListener('change', function () {
-        loadSubcategories(this.value);
+    var selected = $subcategory.data('selected');
+    if ($category.val() && selected) {
+        loadSubcategories($category.val(), selected);
+    }
+
+    $category.on('change', function () {
+        loadSubcategories($(this).val());
     });
-
-    var selected = subcategory.getAttribute('data-selected');
-    if (category.value && selected) {
-        loadSubcategories(category.value, selected);
-    }
 }
 
 function initTrix() {
-    var editor = document.querySelector('trix-editor');
-    if (!editor) return;
-    var inputId = editor.getAttribute('input');
-    var input = document.getElementById(inputId);
-    if (!input) return;
-    editor.addEventListener('trix-initialize', function () {
-        if (input.value && !editor.editor.getValue()) {
-            editor.editor.loadHTML(input.value);
+    var $editor = $('trix-editor');
+    if (!$editor.length) return;
+    var inputId = $editor.attr('input');
+    var $input = $('#' + inputId);
+    if (!$input.length) return;
+    $editor.on('trix-initialize', function () {
+        if ($input.val() && !this.editor.getValue()) {
+            this.editor.loadHTML($input.val());
         }
     });
 }
 
 window.toggleFavorite = function(btn) {
-    var productId = btn.getAttribute('data-favorite');
-    var wasFavorited = btn.getAttribute('data-favorited') === 'true';
+    var $btn = $(btn);
+    var productId = $btn.data('favorite');
     var url = '/favorites/toggle/' + productId;
-    var csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    var csrf = $('meta[name="csrf-token"]').attr('content');
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.setRequestHeader('X-CSRF-TOKEN', csrf);
-    xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            var res = JSON.parse(xhr.responseText);
-            btn.setAttribute('data-favorited', res.favorited ? 'true' : 'false');
-            btn.setAttribute('title', res.favorited ? 'Remove from favorites' : 'Add to favorites');
-            var svg = btn.querySelector('svg');
-            if (res.favorited) {
-                svg.classList.add('text-red-500', 'fill-red-500');
-                svg.classList.remove('text-slate-500', 'dark:text-neutral-400');
-                svg.setAttribute('fill', 'currentColor');
-            } else {
-                svg.classList.remove('text-red-500', 'fill-red-500');
-                svg.classList.add('text-slate-500', 'dark:text-neutral-400');
-                svg.setAttribute('fill', 'none');
-            }
-            if (window.showToast) {
-                window.showToast(res.message, res.favorited ? 'success' : 'info');
-            }
-        } else {
-            if (window.showToast) {
-                window.showToast('Failed to update favorite', 'error');
-            }
+    $.post(url, { _token: csrf }, function (res) {
+        $btn.data('favorited', res.favorited);
+        $btn.attr('title', res.favorited ? 'Remove from favorites' : 'Add to favorites');
+        $btn.find('svg').toggleClass('hidden');
+        if (window.showToast) {
+            window.showToast(res.message, res.favorited ? 'success' : 'info');
         }
-    };
-    xhr.onerror = function() {
+    }).fail(function () {
         if (window.showToast) {
             window.showToast('Failed to update favorite', 'error');
         }
-    };
-    xhr.send('_token=' + encodeURIComponent(csrf));
+    });
 };
 
 function initProductGallery() {
@@ -136,28 +107,31 @@ function initProductGallery() {
         if (index < 0) index = total - 1;
         if (index >= total) index = 0;
         $gallery.data('current', index);
-        $images.each(function(i) {
+        $images.each(function (i) {
             $(this).toggle(i === index);
         });
-        $dots.each(function(i) {
-            $(this).toggleClass('bg-white w-5', i === index)
-                   .toggleClass('bg-white/50 w-2', i !== index);
+        $dots.each(function (i) {
+            $(this).toggleClass('bg-white w-5', i === index).toggleClass('bg-white/50 w-2', i !== index);
+        });
+        var $thumbs = $gallery.find('.gallery-thumb');
+        $thumbs.each(function (i) {
+            $(this).toggleClass('ring-2 ring-bwtblue', i === index).toggleClass('ring-0 hover:ring-1 hover:ring-slate-300', i !== index);
         });
     }
 
-    $gallery.find('.gallery-prev').on('click', function() {
+    $gallery.find('.gallery-prev').on('click', function () {
         showImage($gallery.data('current') - 1);
     });
 
-    $gallery.find('.gallery-next').on('click', function() {
+    $gallery.find('.gallery-next').on('click', function () {
         showImage($gallery.data('current') + 1);
     });
 
-    $gallery.find('.gallery-dot').on('click', function() {
+    $gallery.find('.gallery-dot').on('click', function () {
         showImage($(this).data('index'));
     });
 
-    $gallery.find('.gallery-expand').on('click', function() {
+    $gallery.find('.gallery-expand').on('click', function () {
         var idx = $gallery.data('current');
         $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
         $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
@@ -165,12 +139,31 @@ function initProductGallery() {
     });
 }
 
-window.galleryCloseLightbox = function() {
+window.showGalleryImage = function (index) {
+    var $gallery = $('#productGallery');
+    if (!$gallery.length) return;
+    var $images = $gallery.find('.gallery-image');
+    var $dots = $gallery.find('.gallery-dot');
+    var $thumbs = $gallery.find('.gallery-thumb');
+    var total = $images.length;
+    if (index < 0) index = 0;
+    if (index >= total) index = total - 1;
+    $gallery.data('current', index);
+    $images.each(function (i) { $(this).toggle(i === index); });
+    $dots.each(function (i) {
+        $(this).toggleClass('bg-white w-5', i === index).toggleClass('bg-white/50 w-2', i !== index);
+    });
+    $thumbs.each(function (i) {
+        $(this).toggleClass('ring-2 ring-bwtblue', i === index).toggleClass('ring-0 hover:ring-1 hover:ring-slate-300', i !== index);
+    });
+}
+
+window.galleryCloseLightbox = function () {
     $('#lightbox').removeClass('opacity-100').addClass('opacity-0 pointer-events-none');
     $('body').css('overflow', '');
 };
 
-window.galleryPrevLightbox = function() {
+window.galleryPrevLightbox = function () {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
     var idx = $gallery.data('current') - 1;
@@ -178,17 +171,14 @@ window.galleryPrevLightbox = function() {
     var total = $images.length;
     if (idx < 0) idx = total - 1;
     $gallery.data('current', idx);
-    $images.each(function(i) {
-        $(this).toggle(i === idx);
-    });
-    $gallery.find('.gallery-dot').each(function(i) {
-        $(this).toggleClass('bg-white w-5', i === idx)
-               .toggleClass('bg-white/50 w-2', i !== idx);
+    $images.each(function (i) { $(this).toggle(i === idx); });
+    $gallery.find('.gallery-dot').each(function (i) {
+        $(this).toggleClass('bg-white w-5', i === idx).toggleClass('bg-white/50 w-2', i !== idx);
     });
     $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
 };
 
-window.galleryNextLightbox = function() {
+window.galleryNextLightbox = function () {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
     var idx = $gallery.data('current') + 1;
@@ -196,17 +186,14 @@ window.galleryNextLightbox = function() {
     var total = $images.length;
     if (idx >= total) idx = 0;
     $gallery.data('current', idx);
-    $images.each(function(i) {
-        $(this).toggle(i === idx);
-    });
-    $gallery.find('.gallery-dot').each(function(i) {
-        $(this).toggleClass('bg-white w-5', i === idx)
-               .toggleClass('bg-white/50 w-2', i !== idx);
+    $images.each(function (i) { $(this).toggle(i === idx); });
+    $gallery.find('.gallery-dot').each(function (i) {
+        $(this).toggleClass('bg-white w-5', i === idx).toggleClass('bg-white/50 w-2', i !== idx);
     });
     $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
 };
 
-$(document).on('keydown', function(e) {
+$(document).on('keydown', function (e) {
     var $lb = $('#lightbox');
     if ($lb.hasClass('opacity-0')) return;
     if (e.key === 'Escape') window.galleryCloseLightbox();
@@ -214,19 +201,18 @@ $(document).on('keydown', function(e) {
     else if (e.key === 'ArrowRight') window.galleryNextLightbox();
 });
 
-document.addEventListener('change', function (e) {
-    var input = e.target;
-    var selector = input.getAttribute('data-file-preview');
+$(document).on('change', function (e) {
+    var $input = $(e.target);
+    var selector = $input.data('file-preview');
     if (!selector) return;
-    var preview = document.querySelector(selector);
-    var file = input.files && input.files[0];
-    if (preview && file) {
+    var $preview = $(selector);
+    var file = $input[0].files && $input[0].files[0];
+    if ($preview.length && file) {
         var reader = new FileReader();
         reader.onload = function (ev) {
-            preview.src = ev.target.result;
-            preview.classList.remove('hidden');
-            var placeholder = preview.parentElement.querySelector('[id$="-placeholder"]');
-            if (placeholder) placeholder.classList.add('hidden');
+            $preview.attr('src', ev.target.result).removeClass('hidden');
+            var $placeholder = $preview.parent().find('[id$="-placeholder"]');
+            if ($placeholder.length) $placeholder.addClass('hidden');
         };
         reader.readAsDataURL(file);
     }
