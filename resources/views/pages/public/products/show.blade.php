@@ -157,7 +157,7 @@
 
                         <div class="product-description prose max-w-none">
                             @if ($isHtml)
-                                <dd class="mt-1 text-sm leading-relaxed  break-words whitespace-pre-wrap ">
+                                <div class="mt-1 text-sm leading-relaxed  break-words whitespace-pre-wrap ">
                                     {!! Str::cleanHtml($product->product_description) !!}</dd>
                             @else
                                 {{-- Plain Text --}}
@@ -341,5 +341,7 @@
         </div>
     </div>
 
-
+   @push('scripts')
+        <script src="{{ asset('assets/js/product.js') }}"></script>
+    @endpush
 </x-layouts.public>
