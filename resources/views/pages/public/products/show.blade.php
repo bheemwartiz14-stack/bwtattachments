@@ -149,7 +149,7 @@
                     {{-- Description --}}
                     @if ($product->product_description)
                         <div
-                            class="text-sm leading-relaxed text-slate-700 break-words whitespace-pre-wrap">
+                            class="text-sm leading-relaxed text-slate-700 break-words">
                             {!! Str::cleanHtml($product->product_description) !!}
                         </div>
                     @endif
