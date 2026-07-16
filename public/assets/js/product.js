@@ -11,7 +11,6 @@
 // Init on DOM ready
 $(function () {
     initCategorySubcategory();
-    initTrix();
     initProductGallery();
 });
 
