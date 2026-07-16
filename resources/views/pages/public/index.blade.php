@@ -10,7 +10,8 @@
         </p>
         <div class="">
             <img src="{{ asset('images/unnamed.jpg') }}" alt="Attachments"
-                class="mx-auto mt-6 max-w-full h-auto rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+                class="mx-auto mt-6 max-w-full h-auto rounded-lg shadow-md" width="1321" height="675"
+                data-aos="fade-up" data-aos-delay="200">
         </div>
     </section>
 
