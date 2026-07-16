@@ -159,7 +159,7 @@
                             <div class="sm:col-span-2">
                                 <dt class="text-xs font-medium text-slate-400 uppercase tracking-wider">Description</dt>
                                 <dd
-                                    class="mt-1 text-sm leading-relaxed text-slate-600 break-words dark:text-neutral-300">
+                                    class="mt-1 text-sm leading-relaxed text-slate-600 break-words whitespace-pre-wrap dark:text-neutral-300">
                                     {!! Str::cleanHtml($product->product_description) !!}</dd>
                             </div>
                         @endif
