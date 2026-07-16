@@ -25,23 +25,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Str::macro('cleanHtml', function (string $html): string {
-            $html = preg_replace('/<span\s[^>]*class="ql-ui"[^>]*><\/span>/', '', $html);
-            $html = preg_replace_callback('/<[^>]+>/', function ($m) {
-                $tag = preg_replace('/\s+data-list="[^"]*"/', '', $m[0]);
-                $tag = preg_replace('/\s+contenteditable="[^"]*"/', '', $tag);
-                $tag = preg_replace('/\bql-[a-zA-Z0-9-]+\b/', '', $tag);
-                $tag = preg_replace('/\s+class="\s*"/', '', $tag);
-                return $tag;
-            }, $html);
-            $html = preg_replace('/<p(\s[^>]*)?>\s*<\/p>/', '', $html);
-            $html = preg_replace('/[ \t]+/', ' ', $html);
-            $html = preg_replace('/\n\s*\n\s*\n/', "\n\n", $html);
-            $html = trim($html);
             return $html;
         });
 
         Schema::defaultStringLength(191);
-        
+
         // Mail views
         View::addNamespace('mail', resource_path('views/vendor/mail'));
 
