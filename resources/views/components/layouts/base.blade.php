@@ -15,6 +15,8 @@
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <link rel="manifest" href="{{ config('app.asset_url') }}/site.webmanifest">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
     <style>
         input:-webkit-autofill,
         input:-webkit-autofill:focus {
@@ -41,8 +43,10 @@
     {{ $slot }}
     <x-toast />
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    @livewireScripts
+
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    @livewireScripts
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({

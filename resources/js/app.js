@@ -1,8 +1,5 @@
-import Quill from 'quill';
-import 'quill/dist/quill.snow.css';
-import "./libs/lexxy";
-window.Quill = Quill;
 
+import "./libs/lexxy";
 // Dark Mode
 function initDarkMode() {
     const dark = localStorage.getItem('dark') === 'true' ||
