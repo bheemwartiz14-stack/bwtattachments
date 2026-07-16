@@ -148,12 +148,9 @@
 
                     {{-- Description --}}
                     @if ($product->product_description)
-                        @php
-                            $description = preg_replace('/^\S+\s*/', '', $product->product_description);
-                        @endphp
-                       <div class="prose max-w-none text-left">
-    {!! nl2br(e($product->product_description)) !!}
-</div>
+                        <div class="product-description prose max-w-none">
+                            {!! Str::cleanHtml($product->product_description) !!}
+                        </div>
                     @endif
                     {{-- Specs Grid --}}
                     @php
