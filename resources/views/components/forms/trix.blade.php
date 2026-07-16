@@ -40,7 +40,8 @@
         border-radius: 0 0 0.75rem 0.75rem;
         font-size: 0.875rem;
     }
-    .ql-editor { min-height: 200px; }
+    .ql-editor { min-height: 200px; white-space: pre-wrap; }
+    .ql-editor p, .ql-editor br { margin-bottom: 0.5em; }
     .dark .ql-toolbar { background-color: #1a1a1a; }
     .dark .ql-toolbar .ql-stroke { stroke: #a3a3a3; }
     .dark .ql-toolbar .ql-fill { fill: #a3a3a3; }

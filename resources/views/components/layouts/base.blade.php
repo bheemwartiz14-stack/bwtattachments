@@ -30,6 +30,7 @@
             caret-color: #d4d4d4 !important;
         }
         ol, ul { padding-left: 1.5em; }
+        p { margin-bottom: 0.5em; }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
