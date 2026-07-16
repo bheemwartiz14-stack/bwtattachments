@@ -33,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
                 $tag = preg_replace('/\s+class="\s*"/', '', $tag);
                 return $tag;
             }, $html);
+            $html = preg_replace('/<p(\s[^>]*)?>\s*<\/p>/', '', $html);
+            $html = preg_replace('/[ \t]+/', ' ', $html);
+            $html = preg_replace('/\n\s*\n\s*\n/', "\n\n", $html);
+            $html = trim($html);
             return $html;
         });
 
