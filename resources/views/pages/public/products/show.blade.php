@@ -44,11 +44,11 @@
                             ->exists();
                 @endphp
                 <div class="space-y-4" id="productGallery">
-                    <div class="relative group overflow-hidden rounded-2xl bg-slate-50">
+                    <div class="relative group overflow-hidden rounded-2xl bg-slate-50 aspect-[3/2]">
                         @foreach ($allImages as $i => $img)
                             <img src="{{ $img->getUrl() }}" alt="{{ $product->product_title }}"
                                 data-index="{{ $i }}"
-                                class="gallery-image w-full @if ($i > 0) hidden @endif">
+                                class="gallery-image absolute inset-0 w-full h-full object-contain @if ($i > 0) hidden @endif">
                         @endforeach
 
                         <button type="button"
@@ -91,11 +91,11 @@
 
                     {{-- Thumbnail Strip --}}
                     @if ($allImages->count() > 1)
-                        <div class="flex gap-2 overflow-x-auto pb-1">
+                        <div class="flex gap-3 overflow-x-auto pb-1">
                             @foreach ($allImages as $i => $img)
                                 <button type="button" onclick="showGalleryImage({{ $i }})"
-                                    class="gallery-thumb flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md @if ($i === 0) ring-2 ring-bwtblue @else ring-0 hover:ring-1 hover:ring-slate-300 @endif">
-                                    <img src="{{ $img->getUrl() }}" alt="" class="w-full h-full object-cover">
+                                    class="gallery-thumb flex-shrink-0 w-28 h-[4.66rem] sm:w-32 sm:h-[5.33rem] rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md @if ($i === 0) ring-2 ring-bwtblue @else ring-1 ring-slate-200 hover:ring-slate-300 @endif">
+                                    <img src="{{ $img->getUrl() }}" alt="" class="w-full h-full object-contain bg-slate-50">
                                 </button>
                             @endforeach
                         </div>

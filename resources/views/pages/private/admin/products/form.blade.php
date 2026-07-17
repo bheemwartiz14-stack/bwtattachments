@@ -1,5 +1,6 @@
 <x-layouts.app>
-    @php$isEdit = !empty($product);
+    @php
+        $isEdit = !empty($product);
                 $pdfMedia = $product?->getFirstMedia('pdfs');
 
                 if ($pdfMedia) {
