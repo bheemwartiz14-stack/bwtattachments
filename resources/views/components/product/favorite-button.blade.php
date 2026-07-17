@@ -30,7 +30,6 @@
             var productId = $btn.data('favorite');
             var url = '/favorites/toggle/' + productId;
             var csrf = $('meta[name="csrf-token"]').attr('content');
-
             $.post(url, { _token: csrf }, function (res) {
                 $btn.data('favorited', res.favorited);
                 $btn.attr('title', res.favorited ? 'Remove from favorites' : 'Add to favorites');

@@ -151,5 +151,7 @@
             </div>
         </form>
     </div>
-
+    @push('scripts')
+        <script src="{{ asset('assets/js/product.js') }}"></script>
+    @endpush
 </x-layouts.app>
