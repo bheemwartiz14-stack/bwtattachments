@@ -1,6 +1,11 @@
 @php
     $img = $product->getFirstMediaUrl('images');
-    $isFavorited = auth()->check() && $product->favoritedByUsers()->where('user_id', auth()->id())->exists();
+    $isFavorited =
+        auth()->check() &&
+        $product
+            ->favoritedByUsers()
+            ->where('user_id', auth()->id())
+            ->exists();
 @endphp
 
 <div
@@ -20,9 +25,7 @@
             </div>
         </a>
         @auth
-            <button type="button"
-                data-favorite="{{ $product->id }}"
-                data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
+            <button type="button" data-favorite="{{ $product->id }}" data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
                 onclick="toggleFavorite(this)"
                 class="absolute bottom-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm backdrop-blur-sm transition-all hover:scale-110 "
                 title="{{ $isFavorited ? 'Remove from favorites' : 'Add to favorites' }}">
@@ -108,42 +111,32 @@
             {{-- Right --}}
             <div class="text-right flex flex-col">
 
-                 @auth
-                <div>
-                    <div class="text-xs text-gray-600 font-semibold uppercase">
-                        Wholesale Price
-                    </div>
-                    @php
-                        $userPrice = $product->productPrices->firstWhere('user_id', auth()->id());
-                    @endphp
+                @auth
+                    <div>
+                        <div class="text-xs text-gray-600 font-semibold uppercase">
+                            Wholesale Price
+                        </div>
+                        @php
+                            $userPrice = $product->productPrices->firstWhere('user_id', auth()->id());
+                        @endphp
 
-                    <div class="text-2xl font-bold text-green-600 my-3">
-                        {{ config('app.currency_symbol') }}
-                        {{ number_format($userPrice->final_price ?? $product->ddp_price, 2) }}
+                        <div class="text-2xl font-bold text-green-600 my-3">
+                            {{ config('app.currency_symbol') }}
+                            {{ number_format($userPrice->final_price ?? $product->ddp_price, 2) }}
+                        </div>
                     </div>
+                    @role('Wholesale Client|Reseller')
+                        <a  class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded text-sm font-semibold"href="{{ auth()->user()->hasRole('Wholesale Client')
+                            ? route('client.quotations.create')
+                            : route('reseller.quotations.create') }}"
+                            wire:navigate>
+                            Add To Quotation
+                        </a>
+                    @endrole
+                    @endif
                 </div>
-                @php
-                    $quotationRoute = null;
-
-                    if (auth()->check()) {
-                        if (auth()->user()->hasRole('Wholesale Client')) {
-                            $quotationRoute = route('client.quotations.create');
-                        } elseif (auth()->user()->hasRole('Reseller')) {
-                            $quotationRoute = route('reseller.quotations.create');
-                        }
-                    }
-                @endphp
-                @if ($quotationRoute)
-                    <a href="{{ $quotationRoute }}"
-                        class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded text-sm font-semibold">
-                        Add To Quotation
-                    </a>
-                @endif
-                @endauth
 
             </div>
 
         </div>
-
     </div>
-</div>

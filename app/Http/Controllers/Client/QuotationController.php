@@ -87,7 +87,7 @@ class QuotationController extends Controller
         return view('pages.private.client.quotations.show', compact('quotation'));
     }
 
-    public function download(string $id): StreamedResponse|RedirectResponse
+    public function download(string $id): BinaryFileResponse|RedirectResponse|StreamedResponse
     {
         $quotation = $this->quotationService->findById($id);
         $quotation = $this->quotationService->generatePdf($quotation);

@@ -159,9 +159,9 @@
                             @if ($isHtml)
                                 <div class="mt-1 text-sm leading-relaxed  break-words whitespace-pre-wrap ">
                                     {!! Str::cleanHtml($product->product_description) !!}</dd>
-                            @else
-                                {{-- Plain Text --}}
-                                {!! nl2br(e($description)) !!}
+                                @else
+                                    {{-- Plain Text --}}
+                                    {!! nl2br(e($description)) !!}
                             @endif
                         </div>
                     @endif
@@ -285,21 +285,14 @@
                                         </a>
                                     @endif
                                 @endrole
-                                @php
-                                    $quotationRoute = null;
-
-                                    if (auth()->check()) {
-                                        if (auth()->user()->hasRole('Wholesale Client')) {
-                                            $quotationRoute = route('client.quotations.create');
-                                        } elseif (auth()->user()->hasRole('Reseller')) {
-                                            $quotationRoute = route('reseller.quotations.create');
-                                        }
-                                    }
-                                @endphp
-                                <a href="{{ $quotationRoute }}" wire:navigate
-                                    class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
-                                    Add To Quotation
-                                </a>
+                                @role('Wholesale Client|Reseller')
+                                    <a class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors" href="{{ auth()->user()->hasRole('Wholesale Client')
+                                        ? route('client.quotations.create')
+                                        : route('reseller.quotations.create') }}"
+                                        wire:navigate>
+                                        Add To Quotation
+                                    </a>
+                                @endrole
                             @else
                                 <a href="{{ route('login') }}" wire:navigate
                                     class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
@@ -341,7 +334,7 @@
         </div>
     </div>
 
-   @push('scripts')
+    @push('scripts')
         <script src="{{ asset('assets/js/product.js') }}"></script>
     @endpush
 </x-layouts.public>
