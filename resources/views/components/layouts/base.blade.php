@@ -43,6 +43,7 @@
     {{ $slot }}
     <x-toast />
     <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/js/product.js') }}"></script>
 
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>

@@ -20,4 +20,7 @@
             <livewire:product-filters />
         </div>
     </main>
+        @push('scripts')
+        <script src="{{ asset('assets/js/product.js') }}"></script>
+    @endpush
 </x-layouts.public>

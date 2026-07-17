@@ -348,7 +348,4 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script src="{{ asset('assets/js/product.js') }}"></script>
-    @endpush
 </x-layouts.public>
