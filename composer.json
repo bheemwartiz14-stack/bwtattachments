@@ -24,6 +24,7 @@
         "php-flasher/flasher-laravel": "^2.6",
         "spatie/browsershot": "^5.4",
         "spatie/enum": "*",
+        "spatie/laravel-backup": "^10.3",
         "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-pdf": "^2.12",
         "spatie/laravel-permission": "^8.0",
