@@ -20,5 +20,4 @@
             <livewire:product-filters />
         </div>
     </main>
-
 </x-layouts.public>

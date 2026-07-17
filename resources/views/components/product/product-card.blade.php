@@ -25,14 +25,7 @@
             </div>
         </a>
         @auth
-            <button type="button" data-favorite="{{ $product->id }}" data-favorited="{{ $isFavorited ? 'true' : 'false' }}"
-                onclick="toggleFavorite(this)"
-                class="absolute bottom-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm backdrop-blur-sm transition-all hover:scale-110 "
-                title="{{ $isFavorited ? 'Remove from favorites' : 'Add to favorites' }}">
-
-                @svg('heroicon-o-heart', 'h-6 w-6 text-red-500' . ($isFavorited ? ' hidden' : ''))
-                @svg('heroicon-s-heart', 'h-6 w-6 text-red-500' . ($isFavorited ? '' : ' hidden'))
-            </button>
+            <x-product.favorite-button :product="$product" :is-favorited="$isFavorited" variant="absolute" />
         @endauth
     </div>
 
