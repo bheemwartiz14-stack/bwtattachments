@@ -141,7 +141,7 @@
                             Wholesale Price
                         </p>
 
-                        <p class="text-4xl font-bold text-green-600 mt-2">
+                        <p class="font-bold text-green-600 mt-2">
                             {{ config('app.currency_symbol') }}
                             {{ number_format($userPrice->final_price ?? $product->ddp_price,2) }}
                         </p>
