@@ -1,135 +1,175 @@
 @php
+    $userPrice = auth()->check()   ? $product->productPrices->firstWhere('user_id', auth()->id()) : null;
     $img = $product->getFirstMediaUrl('images');
-    $isFavorited =
-        auth()->check() &&
-        $product
-            ->favoritedByUsers()
-            ->where('user_id', auth()->id())
-            ->exists();
+    $isFavorited = auth()->check() && $product->favoritedByUsers()->where('user_id', auth()->id())->exists();
 @endphp
 
 <div
-    class="bg-white border border-gray-200 rounded-md overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+    class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition duration-300 overflow-hidden flex flex-col h-full">
 
-    {{-- Image --}}
+    {{-- Product Image --}}
     <div class="relative">
+
         <a href="{{ route('public.products.show', $product) }}" wire:navigate>
-            <div class="h-56 flex items-center justify-center p-6 bg-white">
-                @if ($img)
-                    <img src="{{ $img }}" alt="{{ $product->product_title }}" class="max-h-44 object-contain">
+
+            <div class="h-60 flex items-center justify-center bg-white p-6">
+
+                @if($img)
+                    <img
+                        src="{{ $img }}"
+                        alt="{{ $product->product_title }}"
+                        class="max-h-48 object-contain">
                 @else
-                    <div class="text-gray-400 text-sm">
+                    <div class="text-gray-400">
                         No Image
                     </div>
                 @endif
+
             </div>
+
         </a>
-        @auth
-            <x-product.favorite-button :product="$product" :is-favorited="$isFavorited" variant="absolute" />
-        @endauth
+
     </div>
 
-    <div class="px-4 pb-4 flex flex-col flex-1">
-
-        {{-- Code --}}
-        <p class="font-mono text-xs font-medium text-emerald-600 mt-2">{{ $product->product_code }}</p>
+    {{-- Body --}}
+    <div class="p-5 flex flex-col flex-1">
 
         {{-- Title --}}
         <a href="{{ route('public.products.show', $product) }}" wire:navigate>
-            <h3 class="font-semibold text-[14px] leading-5 text-gray-900 line-clamp-2 hover:text-blue-700">
+
+            <h3 class="text-xl font-bold text-slate-900 leading-7">
                 {{ $product->product_title }}
             </h3>
+
         </a>
 
-        {{-- Category --}}
-        <div class="flex flex-wrap gap-1 mt-2 mb-3">
+        {{-- Categories --}}
+        <div class="flex flex-wrap gap-2 mt-3">
 
-            @if ($product->category)
-                <span class="bg-blue-50 text-blue-700 text-[11px] px-2 py-1 rounded">
+            @if($product->category)
+                <span
+                    class="px-3 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium">
                     {{ $product->category->name }}
                 </span>
             @endif
 
-            @if ($product->subcategory)
-                <span class="bg-green-50 text-green-700 text-[11px] px-2 py-1 rounded">
+            @if($product->subcategory)
+                <span
+                    class="px-3 py-1 rounded-md bg-green-50 text-green-700 text-xs font-medium">
                     {{ $product->subcategory->name }}
                 </span>
             @endif
 
         </div>
 
-        {{-- Specs + Price --}}
-        <div class="flex justify-between gap-4 flex-1">
+        {{-- Specs --}}
+        <div class="grid grid-cols-2 gap-5 mt-6 flex-1">
 
             {{-- Left --}}
-            <div class="flex-1 text-[12px] text-gray-700 space-y-1">
+            <div class="space-y-3 text-sm">
 
-                @if ($product->machine_class)
+                @if($product->machine_class)
                     <div>
-                        <span class="text-gray-500">Machine Class:</span><br>
-                        <strong>{{ $product->machine_class }} t</strong>
+                        <p class="text-gray-500">Machine Class:</p>
+                        <p class="font-semibold">{{ $product->machine_class }} t</p>
                     </div>
                 @endif
 
-                @if ($product->connection)
+                @if($product->connection)
                     <div>
-                        <span class="text-gray-500">Connection:</span><br>
-                        <strong>{{ $product->connection->name }}</strong>
+                        <p class="text-gray-500">Connection:</p>
+                        <p class="font-semibold">{{ $product->connection->name }}</p>
                     </div>
                 @endif
 
-                @if ($product->weight)
+                @if($product->weight)
                     <div>
-                        <span class="text-gray-500">Weight:</span><br>
-                        <strong>{{ rtrim(rtrim(number_format($product->weight, 2, '.', ''), '0'), '.') }} kg</strong>
+                        <p class="text-gray-500">Weight:</p>
+                        <p class="font-semibold">
+                            {{ rtrim(rtrim(number_format($product->weight,2,'.',''),'0'),'.') }} kg
+                        </p>
                     </div>
                 @endif
 
-                @if ($product->width)
+                @if($product->width)
                     <div>
-                        <span class="text-gray-500">Width:</span><br>
-                        <strong>{{ rtrim(rtrim(number_format($product->width, 2, '.', ''), '0'), '.') }} mm</strong>
+                        <p class="text-gray-500">Width:</p>
+                        <p class="font-semibold">
+                            {{ rtrim(rtrim(number_format($product->width,2,'.',''),'0'),'.') }} mm
+                        </p>
                     </div>
                 @endif
 
-                @if ($product->volume)
+                @if($product->volume)
                     <div>
-                        <span class="text-gray-500">Volume:</span><br>
-                        <strong>{{ rtrim(rtrim(number_format($product->volume, 2, '.', ''), '0'), '.') }} m³</strong>
+                        <p class="text-gray-500">Volume:</p>
+                        <p class="font-semibold">
+                            {{ rtrim(rtrim(number_format($product->volume,2,'.',''),'0'),'.') }} m³
+                        </p>
                     </div>
                 @endif
 
             </div>
 
             {{-- Right --}}
-            <div class="text-right flex flex-col">
+            <div class="flex flex-col items-end text-right">
+
+                {{-- Product Code --}}
+                <div>
+                    <p class="font-mono text-sm font-semibold text-emerald-600">
+                        {{ $product->product_code }}
+                    </p>
+                </div>
+
+                {{-- Favorite --}}
+                @auth
+                    <div class="mt-5">
+                        <x-product.favorite-button
+                            :product="$product"
+                            :is-favorited="$isFavorited" />
+                    </div>
+                @endauth
+
+                <div class="flex-1"></div>
 
                 @auth
-                    <div>
-                        <div class="text-xs text-gray-600 font-semibold uppercase">
-                            Wholesale Price
-                        </div>
-                        @php
-                            $userPrice = $product->productPrices->firstWhere('user_id', auth()->id());
-                        @endphp
 
-                        <div class="text-2xl font-bold text-green-600 my-3">
+                    {{-- Price --}}
+                    <div>
+
+                        <p class="text-xs uppercase font-semibold tracking-wide text-gray-500">
+                            Wholesale Price
+                        </p>
+
+                        <p class="text-4xl font-bold text-green-600 mt-2">
                             {{ config('app.currency_symbol') }}
-                            {{ number_format($userPrice->final_price ?? $product->ddp_price, 2) }}
-                        </div>
+                            {{ number_format($userPrice->final_price ?? $product->ddp_price,2) }}
+                        </p>
+
                     </div>
+
+                    {{-- Button --}}
                     @role('Wholesale Client|Reseller')
-                        <a  class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded text-sm font-semibold"href="{{ auth()->user()->hasRole('Wholesale Client')
-                            ? route('client.quotations.create')
-                            : route('reseller.quotations.create') }}"
-                            wire:navigate>
+
+                        <a
+                            href="{{ auth()->user()->hasRole('Wholesale Client')
+                                ? route('client.quotations.create')
+                                : route('reseller.quotations.create') }}"
+                            wire:navigate
+                            class="mt-5 w-full rounded-md bg-orange-500 hover:bg-orange-600 text-white text-center py-3 text-sm font-semibold transition">
+
                             Add To Quotation
+
                         </a>
+
                     @endrole
-                    @endif
-                </div>
+
+                @endauth
 
             </div>
 
         </div>
+
     </div>
+
+</div>

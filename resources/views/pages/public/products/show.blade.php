@@ -36,6 +36,12 @@
                     foreach ($galleryMedia as $m) {
                         $allImages->push($m);
                     }
+                    $isFavorited =
+                        auth()->check() &&
+                        $product
+                            ->favoritedByUsers()
+                            ->where('user_id', auth()->id())
+                            ->exists();
                 @endphp
                 <div class="space-y-4" id="productGallery">
                     <div class="relative group overflow-hidden rounded-2xl bg-slate-50">
@@ -165,6 +171,13 @@
                             @endif
                         </div>
                     @endif
+                    <div class="relative bg-white rounded-2xl">
+                        @auth
+                            <x-product.favorite-button :product="$product" :is-favorited="$isFavorited" variant="absolute" />
+                        @endauth
+
+                    </div>
+
                     {{-- Specs Grid --}}
                     @php
                         $specs = [
@@ -286,9 +299,10 @@
                                     @endif
                                 @endrole
                                 @role('Wholesale Client|Reseller')
-                                    <a class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors" href="{{ auth()->user()->hasRole('Wholesale Client')
-                                        ? route('client.quotations.create')
-                                        : route('reseller.quotations.create') }}"
+                                    <a class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors"
+                                        href="{{ auth()->user()->hasRole('Wholesale Client')
+                                            ? route('client.quotations.create')
+                                            : route('reseller.quotations.create') }}"
                                         wire:navigate>
                                         Add To Quotation
                                     </a>
