@@ -10,7 +10,7 @@
         'absolute' => 'absolute bottom-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 shadow-sm backdrop-blur-sm transition-all hover:scale-110',
         default => 'inline-flex items-center justify-center rounded-lg p-2 text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400',
     };
-    $iconSize = $variant === 'absolute' ? 'h-6 w-6' : 'h-5 w-5';
+    $iconSize = 'h-7 w-7';
 @endphp
 
 <button type="button"
