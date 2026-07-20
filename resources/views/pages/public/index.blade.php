@@ -8,9 +8,11 @@
             Browse Excavator attachments, Wheel Loader attachments, Wear- and Spare parts. Reseller login required to
             view prices.
         </p>
-        <div class="">
+    </section>
+    <section class="w-full">
+        <div class="mx-auto max-w-[1700px] px-5 sm:px-8">
             <img src="{{ asset('images/unnamed.jpg') }}" alt="Attachments"
-                class="mx-auto mt-6 max-w-full h-auto rounded-lg shadow-md" width="1321" height="675">
+                class="w-full h-auto rounded-lg shadow-md">
         </div>
     </section>
 
