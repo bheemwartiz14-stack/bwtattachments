@@ -1,16 +1,16 @@
 <div>
-    <div class="flex items-stretch overflow-hidden rounded-xl border border-gray-300 bg-white shadow-sm mb-4">
-        <div class="flex flex-1 items-center gap-3 px-5">
-            <svg class="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+    <div class="flex items-stretch overflow-hidden rounded-xl border border-gray-300 bg-white shadow-sm mb-3">
+        <div class="flex flex-1 items-center gap-3 px-4">
+            <svg class="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input type="text" wire:model.live.debounce.300ms="search"
                 placeholder="Search product code or description"
-                class="min-w-0 flex-1 border-0 bg-transparent py-3.5 sm:py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0" />
+                class="min-w-0 flex-1 border-0 bg-transparent py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0" />
         </div>
         <button type="submit"
-            class="bg-black px-6 sm:px-8 text-sm sm:text-base font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800">
+            class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800">
             Search
         </button>
     </div>
@@ -64,8 +64,8 @@
             x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-2">
-            <div class="p-5 sm:p-6 space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="p-4 space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Category</label>
                         <select x-model="localCategory" id="filterCategory"
@@ -142,13 +142,13 @@
 
     <div wire:loading.remove.delay.longest wire:target="applyFilters, search">
         @if ($products->count())
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach ($products as $product)
                     <x-product.product-card :product="$product" />
                 @endforeach
             </div>
 
-            <div class="mt-8">
+            <div class="mt-6">
                 {{ $products->links() }}
             </div>
         @endif

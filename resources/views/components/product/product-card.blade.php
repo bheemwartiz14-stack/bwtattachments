@@ -12,7 +12,7 @@
 
         <a href="{{ route('public.products.show', $product) }}" wire:navigate>
 
-            <div class="h-60 flex items-center justify-center bg-white p-6">
+            <div class="h-44 flex items-center justify-center bg-white p-4">
 
                 @if($img)
                     <img
@@ -32,19 +32,19 @@
     </div>
 
     {{-- Body --}}
-    <div class="p-5 flex flex-col flex-1">
+    <div class="p-4 flex flex-col flex-1">
 
         {{-- Title --}}
         <a href="{{ route('public.products.show', $product) }}" wire:navigate>
 
-            <h3 class="text-xl font-bold text-slate-900 leading-7">
+            <h3 class="text-base font-bold text-slate-900 leading-5">
                 {{ $product->product_title }}
             </h3>
 
         </a>
 
         {{-- Categories --}}
-        <div class="flex flex-wrap gap-2 mt-3">
+        <div class="flex flex-wrap gap-1.5 mt-2">
 
             @if($product->category)
                 <span
@@ -63,10 +63,10 @@
         </div>
 
         {{-- Specs --}}
-        <div class="grid grid-cols-2 gap-5 mt-6 flex-1">
+        <div class="grid grid-cols-2 gap-3 mt-3 flex-1">
 
             {{-- Left --}}
-            <div class="space-y-3 text-sm">
+            <div class="space-y-1.5 text-xs">
 
                 @if($product->machine_class)
                     <div>
@@ -123,7 +123,7 @@
 
                 {{-- Favorite --}}
                 @auth
-                    <div class="mt-5">
+                    <div class="mt-2">
                         <x-product.favorite-button
                             :product="$product"
                             :is-favorited="$isFavorited" />
@@ -141,7 +141,7 @@
                             Wholesale Price
                         </p>
 
-                        <p class="font-bold text-green-600 mt-2">
+                        <p class="font-bold text-green-600 mt-1">
                             {{ config('app.currency_symbol') }}
                             {{ number_format($userPrice->final_price ?? $product->ddp_price,2) }}
                         </p>
@@ -156,7 +156,7 @@
                                 ? route('client.quotations.create')
                                 : route('reseller.quotations.create') }}"
                             wire:navigate
-                            class="mt-5 w-full rounded-md bg-orange-500 hover:bg-orange-600 text-white text-center py-3 text-sm font-semibold transition">
+                            class="mt-3 w-full rounded-md bg-orange-500 hover:bg-orange-600 text-white text-center py-2 text-xs font-semibold transition">
 
                             Add To Quotation
 
