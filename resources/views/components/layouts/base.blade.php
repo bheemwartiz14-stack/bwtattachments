@@ -14,7 +14,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ config('app.asset_url') }}/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <link rel="manifest" href="{{ config('app.asset_url') }}/site.webmanifest">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
     <style>
@@ -45,27 +44,8 @@
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/product.js') }}"></script>
 
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     @livewireScripts
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-out-cubic',
-                once: true,
-                offset: 50,
-            });
-        });
-        document.addEventListener('livewire:navigated', function() {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-out-cubic',
-                once: true,
-                offset: 50,
-            });
-        });
-    </script>
     @stack('scripts')
 </body>
 

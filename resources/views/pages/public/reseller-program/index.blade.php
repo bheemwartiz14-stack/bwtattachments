@@ -50,8 +50,8 @@
     <main class="mx-auto max-w-[1440px] px-4 sm:px-8 py-12">
         {{-- Page Title --}}
         <div class="mb-14 border-b border-gray-300 pb-8 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900" data-aos="fade-up">Become a reseller</h1>
-        <p class="text-gray-600 mt-2 text-lg" data-aos="fade-up" data-aos-delay="100">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Become a reseller</h1>
+        <p class="text-gray-600 mt-2 text-lg">
            Expand Your Product Range with BWT Attachments
         </p>
         </div>
