@@ -43,7 +43,7 @@
                             ->where('user_id', auth()->id())
                             ->exists();
                 @endphp
-                <div class="space-y-4" id="productGallery">
+                <div class="space-y-4" id="productGallery" data-current="0">
                     <div class="relative group overflow-hidden rounded-2xl bg-slate-50 aspect-[3/2]">
                         @foreach ($allImages as $i => $img)
                             <img src="{{ $img->getUrl() }}" alt="{{ $product->product_title }}"
@@ -347,5 +347,20 @@
             </button>
         </div>
     </div>
-
+<script>
+function openGalleryLightbox() {
+    var gallery = document.getElementById('productGallery');
+    if (!gallery) return;
+    var current = parseInt(gallery.dataset.current) || 0;
+    var images = gallery.querySelectorAll('.gallery-image');
+    if (!images.length) return;
+    var src = images[current].getAttribute('src');
+    if (!src) return;
+    document.getElementById('lightboxImage').setAttribute('src', src);
+    var lb = document.getElementById('lightbox');
+    lb.classList.remove('opacity-0', 'pointer-events-none');
+    lb.classList.add('opacity-100');
+    document.body.style.overflow = 'hidden';
+}
+</script>
 </x-layouts.public>

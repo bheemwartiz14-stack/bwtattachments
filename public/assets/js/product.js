@@ -94,7 +94,7 @@ function galleryShowImage(index) {
     if (!total) return;
     if (index < 0) index = total - 1;
     if (index >= total) index = 0;
-    $gallery.data('current', index);
+    $gallery.data('current', index).attr('data-current', index);
     $images.each(function (i) { $(this).toggle(i === index); });
     $gallery.find('.gallery-dot').each(function (i) {
         $(this).toggleClass('bg-white w-5', i === index).toggleClass('bg-white/50 w-2', i !== index);
@@ -106,12 +106,12 @@ function galleryShowImage(index) {
 
 $(document).on('click', '.gallery-prev', function () {
     var $g = $('#productGallery');
-    galleryShowImage(($g.data('current') || 0) - 1);
+    galleryShowImage((parseInt($g.attr('data-current')) || 0) - 1);
 });
 
 $(document).on('click', '.gallery-next', function () {
     var $g = $('#productGallery');
-    galleryShowImage(($g.data('current') || 0) + 1);
+    galleryShowImage((parseInt($g.attr('data-current')) || 0) + 1);
 });
 
 $(document).on('click', '.gallery-dot', function () {
@@ -132,11 +132,12 @@ $(document).on('click', '.gallery-expand', function () {
 });
 
 window.openGalleryLightbox = function () {
+    console.log('openGalleryLightbox');
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
     var $images = $gallery.find('.gallery-image');
     if (!$images.length) return;
-    var idx = $gallery.data('current') || 0;
+    var idx = parseInt($gallery.attr('data-current')) || 0;
     $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
     $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
     $('body').css('overflow', 'hidden');
@@ -154,12 +155,12 @@ window.galleryCloseLightbox = function () {
 window.galleryPrevLightbox = function () {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
-    var idx = ($gallery.data('current') || 0) - 1;
+    var idx = (parseInt($gallery.attr('data-current')) || 0) - 1;
     var $images = $gallery.find('.gallery-image');
     var total = $images.length;
     if (idx < 0) idx = total - 1;
     if (idx >= total) idx = 0;
-    $gallery.data('current', idx);
+    $gallery.data('current', idx).attr('data-current', idx);
     $images.each(function (i) { $(this).toggle(i === idx); });
     $gallery.find('.gallery-dot').each(function (i) {
         $(this).toggleClass('bg-white w-5', i === idx).toggleClass('bg-white/50 w-2', i !== idx);
@@ -170,12 +171,12 @@ window.galleryPrevLightbox = function () {
 window.galleryNextLightbox = function () {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
-    var idx = ($gallery.data('current') || 0) + 1;
+    var idx = (parseInt($gallery.attr('data-current')) || 0) + 1;
     var $images = $gallery.find('.gallery-image');
     var total = $images.length;
     if (idx < 0) idx = total - 1;
     if (idx >= total) idx = 0;
-    $gallery.data('current', idx);
+    $gallery.data('current', idx).attr('data-current', idx);
     $images.each(function (i) { $(this).toggle(i === idx); });
     $gallery.find('.gallery-dot').each(function (i) {
         $(this).toggleClass('bg-white w-5', i === idx).toggleClass('bg-white/50 w-2', i !== idx);
