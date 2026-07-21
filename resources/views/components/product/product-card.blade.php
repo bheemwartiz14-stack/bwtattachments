@@ -137,11 +137,11 @@
                     {{-- Price --}}
                     <div>
 
-                        <p class="text-xs uppercase font-semibold tracking-wide text-gray-500">
+                        <p class="text-sm uppercase font-semibold tracking-wide text-gray-500">
                             Wholesale Price
                         </p>
 
-                        <p class="font-bold text-green-600 mt-1">
+                       <p class="text-xl font-bold text-green-600 mt-1">
                             {{ config('app.currency_symbol') }}
                             {{ number_format($userPrice->final_price ?? $product->ddp_price,2) }}
                         </p>
