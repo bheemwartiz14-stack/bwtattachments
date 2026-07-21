@@ -1,13 +1,3 @@
-/**
- * --------------------------------------------------------------------------
- * BWT Attachments — Product Module
- * --------------------------------------------------------------------------
- * Handles: category/subcategory chained selects, Trix editor sync,
- * favorite toggling, product image gallery, lightbox, and file preview.
- * Written with full jQuery.
- * --------------------------------------------------------------------------
- */
-
 $(function () {
     initCategorySubcategory();
 });
@@ -17,10 +7,6 @@ $(document).on('livewire:navigated', function () {
     $('body').css('overflow', '');
 });
 
-/**
- * Category / Subcategory chained dropdowns
- * Loads subcategories via AJAX when a category is selected.
- */
 function initCategorySubcategory() {
     var $category = $('#category_id');
     var $subcategory = $('#subcategory_id');
@@ -28,12 +14,10 @@ function initCategorySubcategory() {
 
     function loadSubcategories(id, selected) {
         $subcategory.html('<option value="">Loading...</option>').prop('disabled', true);
-
         if (!id) {
             $subcategory.html('<option value="">Select Category first</option>').prop('disabled', true);
             return;
         }
-
         $.get('/admin/categories/' + id + '/subcategories', function (res) {
             $subcategory.html('<option value="">Select Subcategory</option>').prop('disabled', false);
             if (res.data) {
@@ -75,17 +59,6 @@ window.toggleFavorite = function(btn) {
     });
 };
 
-// --- Gallery (event delegation — survives Livewire navigation) ---
-
-function galleryGetImages() {
-    var $gallery = $('#productGallery');
-    return $gallery.length ? $gallery.find('.gallery-image') : $();
-}
-
-function galleryImageCount() {
-    return galleryGetImages().length;
-}
-
 function galleryShowImage(index) {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
@@ -117,31 +90,6 @@ $(document).on('click', '.gallery-next', function () {
 $(document).on('click', '.gallery-dot', function () {
     galleryShowImage($(this).data('index'));
 });
-
-$(document).on('click', '.gallery-expand', function () {
-    console.log('gallery-expand clicked');
-    var $gallery = $(this).closest('#productGallery');
-    if (!$gallery.length) $gallery = $('#productGallery');
-    if (!$gallery.length) return;
-    var $images = $gallery.find('.gallery-image');
-    var idx = $gallery.data('current') || 0;
-    if (!$images.length) return;
-    $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
-    $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
-    $('body').css('overflow', 'hidden');
-});
-
-window.openGalleryLightbox = function () {
-    console.log('openGalleryLightbox');
-    var $gallery = $('#productGallery');
-    if (!$gallery.length) return;
-    var $images = $gallery.find('.gallery-image');
-    if (!$images.length) return;
-    var idx = parseInt($gallery.attr('data-current')) || 0;
-    $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
-    $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
-    $('body').css('overflow', 'hidden');
-};
 
 window.showGalleryImage = function (index) {
     galleryShowImage(index);
