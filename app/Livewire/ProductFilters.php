@@ -8,6 +8,7 @@ use App\Models\Connection;
 use App\Models\Subcategory;
 use App\Services\ProductService;
 use Illuminate\View\View;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,19 +16,16 @@ class ProductFilters extends Component
 {
     use WithPagination;
 
+    #[Url(except: '')]
     public string $search = '';
+    #[Url(except: '')]
     public string $category = '';
+    #[Url(except: '')]
     public string $subcategory = '';
+    #[Url(except: '')]
     public string $connection = '';
+    #[Url(except: '')]
     public string $machine_class = '';
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'category' => ['except' => ''],
-        'subcategory' => ['except' => ''],
-        'connection' => ['except' => ''],
-        'machine_class' => ['except' => ''],
-    ];
 
     public function updatingSearch(): void
     {
