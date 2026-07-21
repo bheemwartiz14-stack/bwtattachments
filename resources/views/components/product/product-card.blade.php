@@ -137,7 +137,7 @@
                     {{-- Price --}}
                     <div>
 
-                        <p class="text-sm uppercase font-semibold tracking-wide text-gray-500">
+                        <p class="text-xs uppercase font-semibold tracking-wide text-gray-500">
                             Wholesale Price
                         </p>
 
