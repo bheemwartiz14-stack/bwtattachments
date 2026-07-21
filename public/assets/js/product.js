@@ -119,6 +119,7 @@ $(document).on('click', '.gallery-dot', function () {
 });
 
 $(document).on('click', '.gallery-expand', function () {
+    console.log('gallery-expand clicked');
     var $gallery = $(this).closest('#productGallery');
     if (!$gallery.length) $gallery = $('#productGallery');
     if (!$gallery.length) return;
