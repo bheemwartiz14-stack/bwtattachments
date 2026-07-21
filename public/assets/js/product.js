@@ -8,17 +8,13 @@
  * --------------------------------------------------------------------------
  */
 
-// Init on DOM ready
 $(function () {
     initCategorySubcategory();
-    initProductGallery();
 });
 
-// Re-init gallery after Livewire navigation
 $(document).on('livewire:navigated', function () {
     $('#lightbox').removeClass('opacity-100').addClass('opacity-0 pointer-events-none');
     $('body').css('overflow', '');
-    initProductGallery();
 });
 
 /**
@@ -59,20 +55,6 @@ function initCategorySubcategory() {
     });
 }
 
-function initTrix() {
-    var $editor = $('trix-editor');
-    console.log('zxcxzcxzxzc');
-    // if (!$editor.length) return;
-    // var inputId = $editor.attr('input');
-    // var $input = $('#' + inputId);
-    // if (!$input.length) return;
-    // $editor.on('trix-initialize', function () {
-    //     if ($input.val() && !this.editor.getValue()) {
-    //         this.editor.loadHTML($input.val());
-    //     }
-    // });
-}
-
 window.toggleFavorite = function(btn) {
     var $btn = $(btn);
     var productId = $btn.data('favorite');
@@ -93,70 +75,62 @@ window.toggleFavorite = function(btn) {
     });
 };
 
-function initProductGallery() {
+// --- Gallery (event delegation — survives Livewire navigation) ---
+
+function galleryGetImages() {
     var $gallery = $('#productGallery');
-    if (!$gallery.length) return;
-
-    var $images = $gallery.find('.gallery-image');
-    var $dots = $gallery.find('.gallery-dot');
-    var total = $images.length;
-
-    $gallery.data('current', 0);
-
-    function showImage(index) {
-        if (index < 0) index = total - 1;
-        if (index >= total) index = 0;
-        $gallery.data('current', index);
-        $images.each(function (i) {
-            $(this).toggle(i === index);
-        });
-        $dots.each(function (i) {
-            $(this).toggleClass('bg-white w-5', i === index).toggleClass('bg-white/50 w-2', i !== index);
-        });
-        var $thumbs = $gallery.find('.gallery-thumb');
-        $thumbs.each(function (i) {
-            $(this).toggleClass('ring-2 ring-bwtblue', i === index).toggleClass('ring-0 hover:ring-1 hover:ring-slate-300', i !== index);
-        });
-    }
-
-    $gallery.find('.gallery-prev').on('click', function () {
-        showImage($gallery.data('current') - 1);
-    });
-
-    $gallery.find('.gallery-next').on('click', function () {
-        showImage($gallery.data('current') + 1);
-    });
-
-    $gallery.find('.gallery-dot').on('click', function () {
-        showImage($(this).data('index'));
-    });
-
-    $gallery.find('.gallery-expand').on('click', function () {
-        var idx = $gallery.data('current');
-        $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
-        $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
-        $('body').css('overflow', 'hidden');
-    });
+    return $gallery.length ? $gallery.find('.gallery-image') : $();
 }
 
-window.showGalleryImage = function (index) {
+function galleryImageCount() {
+    return galleryGetImages().length;
+}
+
+function galleryShowImage(index) {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
     var $images = $gallery.find('.gallery-image');
-    var $dots = $gallery.find('.gallery-dot');
-    var $thumbs = $gallery.find('.gallery-thumb');
     var total = $images.length;
-    if (index < 0) index = 0;
-    if (index >= total) index = total - 1;
+    if (!total) return;
+    if (index < 0) index = total - 1;
+    if (index >= total) index = 0;
     $gallery.data('current', index);
     $images.each(function (i) { $(this).toggle(i === index); });
-    $dots.each(function (i) {
+    $gallery.find('.gallery-dot').each(function (i) {
         $(this).toggleClass('bg-white w-5', i === index).toggleClass('bg-white/50 w-2', i !== index);
     });
-    $thumbs.each(function (i) {
+    $gallery.find('.gallery-thumb').each(function (i) {
         $(this).toggleClass('ring-2 ring-bwtblue', i === index).toggleClass('ring-0 hover:ring-1 hover:ring-slate-300', i !== index);
     });
 }
+
+$(document).on('click', '.gallery-prev', function () {
+    var $g = $('#productGallery');
+    galleryShowImage(($g.data('current') || 0) - 1);
+});
+
+$(document).on('click', '.gallery-next', function () {
+    var $g = $('#productGallery');
+    galleryShowImage(($g.data('current') || 0) + 1);
+});
+
+$(document).on('click', '.gallery-dot', function () {
+    galleryShowImage($(this).data('index'));
+});
+
+$(document).on('click', '.gallery-expand', function () {
+    var $gallery = $('#productGallery');
+    if (!$gallery.length) return;
+    var $images = $gallery.find('.gallery-image');
+    var idx = $gallery.data('current') || 0;
+    $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
+    $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
+    $('body').css('overflow', 'hidden');
+});
+
+window.showGalleryImage = function (index) {
+    galleryShowImage(index);
+};
 
 window.galleryCloseLightbox = function () {
     $('#lightbox').removeClass('opacity-100').addClass('opacity-0 pointer-events-none');
@@ -166,10 +140,11 @@ window.galleryCloseLightbox = function () {
 window.galleryPrevLightbox = function () {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
-    var idx = $gallery.data('current') - 1;
+    var idx = ($gallery.data('current') || 0) - 1;
     var $images = $gallery.find('.gallery-image');
     var total = $images.length;
     if (idx < 0) idx = total - 1;
+    if (idx >= total) idx = 0;
     $gallery.data('current', idx);
     $images.each(function (i) { $(this).toggle(i === idx); });
     $gallery.find('.gallery-dot').each(function (i) {
@@ -181,9 +156,10 @@ window.galleryPrevLightbox = function () {
 window.galleryNextLightbox = function () {
     var $gallery = $('#productGallery');
     if (!$gallery.length) return;
-    var idx = $gallery.data('current') + 1;
+    var idx = ($gallery.data('current') || 0) + 1;
     var $images = $gallery.find('.gallery-image');
     var total = $images.length;
+    if (idx < 0) idx = total - 1;
     if (idx >= total) idx = 0;
     $gallery.data('current', idx);
     $images.each(function (i) { $(this).toggle(i === idx); });
