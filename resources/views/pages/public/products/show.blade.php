@@ -3,6 +3,25 @@
 
     <main class="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         <div class="max-w-[1700px] mx-auto px-6 lg:px-8 py-6">
+             <div class="mb-5">
+        <a href="{{ url()->previous() }}"
+            class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 19l-7-7 7-7" />
+            </svg>
+
+            <span>Back to Products</span>
+        </a>
+    </div>
+
 
             {{-- Breadcrumb --}}
             <nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
