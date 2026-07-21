@@ -51,7 +51,7 @@
                                 class="gallery-image absolute inset-0 w-full h-full object-contain @if ($i > 0) hidden @endif">
                         @endforeach
 
-                        <button type="button"
+                        <button type="button" onclick="openGalleryLightbox()"
                             class="gallery-expand absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-white">
                             <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">

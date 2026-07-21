@@ -119,14 +119,27 @@ $(document).on('click', '.gallery-dot', function () {
 });
 
 $(document).on('click', '.gallery-expand', function () {
-    var $gallery = $('#productGallery');
+    var $gallery = $(this).closest('#productGallery');
+    if (!$gallery.length) $gallery = $('#productGallery');
     if (!$gallery.length) return;
     var $images = $gallery.find('.gallery-image');
     var idx = $gallery.data('current') || 0;
+    if (!$images.length) return;
     $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
     $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
     $('body').css('overflow', 'hidden');
 });
+
+window.openGalleryLightbox = function () {
+    var $gallery = $('#productGallery');
+    if (!$gallery.length) return;
+    var $images = $gallery.find('.gallery-image');
+    if (!$images.length) return;
+    var idx = $gallery.data('current') || 0;
+    $('#lightboxImage').attr('src', $images.eq(idx).attr('src'));
+    $('#lightbox').removeClass('opacity-0 pointer-events-none').addClass('opacity-100');
+    $('body').css('overflow', 'hidden');
+};
 
 window.showGalleryImage = function (index) {
     galleryShowImage(index);
