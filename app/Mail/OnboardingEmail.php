@@ -18,7 +18,7 @@ class OnboardingEmail extends Mailable
     {
         $label = match ($this->userType) {
             'wholesale' => 'Wholesale Client',
-            'retailer'  => 'Retailer Client',
+            'reseller'  => 'Reseller',
             'customer'  => 'Customer Client',
             default     => 'Account',
         };

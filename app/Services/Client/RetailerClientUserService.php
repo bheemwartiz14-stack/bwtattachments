@@ -27,7 +27,7 @@ class RetailerClientUserService
             $user = $this->userService->create($data);
             $this->processMetaAndMargin($user, $data, $plainPassword);
             $user->load(['userMeta']);
-            event(new WelcomeOnboardingUser($user, $plainPassword, 'retailer'));
+            event(new WelcomeOnboardingUser($user, $plainPassword, 'reseller'));
             return $user;
         });
     }
@@ -80,7 +80,7 @@ class RetailerClientUserService
             role_name: $user->roles->pluck('name')->first(),
             name: $user->name,
             margin_type: 'percentage',
-            type: 'retailer',
+            type: 'reseller',
             margin_value: $margin,
         )));
     }
