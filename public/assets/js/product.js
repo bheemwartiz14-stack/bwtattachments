@@ -77,6 +77,23 @@ function galleryShowImage(index) {
     });
 }
 
+document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.gallery-expand');
+    if (!btn) return;
+    var gallery = document.getElementById('productGallery');
+    if (!gallery) return;
+    var current = parseInt(gallery.getAttribute('data-current')) || 0;
+    var images = gallery.querySelectorAll('.gallery-image');
+    if (!images.length) return;
+    var src = images[current].getAttribute('src');
+    if (!src) return;
+    document.getElementById('lightboxImage').setAttribute('src', src);
+    var lb = document.getElementById('lightbox');
+    lb.classList.remove('opacity-0', 'pointer-events-none');
+    lb.classList.add('opacity-100');
+    document.body.style.overflow = 'hidden';
+});
+
 $(document).on('click', '.gallery-prev', function () {
     var $g = $('#productGallery');
     galleryShowImage((parseInt($g.attr('data-current')) || 0) - 1);
