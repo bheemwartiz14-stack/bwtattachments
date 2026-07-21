@@ -348,7 +348,9 @@
         </div>
     </div>
 <script>
+console.log('show-page-script-loaded');
 function openGalleryLightbox() {
+    console.log('openGalleryLightbox-call');
     var gallery = document.getElementById('productGallery');
     if (!gallery) return;
     var current = parseInt(gallery.dataset.current) || 0;
