@@ -3,24 +3,19 @@
 
     <main class="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         <div class="max-w-[1700px] mx-auto px-6 lg:px-8 py-6">
-             <div class="mb-5">
-        <a href="{{ url()->previous() }}"
-            class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md">
+            <div class="mb-5">
+                <a href="{{ url()->previous() }}"
+                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md">
 
-            <svg xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2">
-                <path stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15 19l-7-7 7-7" />
-            </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
 
-            <span>Back to Products</span>
-        </a>
-    </div>
+                    <span>Back to Products</span>
+                </a>
+            </div>
 
 
             {{-- Breadcrumb --}}
@@ -70,7 +65,8 @@
                                 class="gallery-image absolute inset-0 w-full h-full object-contain @if ($i > 0) hidden @endif">
                         @endforeach
 
-                        <button type="button" onclick="openLightbox()" class="gallery-expand absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-white">
+                        <button type="button" onclick="openLightbox()"
+                            class="gallery-expand absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 hover:bg-white">
                             <svg class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -114,7 +110,8 @@
                             @foreach ($allImages as $i => $img)
                                 <button type="button" onclick="showGalleryImage({{ $i }})"
                                     class="gallery-thumb flex-shrink-0 w-28 h-[4.66rem] sm:w-32 sm:h-[5.33rem] rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md @if ($i === 0) ring-2 ring-bwtblue @else ring-1 ring-slate-200 hover:ring-slate-300 @endif">
-                                    <img src="{{ $img->getUrl() }}" alt="" class="w-full h-full object-contain bg-slate-50">
+                                    <img src="{{ $img->getUrl() }}" alt=""
+                                        class="w-full h-full object-contain bg-slate-50">
                                 </button>
                             @endforeach
                         </div>
@@ -160,8 +157,8 @@
                             @if ($product->connection)
                                 <span
                                     class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 text-xs font-medium px-3 py-1.5 rounded-full border border-amber-200">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                        stroke-width="2">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.63a4.5 4.5 0 00-6.364-6.364L4.5 8.688a4.5 4.5 0 001.242 7.244" />
                                     </svg>
@@ -293,12 +290,12 @@
                         </h3>
                         @auth
                             @php
-                                $userPrice = $product->productPrices->firstWhere('user_id', auth()->id());
+                                $price = $product->price;
                             @endphp
-                            @if ($userPrice || $product->ddp_price)
+                            @if ($price)
                                 <div class="text-2xl font-bold text-green-600 my-3">
                                     {{ config('app.currency_symbol') }}
-                                    {{ number_format($userPrice->final_price ?? $product->ddp_price, 2) }}
+                                    {{ number_format($price, 2) }}
                                 </div>
                             @endif
                         @else
@@ -365,5 +362,5 @@
                 </svg>
             </button>
         </div>
-        </div>
+    </div>
 </x-layouts.public>

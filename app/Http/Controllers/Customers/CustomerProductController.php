@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Customers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Services\CategoryService;
 use App\Services\ConnectionService;
 use App\Services\ProductService;
@@ -44,12 +43,9 @@ class CustomerProductController extends Controller
         return view('pages.private.customer.products.index', compact('products', 'categories', 'subcategories', 'connections', 'favoritedIds'));
     }
 
-      public function show(string $id): View
+    public function show(string $id): View
     {
         $product = $this->productService->findById($id);
-        $userPrice = $product->productPrices->where('user_id', auth()->id())->first();
-        $displayPrice = $userPrice ? $userPrice->final_price : $product->ddp_price;
-        $product->load(['category', 'subcategory', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', auth()->id())]);
-        return view('pages.private.customer.products.show', compact('product', 'userPrice', 'displayPrice'));
+        return view('pages.private.customer.products.show', compact('product',));
     }
 }

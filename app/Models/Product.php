@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Models;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+
 #[Fillable([
     'category_id',
     'subcategory_id',
@@ -124,6 +126,48 @@ class Product extends Model implements HasMedia
     public function productPrices()
     {
         return $this->hasMany(ProductPrices::class);
+    }
+
+    public function getPriceAttribute(): float
+    {
+        return app(\App\Services\ProductPricingService::class)
+            ->getPrice($this);
+    }
+
+    public static function getPriceForUser(Product $product, User $user): ?ProductPrices
+    {
+        $roleName = $user->roles->pluck('name')->first();
+
+        if ($roleName === 'Wholesale Client') {
+            return $product->productPrices
+                ->where('user_id', $user->id)
+                ->where('type', 'wholesale')
+                ->first();
+        }
+
+        if ($roleName === 'Reseller') {
+            return $product->productPrices
+                ->where('user_id', $user->id)
+                ->where('type', 'reseller')
+                ->first()
+                ?? $product->productPrices
+                    ->where('type', 'wholesale')
+                    ->first();
+        }
+
+        if ($roleName === 'customer') {
+            return $product->productPrices
+                ->where('user_id', $user->id)
+                ->where('type', 'customer')
+                ->first()
+                ?? $product->productPrices
+                    ->where('type', 'wholesale')
+                    ->first();
+        }
+
+        return $product->productPrices
+            ->where('user_id', $user->id)
+            ->first();
     }
 
     public function favoritedByUsers()

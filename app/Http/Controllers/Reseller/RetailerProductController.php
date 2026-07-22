@@ -41,12 +41,9 @@ class RetailerProductController extends Controller
         return view('pages.private.reseller.products.index', compact('products', 'categories', 'subcategories', 'connections', 'favoritedIds'));
     }
 
-        public function show(string $id): View
+    public function show(string $id): View
     {
         $product = $this->productService->findById($id);
-        $userPrice = $product->productPrices->where('user_id', auth()->id())->first();
-        $displayPrice = $userPrice ? $userPrice->final_price : $product->ddp_price;
-        $product->load(['category', 'subcategory', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', auth()->id())]);
-        return view('pages.private.reseller.products.show', compact('product', 'userPrice', 'displayPrice'));
+        return view('pages.private.reseller.products.show', compact('product'));
     }
 }

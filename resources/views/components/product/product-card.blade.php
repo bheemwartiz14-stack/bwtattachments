@@ -138,17 +138,19 @@
                         <p class="text-xs uppercase font-semibold tracking-wide text-gray-500">
                             Wholesale Price
                         </p>
-
+                        @php
+                            $price = $product->price;
+                        @endphp
                         <p class="text-xl font-bold text-green-600 mt-1">
                             {{ config('app.currency_symbol') }}
-                            {{ number_format($userPrice->final_price ?? $product->ddp_price, 2) }}
+                            {{ number_format($price, 2) }}
                         </p>
 
                     </div>
 
                     {{-- Button --}}
                     @role('Wholesale Client|Reseller')
-                        <a       class="mt-3 w-full rounded-md bg-orange-500 hover:bg-orange-600 text-white text-center py-2 text-xs font-semibold transition"
+                        <a class="mt-3 w-full rounded-md bg-orange-500 hover:bg-orange-600 text-white text-center py-2 text-xs font-semibold transition"
                             href="{{ auth()->user()->hasRole('Wholesale Client')
                                 ? route('client.quotations.create', ['product_id' => $product->id])
                                 : route('reseller.quotations.create', ['product_id' => $product->id]) }}"

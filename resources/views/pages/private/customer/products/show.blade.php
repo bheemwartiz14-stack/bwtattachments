@@ -96,9 +96,9 @@
                     <div
                         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
-                            {{ $userPrice ? 'Wholesale Price' : 'DDP Price' }}</p>
+                            {{ $product->price ? 'Wholesale Price' : 'DDP Price' }}</p>
                         <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">
-                            {{ config('app.currency_symbol') }}{{ number_format($displayPrice, 2) }}</p>
+                            {{ config('app.currency_symbol') }}{{ number_format($product->price, 2) }}</p>
                     </div>
                     <div
                         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">

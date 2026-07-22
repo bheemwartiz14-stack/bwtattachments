@@ -160,11 +160,7 @@
                                         class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-600 dark:bg-neutral-800 dark:text-neutral-300">{{ $product->product_code }}</code>
                                 </td>
                                 @php
-                                    $userPriceModel = $product
-                                        ->productPrices()
-                                        ->where('user_id', auth()->id())
-                                        ->first();
-                                    $price = $userPriceModel ? (float) $userPriceModel->final_price  : (float) ($product->ddp_price ?? 0);
+                                    $price = $product->price;
                                 @endphp
                                 <td class="px-5 py-4 font-medium text-slate-900 dark:text-white">
                                     {{ config('app.currency_symbol') }}{{ number_format($price, 2) }}
