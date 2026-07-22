@@ -22,7 +22,7 @@ describe('Authorization', function () {
 
     test('client cannot access admin dashboard', function () {
         $client = User::factory()->create();
-        $client->assignRole('Wholesale Client');
+        $client->assignRole('Wholesale');
         $this->actingAs($client);
 
         $response = $this->get(route('admin.dashboard'));

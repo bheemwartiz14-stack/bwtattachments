@@ -26,12 +26,12 @@ test('super admin has all permissions', function () {
     expect($user->can('quotation.create'))->toBeTrue();
 });
 
-test('wholesale client has limited permissions', function () {
-    $role = Role::create(['name' => 'Wholesale Client', 'guard_name' => 'web']);
+test('Wholesale has limited permissions', function () {
+    $role = Role::create(['name' => 'Wholesale', 'guard_name' => 'web']);
     $role->givePermissionTo(['product.view', 'quotation.view', 'quotation.create', 'category.view']);
 
     $user = User::factory()->create();
-    $user->assignRole('Wholesale Client');
+    $user->assignRole('Wholesale');
 
     expect($user->can('product.view'))->toBeTrue();
     expect($user->can('quotation.create'))->toBeTrue();
@@ -50,11 +50,11 @@ test('admin can create products with permission', function () {
 });
 
 test('client cannot create products', function () {
-    $role = Role::create(['name' => 'Wholesale Client', 'guard_name' => 'web']);
+    $role = Role::create(['name' => 'Wholesale', 'guard_name' => 'web']);
     $role->givePermissionTo(['product.view', 'category.view']);
 
     $user = User::factory()->create();
-    $user->assignRole('Wholesale Client');
+    $user->assignRole('Wholesale');
 
     expect($user->can('product.create'))->toBeFalse();
 });

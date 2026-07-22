@@ -37,7 +37,7 @@ class ProfileController extends Controller
 
         $meta = $user->userMeta?->metadata ?? [];
         $roleData = match (true) {
-            $user->hasRole('Wholesale Client') => [
+            $user->hasRole('Wholesale') => [
                 'company_name' => $meta['wholesale_company_name'] ?? '',
                 'logo' => $user->getFirstMedia('wholesale_client_logo'),
             ],
@@ -149,7 +149,7 @@ class ProfileController extends Controller
     {
         return match (true) {
             $user->hasRole('Super Admin') => 'admin',
-            $user->hasRole('Wholesale Client') => 'client',
+            $user->hasRole('Wholesale') => 'client',
             $user->hasRole('Retailer') => 'retailer',
             $user->hasRole('customer') => 'customer',
             default => 'admin',

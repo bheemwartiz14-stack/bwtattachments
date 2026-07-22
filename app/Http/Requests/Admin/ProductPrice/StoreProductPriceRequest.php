@@ -27,7 +27,7 @@ class StoreProductPriceRequest extends FormRequest
         return [
             'product_id.required' => 'Please select a product.',
             'product_id.exists' => 'The selected product does not exist.',
-            'user_id.required' => 'Please select a wholesale client.',
+            'user_id.required' => 'Please select a Wholesale.',
             'user_id.exists' => 'The selected user does not exist.',
             'price.required' => 'Please enter the wholesale price.',
             'price.numeric' => 'Price must be a valid number.',

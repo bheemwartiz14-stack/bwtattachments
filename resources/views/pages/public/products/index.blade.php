@@ -115,7 +115,7 @@
                                     $quoteUrl = null;
                                     if (auth()->check()) {
                                         $user = auth()->user();
-                                        if ($user->hasRole('Wholesale Client')) {
+                                        if ($user->hasRole('Wholesale')) {
                                             $quoteUrl = route('client.quotations.create', ['product_id' => $product->id]);
                                         } elseif ($user->hasRole('Reseller') || $user->hasRole('Retailer')) {
                                             $quoteUrl = route('reseller.quotations.create', ['product_id' => $product->id]);

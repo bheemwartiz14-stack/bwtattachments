@@ -27,14 +27,14 @@ class WholesaleClientUserController extends Controller
     }
     public function create(): View
     {
-        $roles = $this->roleService->getByNames(['Wholesale Client']);
+        $roles = $this->roleService->getByNames(['Wholesale']);
         return view('pages.private.admin.wholesale-client-users.form', compact('roles'));
     }
 
     public function store(StoreWholesaleClientUserRequest $request): RedirectResponse
     {
         $this->wholesaleClientUserServices->create($request->validated());
-        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale client user created successfully.');
+        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale user created successfully.');
     }
 
     public function show(string $id): View
@@ -48,20 +48,20 @@ class WholesaleClientUserController extends Controller
     {
         $user = $this->wholesaleClientUserServices->findById($id);
         $userRole = $user->roles->first()?->name;
-        $roles = $this->roleService->getByNames(['Wholesale Client']);
+        $roles = $this->roleService->getByNames(['Wholesale']);
         return view('pages.private.admin.wholesale-client-users.form', compact('user', 'roles', 'userRole'));
     }
 
     public function update(UpdateWholesaleClientUserRequest $request, string $id): RedirectResponse
     {
         $this->wholesaleClientUserServices->update($id, $request->validated());
-        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale client user updated successfully.');
+        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale user updated successfully.');
     }
 
     public function destroy(string $id): RedirectResponse
     {
         $this->wholesaleClientUserServices->delete($id);
-        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale client user deleted successfully.');
+        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale user deleted successfully.');
     }
 
 }

@@ -24,7 +24,7 @@
                         <h1 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-neutral-100">Welcome back, {{ $user->name ?? 'Client' }}</h1>
                         <p class="mt-1 text-sm text-gray-500 dark:text-neutral-400">Here's what's happening with your account today.</p>
                     </div>
-                    <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">Wholesale Client</span>
+                    <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">Wholesale</span>
                 </div>
                 <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">

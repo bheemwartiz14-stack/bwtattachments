@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $totalProducts = Product::count();
         $totalCategories = Category::count();
         $totalSubcategories = Subcategory::count();
-        $totalClients = User::role('Wholesale Client')->count();
+        $totalClients = User::role('Wholesale')->count();
         $totalQuotations = Quotation::count();
         $totalUsers = User::count();
 
@@ -31,7 +31,7 @@ class DashboardController extends Controller
             'new_categories' => Category::where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
             'total_subcategories' => $totalSubcategories,
             'active_clients' => $totalClients,
-            'new_clients' => User::role('Wholesale Client')->where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
+            'new_clients' => User::role('Wholesale')->where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
             'total_quotations' => $totalQuotations,
             'weekly_quotations' => Quotation::where('created_at', '>=', Carbon::now()->startOfWeek())->count(),
             'monthly_quotations' => Quotation::where('created_at', '>=', Carbon::now()->startOfMonth())->count(),

@@ -3,7 +3,7 @@
 
     $iconMap = [
         'Dashboard' => 'heroicon-o-home',
-        'Manage WholeSale Client' => 'heroicon-o-users',
+        'Manage Wholesale' => 'heroicon-o-users',
         'Manage Retailer Users' => 'heroicon-o-user-group',
         'Manage Customer Users' => 'heroicon-o-users',
         'Categories' => 'heroicon-o-rectangle-stack',
@@ -19,7 +19,7 @@
 
     $rolePrefix = match (true) {
         $user->hasRole('Super Admin') => 'admin',
-        $user->hasRole('Wholesale Client') => 'client',
+        $user->hasRole('Wholesale') => 'client',
         $user->hasRole('Retailer') => 'retailer',
         $user->hasRole('customer') => 'customer',
         default => null,
@@ -29,7 +29,7 @@
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin.dashboard'],
             [
-                'label' => 'Manage WholeSale Client',
+                'label' => 'Manage WholeSale',
                 'route' => 'admin.wholesale-client-users.index',
                 'pattern' => 'admin.wholesale-client-users.*',
             ],
@@ -40,7 +40,7 @@
             ['label' => 'Site Settings', 'route' => 'admin.setting.genral-setting', 'pattern' => 'admin.setting.*'],
             ['label' => 'Terms & Conditions', 'route' => 'admin.terms.index', 'pattern' => 'admin.terms.*'],
         ];
-    } elseif ($user->hasRole('Wholesale Client')) {
+    } elseif ($user->hasRole('Wholesale')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
             [
@@ -56,7 +56,7 @@
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'reseller.dashboard', 'pattern' => 'reseller.dashboard'],
             [
-                'label' => 'Manage Customer Users',
+                'label' => 'Manage Customer',
                 'route' => 'reseller.customer-users.index',
                 'pattern' => 'reseller.customer-users.*',
             ],

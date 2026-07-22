@@ -11,7 +11,7 @@ class ClientMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->user()?->hasRole('Wholesale Client')) {
+        if (!auth()->user()?->hasRole('Wholesale')) {
             abort(403, 'Unauthorized access.');
         }
 

@@ -31,7 +31,7 @@ class ProfileService
                     'phone' => $data['phone'] ?? null,
                 ]);
 
-                if ($user->hasRole('Wholesale Client')) {
+                if ($user->hasRole('Wholesale')) {
                     $this->updateClientProfile($user, $data, 'wholesale');
                 }
 
@@ -105,7 +105,7 @@ class ProfileService
 
             return $user->fresh(['userMeta']);
         } catch (Exception $e) {
-            Log::error('Failed to delete wholesale client logo', [
+            Log::error('Failed to delete Wholesale logo', [
                 'user_id' => $user->id,
                 'error' => $e->getMessage(),
             ]);

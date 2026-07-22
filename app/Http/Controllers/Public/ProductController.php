@@ -79,8 +79,8 @@ class ProductController extends Controller
 
         $user = auth()->user();
 
-        if (!$user || !($user->hasRole('Wholesale Client') || $user->hasRole('Super Admin'))) {
-            abort(403, 'Unauthorized. Only wholesale clients can download PDF drawings.');
+        if (!$user || !($user->hasRole('Wholesale') || $user->hasRole('Super Admin'))) {
+            abort(403, 'Unauthorized. Only Wholesales can download PDF drawings.');
         }
 
         return response()->download($media->getPath(), $media->file_name);

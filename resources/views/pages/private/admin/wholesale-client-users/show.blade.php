@@ -1,6 +1,6 @@
 <x-layouts.app>
-    <x-slot:title>{{ $user->name }} - Wholesale Client - BWT</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Wholesale Clients', 'url' => route('admin.wholesale-client-users.index')], ['label' => $user->name]]" />
+    <x-slot:title>{{ $user->name }} - Wholesale - BWT</x-slot:title>
+    <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Wholesale', 'url' => route('admin.wholesale-client-users.index')], ['label' => $user->name]]" />
 
     @php
         $meta = $user->userMeta?->metadata ?? [];
@@ -34,7 +34,7 @@
                         <div class="mt-3 flex flex-wrap items-center gap-3">
                             <span class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-neutral-800 dark:text-neutral-400">
                                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-                                {{ $user->roles->first()?->name ?? 'Wholesale Client' }}
+                                {{ $user->roles->first()?->name ?? 'Wholesale' }}
                             </span>
                             <span class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-neutral-800 dark:text-neutral-400">
                                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -139,7 +139,7 @@
                                 <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Role</dt>
                                 <dd class="mt-1">
                                     <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                                        {{ $user->roles->first()?->name ?? 'Wholesale Client' }}
+                                        {{ 'Wholesale' }}
                                     </span>
                                 </dd>
                             </div>

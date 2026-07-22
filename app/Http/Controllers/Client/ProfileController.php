@@ -40,7 +40,7 @@ class ProfileController extends Controller
         $viewData['breadcrumbLabel'] = 'Client Portal';
         $viewData['breadcrumbRoute'] = 'client.dashboard';
         $viewData['hasCompany'] = true;
-        $viewData['roleLabel'] = 'Wholesale Client';
+        $viewData['roleLabel'] = 'Wholesale';
         $viewData['commissionPercentage'] = $user->userMargin?->margin_value;
 
         return view('pages.private.client.profile.edit', $viewData);

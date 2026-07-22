@@ -284,9 +284,9 @@
                     {{-- Pricing & CTA --}}
                     <div class="mt-6 bg-blue-50 rounded-md p-5">
                         <h3 class="font-semibold text-gray-900 text-sm mb-2">
-                            @auth Wholesale Client Area
+                            @auth Wholesale Area
                             @else
-                            Wholesale Client Area "" Login Required @endauth
+                            Wholesale Area "" Login Required @endauth
                         </h3>
                         @auth
                             @php
@@ -306,7 +306,7 @@
 
                         <div class="flex flex-wrap gap-3 mt-4">
                             @auth
-                                @role('Wholesale Client')
+                                @role('Wholesale')
                                     @if ($product->getFirstMedia('pdfs'))
                                         <a href="{{ route('public.products.pdf', $product) }}" wire:navigate target="_blank"
                                             class="inline-block bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
@@ -314,9 +314,9 @@
                                         </a>
                                     @endif
                                 @endrole
-                                @role('Wholesale Client|Reseller')
+                                @role('Wholesale|Reseller')
                                     <a class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors"
-                                        href="{{ auth()->user()->hasRole('Wholesale Client')
+                                        href="{{ auth()->user()->hasRole('Wholesale')
                                             ? route('client.quotations.create', ['product_id' => $product->id])
                                             : route('reseller.quotations.create', ['product_id' => $product->id]) }}"
                                         wire:navigate>

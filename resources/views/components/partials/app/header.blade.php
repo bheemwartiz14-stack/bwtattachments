@@ -2,7 +2,7 @@
     $user = auth()->user();
     $rolePrefix = match (true) {
         $user->hasRole('Super Admin') => 'admin',
-        $user->hasRole('Wholesale Client') => 'client',
+        $user->hasRole('Wholesale') => 'client',
         $user->hasRole('Reseller') => 'reseller',
         $user->hasRole('customer') => 'customer',
         default => 'client',

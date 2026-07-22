@@ -22,7 +22,7 @@ class StoreWholesaleClientUserRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'roles' => $this->input('role', $this->input('roles', 'Wholesale Client')),
+            'roles' => $this->input('role', $this->input('roles', 'Wholesale')),
         ]);
     }
 

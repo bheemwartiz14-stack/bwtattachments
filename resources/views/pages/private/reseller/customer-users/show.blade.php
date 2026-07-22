@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>{{ $user->name }} - Customers Client - BWT</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Dashboard', 'url' => route('reseller.dashboard')], ['label' => 'Retailer Clients', 'url' => route('reseller.customer-users.index')], ['label' => $user->name]]" />
+    <x-breadcrumb :items="[['label' => 'Dashboard', 'url' => route('reseller.dashboard')], ['label' => 'Retailer', 'url' => route('reseller.customer-users.index')], ['label' => $user->name]]" />
     @php
         $meta = $user->userMeta?->metadata ?? [];
         $margin = $user->userMargin?->margin_value ?? 0;

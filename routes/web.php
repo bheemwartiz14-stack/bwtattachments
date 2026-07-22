@@ -94,8 +94,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/terms/{term}', [AdminTermController::class, 'destroy'])->name('terms.destroy');
     });
 
-    // Client routes (Wholesale Client)
-    Route::middleware(['role:Wholesale Client'])->prefix('client')->name('client.')->group(function () {
+    // Client routes (Wholesale)
+    Route::middleware(['role:Wholesale'])->prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientDashboardController::class, 'index'])->name('dashboard');
         Route::resource('reseller-users', ResellerClientUserController::class);
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');

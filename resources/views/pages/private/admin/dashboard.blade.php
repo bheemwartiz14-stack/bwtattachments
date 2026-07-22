@@ -77,7 +77,7 @@
                             <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">Wholesale Clients</p>
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white">Wholesales</p>
                             <p class="text-xs text-slate-500">{{ number_format($stats['total_users'] ?? 0) }} accounts</p>
                         </div>
                     </a>

@@ -20,7 +20,7 @@ class RedirectIfAuthenticated
                 if ($user->hasRole('Super Admin')) {
                     return redirect()->route('admin.dashboard');
                 }
-                if ($user->hasRole('Wholesale Client')) {
+                if ($user->hasRole('Wholesale')) {
                     return redirect()->route('client.dashboard');
                 }
                 if ($user->hasRole('Retailer')) {
