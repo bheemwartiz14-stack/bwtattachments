@@ -76,6 +76,7 @@ class ProductRepository
                 $query->select([
                     'product_id',
                     'user_id',
+                    'base_price',
                     'final_price',
                     'margin',
                 ]);
@@ -203,7 +204,7 @@ class ProductRepository
     {
         return $this->model
             ->query()
-            ->with(['category', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'final_price', 'margin'])])
+            ->with(['category', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'base_price', 'final_price', 'margin'])])
             ->where('status', 1)
             ->select(['id', 'product_code','product_title', 'category_id', 'connection_id', 'ddp_price'])
             ->paginate($perPage);
@@ -213,7 +214,7 @@ class ProductRepository
     {
         return $this->model
             ->query()
-            ->with(['category', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'final_price', 'margin'])])
+            ->with(['category', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'base_price', 'final_price', 'margin'])])
             ->where('status', 1)
             ->select(['id', 'product_code', 'product_title', 'product_description', 'category_id', 'connection_id', 'ddp_price'])
             ->get();
@@ -237,7 +238,7 @@ class ProductRepository
     {
         return $this->model
             ->query()
-            ->with(['category', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'final_price', 'margin'])])
+            ->with(['category', 'connection', 'productPrices' => fn ($q) => $q->where('user_id', $userId)->select(['product_id', 'user_id', 'base_price', 'final_price', 'margin'])])
             ->where('status', 1)
             ->when($filters['search'] ?? null, function ($query, $search) {
                 $query->where(function ($q) use ($search) {

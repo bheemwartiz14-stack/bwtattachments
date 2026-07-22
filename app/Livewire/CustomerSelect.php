@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -20,13 +22,18 @@ class CustomerSelect extends Component
         if ($selectedId) {
             $this->selectedId = $selectedId;
             $customer = $this->users->firstWhere('id', $selectedId);
+
             if ($customer) {
-                $this->dispatch('customerSelected',
+                $margin = $customer->userMargin?->margin_value ?? 0;
+                $this->dispatch(
+                    'customerSelected',
                     id: $customer->id,
                     name: $customer->name,
                     email: $customer->email,
                     phone: $customer->phone ?? '',
+                    margin: (float) $margin,
                 );
+                $this->dispatch('customerIdChanged', id: $customer->id);
             }
         }
     }
@@ -37,12 +44,18 @@ class CustomerSelect extends Component
 
         if ($customer) {
             $this->selectedId = $customer->id;
-            $this->dispatch('customerSelected',
+
+            $margin = $customer->userMargin?->margin_value ?? 0;
+            $this->dispatch(
+                'customerSelected',
                 id: $customer->id,
                 name: $customer->name,
                 email: $customer->email,
                 phone: $customer->phone ?? '',
+                margin: (float) $margin,
             );
+            $this->dispatch('customerIdChanged', id: $customer->id);
+            $this->dispatch('marginChanged', margin: (float) $margin);
         }
     }
 
@@ -51,6 +64,8 @@ class CustomerSelect extends Component
         $this->selectedId = null;
         $this->search = '';
         $this->dispatch('customerCleared');
+        $this->dispatch('customerIdChanged', id: null);
+        $this->dispatch('marginChanged', margin: 0);
     }
 
     public function render(): View

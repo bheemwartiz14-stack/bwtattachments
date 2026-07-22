@@ -97,10 +97,6 @@
                         <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }} {{ $quotation->sub_total }}</span>
                     </div>
                         <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-700 dark:text-neutral-400">Margin ({{ $quotation->margin_percentage }}%)</span>
-                            <span class="font-medium text-emerald-600 dark:text-emerald-400">+{{ config('app.currency_symbol') }}{{  $quotation->margin_amount }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-700 dark:text-neutral-400">VAT ({{ $taxRate }}%)</span>
                             <span class="font-medium text-amber-600 dark:text-amber-400">{{ config('app.currency_symbol') }}{{ $quotation->tax_amount }}</span>
                         </div>

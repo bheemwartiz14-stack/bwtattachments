@@ -1,8 +1,8 @@
 <x-layouts.app>
-    <x-slot:title>{{ $user->name }} - Resellers Client - BWT</x-slot:title>
+    <x-slot:title>{{ $user->name }} - Resellers - BWT</x-slot:title>
     <x-breadcrumb :items="[
         ['label' => 'Dashboard', 'url' => route('client.dashboard')],
-        ['label' => 'Retailer Clients', 'url' => route('client.reseller-users.index')],
+        ['label' => 'Resellers', 'url' => route('client.reseller-users.index')],
         ['label' => $user->name],
     ]" />
 

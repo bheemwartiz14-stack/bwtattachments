@@ -50,7 +50,7 @@
                             <td class="px-3 py-3">
                                 <input type="number" value="{{ number_format($item['price'] ?? 0, 2, '.', '') }}" step="0.01" min="0"
                                     class="w-24 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-right text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
-                                    wire:change="updatePrice({{ $index }}, $event.target.value)">
+                                    wire:change="updatePrice({{ $index }}, $event.target.value)" readonly>
                             </td>
                             <td class="px-3 py-3 text-right text-sm font-semibold text-slate-900 dark:text-neutral-100">&euro;{{ number_format($lineTotal, 2) }}</td>
                             <td class="px-3 py-3 text-right">
@@ -79,14 +79,9 @@
                         <span class="text-slate-500 dark:text-neutral-400">Subtotal</span>
                         <span class="font-medium text-slate-900 dark:text-white">&euro;{{ number_format($this->subtotal, 2) }}</span>
                         <input type="hidden" name="sub_total" value="{{ number_format($this->subtotal, 2) }}">
+                        <input type="hidden" name="margin_amount" value="0">
                     </div>
 
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-slate-500 dark:text-neutral-400">Margin ({{ $this->marginPercentage }}%)</span>
-
-                        <span class="font-medium text-emerald-600 dark:text-emerald-400">+&euro;{{ number_format($this->marginAmount, 2) }}</span>
-                        <input type="hidden" name="margin_amount" value="{{ number_format($this->marginAmount, 2) }}">
-                    </div>
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-slate-500 dark:text-neutral-400">VAT ({{ $this->taxRate }}%)</span>
                         <input type="hidden" name="vat_percentage" value="{{ $this->taxRate }}">

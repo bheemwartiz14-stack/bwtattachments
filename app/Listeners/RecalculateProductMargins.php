@@ -23,6 +23,9 @@ class RecalculateProductMargins
         $productService = app(ProductService::class);
         if ($baseUserId) {
             $products = $productService->getActiveProductsWithUserPrices($baseUserId);
+            if ($products->isEmpty()) {
+                $products = $productService->getAll();
+            }
         } else {
             $products = $productService->getAll();
         }

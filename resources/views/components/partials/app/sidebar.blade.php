@@ -44,7 +44,7 @@
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
             [
-                'label' => 'Manage Reseller Users',
+                'label' => 'Manage Resellers',
                 'route' => 'client.reseller-users.index',
                 'pattern' => 'client.reseller-users.*',
             ],

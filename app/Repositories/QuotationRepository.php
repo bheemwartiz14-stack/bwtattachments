@@ -10,7 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class QuotationRepository
 {
-    private const RELATIONS = ['user', 'items'];
+    private const RELATIONS = ['user.userMeta', 'items.product'];
 
     public function __construct(
         protected Quotation $model,

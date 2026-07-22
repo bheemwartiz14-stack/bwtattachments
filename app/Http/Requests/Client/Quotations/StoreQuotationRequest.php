@@ -34,7 +34,7 @@ class StoreQuotationRequest extends FormRequest
             'vat_percentage' => ['required', 'string'],
             'sub_total' => ['required', 'string'],
             'tax_amount' => ['required', 'string'],
-            'margin_amount' => ['required', 'string'],
+            'margin_amount' => ['nullable', 'string'],
             'grand_total' => ['required', 'string'],
             'delivery_country' => ['required', 'string', 'size:2'],
             'reference' => ['nullable', 'string', 'max:255'],

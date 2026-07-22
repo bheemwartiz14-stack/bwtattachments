@@ -10,15 +10,13 @@
     ]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="Profile Settings" subtitle="Manage your personal information{{ $hasCompany ? ', company details,' : '' }} and security preferences">
+        <x-ui.hero title="Profile Settings" subtitle="Manage your personal information and security preferences">
             <x-slot:icon>
                 <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
             </x-slot:icon>
         </x-ui.hero>
-
-       
 
         @if (session('success'))
             <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm font-medium text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300">
@@ -37,15 +35,13 @@
                         </svg>
                         Personal Information
                     </a>
-                    @if ($hasCompany)
-                        <a href="{{ route($prefix . '.profile.edit', ['tab' => 'company']) }}"
-                            wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'company' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
-                            <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
-                            </svg>
-                            Company Details
-                        </a>
-                    @endif
+                    <a href="{{ route($prefix . '.profile.edit', ['tab' => 'pricing']) }}"
+                       wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'pricing' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
+                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Pricing
+                    </a>
                     <a href="{{ route($prefix . '.profile.edit', ['tab' => 'security']) }}"
                        wire:navigate  class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'security' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
                         <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -68,7 +64,6 @@
                             @csrf
                             @method('PUT')
                             <div class="p-8 space-y-8">
-                                {{-- Avatar --}}
                                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                                     <div class="shrink-0">
                                         <div class="relative">
@@ -104,7 +99,6 @@
 
                                 <hr class="border-slate-200 dark:border-neutral-800">
 
-                                {{-- Fields --}}
                                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                     <x-forms.input
                                         name="name"
@@ -143,45 +137,18 @@
                         </form>
                     </div>
 
-                @elseif($activeTab === 'company' && $hasCompany)
+                @elseif($activeTab === 'pricing')
                     <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Company Details</h2>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Your registered business information</p>
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Pricing</h2>
+                            <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Your wholesale pricing information</p>
                         </div>
                         <div class="p-8">
-                            <div class="flex flex-col sm:flex-row items-start gap-6">
-                                @if ($logo ?? null)
-                                    <div class="shrink-0">
-                                        <img src="{{ $logo }}" alt="Company Logo"
-                                            class="h-24 w-24 rounded-xl border border-slate-200 object-contain p-3 dark:border-neutral-700">
-                                    </div>
-                                @else
-                                    <div class="shrink-0 flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900">
-                                        <svg class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
-                                        </svg>
-                                    </div>
-                                @endif
-                                <div class="min-w-0 flex-1 space-y-3">
-                                    <div>
-                                        <p class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-neutral-500">Company Name</p>
-                                        <p class="text-base font-semibold text-slate-900 dark:text-white mt-0.5">{{ $company_name ?? 'N/A' }}</p>
-                                    </div>
-                                    @if ($roleLabel)
-                                        <div>
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                                                {{ $roleLabel }}
-                                            </span>
-                                        </div>
-                                    @endif
-                                    @isset($commissionPercentage)
-                                        <div>
-                                            <p class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-neutral-500">Wholesale Price Percentage</p>
-                                            <p class="text-base font-semibold text-slate-900 dark:text-white mt-0.5">{{ $commissionPercentage }}%</p>
-                                        </div>
-                                    @endisset
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="rounded-xl border border-slate-100 bg-slate-50 p-5 dark:border-neutral-800 dark:bg-neutral-900/50">
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-neutral-500">Wholesale Price Percentage</p>
+                                    <p class="mt-1.5 text-3xl font-bold text-slate-900 dark:text-white">{{ $commissionPercentage ?? 0 }}%</p>
+                                    <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">Your commission/margin rate on all products</p>
                                 </div>
                             </div>
                         </div>

@@ -111,6 +111,17 @@
                                 @php
                                     $img = $product->getFirstMediaUrl('images', 'small');
                                 @endphp
+                                @php
+                                    $quoteUrl = null;
+                                    if (auth()->check()) {
+                                        $user = auth()->user();
+                                        if ($user->hasRole('Wholesale Client')) {
+                                            $quoteUrl = route('client.quotations.create', ['product_id' => $product->id]);
+                                        } elseif ($user->hasRole('Reseller') || $user->hasRole('Retailer')) {
+                                            $quoteUrl = route('reseller.quotations.create', ['product_id' => $product->id]);
+                                        }
+                                    }
+                                @endphp
                                 <x-product-card
                                     :image="$img"
                                     :title="$product->product_title ?? $product->product_description ?? 'Product'"
@@ -124,6 +135,7 @@
                                     detailsUrl="{{ route('public.products.show', $product) }}"
                                     :productId="$product->id"
                                     :favorited="in_array($product->id, $favoritedIds ?? [])"
+                                    :quoteUrl="$quoteUrl"
                                 />
                             @endforeach
                         </div>

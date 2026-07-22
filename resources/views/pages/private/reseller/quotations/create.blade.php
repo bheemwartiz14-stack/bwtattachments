@@ -41,7 +41,6 @@
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="reseller_id" name="reseller_id" value="{{ old('reseller_id') }}">
         <input type="hidden" id="items-json" name="items" value="{{ old('items') }}">
-        <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="0">
         <input type="hidden" id="tax_rate" name="tax_rate" value="21">
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -152,7 +151,6 @@
                     </div>
                     <div>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">Customer</h2>
-                        <p class="text-xs text-slate-500 dark:text-neutral-400">Select the reseller customer</p>
                     </div>
                 </div>
                 <div class="p-6">
@@ -203,8 +201,7 @@
                             :value="now()->format('Y-m-d')" min="{{ now()->format('Y-m-d') }}" />
                         <x-forms.input name="valid_until" id="valid_until" label="Valid Until" type="date"
                             min="{{ now()->format('Y-m-d') }}" />
-                        <x-forms.input name="margin_percentage" label="Margin (%)" type="number" value="0"
-                            step="0.01" min="0" max="100" />
+                        <input type="hidden" name="margin_percentage" value="0">
                     </div>
                 </div>
             </div>
@@ -241,7 +238,7 @@
             </div>
         </div>
         {{-- Items --}}
-        <livewire:items-manager />
+        <livewire:items-manager :customerId="old('reseller_id')" :productId="$productId ?? null" />
 
         {{-- Notes & Terms --}}
         <div

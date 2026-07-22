@@ -30,11 +30,12 @@ class QuotationController extends Controller
     {
         $resellers = User::where('parent_id', auth()->id())
             ->role('Reseller')
+            ->with('userMargin')
             ->orderBy('name')
             ->get(['id', 'name', 'email', 'phone']);
-
         $quotationNumber = $this->quotationService->generateQuotationNumber();
-        return view('pages.private.client.quotations.create', compact('resellers', 'quotationNumber'));
+        $productId = request('product_id');
+        return view('pages.private.client.quotations.create', compact('resellers', 'quotationNumber', 'productId'));
     }
 
     public function store(StoreQuotationRequest $request): RedirectResponse
@@ -81,8 +82,6 @@ class QuotationController extends Controller
     public function show(string $id): View
     {
         $quotation = $this->quotationService->findById($id);
-            // dd($quotation);
-        $quotation->load('items.product');
 
         return view('pages.private.client.quotations.show', compact('quotation'));
     }

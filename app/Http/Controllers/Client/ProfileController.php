@@ -22,7 +22,7 @@ class ProfileController extends Controller
     public function edit(): View
     {
         /** @var User $user */
-        $user = auth()->user()->load('userMeta');
+        $user = auth()->user()->load(['userMeta', 'userMargin']);
 
         $avatar = $user->getFirstMedia('avatar');
 
@@ -41,8 +41,9 @@ class ProfileController extends Controller
         $viewData['breadcrumbRoute'] = 'client.dashboard';
         $viewData['hasCompany'] = true;
         $viewData['roleLabel'] = 'Wholesale Client';
+        $viewData['commissionPercentage'] = $user->userMargin?->margin_value;
 
-        return view('pages.private.profile.edit', $viewData);
+        return view('pages.private.client.profile.edit', $viewData);
     }
 
     public function update(UpdateProfileRequest $request): RedirectResponse

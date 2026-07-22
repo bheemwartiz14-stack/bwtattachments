@@ -1,12 +1,26 @@
 @php
-    $path = public_path('images/BIG.jpg');
-    $type = pathinfo($path, PATHINFO_EXTENSION);
-    $data = file_get_contents($path);
-    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    $address = 'Industrieweg 12, Amsterdam, North Holland - 1234 AB, Netherlands';
+    $sender = $quotation->user;
+    $senderMeta = $sender?->userMeta?->metadata ?? [];
+    $senderLogoPath = $sender?->userMeta?->getFirstMediaPath('wholesale_client_logo');
+
+    $defaultLogoPath = public_path('images/BIG.jpg');
+    $logoPath = $senderLogoPath ?: $defaultLogoPath;
+    $type = pathinfo($logoPath, PATHINFO_EXTENSION);
+    $data = file_get_contents($logoPath);
+    $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+    $senderName = $senderMeta['company_name'] ?? $sender->name ?? '';
+    $senderAddressParts = array_filter([
+        $senderMeta['address'] ?? null,
+        $senderMeta['city'] ?? null,
+        $senderMeta['country'] ?? null,
+    ]);
+    $senderAddress = implode(', ', $senderAddressParts);
+    $senderPhone = $senderMeta['phone'] ?? $sender->phone ?? '';
+    $senderEmail = $sender->email ?? '';
 
     $reseller = $quotation->reseller ?? null;
-    $meta = $reseller->usermeta->metadata ?? [];
+    $meta = $reseller?->userMeta?->metadata ?? [];
 
     $custAddressParts = array_filter([
         $meta['address'] ?? null,
@@ -15,7 +29,6 @@
     ]);
     $custAddress = implode(', ', $custAddressParts);
     $subTotal = (float) str_replace(',', '', $quotation->sub_total);
-    $marginammout = (float) str_replace(',', '', $quotation->margin_amount);
     $taxAmount = (float) str_replace(',', '', $quotation->tax_amount);
     $grandTotal = (float) str_replace(',', '', $quotation->grand_total);
 @endphp
@@ -37,25 +50,31 @@
                 <td style="width:70%;vertical-align:top;">
 
                     <div style="font-size:20px;font-weight:bold;">
-                        BIG Work Tools
+                        {{ $senderName }}
                     </div>
 
+                    @if($senderAddress)
                     <div style="font-size:15px;margin-top:6px;line-height:1.5;">
-                        {{ $address }}
+                        {{ $senderAddress }}
                     </div>
+                    @endif
 
+                    @if($senderPhone)
                     <div style="font-size:15px;line-height:1.5;">
-                        +31 (0) 85 123 4567
+                        {{ $senderPhone }}
                     </div>
+                    @endif
 
+                    @if($senderEmail)
                     <div style="font-size:15px;line-height:1.5;">
-                        info@bwt-attachments.com
+                        {{ $senderEmail }}
                     </div>
+                    @endif
 
                 </td>
 
                 <td style="width:30%;text-align:right;vertical-align:top;">
-                    <img src="{{ $base64 }}" style="width:170px;">
+                    <img src="{{ $logoBase64 }}" style="width:170px;">
                 </td>
             </tr>
         </table>
@@ -105,8 +124,8 @@
         <table style="width:100%;border-collapse:collapse;border:1px solid #b3b3b3;">
             <thead>
                 <tr style="background:#0057a3;color:#fff;">
-                    <th style="padding:10px 14px;text-align:left;font-size:15px;width:15%;">Item</th>
-                    <th style="padding:10px 14px;text-align:left;font-size:15px;width:40%;">Description</th>
+                    <th style="padding:10px 14px;text-align:left;font-size:15px;width:15%;">Product code</th>
+                    <th style="padding:10px 14px;text-align:left;font-size:15px;width:40%;">Product name</th>
                     <th style="padding:10px 14px;text-align:right;font-size:15px;width:15%;">Unit price</th>
                     <th style="padding:10px 14px;text-align:center;font-size:15px;width:10%;">Qty</th>
                     <th style="padding:10px 14px;text-align:right;font-size:15px;width:20%;">Total</th>
@@ -119,20 +138,19 @@
                         $itemPrice = (float) str_replace(',', '', $item->price);
                     @endphp
                     <tr style="vertical-align:top;">
-                        <td style="padding:12px 14px;font-size:15px;border-bottom:1px solid #b3b3b3;">
-                            <div style="font-size:12px;color:#666;margin-bottom:2px;">{{ $item->product->product_code }}</div>
+                        <td style="padding:12px 14px;font-size:14px;border-bottom:1px solid #b3b3b3;">
+                            {{ $item->product->product_code }}
+                        </td>
+                        <td style="padding:12px 14px;font-size:14px;border-bottom:1px solid #b3b3b3;">
                             {{ $item->product->product_title }}
                         </td>
-                        <td style="padding:12px 14px;font-size:15px;border-bottom:1px solid #b3b3b3;">
-                            {{ Str::limit(strip_tags($item->product->product_description), 120) }}
-                        </td>
-                        <td style="padding:12px 14px;font-size:15px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
+                        <td style="padding:12px 14px;font-size:14px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
                             € {{ number_format($itemPrice, 2, '.', ',') }}
                         </td>
-                        <td style="padding:12px 14px;font-size:15px;text-align:center;border-bottom:1px solid #b3b3b3;">
+                        <td style="padding:12px 14px;font-size:14px;text-align:center;border-bottom:1px solid #b3b3b3;">
                             {{ $item->quantity }}
                         </td>
-                        <td style="padding:12px 14px;font-size:15px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
+                        <td style="padding:12px 14px;font-size:14px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
                             € {{ number_format($itemPrice * $item->quantity, 2, '.', ',') }}
                         </td>
                     </tr>
@@ -160,14 +178,6 @@
                             </td>
                             <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
                                 € {{ number_format($subTotal, 2, '.', ',') }}
-                            </td>
-                        </tr>
-                           <tr>
-                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;">
-                                 Margin {{ $quotation->margin_percentage }}%:
-                            </td>
-                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                                € {{ number_format($marginammout, 2, '.', ',') }}
                             </td>
                         </tr>
                         <tr>

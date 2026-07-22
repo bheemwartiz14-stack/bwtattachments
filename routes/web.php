@@ -47,6 +47,7 @@ use Illuminate\Support\Facades\Route;
 // Public routes (guest + authenticated)
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
 
+Route::get('/products', [PublicProductController::class, 'index'])->name('public.products.index');
 Route::get('/products/{product:slug}', [PublicProductController::class, 'show'])->name('public.products.show');
 Route::get('/products/{product:slug}/pdf', [PublicProductController::class, 'downloadPdf'])->name('public.products.pdf');
 Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories.index');

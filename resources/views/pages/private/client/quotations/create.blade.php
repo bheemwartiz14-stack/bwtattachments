@@ -40,10 +40,9 @@
         @csrf
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="reseller_id" name="reseller_id" value="{{ old('reseller_id') }}">
-        <input type="hidden" id="items-json" name="items" value="{{ old('items') }}">
+        <input type="hidden" id="items-json" name="items" value="">
         <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="0">
         <input type="hidden" id="tax_rate" name="tax_rate" value="21">
-
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Company Information --}}
             <div
@@ -204,7 +203,7 @@
                         <x-forms.input name="valid_until" id="valid_until" label="Valid Until" type="date"
                             min="{{ now()->format('Y-m-d') }}" />
                         <x-forms.input name="margin_percentage" label="Margin (%)" type="number" value="0"
-                            step="0.01" min="0" max="100" />
+                            step="0.01" min="0" max="100" readonly />
                     </div>
                 </div>
             </div>
@@ -241,7 +240,7 @@
             </div>
         </div>
         {{-- Items --}}
-        <livewire:items-manager />
+        <livewire:items-manager :customerId="old('reseller_id')" :productId="$productId ?? null" />
 
         {{-- Notes & Terms --}}
         <div
@@ -283,7 +282,7 @@
                 </svg>
                 Save Draft
             </button>
-                <!-- <button type="submit" data-action="preview"
+            <!-- <button type="submit" data-action="preview"
                 class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"

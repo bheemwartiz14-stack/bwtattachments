@@ -61,8 +61,8 @@
         @endif
         <div class="mt-3 flex gap-2">
             <a href="{{ $detailsUrl ?? '#' }}" class="inline-flex flex-1 items-center justify-center gap-2 rounded-[12px] border border-slate-200 bg-white px-4 py-1 text-center text-sm font-normal text-black transition-colors hover:bg-rose-50">Details</a>
-            @if(isset($showQuoteBtn) && $showQuoteBtn)
-                <button class="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition-colors hover:bg-rose-100">+ Quote</button>
+            @if(isset($quoteUrl))
+                <a href="{{ $quoteUrl }}" class="inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition-colors hover:bg-rose-100">+ Quote</a>
             @endif
         </div>
     </div>

@@ -17,7 +17,9 @@ class ItemsManager extends Component
 
     public string $deliveryCountry = 'NL';
 
-    public float $marginPercentage = 0;
+    public ?string $customerId = null;
+
+    public ?string $productId = null;
 
     public bool $showModal = false;
 
@@ -37,11 +39,12 @@ class ItemsManager extends Component
                 $this->items = $decoded;
             }
         }
-        $margin = old('margin_percentage');
-        if ($margin !== null) {
-            $this->marginPercentage = (float) $margin;
+        if ($this->productId) {
+            $this->addItem($this->productId);
+            $this->productId = null;
         }
         if (count($this->items) > 0) {
+            $this->recalculatePrices();
             $this->dispatchItemsUpdated();
         }
     }
@@ -62,7 +65,9 @@ class ItemsManager extends Component
     {
         if (collect($this->items)->contains('product_id', $productId)) return;
 
-        $product = $this->productService->getActiveProductsWithUserPrices(Auth::id())
+        $userId = $this->customerId ?? Auth::id();
+
+        $product = $this->productService->getActiveProductsWithUserPrices($userId)
             ->firstWhere('id', $productId);
 
         if (!$product) return;
@@ -113,16 +118,42 @@ class ItemsManager extends Component
         $this->dispatchItemsUpdated();
     }
 
-    #[On('marginChanged')]
-    public function updateMargin($margin): void
+    #[On('customerIdChanged')]
+    public function updateCustomerId($id): void
     {
-        $this->marginPercentage = (float) (is_array($margin) ? ($margin['margin'] ?? 0) : $margin);
-        $this->dispatchItemsUpdated();
+        $this->customerId = is_array($id) ? ($id['id'] ?? null) : $id;
+        $this->recalculatePrices();
+    }
+
+    #[On('customerCleared')]
+    public function onCustomerCleared(): void
+    {
+        $this->customerId = null;
+        $this->recalculatePrices();
+    }
+
+    protected function recalculatePrices(): void
+    {
+        $userId = $this->customerId ?? Auth::id();
+
+        foreach ($this->items as $i => $item) {
+            $product = $this->productService->getActiveProductsWithUserPrices($userId)
+                ->firstWhere('id', $item['product_id']);
+
+            if ($product) {
+                $price = $product->productPrices->first()?->final_price ?? $product->ddp_price ?? 0;
+                $this->items[$i]['price'] = (float) $price;
+            }
+        }
+
+        if (count($this->items) > 0) {
+            $this->dispatchItemsUpdated();
+        }
     }
 
     protected function dispatchItemsUpdated(): void
     {
-        $this->dispatch('itemsUpdated', items: $this->items, margin: $this->marginPercentage);
+        $this->dispatch('itemsUpdated', items: $this->items);
     }
 
     public function getSubtotalProperty(): float
@@ -134,16 +165,6 @@ class ItemsManager extends Component
         return $total;
     }
 
-    public function getMarginAmountProperty(): float
-    {
-        return $this->subtotal * ($this->marginPercentage / 100);
-    }
-
-    public function getBeforeTaxProperty(): float
-    {
-        return $this->subtotal + $this->marginAmount;
-    }
-
     public function getTaxRateProperty(): int
     {
         return $this->deliveryCountry === 'NL' ? 21 : 0;
@@ -151,17 +172,20 @@ class ItemsManager extends Component
 
     public function getTaxAmountProperty(): float
     {
-        return $this->beforeTax * ($this->taxRate / 100);
+        return $this->subtotal * ($this->taxRate / 100);
     }
 
     public function getGrandTotalProperty(): float
     {
-        return $this->beforeTax + $this->taxAmount;
+        return $this->subtotal + $this->taxAmount;
     }
 
     public function render(): View
     {
-        $products = $this->productService->getActiveProductsWithUserPrices(Auth::id());
+        $userId = $this->customerId ?? Auth::id();
+        // dd($userId);
+
+        $products = $this->productService->getActiveProductsWithUserPrices($userId);
 
         if ($this->search) {
             $s = strtolower($this->search);

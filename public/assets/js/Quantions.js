@@ -54,6 +54,8 @@
                 setVal('contact_email', e.detail.email || '');
                 setVal('contact_phone', e.detail.phone || '');
                 setVal('reseller_id', e.detail.id || '');
+                var marginInput = document.getElementById('margin_percentage');
+                if (marginInput) marginInput.value = e.detail.margin ?? 0;
             }
         });
         window.addEventListener('customerCleared', function () {
@@ -61,7 +63,9 @@
             if (nameDisplay) nameDisplay.textContent = '—';
             if (emailDisplay) emailDisplay.textContent = '—';
             if (phoneDisplay) phoneDisplay.textContent = '—';
-            ['contact_name', 'contact_email', 'contact_phone', 'user_id'].forEach(function (id) { setVal(id, ''); });
+            ['contact_name', 'contact_email', 'contact_phone', 'reseller_id'].forEach(function (id) { setVal(id, ''); });
+            var marginInput = document.getElementById('margin_percentage');
+            if (marginInput) marginInput.value = 0;
         });
     }
 

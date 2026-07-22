@@ -22,10 +22,10 @@ class ProfileController extends Controller
     public function edit(): View
     {
         /** @var User $user */
-        $user = auth()->user()->load('userMeta');
+        $user = auth()->user()->load(['userMeta', 'userMargin']);
         $avatar = $user->getFirstMedia('avatar');
 
-        return view('pages.private.profile.edit', [
+        return view('pages.private.admin.profile.edit', [
             'user' => $user,
             'avatarUrl' => $avatar?->getUrl(),
             'avatarId' => $avatar?->id,
@@ -34,6 +34,7 @@ class ProfileController extends Controller
             'breadcrumbRoute' => 'admin.dashboard',
             'hasCompany' => false,
             'roleLabel' => '',
+            'commissionPercentage' => $user->userMargin?->margin_value,
         ]);
     }
 

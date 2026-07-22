@@ -210,8 +210,9 @@ class UserRepository
 
     public function getMyCustomers(string|int $id): Collection
     {
-        $query = User::where('parent_id', $id);
-
-        return $query->orderBy('name')->get(['id', 'name', 'email', 'phone']);
+        return User::where('parent_id', $id)
+            ->with('userMargin')
+            ->orderBy('name')
+            ->get(['id', 'name', 'email', 'phone']);
     }
 }

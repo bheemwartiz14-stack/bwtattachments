@@ -33,6 +33,7 @@ class WholesaleClientUserServices
             $user->addMedia($logo)->toMediaCollection('wholesale_client_logo');
         }
         $user->load(['userMeta']);
+        $this->dispatchMarginEvent($user, (float) $margin);
         event(new WelcomeOnboardingUser($user, $plainPassword, 'wholesale'));
         return $user;
     }
