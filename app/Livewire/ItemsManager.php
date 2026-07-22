@@ -30,7 +30,7 @@ class ItemsManager extends Component
         $this->productService = $productService;
     }
 
-    public function mount(): void
+    public function mount($productIds = []): void
     {
         $items = old('items');
         if ($items) {
@@ -40,8 +40,11 @@ class ItemsManager extends Component
             }
         }
         if ($this->productId) {
-            $this->addItem($this->productId);
+            $productIds[] = $this->productId;
             $this->productId = null;
+        }
+        foreach (array_unique($productIds) as $id) {
+            $this->addItem($id);
         }
         if (count($this->items) > 0) {
             $this->recalculatePrices();

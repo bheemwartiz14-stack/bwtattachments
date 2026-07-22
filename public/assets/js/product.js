@@ -39,6 +39,31 @@ function initCategorySubcategory() {
     });
 }
 
+window.toggleQuoteItem = function (btn) {
+    var $btn = $(btn);
+    var productId = $btn.data('quote');
+    var url = '/quote-cart/toggle/' + productId;
+    var csrf = $('meta[name="csrf-token"]').attr('content');
+
+    $.post(url, { _token: csrf }, function (res) {
+        $btn.data('added', res.added);
+        if (res.added) {
+            $btn.removeClass('bg-orange-500 hover:bg-orange-600').addClass('bg-emerald-500 hover:bg-emerald-600');
+            $btn.html('Added <span class="text-xs ml-1">✓</span>');
+        } else {
+            $btn.removeClass('bg-emerald-500 hover:bg-emerald-600').addClass('bg-orange-500 hover:bg-orange-600');
+            $btn.text('Add To Quotation');
+        }
+        if (window.showToast) {
+            window.showToast(res.message, res.added ? 'success' : 'info');
+        }
+    }).fail(function () {
+        if (window.showToast) {
+            window.showToast('Failed to update quotation cart', 'error');
+        }
+    });
+};
+
 window.toggleFavorite = function (btn) {
     var $btn = $(btn);
     var productId = $btn.data('favorite');

@@ -43,6 +43,7 @@ use App\Http\Controllers\Customers\ProfileController as CustomerProfileControlle
 
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\QuoteCartController;
 use Illuminate\Support\Facades\Route;
 // Public routes (guest + authenticated)
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
@@ -70,6 +71,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/terms', [TermController::class, 'index'])->name('terms.index');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::post('/favorites/toggle/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::post('/quote-cart/toggle/{product}', [QuoteCartController::class, 'toggle'])->name('quote-cart.toggle');
+    Route::get('/quote-cart/count', [QuoteCartController::class, 'count'])->name('quote-cart.count');
+    Route::post('/quote-cart/clear', [QuoteCartController::class, 'clear'])->name('quote-cart.clear');
     // Admin routes
     Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');

@@ -150,13 +150,17 @@
 
                     {{-- Button --}}
                     @role('Wholesale|Reseller')
-                        <a class="mt-3 w-full rounded-md bg-orange-500 hover:bg-orange-600 text-white text-center py-2 text-xs font-semibold transition"
-                            href="{{ auth()->user()->hasRole('Wholesale')
-                                ? route('client.quotations.create', ['product_id' => $product->id])
-                                : route('reseller.quotations.create', ['product_id' => $product->id]) }}"
-                            wire:navigate>
+                        @php
+                            $cartIds = array_column(session()->get('quote_cart', []), 'product_id');
+                            $inCart = in_array($product->id, $cartIds);
+                        @endphp
+                        <button type="button"
+                            data-quote="{{ $product->id }}"
+                            data-added="{{ $inCart ? 'true' : 'false' }}"
+                            onclick="toggleQuoteItem(this)"
+                            class="mt-3 w-full rounded-md text-white text-center py-2 text-xs font-semibold transition {{ $inCart ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-orange-500 hover:bg-orange-600' }}">
                             Add To Quotation
-                        </a>
+                        </button>
                     @endrole
 
                 @endauth

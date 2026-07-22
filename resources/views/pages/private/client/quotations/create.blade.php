@@ -7,6 +7,7 @@
         $meta = $user?->userMeta?->metadata ?? [];
     @endphp
 
+
     <x-slot:title>New Quotation - {{ $siteTitle }}</x-slot:title>
 
     <x-breadcrumb :items="[
@@ -240,7 +241,7 @@
             </div>
         </div>
         {{-- Items --}}
-        <livewire:items-manager :customerId="old('reseller_id')" :productId="$productId ?? null" />
+        <livewire:items-manager :customerId="old('reseller_id')" :productId="$productId ?? null" :productIds="$cartIds ?? []" />
 
         {{-- Notes & Terms --}}
         <div
