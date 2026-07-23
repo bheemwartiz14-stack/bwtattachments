@@ -29,6 +29,12 @@ class QuotationMail extends Mailable
 
     public function content(): Content
     {
+        $this->quotation->loadMissing([
+            'items.product',
+            'user.userMeta',
+            'reseller.userMeta',
+        ]);
+
         return new Content(
             view: 'emails.quotation',
         );
