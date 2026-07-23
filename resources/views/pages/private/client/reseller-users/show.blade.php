@@ -333,7 +333,7 @@
                             class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/30 dark:to-emerald-900/20">
                             @svg('heroicon-o-percent-badge', 'h-4 w-4 text-emerald-600 dark:text-emerald-400')
                         </div>
-                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Default Commission</h3>
+                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Default Margin</h3>
                     </div>
                     <div class="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-neutral-800">
                         <div

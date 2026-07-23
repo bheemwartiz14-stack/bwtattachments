@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>Manage Customers - BWT</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Dashboard', 'url' => route('reseller.dashboard')], ['label' => 'Manage Customer']]" />
+    <x-breadcrumb :items="[['label' => 'Reseller Portal', 'url' => route('reseller.dashboard')], ['label' => 'Manage Customer']]" />
 
     <div class="space-y-6">
         <x-ui.hero title="Manage Customers" subtitle="Manage your Customers">
