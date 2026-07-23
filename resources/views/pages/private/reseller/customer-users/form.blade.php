@@ -71,7 +71,7 @@
                 </div>
                 <div class="p-8">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
-                        <x-forms.input name="company_name" label="Company Name" placeholder="Acme Corp Ltd"
+                        <x-forms.input name="company_name" label="Company Name" placeholder="abcd Corp Ltd"
                             :value="$meta['company_name'] ?? ''" :required="true" :error="$errors->first('company_name')" />
                         <x-forms.input name="vat_number" label="VAT Number" placeholder="GB123456789" :value="$meta['vat_number'] ?? ''"
                             :required="true" :error="$errors->first('vat_number')" />
@@ -83,7 +83,7 @@
                             :required="true" :error="$errors->first('city')" />
                         <x-forms.input name="country" label="Country" placeholder="United Kingdom" :value="$meta['country'] ?? ''"
                             :required="true" :error="$errors->first('country')" />
-                        <x-forms.input name="website" label="Website" type="url" placeholder="https://acme.com"
+                        <x-forms.input name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
                     </div>
                 </div>

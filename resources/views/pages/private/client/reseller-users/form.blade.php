@@ -73,7 +73,7 @@
                 </div>
                 <div class="p-8">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
-                        <x-forms.input name="company_name" label="Company Name" placeholder="Acme Corp Ltd"
+                        <x-forms.input name="company_name" label="Company Name" placeholder="abcd Corp Ltd"
                             :value="$meta['company_name'] ?? ''" :required="true" :error="$errors->first('company_name')" />
                         <x-forms.input name="vat_number" label="VAT Number" placeholder="GB123456789" :value="$meta['vat_number'] ?? ''"
                             :required="true" :error="$errors->first('vat_number')" />
