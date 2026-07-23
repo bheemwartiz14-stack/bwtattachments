@@ -20,7 +20,7 @@ class ResellerApplicationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'I would like to apply for BWT Attachments reseller',
+            subject: 'Reseller Application: ' . $this->application->company_name . ' (' . $this->application->contact_person . ')',
         );
     }
 
