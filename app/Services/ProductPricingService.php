@@ -25,7 +25,7 @@ class ProductPricingService
         } else {
             $role = $user->roles->first()?->name;
             switch ($role) {
-                case 'Wholesale':
+                case 'Wholesaler':
                     $price = $product->productPrices()
                         ->where('user_id', $user->id)
                         ->where('type', 'wholesale')

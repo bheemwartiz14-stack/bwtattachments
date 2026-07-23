@@ -76,9 +76,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/quote-cart/count', [QuoteCartController::class, 'count'])->name('quote-cart.count');
     Route::post('/quote-cart/clear', [QuoteCartController::class, 'clear'])->name('quote-cart.clear');
     // Admin routes
-    Route::middleware(['role:Super Admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('wholesale-client-users', WholesaleClientUserController::class);
+        Route::resource('wholeseller', WholesaleClientUserController::class);
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::get('/categories/{category}/subcategories', [CategoryController::class, 'getSubcategories'])->name('categories.fetch-subcategories');
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
@@ -100,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Client routes (Wholesale)
-    Route::middleware(['role:Wholesale'])->prefix('client')->name('client.')->group(function () {
+    Route::middleware(['role:Wholesaler'])->prefix('client')->name('client.')->group(function () {
         Route::get('/', [ClientDashboardController::class, 'index'])->name('dashboard');
         Route::resource('reseller-users', ResellerClientUserController::class);
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');

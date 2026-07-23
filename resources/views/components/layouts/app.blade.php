@@ -1,4 +1,4 @@
-<x-layouts.base class="font-sans antialiased">
+<x-layouts.base class="font-sans antialiased" :title="$title ?? null">
 
     <div class="flex min-h-screen flex-col bg-white dark:bg-black">
         <x-partials.app.header />

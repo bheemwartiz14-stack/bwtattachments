@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>Admin Dashboard - BWT</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Admin'], ['label' => 'Dashboard']]" />
+    <x-breadcrumb :items="[['label' => 'Admin Poral'], ['label' => 'Dashboard']]" />
 
     <div class="space-y-6">
         <x-ui.hero title="Admin Dashboard" subtitle="Full system management overview">
@@ -72,7 +72,7 @@
                             <p class="text-xs text-slate-500">Manage types</p>
                         </div>
                     </a>
-                    <a href="{{ route('admin.wholesale-client-users.index') }}"   wire:navigate class="flex items-center gap-4 rounded-xl border border-slate-100 p-4 transition-all hover:border-amber-200 hover:bg-amber-50 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50 dark:hover:border-amber-800 dark:hover:bg-amber-900/20">
+                    <a href="{{ route('admin.wholeseller.index') }}"   wire:navigate class="flex items-center gap-4 rounded-xl border border-slate-100 p-4 transition-all hover:border-amber-200 hover:bg-amber-50 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50 dark:hover:border-amber-800 dark:hover:bg-amber-900/20">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/30">
                             <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         </div>

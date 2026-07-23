@@ -8,9 +8,9 @@
 <x-layouts.app>
     <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} Resellers- BWT</x-slot:title>
     <x-breadcrumb :items="[
-        ['label' => 'Dashboard', 'url' => route('client.dashboard')],
-        ['label' => 'Resellers', 'url' => route('client.reseller-users.index')],
-        ['label' => $isEdit ? 'Edit' : 'New'],
+        ['label' => 'Wholesaler Portal', 'url' => route('client.dashboard')],
+        ['label' => 'Manage Resellers', 'url' => route('client.reseller-users.index')],
+        ['label' => $isEdit ? 'Edit Reseller' : 'Add Reseller'],
     ]" />
 
     <div class="space-y-4">

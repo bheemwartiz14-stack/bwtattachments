@@ -4,7 +4,7 @@
     <x-slot:title>{{ $isEdit ? 'Edit Term' : 'Upload New Terms' }} - {{ $siteTitle }}</x-slot:title>
 
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
         ['label' => 'Terms & Conditions', 'url' => route('admin.terms.index')],
         ['label' => $isEdit ? 'Edit Term' : 'Upload New Terms'],
     ]" />

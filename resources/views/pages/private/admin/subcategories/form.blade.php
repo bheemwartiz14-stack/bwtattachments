@@ -4,7 +4,7 @@
     <x-slot:title>{{ $isEdit ? 'Edit Subcategory' : 'Add Subcategory' }} - BWT</x-slot:title>
 
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
         ['label' => 'Subcategories', 'url' => route('admin.subcategories.index')],
         ['label' => $isEdit ? 'Edit Subcategory' : 'New Subcategory']
     ]" />

@@ -1,7 +1,7 @@
 <x-layouts.app>
     <x-slot:title>{{ $quotation->quotation_number }} - BWT</x-slot:title>
     <x-breadcrumb :items="[
-        ['label' => 'Client Portal', 'url' => route('client.dashboard')],
+        ['label' => 'Wholesaler Portal', 'url' => route('client.dashboard')],
         ['label' => 'My Quotations', 'url' => route('client.quotations.index')],
         ['label' => $quotation->quotation_number],
     ]" />

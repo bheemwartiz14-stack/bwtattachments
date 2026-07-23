@@ -18,20 +18,21 @@
     ];
 
     $rolePrefix = match (true) {
-        $user->hasRole('Super Admin') => 'admin',
+        $user->hasRole('Admin') => 'admin',
         $user->hasRole('Wholesale') => 'client',
         $user->hasRole('Retailer') => 'retailer',
         $user->hasRole('customer') => 'customer',
         default => null,
     };
 
-    if ($user->hasRole('Super Admin')) {
+    if ($user->hasRole('Admin')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin.dashboard'],
             [
-                'label' => 'Manage WholeSale',
-                'route' => 'admin.wholesale-client-users.index',
-                'pattern' => 'admin.wholesale-client-users.*',
+                'label' => 'Manage Wholesalers',
+                'route' => 'admin.wholeseller.index',
+                'pattern' => 'admin.wholeseller.*',
+                'icon' => 'heroicon-o-building-storefront',
             ],
             ['label' => 'Categories', 'route' => 'admin.categories.index', 'pattern' => 'admin.categories.*'],
             ['label' => 'Subcategories', 'route' => 'admin.subcategories.index', 'pattern' => 'admin.subcategories.*'],
@@ -40,13 +41,14 @@
             ['label' => 'Site Settings', 'route' => 'admin.setting.genral-setting', 'pattern' => 'admin.setting.*'],
             ['label' => 'Terms & Conditions', 'route' => 'admin.terms.index', 'pattern' => 'admin.terms.*'],
         ];
-    } elseif ($user->hasRole('Wholesale')) {
+    } elseif ($user->hasRole('Wholesaler')) {
         $sidebarItems = [
             ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
             [
                 'label' => 'Manage Resellers',
                 'route' => 'client.reseller-users.index',
                 'pattern' => 'client.reseller-users.*',
+                'icon' => 'heroicon-o-truck',
             ],
             ['label' => 'Products', 'route' => 'client.products.index', 'pattern' => 'client.products.*'],
             ['label' => 'Quotations', 'route' => 'client.quotations.index', 'pattern' => 'client.quotations.*'],
@@ -59,6 +61,7 @@
                 'label' => 'Manage Customer',
                 'route' => 'reseller.customer-users.index',
                 'pattern' => 'reseller.customer-users.*',
+                 'icon' => 'heroicon-o-user-group',
             ],
             ['label' => 'Products', 'route' => 'reseller.products.index', 'pattern' => 'reseller.products.*'],
             ['label' => 'Quotations', 'route' => 'reseller.quotations.index', 'pattern' => 'reseller.quotations.*'],

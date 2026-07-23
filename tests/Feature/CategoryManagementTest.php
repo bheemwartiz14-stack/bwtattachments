@@ -12,11 +12,11 @@ beforeEach(function () {
 });
 
 test('admin can list categories', function () {
-    $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
+    $role = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
     $role->givePermissionTo(Permission::all());
 
     $user = User::factory()->create();
-    $user->assignRole('Super Admin');
+    $user->assignRole('Admin');
 
     $response = $this->actingAs($user)->get(route('admin.categories.index'));
 
@@ -24,11 +24,11 @@ test('admin can list categories', function () {
 });
 
 test('admin can create category', function () {
-    $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
+    $role = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
     $role->givePermissionTo(Permission::all());
 
     $user = User::factory()->create();
-    $user->assignRole('Super Admin');
+    $user->assignRole('Admin');
 
     $response = $this->actingAs($user)->post(route('admin.categories.store'), [
         'name' => 'Test Category',
@@ -39,11 +39,11 @@ test('admin can create category', function () {
 });
 
 test('admin can update category', function () {
-    $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
+    $role = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
     $role->givePermissionTo(Permission::all());
 
     $user = User::factory()->create();
-    $user->assignRole('Super Admin');
+    $user->assignRole('Admin');
 
     $category = \App\Models\Category::factory()->create();
 
@@ -56,11 +56,11 @@ test('admin can update category', function () {
 });
 
 test('admin can delete category', function () {
-    $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
+    $role = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
     $role->givePermissionTo(Permission::all());
 
     $user = User::factory()->create();
-    $user->assignRole('Super Admin');
+    $user->assignRole('Admin');
 
     $category = \App\Models\Category::factory()->create();
 

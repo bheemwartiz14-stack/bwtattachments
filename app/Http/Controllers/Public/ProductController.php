@@ -79,7 +79,7 @@ class ProductController extends Controller
 
         $user = auth()->user();
 
-        if (!$user || !($user->hasRole('Wholesale') || $user->hasRole('Super Admin'))) {
+        if (!$user || !($user->hasRole('Wholesale') || $user->hasRole('Admin'))) {
             abort(403, 'Unauthorized. Only Wholesales can download PDF drawings.');
         }
 

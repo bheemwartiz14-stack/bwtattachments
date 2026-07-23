@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>Categories - BWT</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Categories']]" />
+    <x-breadcrumb :items="[['label' => 'Admin Portal', 'url' => route('admin.dashboard')], ['label' => 'Categories']]" />
 
     <div class="space-y-6">
         <x-ui.hero title="Categories" subtitle="Manage categories and subcategories">

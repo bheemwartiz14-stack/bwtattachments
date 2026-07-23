@@ -30,8 +30,8 @@ class RolePermissionSeeder extends Seeder
                 'guard_name' => 'web',
             ]);
         }
-        $superAdmin = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web']);
-        $wholesaleClient = Role::firstOrCreate(['name' => 'Wholesale', 'guard_name' => 'web']);
+        $superAdmin = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
+        $wholesaleClient = Role::firstOrCreate(['name' => 'Wholesaler', 'guard_name' => 'web']);
         $retailer = Role::firstOrCreate(['name' => 'Reseller', 'guard_name' => 'web']);
         $user = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
         $excludedForSuperAdmin = [

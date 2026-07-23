@@ -24,9 +24,8 @@ class WholesaleClientUserServices
         $plainPassword = $data['password'] ?? null;
         [$meta, $margin] = $this->extract($data);
         $meta['plain_password'] = \App\Helpers\PasswordHelper::encrypt($plainPassword);
-
         $user = $this->userService->create($data);
-        $this->saveMargin($user, (float) $margin, 'wholesale');
+        $this->saveMargin($user, (float) $margin, 'Wholesaler');
         $this->saveMeta($user, $meta);
         $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
         if ($logo) {
@@ -34,7 +33,7 @@ class WholesaleClientUserServices
         }
         $user->load(['userMeta']);
         $this->dispatchMarginEvent($user, (float) $margin);
-        event(new WelcomeOnboardingUser($user, $plainPassword, 'wholesale'));
+        event(new WelcomeOnboardingUser($user, $plainPassword, 'Wholesaler'));
         return $user;
     }
 
@@ -44,7 +43,7 @@ class WholesaleClientUserServices
             $user = $this->userService->update($id, $data);
             [$meta, $margin] = $this->extract($data);
             $this->saveMeta($user, $meta);
-            $this->saveMargin($user, (float) $margin, 'wholesale');
+            $this->saveMargin($user, (float) $margin, 'Wholesaler');
             $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
             if ($logo) {
                 $user->clearMediaCollection('wholesale_client_logo');
@@ -78,7 +77,7 @@ class WholesaleClientUserServices
             role_name: $user->roles->pluck('name')->first(),
             name: $user->name,
             margin_type: 'percentage',
-            type: 'wholesale',
+            type: 'Wholesaler',
             margin_value: $margin,
         );
        event(new UpdateUserMargins($dispytechdata));

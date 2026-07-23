@@ -1,7 +1,7 @@
 <x-layouts.app>
-    <x-slot:title>{{ $product->product_title }} - BWT</x-slot:title>
+<x-slot:title>View Product - {{ $product->product_title }} - BWT</x-slot:title>
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
         ['label' => 'Products', 'url' => route('admin.products.index')],
         ['label' => $product->product_code]
     ]" />

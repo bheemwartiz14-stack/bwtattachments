@@ -34,7 +34,7 @@ class WholesaleClientUserController extends Controller
     public function store(StoreWholesaleClientUserRequest $request): RedirectResponse
     {
         $this->wholesaleClientUserServices->create($request->validated());
-        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale user created successfully.');
+        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesaler  created successfully.');
     }
 
     public function show(string $id): View
@@ -55,13 +55,13 @@ class WholesaleClientUserController extends Controller
     public function update(UpdateWholesaleClientUserRequest $request, string $id): RedirectResponse
     {
         $this->wholesaleClientUserServices->update($id, $request->validated());
-        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale user updated successfully.');
+        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesale updated successfully.');
     }
 
     public function destroy(string $id): RedirectResponse
     {
         $this->wholesaleClientUserServices->delete($id);
-        return redirect()->route('admin.wholesale-client-users.index')->with('success', 'Wholesale user deleted successfully.');
+        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesale user deleted successfully.');
     }
 
 }

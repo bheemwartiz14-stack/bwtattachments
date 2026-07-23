@@ -136,7 +136,7 @@
                     <div>
 
                         <p class="text-xs uppercase font-semibold tracking-wide text-gray-500">
-                            Wholesale Price
+                            Wholesaler Price
                         </p>
                         @php
                             $price = $product->price;
@@ -149,7 +149,7 @@
                     </div>
 
                     {{-- Button --}}
-                    @role('Wholesale|Reseller')
+                    @role('Wholesaler|Reseller')
                         @php
                             $cartIds = array_column(session()->get('quote_cart', []), 'product_id');
                             $inCart = in_array($product->id, $cartIds);

@@ -1,11 +1,11 @@
 @php
     $meta = $user->userMeta?->metadata ?? [];
 
-    if ($userType === 'wholesale') {
+    if ($userType === 'Wholesaler') {
         $clientName   = $meta['wholesale_company_name'] ?? 'Wholesale';
-        $accountLabel = 'Wholesale';
-        $title        = 'Wholesale Account';
-        $introText    = 'Wholesale account';
+        $accountLabel = 'Wholesaler';
+        $title        = 'Wholesaler Account';
+        $introText    = 'Wholesaler account';
     } elseif ($userType === 'reseller') {
         $clientName   = $meta['company_name'] ?? $meta['retailer_client_name'] ?? 'Retailer Client';
         $accountLabel = 'Reseller';

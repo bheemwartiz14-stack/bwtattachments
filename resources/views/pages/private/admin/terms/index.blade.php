@@ -2,7 +2,7 @@
     <x-slot:title>Terms - {{ $siteTitle }}</x-slot:title>
 
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
         ['label' => 'Terms & Conditions'],
     ]" />
 

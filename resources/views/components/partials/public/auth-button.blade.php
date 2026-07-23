@@ -7,8 +7,8 @@
 @auth
     @php
         $dashboardRoute = match (true) {
-            auth()->user()->hasRole('Super Admin') => 'admin.dashboard',
-            auth()->user()->hasRole('Wholesale') => 'client.dashboard',
+            auth()->user()->hasRole('Admin') => 'admin.dashboard',
+            auth()->user()->hasRole('Wholesaler') => 'client.dashboard',
             auth()->user()->hasRole('Reseller') => 'reseller.dashboard',
              auth()->user()->hasRole('customer') => 'customer.dashboard',
             default => 'admin.dashboard',

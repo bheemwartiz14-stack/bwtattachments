@@ -12,7 +12,7 @@ describe('Authorization', function () {
 
     test('admin can access admin dashboard', function () {
         $admin = User::factory()->create();
-        $admin->assignRole('Super Admin');
+        $admin->assignRole('Admin');
         $this->actingAs($admin);
 
         $response = $this->get(route('admin.dashboard'));

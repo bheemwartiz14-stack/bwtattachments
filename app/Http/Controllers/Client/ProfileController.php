@@ -37,7 +37,7 @@ class ProfileController extends Controller
         $viewData['logo'] = $logo?->getUrl();
         $viewData['logo_id'] = $logo?->id;
         $viewData['prefix'] = 'client';
-        $viewData['breadcrumbLabel'] = 'Client Portal';
+        $viewData['breadcrumbLabel'] = 'Wholesaler Portal';
         $viewData['breadcrumbRoute'] = 'client.dashboard';
         $viewData['hasCompany'] = true;
         $viewData['roleLabel'] = 'Wholesale';

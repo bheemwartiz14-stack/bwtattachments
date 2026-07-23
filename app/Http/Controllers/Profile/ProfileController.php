@@ -148,7 +148,7 @@ class ProfileController extends Controller
     private function resolveRoutePrefix(User $user): string
     {
         return match (true) {
-            $user->hasRole('Super Admin') => 'admin',
+            $user->hasRole('Admin') => 'admin',
             $user->hasRole('Wholesale') => 'client',
             $user->hasRole('Retailer') => 'retailer',
             $user->hasRole('customer') => 'customer',

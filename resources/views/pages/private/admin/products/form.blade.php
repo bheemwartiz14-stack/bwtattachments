@@ -14,7 +14,7 @@
     <x-slot:title>{{ $isEdit ? 'Edit Product' : 'Create Product' }} - BWT</x-slot:title>
 
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
         ['label' => 'Products', 'url' => route('admin.products.index')],
         ['label' => $isEdit ? 'Edit Product' : 'Create Product'],
     ]" />

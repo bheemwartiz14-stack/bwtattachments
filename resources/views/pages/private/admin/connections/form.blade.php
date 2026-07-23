@@ -4,7 +4,7 @@
     <x-slot:title>{{ $isEdit ? 'Edit Connection' : 'Add Connection' }} - BWT</x-slot:title>
 
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
+        ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
         ['label' => 'Connections', 'url' => route('admin.connections.index')],
         ['label' => $isEdit ? 'Edit Connection' : 'New Connection']
     ]" />

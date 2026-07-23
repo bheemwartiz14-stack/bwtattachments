@@ -306,7 +306,7 @@
 
                         <div class="flex flex-wrap gap-3 mt-4">
                             @auth
-                                @role('Wholesale')
+                                @role('Wholesaler')
                                     @if ($product->getFirstMedia('pdfs'))
                                         <a href="{{ route('public.products.pdf', $product) }}" wire:navigate target="_blank"
                                             class="inline-block bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors">
@@ -315,7 +315,7 @@
                                     @endif
                                 @endrole
                                 
-                                @role('Wholesale|Reseller')
+                                @role('Wholesaler|Reseller')
                                     @php
                                         $cartIds = array_column(session()->get('quote_cart', []), 'product_id');
                                         $inCart = in_array($product->id, $cartIds);

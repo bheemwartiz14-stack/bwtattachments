@@ -15,16 +15,17 @@
 @endphp
 
 <x-layouts.app>
-    <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} Wholesale User - BWT</x-slot:title>
+    <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} Wholeseller - BWT</x-slot:title>
     <x-breadcrumb :items="[
-        ['label' => 'Admin', 'url' => route('admin.dashboard')],
-        ['label' => 'Wholesale', 'url' => route('admin.wholesale-client-users.index')],
+        ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
+        ['label' => 'Manage Wholesalers', 'url' => route('admin.wholeseller.index')],
         ['label' => $isEdit ? 'Edit' : 'New'],
     ]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Wholesale"
-            subtitle="{{ $isEdit ? 'Edit Wholesale' : 'Create a new Wholesale' }}">
+        <x-ui.hero
+    title="{{ $isEdit ? 'Edit' : 'Add' }} Wholesaler"
+    subtitle="{{ $isEdit ? 'Update wholesaler details' : 'Add a new wholesaler' }}">
             <x-slot:icon>
                 <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,8 +57,7 @@
             </div>
         @endif
 
-        <form
-            action="{{ $isEdit ? route('admin.wholesale-client-users.update', $user) : route('admin.wholesale-client-users.store') }}"
+        <form action="{{ $isEdit ? route('admin.wholeseller.update', $user) : route('admin.wholeseller.store') }}"
             method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
             @if ($isEdit)
@@ -94,7 +94,7 @@
                             :required="true" :error="$errors->first('city')" />
                         <x-forms.input name="country" label="Country" placeholder="United Kingdom" :value="$meta['country'] ?? ''"
                             :required="true" :error="$errors->first('country')" />
-                        <x-forms.input name="website" label="Website" type="url" placeholder="https://acme.com"
+                        <x-forms.input name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
                     </div>
                 </div>
@@ -135,7 +135,7 @@
                         @endif
 
                         <div>
-                            <input type="hidden" name="role" value="{{ $roles->first()->name ?? 'Wholesale' }}">
+                            <input type="hidden" name="role" value="{{ $roles->first()->name ?? 'Wholesaler' }}">
                             <label
                                 class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Role</label>
                             <div
@@ -146,7 +146,7 @@
                                         d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                                 </svg>
                                 <span
-                                    class="font-semibold text-emerald-800 dark:text-emerald-300">{{ $roles->first()->name ?? 'Wholesale' }}</span>
+                                    class="font-semibold text-emerald-800 dark:text-emerald-300">{{ $roles->first()->name ?? 'Wholesaler' }}</span>
                             </div>
                         </div>
                     </div>
@@ -185,24 +185,24 @@
                         @svg('heroicon-o-percent-badge', 'h-5 w-5 text-emerald-600 dark:text-emerald-400')
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesale Commission
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesaler Margin
                             Settings</h2>
-                        <p class="text-xs text-slate-500 dark:text-neutral-400">Configure the default commission
-                            percentage for this wholesale account.</p>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400">Configure the default margin percentage
+                            for this Wholesaler account.</p>
                     </div>
                 </div>
                 <div class="p-8">
                     <div class="max-w-xs">
                         <x-forms.input name="commission_percentage" id="commission_percentage" type="number"
-                            label="Default Commission Percentage (%)" placeholder="0.00" :value="old('commission_percentage', $Margin ?? '')"
-                            min="0" max="100" step="0.01" suffix="%" :error="$errors->first('commission_percentage')"
+                            label="Default Margin Percentage (%)" placeholder="0.00" :value="old('commission_percentage', $Margin ?? '')"
+                            min="0" max="100" step="0.01" append="%" :error="$errors->first('commission_percentage')"
                             hint="Enter a value between 0% and 100%." />
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center justify-end gap-3">
-                <a href="{{ route('admin.wholesale-client-users.index') }}"
+                <a href="{{ route('admin.wholeseller.index') }}"
                     class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Cancel</a>
                 <button type="submit"
                     class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">

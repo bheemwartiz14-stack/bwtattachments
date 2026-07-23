@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
@@ -36,15 +37,17 @@ class LoginController extends Controller
         }
         $request->session()->regenerate();
         $user = auth()->user();
-
-        if ($user->hasRole('Super Admin')) {
+        if ($user->hasRole('Admin')) {
             return redirect()->route('admin.dashboard');
         }
         if ($user->hasRole('Reseller')) {
             return redirect()->route('reseller.dashboard');
         }
-         if ($user->hasRole('customer')) {
+        if ($user->hasRole('customer')) {
             return redirect()->route('customer.dashboard');
+        }
+        if ($user->hasRole('Wholesaler')) {
+            return redirect()->route('client.dashboard');
         }
 
         return redirect()->route('client.dashboard');

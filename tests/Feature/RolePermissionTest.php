@@ -13,12 +13,12 @@ beforeEach(function () {
     Permission::create(['name' => 'category.view', 'guard_name' => 'web']);
 });
 
-test('super admin has all permissions', function () {
-    $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
+test('Admin has all permissions', function () {
+    $role = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
     $role->givePermissionTo(Permission::all());
 
     $user = User::factory()->create();
-    $user->assignRole('Super Admin');
+    $user->assignRole('Admin');
 
     expect($user->can('product.view'))->toBeTrue();
     expect($user->can('product.create'))->toBeTrue();
@@ -40,11 +40,11 @@ test('Wholesale has limited permissions', function () {
 });
 
 test('admin can create products with permission', function () {
-    $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
+    $role = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
     $role->givePermissionTo(Permission::all());
 
     $user = User::factory()->create();
-    $user->assignRole('Super Admin');
+    $user->assignRole('Admin');
 
     expect($user->can('product.create'))->toBeTrue();
 });

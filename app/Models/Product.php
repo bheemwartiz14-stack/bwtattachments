@@ -138,7 +138,7 @@ class Product extends Model implements HasMedia
     {
         $roleName = $user->roles->pluck('name')->first();
 
-        if ($roleName === 'Wholesale') {
+        if ($roleName === 'Wholesaler') {
             return $product->productPrices
                 ->where('user_id', $user->id)
                 ->where('type', 'wholesale')

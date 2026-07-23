@@ -1,7 +1,7 @@
 <x-layouts.app>
     <x-slot:title>{{ $product->product_title }} - BWT</x-slot:title>
     <x-breadcrumb :items="[
-        ['label' => 'Client Portal', 'url' => route('client.dashboard')],
+        ['label' => 'Wholesaler Portal', 'url' => route('client.dashboard')],
         ['label' => 'Products', 'url' => route('client.products.index')],
         ['label' => $product->product_code],
     ]" />
@@ -95,7 +95,7 @@
                     <div
                         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">
-                            {{ $product->price ? 'Wholesale Price' : 'DDP Price' }}</p>
+                            {{ $product->price ? 'Wholesaler Price' : 'DDP Price' }}</p>
                         <p class="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white">
                             {{ config('app.currency_symbol') }}{{ number_format($product->price, 2) }}</p>
                     </div>

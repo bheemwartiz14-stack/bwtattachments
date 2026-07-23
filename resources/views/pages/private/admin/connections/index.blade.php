@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>Connections - BWT</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Admin', 'url' => route('admin.dashboard')], ['label' => 'Connections']]" />
+    <x-breadcrumb :items="[['label' => 'Admin Portal', 'url' => route('admin.dashboard')], ['label' => 'Connections']]" />
 
     <div class="space-y-6">
         <x-ui.hero title="Connection Types" subtitle="Manage connection types for products">
