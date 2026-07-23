@@ -23,9 +23,9 @@
         textarea:-webkit-autofill:focus,
         select:-webkit-autofill,
         select:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
-            -webkit-text-fill-color: #000 !important;
-            caret-color: #000 !important;
+            -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+            -webkit-text-fill-color: var(--input-text) !important;
+            caret-color: var(--input-text) !important;
             transition: background-color 999999s ease-in-out 0s;
         }
         ol, ul { padding-left: 1.5em; }

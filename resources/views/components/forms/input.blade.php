@@ -53,7 +53,7 @@
             {{ $slugAttr }}
             {{ $usernameAttr }}
             {{ $selectAttr }}
-            {{ $attributes->merge(['class' => 'block w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-500 autofill:!bg-white autofill:!text-inherit dark:autofill:!bg-white dark:autofill:!text-black ' . ($hasError ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 bg-white text-black placeholder-gray-400 focus:border-neutral-500') . ' ' . ($prepend ? 'pl-10' : '') . ' ' . ($append ? 'pr-10' : '') . ' ' . $class]) }}
+            {{ $attributes->merge(['class' => 'block w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none ' . ($hasError ? 'has-error' : '') . ' ' . ($prepend ? 'pl-10' : '') . ' ' . ($append ? 'pr-10' : '') . ' ' . $class]) }}
         />
         @if($append)
             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
