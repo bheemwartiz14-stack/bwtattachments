@@ -304,3 +304,87 @@
     text-wrap: balance;
 }
 
+/* Force white background + black text on ALL inputs in ALL states */
+input,
+textarea,
+select,
+.form-input,
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"] {
+    background-color: #fff !important;
+    color: #000 !important;
+    caret-color: #000 !important;
+}
+
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    background-color: #fff !important;
+    color: #000 !important;
+    caret-color: #000 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:hover,
+select:-webkit-autofill,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:hover {
+    -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+    -webkit-text-fill-color: #000 !important;
+    caret-color: #000 !important;
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select,
+.dark .form-input,
+.dark .form-control {
+    background-color: #fff !important;
+    color: #000 !important;
+    caret-color: #000 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder,
+.dark select::placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:focus,
+.dark select:-webkit-autofill,
+.dark select:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+    -webkit-text-fill-color: #000 !important;
+    caret-color: #000 !important;
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
