@@ -33,7 +33,7 @@
         @if($multiple) multiple @endif
         @if($required) required @endif
         @if($disabled) disabled @endif
-        {{ $attributes->merge(['class' => 'block w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:focus:ring-neutral-400 ' . ($hasError ? 'border-red-300 dark:border-red-600 text-red-900 dark:text-red-100 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-900 dark:text-neutral-100 focus:border-neutral-500')]) }}
+        {{ $attributes->merge(['class' => 'block w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-500 ' . ($hasError ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 bg-white text-black focus:border-neutral-500')]) }}
     >
         @if($placeholder)
             <option value="">{{ $placeholder }}</option>
