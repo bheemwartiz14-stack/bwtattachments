@@ -21,18 +21,18 @@ $(function () {
 
         $loginError.addClass('hidden').text('');
         $passwordError.addClass('hidden').text('');
-        $login.removeClass('border-red-400 ring-2 ring-red-200');
-        $password.removeClass('border-red-400 ring-2 ring-red-200');
+        $login.removeClass('has-error');
+        $password.removeClass('has-error');
 
         if (!$login.val().trim()) {
             $loginError.text('Please enter your email or username.').removeClass('hidden');
-            $login.addClass('border-red-400 ring-2 ring-red-200');
+            $login.addClass('has-error');
             valid = false;
         }
 
         if (!$password.val().trim()) {
             $passwordError.text('Please enter your password.').removeClass('hidden');
-            $password.addClass('border-red-400 ring-2 ring-red-200');
+            $password.addClass('has-error');
             valid = false;
         }
 

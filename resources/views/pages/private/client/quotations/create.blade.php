@@ -5,6 +5,7 @@
     @php
         $user = auth()->user();
         $meta = $user?->userMeta?->metadata ?? [];
+
     @endphp
 
 
@@ -203,8 +204,15 @@
                             :value="now()->format('Y-m-d')" min="{{ now()->format('Y-m-d') }}" />
                         <x-forms.input name="valid_until" id="valid_until" label="Valid Until" type="date"
                             min="{{ now()->format('Y-m-d') }}" />
-                        <x-forms.input name="margin_percentage" label="Margin (%)" type="number" value="0"
-                            step="0.01" min="0" max="100" readonly />
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Margin (%)</label>
+                            <div class="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 dark:border-neutral-700 dark:bg-neutral-800/50 dark:text-neutral-300">
+                                <span id="margin_percentage">0.00%</span>
+                                <svg class="ml-auto h-4 w-4 shrink-0 text-slate-400 dark:text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

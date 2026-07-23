@@ -71,8 +71,6 @@
         --color-text: #f5f5f5;
         --color-text-secondary: #d4d4d4;
         --color-text-tertiary: #737373;
-        --color-surface: #171717;
-        --color-border: #404040;
     }
 }
 
@@ -126,33 +124,11 @@
     }
 
     .input {
-        @apply block w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-150;
-        background-color: var(--input-bg);
-        color: var(--input-text);
-        border-color: var(--input-border);
-    }
-
-    .input::placeholder {
-        color: var(--input-placeholder);
+        @apply block w-full px-3 py-2 text-sm border border-border rounded-lg bg-white text-text placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-150;
     }
 
     .dark .input {
-        border-color: var(--input-border);
-        background-color: var(--input-bg);
-        color: var(--input-text);
-    }
-
-    .dark .input::placeholder {
-        color: var(--input-placeholder);
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:focus,
-    textarea:-webkit-autofill,
-    textarea:-webkit-autofill:focus,
-    select:-webkit-autofill,
-    select:-webkit-autofill:focus {
-        transition: background-color 999999s ease-in-out 0s;
+        @apply bg-neutral-900 border-neutral-800 text-neutral-100 placeholder:text-neutral-500;
     }
 
     .label {
@@ -313,93 +289,3 @@
 @utility text-balance {
     text-wrap: balance;
 }
-
-/* ---- CSS variable-based input theming ---- */
-
-:root {
-    --input-bg: #ffffff;
-    --input-text: #111827;
-    --input-placeholder: #9ca3af;
-    --input-border: #d1d5db;
-    --input-ring-color: #64748b;
-    --input-ring: 0 0 0 2px rgba(100, 116, 139, 0.3);
-    --input-disabled-bg: #f1f5f9;
-    --input-disabled-text: #94a3b8;
-    --input-readonly-bg: #f8fafc;
-    --input-error-bg: #ffffff;
-    --input-error-text: #7f1d1d;
-    --input-error-border: #fca5a5;
-    --input-error-placeholder: #fca5a5;
-}
-
-.dark {
-    --input-bg: #171717;
-    --input-text: #f5f5f5;
-    --input-placeholder: #737373;
-    --input-border: #404040;
-    --input-ring-color: #a3a3a3;
-    --input-ring: 0 0 0 2px rgba(163, 163, 163, 0.3);
-    --input-disabled-bg: #262626;
-    --input-disabled-text: #525252;
-    --input-readonly-bg: #1a1a1a;
-    --input-error-bg: #171717;
-    --input-error-text: #fca5a5;
-    --input-error-border: #dc2626;
-    --input-error-placeholder: #f87171;
-}
-
-input, textarea, select {
-    background-color: var(--input-bg);
-    color: var(--input-text);
-    border-color: var(--input-border);
-    caret-color: var(--input-text);
-}
-
-input::placeholder, textarea::placeholder, select::placeholder {
-    color: var(--input-placeholder);
-}
-
-input:focus, textarea:focus, select:focus {
-    background-color: var(--input-bg);
-    color: var(--input-text);
-    border-color: var(--input-ring-color);
-    box-shadow: var(--input-ring);
-    outline: none;
-}
-
-input:disabled, textarea:disabled, select:disabled {
-    background-color: var(--input-disabled-bg);
-    color: var(--input-disabled-text);
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-input:read-only, textarea:read-only {
-    background-color: var(--input-readonly-bg);
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:hover,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:focus,
-textarea:-webkit-autofill:hover,
-select:-webkit-autofill,
-select:-webkit-autofill:focus,
-select:-webkit-autofill:hover {
-    -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
-    -webkit-text-fill-color: var(--input-text) !important;
-    caret-color: var(--input-text) !important;
-    background-color: var(--input-bg) !important;
-    color: var(--input-text) !important;
-}
-
-.has-error {
-    border-color: var(--input-error-border) !important;
-    color: var(--input-error-text) !important;
-}
-
-.has-error::placeholder {
-    color: var(--input-error-placeholder) !important;
-}
-

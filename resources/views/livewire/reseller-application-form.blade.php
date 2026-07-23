@@ -26,7 +26,7 @@
             <x-forms.input name="chamber_of_commerce" placeholder="Chamber of commerce number" wire:model.blur="chamber_of_commerce" maxlength="100" class="form-input md:col-span-1" />
             <div class="hidden md:block"></div>
             <div class="sm:col-span-2">
-                <x-forms.textarea name="additional_info" placeholder="Additional information" :rows="5" wire:model.blur="additional_info" maxlength="2000" class="form-input resize-none md:col-span-2" />
+                <x-forms.textarea name="additional_info" placeholder="Additional information" :rows="5" wire:model.blur="additional_info" maxlength="2000" class="form-input " />
             </div>
         </div>
 

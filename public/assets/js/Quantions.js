@@ -19,7 +19,6 @@
         initDropZones();
         initCollapsibleSections();
         initDeliveryCountrySync();
-        initMarginSync();
     });
 
     /* ---------- CUSTOMER SELECTION ---------- */
@@ -54,8 +53,9 @@
                 setVal('contact_email', e.detail.email || '');
                 setVal('contact_phone', e.detail.phone || '');
                 setVal('reseller_id', e.detail.id || '');
-                var marginInput = document.getElementById('margin_percentage');
-                if (marginInput) marginInput.value = e.detail.margin ?? 0;
+                var marginSpan = document.getElementById('margin_percentage');
+                if (marginSpan) marginSpan.textContent = (e.detail.margin ?? 0).toFixed(2) + '%';
+                setVal('margin_percentage_hidden', e.detail.margin ?? 0);
             }
         });
         window.addEventListener('customerCleared', function () {
@@ -64,8 +64,9 @@
             if (emailDisplay) emailDisplay.textContent = '—';
             if (phoneDisplay) phoneDisplay.textContent = '—';
             ['contact_name', 'contact_email', 'contact_phone', 'reseller_id'].forEach(function (id) { setVal(id, ''); });
-            var marginInput = document.getElementById('margin_percentage');
-            if (marginInput) marginInput.value = 0;
+            var marginSpan = document.getElementById('margin_percentage');
+            if (marginSpan) marginSpan.textContent = '0.00%';
+            setVal('margin_percentage_hidden', 0);
         });
     }
 
@@ -183,19 +184,6 @@
                 this.classList.toggle('collapsed');
             });
         });
-    }
-
-    /* ---------- MARGIN SYNC ---------- */
-    function initMarginSync() {
-        var marginInput = document.getElementById('margin_percentage');
-        if (marginInput && typeof Livewire !== 'undefined') {
-            marginInput.addEventListener('change', function () {
-                Livewire.dispatch('marginChanged', { margin: parseFloat(this.value) || 0 });
-            });
-            marginInput.addEventListener('input', function () {
-                Livewire.dispatch('marginChanged', { margin: parseFloat(this.value) || 0 });
-            });
-        }
     }
 
     /* ---------- QUILL EDITOR ---------- */

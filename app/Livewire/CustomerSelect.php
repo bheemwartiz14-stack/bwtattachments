@@ -55,7 +55,6 @@ class CustomerSelect extends Component
                 margin: (float) $margin,
             );
             $this->dispatch('customerIdChanged', id: $customer->id);
-            $this->dispatch('marginChanged', margin: (float) $margin);
         }
     }
 
@@ -65,7 +64,6 @@ class CustomerSelect extends Component
         $this->search = '';
         $this->dispatch('customerCleared');
         $this->dispatch('customerIdChanged', id: null);
-        $this->dispatch('marginChanged', margin: 0);
     }
 
     public function render(): View
