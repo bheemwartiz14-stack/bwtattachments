@@ -3,7 +3,7 @@
     <x-breadcrumb :items="[['label' => 'Client Portal', 'url' => route('client.dashboard')], ['label' => 'Resellers']]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="Resellers" subtitle="Manage your Reseller accounts">
+        <x-ui.hero title="Resellers" subtitle="Manage your Reseller ">
             <x-slot:actions>
                 <a href="{{ route('client.reseller-users.create') }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
@@ -140,7 +140,7 @@
                                         <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">No Reseller Clients found</h3>
                                         <a href="{{ route('client.reseller-users.create') }}" wire:navigate class="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                                            Add Reseller User
+                                            Add Reseller
                                         </a>
                                     </div>
                                 </td>

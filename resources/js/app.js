@@ -191,3 +191,5 @@ $(document).on('focus', 'input[data-select-all]', function() {
     $(this).select();
 });
 
+
+

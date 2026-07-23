@@ -9,7 +9,7 @@
     <form wire:submit="submit" class="space-y-5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <x-forms.input name="name" label="Full Name" placeholder="John Doe" :required="true" wire:model.blur="name" class="form-input" wrapperClass="form-input-wrapper" />
-            <x-forms.input name="email" label="Email" type="email" placeholder="john@example.com" :required="true" wire:model.blur="email" class="form-input" wrapperClass="form-input-wrapper" />
+            <x-forms.input name="email" label="Email" type="email" placeholder="john@example.com" :required="true" wire:model.blur="email" class="form-input " wrapperClass="form-input-wrapper" />
             <x-forms.input name="company" label="Company name" placeholder="Your company" :required="false" wire:model.blur="company" class="form-input" wrapperClass="form-input-wrapper" />
             <x-forms.input name="phone" label="Tel. number" type="tel" placeholder="+1 (555) 123-4567" :required="false" wire:model.blur="phone" class="form-input" wrapperClass="form-input-wrapper" />
         </div>

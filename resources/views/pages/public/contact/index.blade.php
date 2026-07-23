@@ -2,37 +2,9 @@
 
 <x-layouts.public>
     <x-slot:title>Contact Us - {{ $siteTitle ?? 'BWT' }}</x-slot:title>
- <style>
-
-      .form-input {
-        width: 100%;
-        border-radius: 0.375rem;
-        border: 1px solid #d1d5db;
-        background-color: #fff;
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        color: #111827;
-        outline: none;
-        transition: border-color 150ms, box-shadow 150ms;
-      }
-
-      .form-input:focus {
-        border-color: #6b7280;
-        box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.3);
-      }
-
-      .form-input::placeholder {
-        color: #9ca3af;
-      }
-
+  <style>
       .form-input-wrapper label {
         color: #000 !important;
-      }
-
-      .form-input:-webkit-autofill,
-      .form-input:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
-        -webkit-text-fill-color: #111827 !important;
       }
     </style>
     <div class="bg-gray-50 min-h-screen">

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Events\ResellerApplicationSubmitted;
-use App\Models\ResellerApplication;
+use App\Services\ResellerApplicationService;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
@@ -49,13 +48,12 @@ class ResellerApplicationForm extends Component
         $this->validateOnly($propertyName);
     }
 
-    public function submit(): void
+    public function submit(ResellerApplicationService $resellerApplicationService): void
     {
         $data = $this->validate();
 
-        $application = ResellerApplication::create($data);
+        $resellerApplicationService->create($data);
 
-        ResellerApplicationSubmitted::dispatch($application);
         $this->reset([
             'company_name', 'contact_person', 'address', 'postal_code',
             'place', 'country', 'telephone', 'email', 'website',

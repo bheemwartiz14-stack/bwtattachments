@@ -154,9 +154,7 @@
                             $cartIds = array_column(session()->get('quote_cart', []), 'product_id');
                             $inCart = in_array($product->id, $cartIds);
                         @endphp
-                        <button type="button"
-                            data-quote="{{ $product->id }}"
-                            data-added="{{ $inCart ? 'true' : 'false' }}"
+                        <button type="button" data-quote="{{ $product->id }}" data-added="{{ $inCart ? 'true' : 'false' }}"
                             onclick="toggleQuoteItem(this)"
                             class="mt-3 w-full rounded-md text-white text-center py-2 text-xs font-semibold transition {{ $inCart ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-orange-500 hover:bg-orange-600' }}">
                             Add To Quotation

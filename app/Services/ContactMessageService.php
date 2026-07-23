@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services;
@@ -6,6 +7,7 @@ namespace App\Services;
 use App\Events\ContactMessageSubmitted;
 use App\Repositories\ContactMessageRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 
 class ContactMessageService
@@ -16,10 +18,12 @@ class ContactMessageService
 
     public function create(array $data): Model
     {
+        Log::info('ContactMessageService::create called');
         $message = $this->contactMessageRepository->create($data);
-
+        Log::info('Dispatching ContactMessageSubmitted event', [
+            'id' => $message->id,
+        ]);
         ContactMessageSubmitted::dispatch($message);
-
         return $message;
     }
 

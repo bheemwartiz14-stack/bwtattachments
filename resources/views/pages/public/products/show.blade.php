@@ -314,14 +314,19 @@
                                         </a>
                                     @endif
                                 @endrole
+                                
                                 @role('Wholesale|Reseller')
-                                    <a class="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-5 py-2.5 rounded no-underline transition-colors"
-                                        href="{{ auth()->user()->hasRole('Wholesale')
-                                            ? route('client.quotations.create', ['product_id' => $product->id])
-                                            : route('reseller.quotations.create', ['product_id' => $product->id]) }}"
-                                        wire:navigate>
+                                    @php
+                                        $cartIds = array_column(session()->get('quote_cart', []), 'product_id');
+                                        $inCart = in_array($product->id, $cartIds);
+                                    @endphp
+                                    <button type="button"
+                                        data-quote="{{ $product->id }}"
+                                        data-added="{{ $inCart ? 'true' : 'false' }}"
+                                        onclick="toggleQuoteItem(this)"
+                                        class="rounded-md text-white text-center py-2 text-xs font-semibold transition w-full sm:w-auto px-5 {{ $inCart ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-orange-500 hover:bg-orange-600' }}">
                                         Add To Quotation
-                                    </a>
+                                    </button>
                                 @endrole
                             @else
                                 <a href="{{ route('login') }}" wire:navigate

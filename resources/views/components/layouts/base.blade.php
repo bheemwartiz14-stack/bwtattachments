@@ -18,17 +18,15 @@
 
     <style>
         input:-webkit-autofill,
-        input:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0 1000px white inset !important;
-            -webkit-text-fill-color: inherit !important;
-            caret-color: inherit !important;
-        }
-
-        .dark input:-webkit-autofill,
-        .dark input:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0 1000px #171717 inset !important;
-            -webkit-text-fill-color: #d4d4d4 !important;
-            caret-color: #d4d4d4 !important;
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px var(--color-surface, #ffffff) inset !important;
+            -webkit-text-fill-color: var(--color-text, #0f172a) !important;
+            caret-color: var(--color-text, #0f172a) !important;
+            transition: background-color 999999s ease-in-out 0s;
         }
         ol, ul { padding-left: 1.5em; }
         p { margin-bottom: 0.5em; }

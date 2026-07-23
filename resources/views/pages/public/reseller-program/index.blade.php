@@ -1,25 +1,6 @@
 <x-layouts.public>
     <x-slot:title>BWT Attachments | Become a Reseller</x-slot:title>
   <style>
-
-      .form-input {
-        width: 100%;
-        border-radius: 0.375rem;
-        border: 1px solid #d1d5db;
-        background-color: #fff;
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        color: #374151;
-        outline: none;
-        transition: border-color 150ms, box-shadow 150ms;
-      }
-      .form-input::placeholder {
-        color: #9ca3af;
-      }
-      .form-input:focus {
-        border-color: #1a5faa;
-        box-shadow: 0 0 0 3px rgba(26, 95, 170, 0.2);
-      }
       .nav-link {
         font-size: 0.875rem;
         color: rgba(255, 255, 255, 0.9);
