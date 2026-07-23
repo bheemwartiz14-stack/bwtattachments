@@ -19,7 +19,7 @@
     <x-breadcrumb :items="[
         ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
         ['label' => 'Manage Wholesalers', 'url' => route('admin.wholeseller.index')],
-        ['label' => $isEdit ? 'Edit' : 'New'],
+        ['label' => $isEdit ? 'Edit Wholesaler' : 'Add Wholesaler'],
     ]" />
 
     <div class="space-y-6">
