@@ -17,6 +17,7 @@
         'submit' => 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30 dark:hover:bg-emerald-500 dark:focus:ring-offset-neutral-900',
         'danger' => 'text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20',
         'brand' => 'bg-bwtblue hover:bg-bwtblue2 text-white font-semibold rounded-lg px-8 py-3 shadow-sm hover:shadow-md',
+        'ghost' => '',
     ];
 
     $sizes = [
@@ -30,13 +31,13 @@
     $variantClass = $variants[$variant] ?? $variants['primary'];
     $sizeClass = $sizes[$size] ?? $sizes['md'];
     $widthClass = $block ? 'w-full' : '';
+    $computedClass = trim("{$base} {$variantClass} {$sizeClass} {$widthClass}");
 @endphp
 
 <button
     type="{{ $type }}"
     @if($loading || $disabled) disabled @endif
-    class="{{ $base }} {{ $variantClass }} {{ $sizeClass }} {{ $widthClass }}"
-    {{ $attributes }}
+    {{ $attributes->merge(['class' => $computedClass]) }}
 >
     @if($loading)
         <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">

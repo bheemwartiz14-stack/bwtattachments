@@ -128,10 +128,13 @@
                             $price = $product->productPrices->first()?->final_price ?? $product->ddp_price ?? 0;
                             $added = collect($items)->contains('product_id', $product->id);
                         @endphp
-                        <button type="button"
-                            @if($added) disabled class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-sm opacity-50 cursor-default mb-0.5"
-                            @else wire:click="addItem('{{ $product->id }}')" class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-sm transition-all hover:bg-slate-50 hover:shadow-sm mb-0.5 dark:hover:bg-neutral-800"
-                            @endif>
+                        @if($added)
+                            <button type="button" disabled
+                                class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-sm opacity-50 cursor-default mb-0.5">
+                        @else
+                            <button type="button" wire:click="addItem('{{ $product->id }}')"
+                                class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-sm transition-all hover:bg-slate-50 hover:shadow-sm mb-0.5 dark:hover:bg-neutral-800">
+                        @endif
                             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-200 text-sm font-bold text-slate-600 shadow-sm dark:from-neutral-800 dark:to-neutral-700 dark:text-neutral-300">
                                 {{ strtoupper(substr($product->product_title, 0, 1)) }}
                             </div>
