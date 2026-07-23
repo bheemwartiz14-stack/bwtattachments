@@ -4,7 +4,7 @@
         <div class="flex items-center gap-4">
             @if($icon ?? false)
                 <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
-                    {{ $icon }}
+                   @svg($icon, 'h-7 w-7 text-white')
                 </div>
             @endif
             <div>

@@ -42,9 +42,10 @@
                                 @endif
                             </td>
                             <td class="px-3 py-3">
-                                <input type="number" value="{{ $item['quantity'] ?? 1 }}" min="1"
+                                <input type="number" value="{{ $item['quantity'] ?? 1 }}" min="1" max="50" step="1"
                                     class="w-16 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-center text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
-                                    wire:change="updateQty({{ $index }}, $event.target.value)">
+                                    wire:change="updateQty({{ $index }}, $event.target.value)"
+                                    oninput="if(this.value > 50) this.value = 50; if(this.value < 1) this.value = 1;">
                             </td>
                             <td class="px-3 py-3 text-sm text-slate-500 dark:text-neutral-400">pcs</td>
                             <td class="px-3 py-3">

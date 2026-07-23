@@ -3,7 +3,7 @@
     <x-slot:title>Manage Products - {{ $siteTitle }}</x-slot:title>
     <x-breadcrumb :items="[['label' => 'Reseller Portal', 'url' => route('reseller.dashboard')], ['label' => 'Products']]" />
     <div class="space-y-6">
-        <x-ui.hero title="Products" subtitle="Manage your product catalog">
+        <x-ui.hero title="Products">
             <x-slot:actions>
 
             </x-slot:actions>

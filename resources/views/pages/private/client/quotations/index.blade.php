@@ -15,16 +15,15 @@
     @endif
 
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-neutral-100">My Quotations</h1>
-                <p class="text-sm text-gray-700 mt-1">View and manage your quotations</p>
-            </div>
-            <a href="{{ route('client.quotations.create') }}" wire:navigate class="inline-flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                New Quotation
-            </a>
-        </div>
+        <x-ui.hero title="My Quotations">
+            <x-slot:actions>
+                <a href="{{ route('client.quotations.create') }}" wire:navigate
+                    class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                    New Quotation
+                </a>
+            </x-slot:actions>
+        </x-ui.hero>
 
         <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
             <div class="overflow-x-auto">

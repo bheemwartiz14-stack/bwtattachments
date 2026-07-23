@@ -101,7 +101,7 @@ class ItemsManager extends Component
     public function updateQty(int $index, int $value): void
     {
         if (isset($this->items[$index])) {
-            $this->items[$index]['quantity'] = max(1, $value);
+            $this->items[$index]['quantity'] = min(50, max(1, $value));
             $this->dispatchItemsUpdated();
         }
     }

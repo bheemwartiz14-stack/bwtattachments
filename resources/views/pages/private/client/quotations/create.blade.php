@@ -17,12 +17,12 @@
         ['label' => 'New Quotation'],
     ]" />
 
-    <div class="mb-6 flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-neutral-100">New Quotation</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-neutral-400">Create a new quotation for your customer</p>
-        </div>
-        <span id="last-saved" class="text-xs text-gray-400"></span>
+    <div class="mb-6">
+        <x-ui.hero title="New Quotation">
+            <x-slot:actions>
+                <span id="last-saved" class="text-xs text-gray-400"></span>
+            </x-slot:actions>
+        </x-ui.hero>
     </div>
 
     @if ($errors->any())

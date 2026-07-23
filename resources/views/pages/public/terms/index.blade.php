@@ -2,7 +2,7 @@
     <x-slot:title>Terms & Conditions - {{ $siteTitle }}</x-slot:title>
 
     <div class="space-y-6">
-        <x-ui.hero title="Terms & Conditions" subtitle="Review our terms and conditions documents" />
+        <x-ui.hero title="Terms & Conditions" />
 
         @if($terms->isEmpty())
             <div class="rounded-2xl border border-slate-200 bg-white px-8 py-12 text-center shadow-sm dark:border-neutral-800 dark:bg-neutral-900">

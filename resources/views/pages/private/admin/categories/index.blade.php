@@ -3,7 +3,7 @@
     <x-breadcrumb :items="[['label' => 'Admin Portal', 'url' => route('admin.dashboard')], ['label' => 'Categories']]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="Categories" subtitle="Manage categories and subcategories">
+        <x-ui.hero title="Manage Categories" icon="heroicon-o-rectangle-stack">
             <x-slot:actions>
                 <a href="{{ route('admin.categories.create') }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">

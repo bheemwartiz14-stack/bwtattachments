@@ -3,7 +3,7 @@
     <x-breadcrumb :items="[['label' => 'Admin Poral'], ['label' => 'Dashboard']]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="Admin Dashboard" subtitle="Full system management overview">
+        <x-ui.hero title="Admin Dashboard">
             <x-slot:actions>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/20">Admin</span>
             </x-slot:actions>

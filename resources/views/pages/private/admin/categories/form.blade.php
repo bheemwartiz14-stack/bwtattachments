@@ -5,16 +5,12 @@
 
     <x-breadcrumb :items="[
         ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
-        ['label' => 'Categories', 'url' => route('admin.categories.index')],
+        ['label' => 'Manage Categories', 'url' => route('admin.categories.index')],
         ['label' => $isEdit ? 'Edit Category' : 'New Category']
     ]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="{{ $isEdit ? 'Edit Category' : 'Add Category' }}" subtitle="{{ $isEdit ? 'Update category details' : 'Create a new category for the system' }}">
-            <x-slot:icon>
-                <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L12 3l9 4.5M4.5 10.5V19A1.5 1.5 0 006 20.5h12A1.5 1.5 0 0019.5 19v-8.5M9 20.5v-6h6v6" /></svg>
-            </x-slot:icon>
-        </x-ui.hero>
+        <x-ui.hero title="{{ $isEdit ? 'Edit Category' : 'Add Category' }}" icon="heroicon-o-rectangle-stack" />
 
         {{-- Errors --}}
        

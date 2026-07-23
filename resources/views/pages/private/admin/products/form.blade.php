@@ -21,14 +21,7 @@
 
     <div class="space-y-6">
         <x-ui.hero title="{{ $isEdit ? 'Edit Product' : 'Create Product' }}"
-            subtitle="{{ $isEdit ? 'Update product details, media, and pricing' : 'Add a new product to the catalog' }}">
-            <x-slot:icon>
-                <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-            </x-slot:icon>
-        </x-ui.hero>
+            icon="heroicon-o-cube" />
 
         @if ($errors->any())
             <div
