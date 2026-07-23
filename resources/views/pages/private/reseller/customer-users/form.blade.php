@@ -14,7 +14,7 @@
     ]" />
     <div class="space-y-4">
         <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Customer"
-            subtitle="{{ $isEdit ? 'Update Customer' : 'Create a new Customer' }}">
+            subtitle="">
             <x-slot:icon>
                 <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round"
