@@ -16,10 +16,10 @@ class MarginUpdateResource extends JsonResource
         $marginType = $userData->margin_type ?? '';
         $marginValue = (float) ($userData->margin_value ?? 0);
         $userrole = $userData->type;
-        if ($userData->type === 'wholesale') {
+        if ($userData->type === 'Wholesaler') {
             $basePrice = (float) ($product->ddp_price ?? 0);
         } elseif ($userData->type === 'reseller') {
-            $userPrice = $product->productPrices->where('type', 'wholesale')->first();
+            $userPrice = $product->productPrices->where('type', 'Wholesaler')->first();
             $basePrice = (float) ($userPrice->final_price  ?? 0);
         } elseif ($userData->type === 'customer') {
             $userPrice = $product->productPrices->where('type', 'reseller')->first() ?? $product->productPrices->where('type', 'wholesale')->first();

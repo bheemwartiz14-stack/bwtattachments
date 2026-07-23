@@ -18,39 +18,54 @@ class ProductPricingService
     {
         $user = Auth::user();
         $price = null;
+
         if (!$user) {
             $price = $product->productPrices()
                 ->where('type', 'wholesale')
                 ->first();
         } else {
             $role = $user->roles->first()?->name;
+
             switch ($role) {
                 case 'Wholesaler':
                     $price = $product->productPrices()
                         ->where('user_id', $user->id)
-                        ->where('type', 'wholesale')
+                        ->where('type', 'Wholesaler')
                         ->first();
                     break;
+
                 case 'Reseller':
                     $price = $product->productPrices()
                         ->where('user_id', $user->id)
                         ->where('type', 'reseller')
-                        ->first()
-                        ?? $product->productPrices()
-                        ->where('type', 'wholesale')
                         ->first();
+
+                    if (!$price && $user->parent_id) {
+                        $price = $product->productPrices()
+                            ->where('user_id', $user->parent_id)
+                            ->where('type', 'Wholesaler')
+                            ->first();
+                    }
                     break;
 
                 case 'customer':
                     $price = $product->productPrices()
                         ->where('user_id', $user->id)
                         ->where('type', 'customer')
-                        ->first()
-                        ?? $product->productPrices()
-                        ->where('type', 'reseller')
-                        ->first() ?? $product->productPrices()
-                        ->where('type', 'wholesale')
                         ->first();
+
+                    if (!$price && $user->parent_id) {
+                        $price = $product->productPrices()
+                            ->where('user_id', $user->parent_id)
+                            ->where('type', 'reseller')
+                            ->first();
+                    }
+
+                    if (!$price && $user->parent_id) {
+                        $price = $product->productPrices()
+                            ->where('type', 'Wholesaler')
+                            ->first();
+                    }
                     break;
 
                 default:

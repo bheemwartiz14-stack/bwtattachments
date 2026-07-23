@@ -51,7 +51,7 @@ class ResellerClientUserController extends Controller
         $this->retailerClientUserService->create($data);
          return redirect()
             ->route('client.reseller-users.index')
-            ->with('success', 'Retailer client user created successfully.');
+            ->with('success', 'Reseller created successfully.');
     }
 
     /**
@@ -77,12 +77,12 @@ class ResellerClientUserController extends Controller
     public function update(UpdateRetailerClientUserRequest $request, string $id): RedirectResponse
     {
         $this->retailerClientUserService->update($id, $request->validated());
-        return redirect()->route('client.reseller-users.index')->with('success', 'Retailer client user updated successfully.');
+        return redirect()->route('client.reseller-users.index')->with('success', 'Reseller updated successfully.');
     }
 
     public function destroy(string $id): RedirectResponse
     {
         $this->retailerClientUserService->delete($id);
-        return redirect()->route('client.reseller-users.index')->with('success', 'Retailer client user deleted successfully.');
+        return redirect()->route('client.reseller-users.index')->with('success', 'Reseller  deleted successfully.');
     }
 }
