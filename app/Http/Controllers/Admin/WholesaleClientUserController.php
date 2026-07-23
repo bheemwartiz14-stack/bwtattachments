@@ -55,13 +55,13 @@ class WholesaleClientUserController extends Controller
     public function update(UpdateWholesaleClientUserRequest $request, string $id): RedirectResponse
     {
         $this->wholesaleClientUserServices->update($id, $request->validated());
-        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesale updated successfully.');
+        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesaler updated successfully.');
     }
 
     public function destroy(string $id): RedirectResponse
     {
         $this->wholesaleClientUserServices->delete($id);
-        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesale user deleted successfully.');
+        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesaler deleted successfully.');
     }
 
 }
