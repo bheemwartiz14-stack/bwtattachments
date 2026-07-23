@@ -19,7 +19,7 @@
 
     $rolePrefix = match (true) {
         $user->hasRole('Admin') => 'admin',
-        $user->hasRole('Wholesale') => 'client',
+        $user->hasRole('Wholesaler') => 'client',
         $user->hasRole('Retailer') => 'retailer',
         $user->hasRole('customer') => 'customer',
         default => null,

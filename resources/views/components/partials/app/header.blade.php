@@ -2,7 +2,7 @@
     $user = auth()->user();
     $rolePrefix = match (true) {
         $user->hasRole('Admin') => 'admin',
-        $user->hasRole('Wholesale') => 'client',
+        $user->hasRole('Wholesaler') => 'client',
         $user->hasRole('Reseller') => 'reseller',
         $user->hasRole('customer') => 'customer',
         default => 'client',
@@ -34,11 +34,11 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button data-toggle-dark
+                {{-- <button data-toggle-dark
                     class="flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-slate-100 dark:text-neutral-400 dark:hover:bg-neutral-900">
                     <span class="dark:hidden">@svg('heroicon-o-sun', 'h-5 w-5')</span>
                     <span class="hidden dark:block">@svg('heroicon-o-moon', 'h-5 w-5')</span>
-                </button>
+                </button> --}}
 
                 <div class="relative">
                     <button type="button" data-dropdown-toggle="user-menu"
@@ -72,13 +72,10 @@
                             @svg('heroicon-o-cog-6-tooth', 'h-4 w-4')
                             Profile Settings
                         </a>
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" class="w-full">
                             @csrf
-                            <button type="submit"
-                                class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">
-                                @svg('heroicon-o-arrow-right-on-rectangle', 'h-4 w-4')
-                                Log Out
-                            </button>
+                            <x-ui.button type="submit" variant="danger" block label="Log Out"
+                                icon='<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>' />
                         </form>
                     </div>
                 </div>

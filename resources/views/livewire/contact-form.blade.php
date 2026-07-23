@@ -19,10 +19,10 @@
         <x-forms.textarea name="message" label="Message" placeholder="Tell us about your inquiry..." :rows="5" :required="true" wire:model.blur="message" class="form-input" wrapperClass="form-input-wrapper" />
 
         <div class="flex justify-end">
-            <button type="submit" class="bg-bwtblue hover:bg-bwtblue2 text-white font-semibold text-sm px-8 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed" wire:loading.attr="disabled">
+            <x-ui.button type="submit" variant="brand" wire:loading.attr="disabled">
                 <span wire:loading.remove>Send Message</span>
                 <span wire:loading>Sending...</span>
-            </button>
+            </x-ui.button>
         </div>
     </form>
 </div>

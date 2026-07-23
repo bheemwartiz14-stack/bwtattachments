@@ -135,6 +135,14 @@
         @apply block text-sm font-medium text-text-secondary mb-1.5;
     }
 
+    .has-error {
+        @apply border-red-400 ring-2 ring-red-200;
+    }
+
+    .dark .has-error {
+        @apply border-red-500 ring-red-900/50;
+    }
+
     .badge {
         display: inline-flex;
         align-items: center;

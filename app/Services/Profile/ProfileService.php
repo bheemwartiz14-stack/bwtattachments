@@ -31,7 +31,7 @@ class ProfileService
                     'phone' => $data['phone'] ?? null,
                 ]);
 
-                if ($user->hasRole('Wholesale')) {
+                if ($user->hasRole('Wholesaler')) {
                     $this->updateClientProfile($user, $data, 'wholesale');
                 }
 
