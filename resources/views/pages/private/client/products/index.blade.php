@@ -3,7 +3,7 @@
     <x-breadcrumb :items="[['label' => 'Wholesaler Portal', 'url' => route('client.dashboard')], ['label' => 'Products']]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="Products">
+        <x-ui.hero title="Manage Products" icon="heroicon-o-cube">
             <x-slot:actions>
 
             </x-slot:actions>

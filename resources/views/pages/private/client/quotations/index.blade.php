@@ -15,7 +15,7 @@
     @endif
 
     <div class="space-y-6">
-        <x-ui.hero title="My Quotations">
+        <x-ui.hero title="My Quotations" icon="heroicon-o-document-text">
             <x-slot:actions>
                 <a href="{{ route('client.quotations.create') }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">

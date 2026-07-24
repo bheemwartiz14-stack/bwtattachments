@@ -1,8 +1,12 @@
 @php
     $sender = $quotation->user;
     $senderMeta = $sender?->userMeta?->metadata ?? [];
-    $senderLogoPath = $sender?->userMeta?->getFirstMediaPath('wholesale_client_logo');
-
+    $roleName = $sender?->roles->pluck('name')->first();
+    $senderLogoPath = match ($roleName) {
+        'Wholesaler' => $sender?->getFirstMediaPath('wholesale_client_logo'),
+        'Reseller' => $sender?->getFirstMediaPath('retailer_client_logo'),
+        default => null,
+    };
     $defaultLogoPath = public_path('images/BIG.jpg');
     $logoPath = $senderLogoPath ?: $defaultLogoPath;
     $type = pathinfo($logoPath, PATHINFO_EXTENSION);

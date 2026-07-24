@@ -14,9 +14,7 @@
     ]" />
 
     <div class="space-y-4">
-        <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Reseller"
-           
-            icon="heroicon-o-users" />
+        <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Reseller" icon="heroicon-o-truck" />
 
         @if ($errors->any())
             <div
