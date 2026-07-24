@@ -1,12 +1,7 @@
 @php
     $userPrice = auth()->check() ? $product->productPrices->firstWhere('user_id', auth()->id()) : null;
     $img = $product->getFirstMediaUrl('images');
-    $isFavorited =
-        auth()->check() &&
-        $product
-            ->favoritedByUsers()
-            ->where('user_id', auth()->id())
-            ->exists();
+    $isFavorited = auth()->check() && $product->is_favorite;
 @endphp
 
 <div
@@ -151,8 +146,7 @@
                     {{-- Button --}}
                     @role('Wholesaler|Reseller')
                         @php
-                            $cartIds = array_column(session()->get('quote_cart', []), 'product_id');
-                            $inCart = in_array($product->id, $cartIds);
+                            $inCart = $product->is_in_cart;
                         @endphp
                         <button type="button" data-quote="{{ $product->id }}" data-added="{{ $inCart ? 'true' : 'false' }}"
                             onclick="toggleQuoteItem(this)"

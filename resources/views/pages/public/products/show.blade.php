@@ -50,12 +50,7 @@
                     foreach ($galleryMedia as $m) {
                         $allImages->push($m);
                     }
-                    $isFavorited =
-                        auth()->check() &&
-                        $product
-                            ->favoritedByUsers()
-                            ->where('user_id', auth()->id())
-                            ->exists();
+                    $isFavorited = auth()->check() && $product->is_favorite;
                 @endphp
                 <div class="space-y-4" id="productGallery" data-current="0">
                     <div class="relative group overflow-hidden rounded-2xl bg-slate-50 aspect-[3/2]">
@@ -317,8 +312,7 @@
                                 
                                 @role('Wholesaler|Reseller')
                                     @php
-                                        $cartIds = array_column(session()->get('quote_cart', []), 'product_id');
-                                        $inCart = in_array($product->id, $cartIds);
+                                        $inCart = $product->is_in_cart;
                                     @endphp
                                     <button type="button"
                                         data-quote="{{ $product->id }}"

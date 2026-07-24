@@ -40,8 +40,7 @@ class ProductController extends Controller
             ])
         );
         $products = $this->productService->paginate(12, $filter);
-        $favoritedIds = auth()->user()->favoriteProducts()->pluck('product_id')->toArray();
-        return view('pages.private.client.products.index', compact('products', 'categories', 'subcategories', 'connections', 'favoritedIds'));
+        return view('pages.private.client.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
     public function show(string $id): View

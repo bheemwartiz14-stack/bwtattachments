@@ -78,7 +78,7 @@
                 </td>
 
                 <td style="width:30%;text-align:right;vertical-align:top;">
-                    <img src="{{ $logoBase64 }}" style="width:170px;">
+                    <img src="{{ $logoBase64 }}" style="max-width:100%;height:auto;max-height:100px;">
                 </td>
             </tr>
         </table>

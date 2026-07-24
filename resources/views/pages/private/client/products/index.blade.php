@@ -162,12 +162,7 @@
                                 @php
                                     $pricingService = app(\App\Services\ProductPricingService::class);
                                     $price = $pricingService->getPrice($product);
-                                    $isFavorited =
-                                        auth()->check() &&
-                                        $product
-                                            ->favoritedByUsers()
-                                            ->where('user_id', auth()->id())
-                                            ->exists();
+                                    $isFavorited = auth()->check() && $product->is_favorite;
                                 @endphp
                                 <td class="px-5 py-4 font-medium text-slate-900 dark:text-white">
                                     {{ config('app.currency_symbol') }}{{ number_format($price, 2) }}

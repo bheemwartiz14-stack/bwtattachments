@@ -42,9 +42,7 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name', 'slug', 'category_id']);
         $connections = Connection::query()->orderBy('name')->pluck('name', 'slug')->toArray();
-        $favoritedIds = auth()->check() ? auth()->user()->favoriteProducts()->pluck('product_id')->toArray() : [];
-
-        return view('pages.public.products.index', compact('products', 'categories', 'subcategories', 'connections', 'favoritedIds'));
+        return view('pages.public.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
     private function resolveSlug(string $modelClass, ?string $value): ?string

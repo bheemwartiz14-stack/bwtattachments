@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Client;
@@ -35,7 +36,7 @@ class QuotationController extends Controller
             ->get(['id', 'name', 'email', 'phone']);
         $quotationNumber = $this->quotationService->generateQuotationNumber();
         $productId = request('product_id');
-        $cartIds = array_column(session()->pull('quote_cart', []), 'product_id');
+        $cartIds = auth()->user()->getQuotationProductIds();
         return view('pages.private.client.quotations.create', compact('resellers', 'quotationNumber', 'productId', 'cartIds'));
     }
 
@@ -58,7 +59,7 @@ class QuotationController extends Controller
         }
         if ($request->input('action') === 'preview') {
             $this->quotationService->generatePdf($quotation);
-            return redirect()->route('client.quotations.preview', $quotation->id) ->with('success', 'Quotation created and PDF generated successfully.');
+            return redirect()->route('client.quotations.preview', $quotation->id)->with('success', 'Quotation created and PDF generated successfully.');
         }
         if ($request->input('action') === 'send') {
             $quotation->load('reseller');
@@ -75,10 +76,10 @@ class QuotationController extends Controller
             ->with('success', $message);
     }
 
-  public function preview(string $id): BinaryFileResponse
-{
-    return $this->quotationService->previewPdf($id);
-}
+    public function preview(string $id): BinaryFileResponse
+    {
+        return $this->quotationService->previewPdf($id);
+    }
 
     public function show(string $id): View
     {

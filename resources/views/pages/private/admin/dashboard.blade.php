@@ -1,12 +1,10 @@
 <x-layouts.app>
     <x-slot:title>Admin Dashboard - BWT</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Admin Poral'], ['label' => 'Dashboard']]" />
+    <x-breadcrumb :items="[['label' => 'Admin Poral']]" />
 
     <div class="space-y-6">
         <x-ui.hero title="Admin Dashboard">
-            <x-slot:actions>
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/20">Admin</span>
-            </x-slot:actions>
+           
         </x-ui.hero>
 
         @if(session('success'))
@@ -32,7 +30,7 @@
         </div>
 
         {{-- MANAGEMENT SECTIONS + QUICK STATS --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="">
             <div class="lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                 <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-4">Management Sections</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -88,57 +86,6 @@
                         <div>
                             <p class="text-sm font-semibold text-slate-500 dark:text-neutral-400">Companies</p>
                             <p class="text-xs text-slate-400">{{ number_format($stats['total_companies'] ?? 0) }} registered</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-4">Quick Stats</h2>
-                <div class="space-y-5">
-                    <div>
-                        <div class="flex items-center justify-between text-sm mb-1.5">
-                            <span class="text-slate-600 dark:text-neutral-400">Products Published</span>
-                            <span class="font-medium text-slate-900 dark:text-white">{{ number_format($stats['published_products'] ?? 0) }} / {{ number_format($stats['total_products'] ?? 0) }}</span>
-                        </div>
-                        <div class="h-2 rounded-full bg-slate-100 dark:bg-neutral-800">
-                            <div class="h-2 rounded-full bg-emerald-500 transition-all" style="width: {{ $stats['total_products'] > 0 ? round(($stats['published_products'] / $stats['total_products']) * 100) : 0 }}%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center justify-between text-sm mb-1.5">
-                            <span class="text-slate-600 dark:text-neutral-400">Active Users</span>
-                            <span class="font-medium text-slate-900 dark:text-white">{{ number_format($stats['active_users'] ?? 0) }} / {{ number_format($stats['total_users'] ?? 0) }}</span>
-                        </div>
-                        <div class="h-2 rounded-full bg-slate-100 dark:bg-neutral-800">
-                            <div class="h-2 rounded-full bg-blue-500 transition-all" style="width: {{ $stats['total_users'] > 0 ? round(($stats['active_users'] / $stats['total_users']) * 100) : 0 }}%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center justify-between text-sm mb-1.5">
-                            <span class="text-slate-600 dark:text-neutral-400">Monthly Quotations</span>
-                            <span class="font-medium text-slate-900 dark:text-white">{{ number_format($stats['monthly_quotations'] ?? 0) }} / {{ number_format($stats['quotation_target'] ?? 50) }}</span>
-                        </div>
-                        <div class="h-2 rounded-full bg-slate-100 dark:bg-neutral-800">
-                            <div class="h-2 rounded-full bg-amber-500 transition-all" style="width: {{ ($stats['quotation_target'] ?? 50) > 0 ? round((($stats['monthly_quotations'] ?? 0) / ($stats['quotation_target'] ?? 50)) * 100) : 0 }}%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 border-t border-slate-100 pt-5 dark:border-neutral-800">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">System Overview</h3>
-                    <div class="mt-3 space-y-2.5">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-slate-600 dark:text-neutral-400">Subcategories</span>
-                            <span class="font-medium text-slate-900 dark:text-white">{{ number_format($stats['total_subcategories'] ?? 0) }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-slate-600 dark:text-neutral-400">New Products This Month</span>
-                            <span class="font-medium text-emerald-600 dark:text-emerald-400">+{{ number_format($stats['new_products'] ?? 0) }}</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-slate-600 dark:text-neutral-400">New Clients This Month</span>
-                            <span class="font-medium text-amber-600 dark:text-amber-400">+{{ number_format($stats['new_clients'] ?? 0) }}</span>
                         </div>
                     </div>
                 </div>

@@ -85,9 +85,16 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(ProductPrices::class);
     }
 
-    public function favoriteProducts()
+    public function userProducts()
     {
-        return $this->belongsToMany(Product::class, 'product_user')
-            ->withTimestamps();
+        return $this->hasMany(UserProduct::class);
+    }
+
+    public function getQuotationProductIds(): array
+    {
+        return $this->userProducts()
+            ->where('is_quotation', true)
+            ->pluck('product_id')
+            ->toArray();
     }
 }

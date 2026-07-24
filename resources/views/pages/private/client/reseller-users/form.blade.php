@@ -77,7 +77,7 @@
                             :required="true" :error="$errors->first('city')" />
                         <x-forms.input name="country" label="Country" placeholder="United Kingdom" :value="$meta['country'] ?? ''"
                             :required="true" :error="$errors->first('country')" />
-                        <x-forms.input name="website" label="Website" type="url" placeholder="https://abcd.com"
+                        <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
                     </div>
                 </div>

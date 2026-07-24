@@ -21,7 +21,6 @@ use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\QuotationController as ClientQuotationController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use App\Http\Controllers\Reseller\ProfileController as RetailerProfileController;
-use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
 use App\Http\Controllers\TermController;
 use App\Http\Controllers\Public\ContactController;
@@ -38,10 +37,7 @@ use App\Http\Controllers\Reseller\CustomerQuotationController;
 use App\Http\Controllers\Customers\CustomerDashboardController;
 use App\Http\Controllers\Customers\CustomerProductController;
 use App\Http\Controllers\Customers\ProfileController as CustomerProfileController;
-
-
-
-use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\UserProductController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\QuoteCartController;
 use Illuminate\Support\Facades\Route;
@@ -71,10 +67,8 @@ Route::delete('/media/{media}', [FileController::class, 'destroy'])->name('media
 Route::middleware(['auth'])->group(function () {
     Route::get('/terms', [TermController::class, 'index'])->name('terms.index');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::post('/favorites/toggle/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-    Route::post('/quote-cart/toggle/{product}', [QuoteCartController::class, 'toggle'])->name('quote-cart.toggle');
-    Route::get('/quote-cart/count', [QuoteCartController::class, 'count'])->name('quote-cart.count');
-    Route::post('/quote-cart/clear', [QuoteCartController::class, 'clear'])->name('quote-cart.clear');
+    Route::post('/favorites/toggle/{product}', [UserProductController::class, 'toggleFavorite'])->name('favorites.toggle');
+    Route::post('/quote-cart/toggle/{product}', [UserProductController::class, 'toggleCart'])->name('quote-cart.toggle');
     // Admin routes
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -128,7 +122,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/products/{product}', [RetailerProductController::class, 'show'])->name('products.show');
         // QUAOTATION
         Route::resource('quotations', CustomerQuotationController::class);
-        Route::controller(CustomerQuotationController::class) ->prefix('quotations') ->name('quotations.')->group(function () {
+        Route::controller(CustomerQuotationController::class)->prefix('quotations')->name('quotations.')->group(function () {
             Route::get('{quotation}/download', 'download')->name('download');
             Route::get('{quotation}/preview', 'preview')->name('preview');
             Route::post('{quotation}/send-email', 'sendEmail')->name('send-email');

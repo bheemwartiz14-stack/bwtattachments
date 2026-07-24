@@ -100,6 +100,7 @@
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Product</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Code</th>
                             <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">DDP Price</th>
+                            <th class="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Favorite</th>
                             <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-neutral-400">Actions</th>
                         </tr>
                     </thead>
@@ -124,6 +125,10 @@
                                     <code class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-mono text-slate-600 dark:bg-neutral-800 dark:text-neutral-300">{{ $product->product_code }}</code>
                                 </td>
                                 <td class="px-5 py-4 font-medium text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($product->ddp_price, 2) }}</td>
+
+                                <td class="px-5 py-4 text-center">
+                                    <x-product.favorite-button :product="$product" :isFavorited="$product->is_favorite" />
+                                </td>
 
                                 <td class="px-5 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">

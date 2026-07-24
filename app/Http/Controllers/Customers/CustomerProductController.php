@@ -38,9 +38,7 @@ class CustomerProductController extends Controller
             ])
         );
         $products = $this->productService->paginate($per_page, $filter);
-        $favoritedIds = auth()->user()->favoriteProducts()->pluck('product_id')->toArray();
-
-        return view('pages.private.customer.products.index', compact('products', 'categories', 'subcategories', 'connections', 'favoritedIds'));
+        return view('pages.private.customer.products.index', compact('products', 'categories', 'subcategories', 'connections'));
     }
 
     public function show(string $id): View

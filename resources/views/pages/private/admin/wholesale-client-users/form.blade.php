@@ -88,7 +88,7 @@
                             :required="true" :error="$errors->first('city')" />
                         <x-forms.input name="country" label="Country" placeholder="United Kingdom" :value="$meta['country'] ?? ''"
                             :required="true" :error="$errors->first('country')" />
-                        <x-forms.input name="website" label="Website" type="url" placeholder="https://abcd.com"
+                        <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
                     </div>
                 </div>
@@ -159,14 +159,14 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesale Profile Details
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesaler Profile Details
                         </h2>
                         <p class="text-xs text-slate-500 dark:text-neutral-400">Logo and branding</p>
                     </div>
                 </div>
                 <div class="p-8">
-                    <x-forms.image-dropzone name="wholesale_client_logo" :existingImageUrl="$logoUrl" :existingImageId="$logoId"
-                        label="Wholesale Logo" accept="image/jpeg,image/png,image/webp"
+                    <x-forms.image-dropzone  name="wholesale_client_logo" :existingImageUrl="$logoUrl" :existingImageId="$logoId"
+                        label="Wholesaler Logo" accept="image/jpeg,image/png,image/webp"
                         hint="PNG, JPG or WebP (Max. 2MB)" />
                 </div>
             </div>

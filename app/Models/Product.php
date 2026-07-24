@@ -134,45 +134,32 @@ class Product extends Model implements HasMedia
             ->getPrice($this);
     }
 
-    public static function getPriceForUser(Product $product, User $user): ?ProductPrices
+    public function getIsFavoriteAttribute(): bool
     {
-        $roleName = $user->roles->pluck('name')->first();
-
-        if ($roleName === 'Wholesaler') {
-            return $product->productPrices
-                ->where('user_id', $user->id)
-                ->where('type', 'wholesale')
-                ->first();
+        if (!$user = auth()->user()) {
+            return false;
         }
 
-        if ($roleName === 'Reseller') {
-            return $product->productPrices
-                ->where('user_id', $user->id)
-                ->where('type', 'reseller')
-                ->first()
-                ?? $product->productPrices
-                    ->where('type', 'wholesale')
-                    ->first();
-        }
-
-        if ($roleName === 'customer') {
-            return $product->productPrices
-                ->where('user_id', $user->id)
-                ->where('type', 'customer')
-                ->first()
-                ?? $product->productPrices
-                    ->where('type', 'wholesale')
-                    ->first();
-        }
-
-        return $product->productPrices
+        return $this->userProducts()
             ->where('user_id', $user->id)
-            ->first();
+            ->where('is_favorite', true)
+            ->exists();
     }
 
-    public function favoritedByUsers()
+    public function getIsInCartAttribute(): bool
     {
-        return $this->belongsToMany(User::class, 'product_user')
-            ->withTimestamps();
+        if (!$user = auth()->user()) {
+            return false;
+        }
+
+        return $this->userProducts()
+            ->where('user_id', $user->id)
+            ->where('is_quotation', true)
+            ->exists();
+    }
+
+    public function userProducts()
+    {
+        return $this->hasMany(UserProduct::class);
     }
 }
