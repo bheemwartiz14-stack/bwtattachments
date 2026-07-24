@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Http\Resources\QuotationProductResource;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -14,6 +16,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+
 #[Fillable([
     'name',
     'username',
@@ -44,7 +47,7 @@ class User extends Authenticatable implements HasMedia
                 'image/png',
                 'image/webp',
             ]);
-        $this->addMediaCollection('image') ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])->singleFile();
+        $this->addMediaCollection('image')->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])->singleFile();
     }
 
     protected function casts(): array
@@ -61,7 +64,7 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Quotation::class);
     }
 
-     public function parent()
+    public function parent()
     {
         return $this->belongsTo(User::class, 'parent_id');
     }
@@ -96,5 +99,15 @@ class User extends Authenticatable implements HasMedia
             ->where('is_quotation', true)
             ->pluck('product_id')
             ->toArray();
+    }
+
+    public function getQuotationProductList(): array
+    {
+        return QuotationProductResource::collection(
+            $this->userProducts()
+                ->where('is_quotation', true)
+                ->with('product')
+                ->get()
+        )->resolve();
     }
 }

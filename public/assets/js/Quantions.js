@@ -127,6 +127,15 @@
             var actionInput = document.getElementById('form-action');
             if (actionInput) actionInput.value = action;
             if (quotationItems.length === 0) {
+                try {
+                    var parsed = JSON.parse(itemsJsonInput.value);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        quotationItems = parsed;
+                        itemsJsonInput.value = JSON.stringify(quotationItems);
+                    }
+                } catch(e) {}
+            }
+            if (quotationItems.length === 0) {
                 e.preventDefault();
                 alert('Please add at least one item to the quotation.');
                 return;

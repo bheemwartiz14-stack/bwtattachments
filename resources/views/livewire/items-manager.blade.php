@@ -169,4 +169,8 @@
             </div>
         </div>
     @endif
+
+    @script
+        $wire.dispatch('itemsUpdated', { items: @js($items) });
+    @endscript
 </div>

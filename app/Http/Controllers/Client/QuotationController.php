@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\Quotations\StoreQuotationRequest;
 use App\Models\Quotation;
 use App\Models\User;
+use App\Services\ProductService;
 use App\Services\QuotationService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\RedirectResponse;
@@ -37,7 +38,8 @@ class QuotationController extends Controller
         $quotationNumber = $this->quotationService->generateQuotationNumber();
         $productId = request('product_id');
         $cartIds = auth()->user()->getQuotationProductIds();
-        return view('pages.private.client.quotations.create', compact('resellers', 'quotationNumber', 'productId', 'cartIds'));
+        $cartItems = auth()->user()->getQuotationProductList();
+        return view('pages.private.client.quotations.create', compact('resellers', 'quotationNumber', 'productId', 'cartIds', 'cartItems'));
     }
 
     public function store(StoreQuotationRequest $request): RedirectResponse

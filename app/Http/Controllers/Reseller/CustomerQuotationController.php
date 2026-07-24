@@ -29,9 +29,9 @@ class CustomerQuotationController extends Controller
         $resellers = $this->userService->getMyCustomers(auth()->id());
         $quotationNumber = $this->quotationService->generateQuotationNumber(auth()->id());
         $productId = request('product_id');
-        $cartIds = array_column(session()->pull('quote_cart', []), 'product_id');
-
-        return view('pages.private.reseller.quotations.create', compact('resellers', 'quotationNumber', 'productId', 'cartIds'));
+        $cartIds = auth()->user()->getQuotationProductIds();
+        $cartItems = auth()->user()->getQuotationProductList();
+        return view('pages.private.reseller.quotations.create', compact('resellers', 'quotationNumber', 'productId', 'cartIds', 'cartItems'));
     }
 
     public function store(StoreQuotationRequest $request): RedirectResponse

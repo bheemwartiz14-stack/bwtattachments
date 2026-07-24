@@ -41,7 +41,7 @@
         @csrf
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="reseller_id" name="reseller_id" value="{{ old('reseller_id') }}">
-        <input type="hidden" id="items-json" name="items" value="{{ old('items') }}">
+              <input type="hidden" id="items-json" name="items" value="{{ json_encode($cartIds) }}">
         <input type="hidden" id="tax_rate" name="tax_rate" value="21">
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">

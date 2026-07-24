@@ -48,7 +48,6 @@ class ItemsManager extends Component
         }
         if (count($this->items) > 0) {
             $this->recalculatePrices();
-            $this->dispatchItemsUpdated();
         }
     }
 
