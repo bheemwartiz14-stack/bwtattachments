@@ -7,7 +7,6 @@
         $user->hasRole('customer') => 'customer',
         default => 'client',
     };
-    $dashboardRoute = route($rolePrefix . '.dashboard');
     $profileRoute = route($rolePrefix . '.profile.edit');
 @endphp
 
@@ -21,7 +20,7 @@
                     @svg('heroicon-o-bars-3', 'h-5 w-5')
                 </button>
                 <div class="flex items-center gap-2">
-                    <a href="{{ $dashboardRoute }}" wire:navigate
+                    <a href="{{ route('public.home.index') }}" wire:navigate
                         class="inline-flex items-center no-underline text-black dark:text-white transition-colors">
                         <svg class="h-10 w-auto" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg"
                             aria-label="{{ config('app.name') }}">
