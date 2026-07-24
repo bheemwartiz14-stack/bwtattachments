@@ -42,15 +42,7 @@
                             Company Details
                         </a>
                     @endif
-                    <a href="{{ route($prefix . '.profile.edit', ['tab' => 'pricing']) }}" wire:navigate
-                        class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'pricing' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Pricing
-                    </a>
+    
                     <a href="{{ route($prefix . '.profile.edit', ['tab' => 'security']) }}" wire:navigate
                         class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'security' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
                         <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -186,29 +178,7 @@
                             </div>
                         </div>
                     </div>
-                @elseif($activeTab === 'pricing')
-                    <div
-                        class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                        <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Pricing</h2>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Your wholesale pricing
-                                information</p>
-                        </div>
-                        <div class="p-8">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div
-                                    class="rounded-xl border border-slate-100 bg-slate-50 p-5 dark:border-neutral-800 dark:bg-neutral-900/50">
-                                    <p
-                                        class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-neutral-500">
-                                        Wholesale Price Percentage</p>
-                                    <p class="mt-1.5 text-3xl font-bold text-slate-900 dark:text-white">
-                                        {{ $commissionPercentage ?? 0 }}%</p>
-                                    <p class="mt-1 text-xs text-slate-400 dark:text-neutral-500">Your commission/margin
-                                        rate on all products</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+              
                 @elseif($activeTab === 'security')
                     <div
                         class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
