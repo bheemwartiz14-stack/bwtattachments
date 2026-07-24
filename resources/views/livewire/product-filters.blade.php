@@ -9,10 +9,8 @@
                 placeholder="Search product code or description"
                 class="min-w-0 flex-1 border-0 bg-transparent py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0" />
         </div>
-        <button type="submit"
-            class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800">
-            Search
-        </button>
+        <x-ui.button type="submit" class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800" variant="black" label="Search" />
+
     </div>
 
     <div x-data="{
@@ -116,16 +114,9 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <button type="button" @click="applyFilters()" wire:loading.attr="disabled"
-                        class="inline-flex items-center gap-2 bg-black hover:bg-gray-800 transition-colors text-white font-medium text-sm px-6 py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                        <span wire:loading.remove.delay.200>Apply Filters</span>
-
-                    </button>
+                    <x-ui.button type="button" variant="black" label="Apply Filters" @click="applyFilters()" wire:loading.attr="disabled" />
                     @if ($search || $category || $subcategory || $connection || $machine_class)
-                        <button type="button" wire:click="clearFilters" wire:loading.attr="disabled"
-                            class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 transition-colors text-white font-medium text-sm px-6 py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                            Clear Filters
-                        </button>
+                        <x-ui.button type="button" variant="red" label="Clear Filters" wire:click="clearFilters" wire:loading.attr="disabled" />
                     @endif
                 </div>
             </div>

@@ -16,7 +16,9 @@
         'secondary' => 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus:ring-slate-400 dark:bg-neutral-900 dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-800',
         'submit' => 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30 dark:hover:bg-emerald-500 dark:focus:ring-offset-neutral-900',
         'danger' => 'text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20',
+        'red' => 'bg-red-500 hover:bg-red-600 text-white',
         'brand' => 'bg-bwtblue hover:bg-bwtblue2 text-white font-semibold rounded-lg px-8 py-3 shadow-sm hover:shadow-md',
+        'black' => 'bg-black text-white hover:bg-gray-800',
         'ghost' => '',
     ];
 
