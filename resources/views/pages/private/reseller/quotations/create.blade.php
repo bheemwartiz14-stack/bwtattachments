@@ -276,6 +276,34 @@
             </div>
         </div>
 
+        {{-- Quotation Email Message --}}
+        <div
+            class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+            <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
+                <div
+                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-sm">
+                    <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">Quotation Email Message</h2>
+                    <p class="text-xs text-slate-500 dark:text-neutral-400">Optional message included in the email sent
+                        with this quotation</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <x-forms.textarea
+                    name="quotation_email_message"
+                    label="Quotation Email Message"
+                    placeholder="Enter the message that will be included in the email sent with this quotation."
+                    :value="old('quotation_email_message')"
+                    rows="4" />
+            </div>
+        </div>
+
         {{-- Actions --}}
         <div class="flex flex-wrap items-center justify-end gap-3">
             <a href="{{ route('reseller.quotations.index') }}" wire:navigate

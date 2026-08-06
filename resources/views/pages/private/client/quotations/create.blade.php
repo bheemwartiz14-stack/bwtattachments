@@ -281,6 +281,34 @@
             </div>
         </div>
 
+        {{-- Quotation Email Message --}}
+        <div
+            class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+            <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
+                <div
+                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-sm">
+                    <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">Quotation Email Message</h2>
+                    <p class="text-xs text-slate-500 dark:text-neutral-400">Optional message included in the email sent
+                        with this quotation</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <x-forms.textarea
+                    name="quotation_email_message"
+                    label="Quotation Email Message"
+                    placeholder="Enter the message that will be included in the email sent with this quotation."
+                    :value="old('quotation_email_message')"
+                    rows="4" />
+            </div>
+        </div>
+
         {{-- Actions --}}
         <div class="flex flex-wrap items-center justify-end gap-3">
             <a href="{{ route('client.quotations.index') }}" wire:navigate
@@ -295,14 +323,7 @@
                 </svg>
                 Save Draft
             </button>
-            <!-- <button type="submit" data-action="preview"
-                class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                </svg>
-                preview
-            </button> -->
+
             <button type="submit" data-action="pdf"
                 class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-rose-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 dark:bg-rose-600 dark:hover:bg-rose-700">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

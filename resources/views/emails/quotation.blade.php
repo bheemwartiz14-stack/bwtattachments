@@ -52,6 +52,27 @@
   </td>
 </tr>
 
+<!-- Custom Email Message -->
+@if(!empty($quotation->quotation_email_message))
+<tr>
+  <td class="fluid-padding" style="padding:22px 40px 6px 40px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#eef2ff; border-radius:14px; border:1px solid #e0e7ff;">
+      <tr>
+        <td style="padding:20px 24px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:22px; color:#4338ca; white-space:normal;">
+                {!! nl2br(e($quotation->quotation_email_message)) !!}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+@endif
+
 <!-- Sender Company Info -->
 <tr>
   <td class="fluid-padding" style="padding:22px 40px 6px 40px;">
@@ -172,131 +193,6 @@
     </table>
   </td>
 </tr>
-
-<!-- Product Items -->
-@if($quotation->items->isNotEmpty())
-<tr>
-  <td class="fluid-padding" style="padding:16px 40px 6px 40px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f9fafb; border-radius:14px;">
-      <tr>
-        <td class="details-cell" style="padding:22px 24px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px;">
-            <tr>
-              <td style="width:26px; height:26px; background-color:#eef2ff; border-radius:8px; text-align:center; vertical-align:middle;">
-                <span style="font-size:13px; line-height:26px;">📦</span>
-              </td>
-              <td style="padding-left:9px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; font-weight:700; letter-spacing:0.3px; color:#111827;">
-                Items
-              </td>
-            </tr>
-          </table>
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-            <thead>
-              <tr>
-                <th style="padding:10px 8px; border-bottom:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; font-weight:700; color:#6b7280; text-align:left; letter-spacing:0.3px; text-transform:uppercase;">Code</th>
-                <th style="padding:10px 8px; border-bottom:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; font-weight:700; color:#6b7280; text-align:left; letter-spacing:0.3px; text-transform:uppercase;">Product</th>
-                <th style="padding:10px 8px; border-bottom:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; font-weight:700; color:#6b7280; text-align:right; letter-spacing:0.3px; text-transform:uppercase;">Unit Price</th>
-                <th style="padding:10px 8px; border-bottom:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; font-weight:700; color:#6b7280; text-align:center; letter-spacing:0.3px; text-transform:uppercase;">Qty</th>
-                <th style="padding:10px 8px; border-bottom:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; font-weight:700; color:#6b7280; text-align:right; letter-spacing:0.3px; text-transform:uppercase;">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($quotation->items as $item)
-              @php
-                $product = $item->product;
-                $unitPrice = (float) ($item->price ?? 0);
-                $qty = (int) ($item->quantity ?? 0);
-                $total = $unitPrice * $qty;
-              @endphp
-              <tr>
-                <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#6b7280;">
-                  {{ $product?->product_code ?? '—' }}
-                </td>
-                <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; font-weight:600; color:#1f2937;">
-                  {{ $product?->product_title ?? '—' }}
-                </td>
-                <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#4b5563; text-align:right;">
-                  {{ config('app.currency_symbol') }}{{ number_format($unitPrice, 2) }}
-                </td>
-                <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#4b5563; text-align:center;">
-                  {{ $qty }}
-                </td>
-                <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; font-weight:600; color:#1f2937; text-align:right;">
-                  {{ config('app.currency_symbol') }}{{ number_format($total, 2) }}
-                </td>
-              </tr>
-              @endforeach
-            </tbody>
-            @if($quotation->sub_total || $quotation->grand_total)
-            <tfoot>
-              @if($quotation->sub_total)
-              <tr>
-                <td colspan="4" style="padding:12px 8px 4px; border-top:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#6b7280; text-align:right;">
-                  Sub Total
-                </td>
-                <td style="padding:12px 8px 4px; border-top:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; font-weight:600; color:#1f2937; text-align:right;">
-                  {{ config('app.currency_symbol') }}{{ number_format((float)$quotation->sub_total, 2) }}
-                </td>
-              </tr>
-              @endif
-              @if($quotation->tax_amount)
-              <tr>
-                <td colspan="4" style="padding:4px 8px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#6b7280; text-align:right;">
-                  VAT ({{ $quotation->vat_percentage ?? 0 }}%)
-                </td>
-                <td style="padding:4px 8px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#4b5563; text-align:right;">
-                  {{ config('app.currency_symbol') }}{{ number_format((float)$quotation->tax_amount, 2) }}
-                </td>
-              </tr>
-              @endif
-              @if($quotation->grand_total)
-              <tr>
-                <td colspan="4" style="padding:8px 8px 4px; border-top:2px solid #111827; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; font-weight:700; color:#111827; text-align:right;">
-                  Grand Total
-                </td>
-                <td style="padding:8px 8px 4px; border-top:2px solid #111827; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; font-weight:700; color:#111827; text-align:right;">
-                  {{ config('app.currency_symbol') }}{{ number_format((float)$quotation->grand_total, 2) }}
-                </td>
-              </tr>
-              @endif
-            </tfoot>
-            @endif
-          </table>
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>
-@endif
-
-@if($quotation->notes)
-<tr>
-  <td class="fluid-padding" style="padding:16px 40px 6px 40px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fffbeb; border-radius:12px;">
-      <tr>
-        <td style="padding:16px 18px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-            <tr>
-              <td style="width:20px; vertical-align:top; padding-top:1px; padding-right:10px;">
-                <span style="font-size:15px;">📝</span>
-              </td>
-              <td>
-                <p style="margin:0 0 4px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; font-weight:700; color:#92400e;">
-                  Notes
-                </p>
-                <p style="margin:0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:20px; color:#78350f;">
-                  {{ $quotation->notes }}
-                </p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>
-@endif
-
 <!-- Support -->
 <tr>
   <td class="fluid-padding" style="padding:22px 40px 40px 40px;">

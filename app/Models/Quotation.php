@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
     'quotation_number',
     'reference',
     'reseller_id',
+    'quotation_email_message',
     'delivery_country',
     'vat_percentage',
     'sub_total',
