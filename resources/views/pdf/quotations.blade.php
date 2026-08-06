@@ -1,19 +1,22 @@
 @php
-    $sender = $quotation->user;
-    $senderMeta = $sender?->userMeta?->metadata ?? [];
-    $roleName = $sender?->roles->pluck('name')->first();
-    $senderLogoPath = match ($roleName) {
-        'Wholesaler' => $sender?->getFirstMediaPath('wholesale_client_logo'),
-        'Reseller' => $sender?->getFirstMediaPath('retailer_client_logo'),
+    $quotationOwner = $quotation->user;
+
+    $roleName = $quotationOwner?->roles->pluck('name')->first();
+
+    $sender = match ($roleName) {
+        'Wholesaler' => $quotationOwner,
+        'Reseller' => $quotationOwner?->parent,
         default => null,
     };
+    $senderLogoPath = $sender?->getFirstMediaPath('wholesale_client_logo');
+
+    $senderMeta = $sender?->userMeta?->metadata ?? [];
     $defaultLogoPath = public_path('images/BIG.jpg');
     $logoPath = $senderLogoPath ?: $defaultLogoPath;
     $type = pathinfo($logoPath, PATHINFO_EXTENSION);
     $data = file_get_contents($logoPath);
     $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-
-    $senderName = $senderMeta['company_name'] ?? ($sender->name ?? '');
+    $senderName = $senderMeta['wholesale_company_name'] ?? ($sender->name ?? '');
     $senderAddressParts = array_filter([
         $senderMeta['address'] ?? null,
         $senderMeta['city'] ?? null,
@@ -161,7 +164,8 @@
                         </td>
                         <td
                             style="padding:12px 14px;font-size:14px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                            {{ config('app.currency_symbol') }} {{ number_format($itemPrice * $item->quantity, 2, '.', ',') }}
+                            {{ config('app.currency_symbol') }}
+                            {{ number_format($itemPrice * $item->quantity, 2, '.', ',') }}
                         </td>
                     </tr>
                 @endforeach
@@ -174,8 +178,7 @@
                 <!-- Terms -->
                 <td style="width:60%;vertical-align:top;padding-top:14px;padding-right:20px;">
                     <div style="font-size:15px;line-height:1.6;">
-                        Terms and Conditions: By accepting this quotation, you agree to our terms and
-                        conditions which you can view here.
+                       {!! $quotation->notes !!}
                     </div>
                 </td>
 

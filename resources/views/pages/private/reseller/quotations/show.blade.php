@@ -150,7 +150,7 @@
                         <p
                             class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1">
                             Notes</p>
-                        <p class="text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->notes }}</p>
+                         {!! $quotation->notes !!}
                     </div>
                 @endif
 

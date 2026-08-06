@@ -147,8 +147,9 @@
                 <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800">
                     <p class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1">
                         Notes</p>
-                    <p class="text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->notes }}</p>
-                </div>
+                    <div class="prose prose-sm lg:prose-base max-w-none dark:prose-invert">
+                        {!! $quotation->notes !!}
+                    </div>
             @endif
 
             <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between">
