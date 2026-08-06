@@ -2,23 +2,20 @@
     $sender = $quotation->user;
     $role = $sender?->roles->first()?->name;
     $meta = $sender?->userMeta?->metadata ?? [];
-
+     $logoUrl ="";
     if ($role === 'Wholesaler') {
+         $logoUrl = $sender?->getFirstMediaUrl('wholesale_client_logo');
         $companyName = $meta['wholesale_company_name'] ?? $meta['company_name'] ?? '—';
         $senderLabel = 'Wholesaler';
     } elseif ($role === 'Reseller') {
+         $logoUrl = $sender?->getFirstMediaUrl('retailer_client_logo');
         $companyName = $meta['company_name'] ?? $meta['retailer_client_name'] ?? '—';
         $senderLabel = 'Reseller';
     } else {
+        $logoUrl = '';
         $companyName = $meta['company_name'] ?? $meta['customer_client_name'] ?? '—';
         $senderLabel = 'Customer';
     }
-
-    $logoUrl = $sender?->userMeta?->getFirstMediaUrl('wholesale_client_logo');
-    if ($logoUrl && str_starts_with($logoUrl, '/')) {
-        $logoUrl = config('app.url') . $logoUrl;
-    }
-
     $addressParts = array_filter([
         $meta['address'] ?? null,
         $meta['postal_code'] ?? null,
