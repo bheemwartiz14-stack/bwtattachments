@@ -216,13 +216,13 @@
                   {{ $product?->product_title ?? '—' }}
                 </td>
                 <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#4b5563; text-align:right;">
-                  &pound;{{ number_format($unitPrice, 2) }}
+                  {{ config('app.currency_symbol') }}{{ number_format($unitPrice, 2) }}
                 </td>
                 <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#4b5563; text-align:center;">
                   {{ $qty }}
                 </td>
                 <td style="padding:12px 8px; border-bottom:1px solid #f3f4f6; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; font-weight:600; color:#1f2937; text-align:right;">
-                  &pound;{{ number_format($total, 2) }}
+                  {{ config('app.currency_symbol') }}{{ number_format($total, 2) }}
                 </td>
               </tr>
               @endforeach
@@ -235,7 +235,7 @@
                   Sub Total
                 </td>
                 <td style="padding:12px 8px 4px; border-top:2px solid #eef0f4; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; font-weight:600; color:#1f2937; text-align:right;">
-                  &pound;{{ number_format((float)$quotation->sub_total, 2) }}
+                  {{ config('app.currency_symbol') }}{{ number_format((float)$quotation->sub_total, 2) }}
                 </td>
               </tr>
               @endif
@@ -245,7 +245,7 @@
                   VAT ({{ $quotation->vat_percentage ?? 0 }}%)
                 </td>
                 <td style="padding:4px 8px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; color:#4b5563; text-align:right;">
-                  &pound;{{ number_format((float)$quotation->tax_amount, 2) }}
+                  {{ config('app.currency_symbol') }}{{ number_format((float)$quotation->tax_amount, 2) }}
                 </td>
               </tr>
               @endif
@@ -255,7 +255,7 @@
                   Grand Total
                 </td>
                 <td style="padding:8px 8px 4px; border-top:2px solid #111827; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; font-weight:700; color:#111827; text-align:right;">
-                  &pound;{{ number_format((float)$quotation->grand_total, 2) }}
+                  {{ config('app.currency_symbol') }}{{ number_format((float)$quotation->grand_total, 2) }}
                 </td>
               </tr>
               @endif

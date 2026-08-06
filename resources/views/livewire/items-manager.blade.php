@@ -53,7 +53,7 @@
                                     class="w-24 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-right text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
                                     wire:change="updatePrice({{ $index }}, $event.target.value)" readonly>
                             </td>
-                            <td class="px-3 py-3 text-right text-sm font-semibold text-slate-900 dark:text-neutral-100">&euro;{{ number_format($lineTotal, 2) }}</td>
+                            <td class="px-3 py-3 text-right text-sm font-semibold text-slate-900 dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($lineTotal, 2) }}</td>
                             <td class="px-3 py-3 text-right">
                                 <button type="button" wire:click="removeItem({{ $index }})" class="rounded-lg p-1.5 text-slate-300 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -78,7 +78,7 @@
                 <div class="ml-auto max-w-xs space-y-2">
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-slate-500 dark:text-neutral-400">Subtotal</span>
-                        <span class="font-medium text-slate-900 dark:text-white">&euro;{{ number_format($this->subtotal, 2) }}</span>
+                        <span class="font-medium text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($this->subtotal, 2) }}</span>
                         <input type="hidden" name="sub_total" value="{{ number_format($this->subtotal, 2) }}">
                         <input type="hidden" name="margin_amount" value="0">
                     </div>
@@ -86,12 +86,12 @@
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-slate-500 dark:text-neutral-400">VAT ({{ $this->taxRate }}%)</span>
                         <input type="hidden" name="vat_percentage" value="{{ $this->taxRate }}">
-                        <span class="font-medium text-amber-600 dark:text-amber-400">&euro;{{ number_format($this->taxAmount, 2) }}</span>
+                        <span class="font-medium text-amber-600 dark:text-amber-400">{{ config('app.currency_symbol') }}{{ number_format($this->taxAmount, 2) }}</span>
                         <input type="hidden" name="tax_amount" value="{{ number_format($this->taxAmount, 2) }}">
                     </div>
                     <div class="flex items-center justify-between border-t border-slate-200 pt-2 text-base font-semibold dark:border-neutral-700">
                         <span class="text-slate-900 dark:text-white">Grand Total</span>
-                        <span class="text-slate-900 dark:text-white">&euro;{{ number_format($this->grandTotal, 2) }}</span>
+                        <span class="text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($this->grandTotal, 2) }}</span>
                         <input type="hidden" name="grand_total" value="{{ number_format($this->grandTotal, 2) }}">
                     </div>
                 </div>
@@ -143,7 +143,7 @@
                                 <p class="font-medium text-slate-900 dark:text-white">{{ $product->product_title }}</p>
                                 <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{{ $product->product_code ?? '' }}{{ $product->category ? ' · ' . $product->category->name : '' }}</p>
                             </div>
-                            <span class="text-sm font-semibold text-slate-900 dark:text-white">&euro;{{ number_format($price, 2) }}</span>
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($price, 2) }}</span>
                             <span class="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-medium shadow-sm {{ $added ? 'bg-slate-100 text-slate-500 dark:bg-neutral-800 dark:text-neutral-400' : 'bg-emerald-600 text-white hover:bg-emerald-700' }}">
                                 @if($added)
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>

@@ -13,24 +13,20 @@
     $data = file_get_contents($logoPath);
     $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
-    $senderName = $senderMeta['company_name'] ?? $sender->name ?? '';
+    $senderName = $senderMeta['company_name'] ?? ($sender->name ?? '');
     $senderAddressParts = array_filter([
         $senderMeta['address'] ?? null,
         $senderMeta['city'] ?? null,
         $senderMeta['country'] ?? null,
     ]);
     $senderAddress = implode(', ', $senderAddressParts);
-    $senderPhone = $senderMeta['phone'] ?? $sender->phone ?? '';
+    $senderPhone = $senderMeta['phone'] ?? ($sender->phone ?? '');
     $senderEmail = $sender->email ?? '';
 
     $reseller = $quotation->reseller ?? null;
     $meta = $reseller?->userMeta?->metadata ?? [];
 
-    $custAddressParts = array_filter([
-        $meta['address'] ?? null,
-        $meta['city'] ?? null,
-        $meta['country'] ?? null,
-    ]);
+    $custAddressParts = array_filter([$meta['address'] ?? null, $meta['city'] ?? null, $meta['country'] ?? null]);
     $custAddress = implode(', ', $custAddressParts);
     $subTotal = (float) str_replace(',', '', $quotation->sub_total);
     $taxAmount = (float) str_replace(',', '', $quotation->tax_amount);
@@ -57,22 +53,22 @@
                         {{ $senderName }}
                     </div>
 
-                    @if($senderAddress)
-                    <div style="font-size:15px;margin-top:6px;line-height:1.5;">
-                        {{ $senderAddress }}
-                    </div>
+                    @if ($senderAddress)
+                        <div style="font-size:15px;margin-top:6px;line-height:1.5;">
+                            {{ $senderAddress }}
+                        </div>
                     @endif
 
-                    @if($senderPhone)
-                    <div style="font-size:15px;line-height:1.5;">
-                        {{ $senderPhone }}
-                    </div>
+                    @if ($senderPhone)
+                        <div style="font-size:15px;line-height:1.5;">
+                            {{ $senderPhone }}
+                        </div>
                     @endif
 
-                    @if($senderEmail)
-                    <div style="font-size:15px;line-height:1.5;">
-                        {{ $senderEmail }}
-                    </div>
+                    @if ($senderEmail)
+                        <div style="font-size:15px;line-height:1.5;">
+                            {{ $senderEmail }}
+                        </div>
                     @endif
 
                 </td>
@@ -84,7 +80,14 @@
         </table>
 
         <!-- Title -->
-        <div style="font-size:46px;font-weight:900;margin-top:30px;margin-bottom:30px;">
+        <div
+            style="
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 46px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 30px;
+">
             Quotation
         </div>
 
@@ -103,7 +106,8 @@
         <!-- Customer -->
         <table style="width:100%;border-collapse:collapse;border:1px solid #b3b3b3;margin-bottom:20px;">
             <tr>
-                <td colspan="2" style="background:#0057a3;color:#fff;font-weight:bold;padding:10px 16px;font-size:16px;">
+                <td colspan="2"
+                    style="background:#0057a3;color:#fff;font-weight:bold;padding:10px 16px;font-size:16px;">
                     Quotation to:
                 </td>
             </tr>
@@ -114,10 +118,10 @@
                     <div>{{ $reseller->email ?? '' }}</div>
                 </td>
                 <td style="width:40%;padding:14px 16px;vertical-align:top;font-size:15px;line-height:1.7;">
-                    @if(!empty($meta['vat_number']))
+                    @if (!empty($meta['vat_number']))
                         <div>VAT: {{ $meta['vat_number'] }}</div>
                     @endif
-                    @if(!empty($reseller->phone))
+                    @if (!empty($reseller->phone))
                         <div>{{ $reseller->phone }}</div>
                     @endif
                 </td>
@@ -148,14 +152,16 @@
                         <td style="padding:12px 14px;font-size:14px;border-bottom:1px solid #b3b3b3;">
                             {{ $item->product->product_title }}
                         </td>
-                        <td style="padding:12px 14px;font-size:14px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                            € {{ number_format($itemPrice, 2, '.', ',') }}
+                        <td
+                            style="padding:12px 14px;font-size:14px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
+                            {{ config('app.currency_symbol') }} {{ number_format($itemPrice, 2, '.', ',') }}
                         </td>
                         <td style="padding:12px 14px;font-size:14px;text-align:center;border-bottom:1px solid #b3b3b3;">
                             {{ $item->quantity }}
                         </td>
-                        <td style="padding:12px 14px;font-size:14px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                            € {{ number_format($itemPrice * $item->quantity, 2, '.', ',') }}
+                        <td
+                            style="padding:12px 14px;font-size:14px;text-align:right;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
+                            {{ config('app.currency_symbol') }} {{ number_format($itemPrice * $item->quantity, 2, '.', ',') }}
                         </td>
                     </tr>
                 @endforeach
@@ -177,27 +183,32 @@
                 <td style="width:40%;vertical-align:top;padding-top:14px;">
                     <table style="width:100%;border-collapse:collapse;border:1px solid #b3b3b3;">
                         <tr>
-                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;">
+                            <td
+                                style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;">
                                 Sub total:
                             </td>
-                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                                € {{ number_format($subTotal, 2, '.', ',') }}
+                            <td
+                                style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
+                                {{ config('app.currency_symbol') }} {{ number_format($subTotal, 2, '.', ',') }}
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;">
+                            <td
+                                style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;">
                                 VAT {{ $quotation->vat_percentage }}%:
                             </td>
-                            <td style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
-                                € {{ number_format($taxAmount, 2, '.', ',') }}
+                            <td
+                                style="padding:10px 16px;text-align:right;font-size:15px;border-bottom:1px solid #b3b3b3;white-space:nowrap;">
+                                {{ config('app.currency_symbol') }} {{ number_format($taxAmount, 2, '.', ',') }}
                             </td>
                         </tr>
                         <tr>
                             <td style="padding:10px 16px;text-align:right;font-size:16px;font-weight:bold;">
                                 Grand total:
                             </td>
-                            <td style="padding:10px 16px;text-align:right;font-size:16px;font-weight:bold;white-space:nowrap;">
-                                € {{ number_format($grandTotal, 2, '.', ',') }}
+                            <td
+                                style="padding:10px 16px;text-align:right;font-size:16px;font-weight:bold;white-space:nowrap;">
+                                {{ config('app.currency_symbol') }} {{ number_format($grandTotal, 2, '.', ',') }}
                             </td>
                         </tr>
                     </table>
