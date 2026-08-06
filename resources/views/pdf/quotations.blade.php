@@ -1,35 +1,43 @@
 @php
-    $quotationOwner = $quotation->user;
+    $sender = $quotation->user;
+    $role = $sender?->roles->first()?->name;
+    $meta = $sender?->userMeta?->metadata ?? [];
+    if ($role === 'Wholesaler') {
+        $senderName = $meta['wholesale_company_name'] ?? ($meta['company_name'] ?? '—');
+        $senderLabel = 'Wholesaler';
+    } elseif ($role === 'Reseller') {
+        $senderName = $meta['company_name'] ?? ($meta['retailer_client_name'] ?? '—');
+        $senderLabel = 'Reseller';
+    } else {
+        $senderName = $meta['company_name'] ?? ($meta['customer_client_name'] ?? '—');
+        $senderLabel = 'Customer';
+    }
 
-    $roleName = $quotationOwner?->roles->pluck('name')->first();
-
-    $sender = match ($roleName) {
-        'Wholesaler' => $quotationOwner,
-        'Reseller' => $quotationOwner?->parent,
-        default => null,
-    };
-    $senderLogoPath = $sender?->getFirstMediaPath('wholesale_client_logo');
-
-    $senderMeta = $sender?->userMeta?->metadata ?? [];
-    $defaultLogoPath = public_path('images/BIG.jpg');
-    $logoPath = $senderLogoPath ?: $defaultLogoPath;
+    $senderLogoPath =    $sender?->getFirstMediaPath('wholesale_client_logo') ?? $sender?->getFirstMediaPath('retailer_client_logo');
+    $logoPath = $senderLogoPath;
     $type = pathinfo($logoPath, PATHINFO_EXTENSION);
-    $data = file_get_contents($logoPath);
-    $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    $senderName = $senderMeta['wholesale_company_name'] ?? ($sender->name ?? '');
-    $senderAddressParts = array_filter([
-        $senderMeta['address'] ?? null,
-        $senderMeta['city'] ?? null,
-        $senderMeta['country'] ?? null,
+    $logoBase64 = '';
+    if ($logoPath) {
+        $data = file_get_contents($logoPath);
+        $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+    $addressParts = array_filter([
+        $meta['address'] ?? null,
+        $meta['postal_code'] ?? null,
+        $meta['city'] ?? null,
+        $meta['country'] ?? null,
     ]);
-    $senderAddress = implode(', ', $senderAddressParts);
-    $senderPhone = $senderMeta['phone'] ?? ($sender->phone ?? '');
+    $senderAddress = implode(', ', $addressParts);
+    $senderPhone = $meta['phone'] ?? ($sender->phone ?? '');
     $senderEmail = $sender->email ?? '';
-
     $reseller = $quotation->reseller ?? null;
     $meta = $reseller?->userMeta?->metadata ?? [];
-
-    $custAddressParts = array_filter([$meta['address'] ?? null, $meta['city'] ?? null, $meta['country'] ?? null]);
+    $custAddressParts = array_filter([
+        $meta['address'] ?? null,
+        $meta['postal_code'] ?? null,
+        $meta['city'] ?? null,
+        $meta['country'] ?? null,
+    ]);
     $custAddress = implode(', ', $custAddressParts);
     $subTotal = (float) str_replace(',', '', $quotation->sub_total);
     $taxAmount = (float) str_replace(',', '', $quotation->tax_amount);
@@ -55,13 +63,11 @@
                     <div style="font-size:20px;font-weight:bold;">
                         {{ $senderName }}
                     </div>
-
                     @if ($senderAddress)
                         <div style="font-size:15px;margin-top:6px;line-height:1.5;">
                             {{ $senderAddress }}
                         </div>
                     @endif
-
                     @if ($senderPhone)
                         <div style="font-size:15px;line-height:1.5;">
                             {{ $senderPhone }}
@@ -77,7 +83,7 @@
                 </td>
 
                 <td style="width:30%;text-align:right;vertical-align:top;">
-                    <img src="{{ $logoBase64 }}" style="max-width:100%;height:auto;max-height:100px;">
+                    <img src="{{ $logoBase64 }}" style="width:170px;">
                 </td>
             </tr>
         </table>
@@ -181,7 +187,6 @@
                         {!! $quotation->notes !!}
                     </div>
                 </td>
-
                 <!-- Totals -->
                 <td style="width:40%;vertical-align:top;padding-top:14px;">
                     <table style="width:100%;border-collapse:collapse;border:1px solid #b3b3b3;">

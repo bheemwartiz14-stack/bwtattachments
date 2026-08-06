@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -79,20 +80,20 @@ class Product extends Model implements HasMedia
         }
 
         $this->addMediaConversion('thumb')
-            ->crop(150, 100)
+            ->fit(Fit::Contain, 150, 100)
             ->sharpen(10)
             ->nonQueued();
 
         $this->addMediaConversion('small')
-            ->crop(450, 300)
+            ->fit(Fit::Contain, 450, 300)
             ->nonQueued();
 
         $this->addMediaConversion('medium')
-            ->crop(900, 600)
+            ->fit(Fit::Contain, 900, 600)
             ->nonQueued();
 
         $this->addMediaConversion('large')
-            ->crop(1500, 1000)
+            ->fit(Fit::Contain, 1500, 1000)
             ->nonQueued();
     }
 
