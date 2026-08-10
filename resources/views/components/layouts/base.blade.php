@@ -4,8 +4,13 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#0b5cab">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <title>{{ isset($title) ? str_replace('BWT', config('app.name'), $title) : config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -13,19 +18,34 @@
     <link rel="icon" type="image/svg+xml" href="{{ config('app.asset_url') }}/favicon.svg">
     <link rel="shortcut icon" href="{{ config('app.asset_url') }}/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ config('app.asset_url') }}/apple-touch-icon.png">
-    <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <link rel="manifest" href="{{ config('app.asset_url') }}/site.webmanifest">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     <style>
         ol, ul { padding-left: 1.5em; }
         p { margin-bottom: 0.5em; }
     </style>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/pwa.js'])
     @livewireStyles
     @stack('styles')
 </head>
 
 <body {{ $attributes }}>
+    {{-- PWA: offline indicator (hidden by default, controlled by resources/js/pwa.js) --}}
+    <div id="offline-indicator"
+        class="hidden fixed bottom-4 left-4 z-50 items-center gap-2 rounded-full bg-slate-900/90 px-4 py-2 text-xs font-medium text-white shadow-lg backdrop-blur">
+        <span class="h-2 w-2 rounded-full bg-red-500" aria-hidden="true"></span>
+        <span id="offline-indicator-text">You're offline</span>
+    </div>
+
+    {{-- PWA: install button (hidden until beforeinstallprompt fires) --}}
+    <button id="pwa-install-button" type="button"
+        class="hidden fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full bg-bwtblue px-4 py-2 text-xs font-semibold text-white shadow-lg hover:bg-bwtblue2">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0l-6-6m6 6l6-6" />
+        </svg>
+        Install App
+    </button>
+
     {{ $slot }}
     <x-toast />
     <script src="{{ asset('js/jquery.min.js') }}"></script>

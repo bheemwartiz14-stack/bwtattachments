@@ -1,21 +1,28 @@
 {
-  "name": "BWT",
+  "id": "/",
+  "name": "BWT Attachments",
   "short_name": "BWT",
+  "description": "B2B wholesale platform for heavy machinery attachments and buckets. Request quotes, manage products and browse the catalogue.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0b5cab",
+  "background_color": "#ffffff",
+  "lang": "en",
+  "categories": ["business", "shopping"],
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
-  ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }

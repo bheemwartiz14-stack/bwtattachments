@@ -39,7 +39,6 @@ use App\Http\Controllers\Customers\CustomerProductController;
 use App\Http\Controllers\Customers\ProfileController as CustomerProfileController;
 use App\Http\Controllers\UserProductController;
 use App\Http\Controllers\FileController;
-use App\Http\Controllers\QuoteCartController;
 use Illuminate\Support\Facades\Route;
 // Public routes (guest + authenticated)
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
