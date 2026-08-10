@@ -9,14 +9,17 @@ The application keeps the existing **Laravel + Blade** architecture. PWA support
 added with minimal, native browser technology — no JavaScript framework migration
 and no PWA-specific npm package.
 
+> **Online-only.** This PWA is **installable** but does **not** provide offline
+> support. The app requires a network connection; the service worker never caches
+> content.
+
 ```
 Laravel + Blade
       |
       +-- public/site.webmanifest  (installable app metadata + icons)
-      +-- public/sw.js             (service worker: caching & offline)
-      +-- public/offline.html      (offline fallback page)
-      +-- resources/js/pwa.js      (SW registration, online/offline UI, install prompt)
-      +-- resources/views/components/layouts/base.blade.php  (manifest/meta links)
+      +-- public/sw.js             (minimal service worker: installability, no caching)
+      +-- resources/js/pwa.js      (SW registration + install prompt)
+      +-- resources/views/components/layouts/base.blade.php  (manifest/meta links + install button)
 ```
 
 ## Files
@@ -24,10 +27,9 @@ Laravel + Blade
 | File | Purpose |
 | --- | --- |
 | `public/site.webmanifest` | Web App Manifest (name, icons, colors, start_url, scope). |
-| `public/sw.js` | Service worker with versioned caching + offline fallback. |
-| `public/offline.html` | Shown when an online page is unreachable while offline. |
-| `resources/js/pwa.js` | Registers the SW, toggles the offline indicator, wires the install button. |
-| `resources/views/components/layouts/base.blade.php` | Adds manifest link, `theme-color`, Apple meta, PWA assets, indicator + install button. |
+| `public/sw.js` | Minimal service worker for installability. Network-only — never caches. |
+| `resources/js/pwa.js` | Registers the SW and wires the install button. |
+| `resources/views/components/layouts/base.blade.php` | Adds manifest link, `theme-color`, Apple meta, PWA assets, and the install button. |
 | `vite.config.js` | Adds `resources/js/pwa.js` to the Vite build. |
 
 ## Local development
@@ -35,50 +37,23 @@ Laravel + Blade
 - Service workers require a **secure context**. `http://localhost` and
   `http://127.0.0.1` are treated as secure, so local development works.
 - Build the frontend assets: `npm run build` (or `npm run dev`).
-- Bump the SW version: edit `CACHE_VERSION` in `public/sw.js` whenever built assets change.
-- Test offline in DevTools → **Application → Service Workers** (enable "Offline")
-  or **Network → Offline**.
+- Inspect installability in DevTools → **Application → Manifest / Service Workers**.
 
-## Cache strategy (`public/sw.js`)
+## Behavior
 
-- **Static assets** (css, js, images, fonts, icons): Cache-First, populated on first
-  successful fetch.
-- **Navigation / HTML pages**: Network-First, falling back to the last cached copy,
-  then to `offline.html`.
-- **API, auth, and sensitive endpoints** (`/api/*`, `/login`, `/logout`, `/register`,
-  `/forgot-password`, `/password`, Livewire internal): **never cached** — network only.
-- **POST / PUT / PATCH / DELETE**: never cached.
-- **Security**: authentication tokens, CSRF, private responses, and financial data
-  are never written to the cache.
+- **Installable**: the manifest + registered service worker make the app installable
+  on Android, Chrome, Edge, and desktop. On iOS, users add it via Safari's Share menu.
+- **Online-only**: all requests go straight to the network. The service worker never
+  caches requests or responses, so there is no offline content and no stale data.
+- **Install prompt**: when the browser fires `beforeinstallprompt`, a small **Install
+  App** button appears at the bottom-right. It does not nag and respects the user's
+  choice.
 
-## Updating the service worker / clearing caches
+## Updating
 
-1. Change the built assets (run `npm run build`).
-2. Bump `CACHE_VERSION` in `public/sw.js`.
-3. Deploy. On the next visit the new SW installs and, on activation, deletes all old
-   `bwt-attachments-*` caches.
-4. Users can force an update in DevTools → **Application → Service Workers → Update**.
-
-## Offline behavior
-
-- The app is designed to work **online-first**. Most functionality requires a
-  connection.
-- Only assets needed to display the shell and previously-visited static content are
-  available offline.
-- A non-intrusive "You're offline" pill appears at the bottom-left when the network
-  drops.
-- A basic `offline.html` page is served when a page cannot be loaded offline.
-- **No offline create/edit sync (IndexedDB) is implemented.** The business features
-  (quotations, orders, admin) are online-transactional and must not write to a
-  cache. If offline-capable forms become a requirement, add a sync queue backed by
-  IndexedDB with idempotency keys.
-
-## Install prompt
-
-- When the browser fires `beforeinstallprompt`, a small **Install App** button appears
-  at the bottom-right. It does not nag and respects the user's choice.
-- On iOS, users add to the Home Screen via Safari's Share menu (Apple does not fire
-  `beforeinstallprompt`).
+- No cache versioning is needed because nothing is cached.
+- On deployment, the new service worker installs, claims the page, and purges any
+  caches left by older versions.
 
 ## HTTPS requirement (production)
 
@@ -88,8 +63,7 @@ HTTPS origin so the manifest and SW URLs are correct.
 
 ## Browser support
 
-- Chrome / Edge / Android: full install + offline support.
-- Safari / iOS: can "Add to Home Screen"; SW + offline support is partial and varies
-  by iOS version.
+- Chrome / Edge / Android: full install support.
+- Safari / iOS: can "Add to Home Screen"; SW support is partial and varies by iOS version.
 - Older browsers without Service Worker support degrade gracefully — the app simply
   behaves as a normal website.
