@@ -39,8 +39,43 @@ use App\Http\Controllers\Customers\CustomerProductController;
 use App\Http\Controllers\Customers\ProfileController as CustomerProfileController;
 use App\Http\Controllers\UserProductController;
 use App\Http\Controllers\FileController;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 // Public routes (guest + authenticated)
+// PWA: serve the service worker from the root scope so it controls the whole app.
+Route::get('/sw.js', function () {
+    return response(File::get(public_path('sw.js')), 200, [
+        'Content-Type' => 'application/javascript; charset=utf-8',
+        'Service-Worker-Allowed' => '/',
+        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+    ]);
+})->name('pwa.service-worker');
+
+// PWA: serve the manifest from the root scope with asset()-based icon paths, so it
+// resolves correctly regardless of the deployment document root.
+Route::get('/site.webmanifest', function () {
+    return response()->json([
+        'id' => '/',
+        'name' => config('app.name'),
+        'short_name' => 'BWT',
+        'description' => 'B2B wholesale platform for heavy machinery attachments and buckets. Request quotes, manage products and browse the catalogue.',
+        'start_url' => url('/'),
+        'scope' => '/',
+        'display' => 'standalone',
+        'orientation' => 'any',
+        'theme_color' => '#0b5cab',
+        'background_color' => '#ffffff',
+        'lang' => 'en',
+        'categories' => ['business', 'shopping'],
+        'icons' => [
+            ['src' => asset('web-app-manifest-192x192.png'), 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
+            ['src' => asset('web-app-manifest-512x512.png'), 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
+        ],
+    ], 200, [
+        'Content-Type' => 'application/manifest+json',
+    ]);
+})->name('pwa.manifest');
+
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
 Route::get('/sent-email', [HomeController::class, 'send_email'])->name('public.home.email');
 

@@ -45,6 +45,28 @@ window.toggleQuoteItem = function (btn) {
     var url = '/quote-cart/toggle/' + productId;
     var csrf = $('meta[name="csrf-token"]').attr('content');
 
+    // Offline path: optimistically update the UI and queue the change for sync.
+    if (window.BWTPWA && !window.BWTPWA.isOnline()) {
+        var adding = $btn.data('added') !== true;
+        var op = adding
+            ? { entity: 'user_product', operation: 'update', payload: { product_id: String(productId), is_quotation: true } }
+            : { entity: 'user_product', operation: 'delete', payload: { product_id: String(productId) } };
+        window.BWTPWA.enqueue(op).then(function () {
+            $btn.data('added', adding);
+            if (adding) {
+                $btn.removeClass('bg-orange-500 hover:bg-orange-600').addClass('bg-emerald-500 hover:bg-emerald-600');
+                $btn.html('Added <span class="text-xs ml-1">✓</span>');
+            } else {
+                $btn.removeClass('bg-emerald-500 hover:bg-emerald-600').addClass('bg-orange-500 hover:bg-orange-600');
+                $btn.text('Add To Quotation');
+            }
+            if (window.showToast) {
+                window.showToast(adding ? 'Queued for sync when online' : 'Removed (queued for sync)', adding ? 'success' : 'info');
+            }
+        });
+        return;
+    }
+
     $.post(url, { _token: csrf }, function (res) {
         $btn.data('added', res.added);
         if (res.added) {

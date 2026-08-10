@@ -26,11 +26,14 @@ Laravel + Blade
 
 | File | Purpose |
 | --- | --- |
-| `public/site.webmanifest` | Web App Manifest (name, icons, colors, start_url, scope). |
+| `routes/web.php` | Serves `/site.webmanifest` (dynamic, `asset()`-based icons) and `/sw.js` (root scope). |
 | `public/sw.js` | Minimal service worker for installability. Network-only — never caches. |
 | `resources/js/pwa.js` | Registers the SW and wires the install button. |
 | `resources/views/components/layouts/base.blade.php` | Adds manifest link, `theme-color`, Apple meta, PWA assets, and the install button. |
 | `vite.config.js` | Adds `resources/js/pwa.js` to the Vite build. |
+
+The manifest is generated dynamically from `routes/web.php` so icon paths resolve via
+`config('app.asset_url')` — correct regardless of the deployment document root.
 
 ## Local development
 
@@ -60,6 +63,13 @@ Laravel + Blade
 PWA service workers are generally only allowed on HTTPS. Production must serve the
 app over HTTPS (e.g. behind a TLS-terminating proxy). Set `APP_URL`/`ASSET_URL` to the
 HTTPS origin so the manifest and SW URLs are correct.
+
+> **Deployment note:** the live server serves the project root as the document root
+> with static files under `/public/`, so `ASSET_URL` must include the `/public`
+> segment (e.g. `https://bwtattachments.com/public`). The manifest and service worker
+> are served via Laravel routes at the root (`/site.webmanifest`, `/sw.js`), so their
+> scope always covers the whole app and their asset paths resolve through
+> `config('app.asset_url')`.
 
 ## Browser support
 

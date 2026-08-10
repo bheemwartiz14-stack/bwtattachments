@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserMargin;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
@@ -31,6 +32,7 @@ use Spatie\Permission\Traits\HasRoles;
 ])]
 class User extends Authenticatable implements HasMedia
 {
+    use HasApiTokens;
     use HasFactory;
     use HasRoles;
     use HasUuids;

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
     'user_id',
+    'client_uuid',
     'quotation_number',
     'reference',
     'reseller_id',
