@@ -14,7 +14,7 @@
     /* ---------------- Service Worker registration ---------------- */
     if ('serviceWorker' in navigator && (window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
         window.addEventListener('load', function () {
-            navigator.serviceWorker.register('/sw.js').catch(function (err) {
+            navigator.serviceWorker.register('/public/sw.js').catch(function (err) {
                 console.warn('Service worker registration failed:', err);
             });
         });
