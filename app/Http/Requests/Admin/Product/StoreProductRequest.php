@@ -23,6 +23,7 @@ class StoreProductRequest extends FormRequest
             'subcategory_id' => ['required', 'exists:subcategories,id'],
             'internal_notes' => ['nullable', 'string'],
             'ddp_price' => ['nullable', 'string'],
+            'ddp_price_rmb' => ['nullable', 'numeric', 'min:0'],
             'status' => ['nullable', 'boolean'],
             'weight' => ['nullable', 'string'],
             'machine_class' => ['nullable', 'string'],

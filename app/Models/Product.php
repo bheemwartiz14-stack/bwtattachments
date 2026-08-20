@@ -36,6 +36,7 @@ use Spatie\Sluggable\SlugOptions;
     'pin_center',
     'pin_hole',
     'ddp_price',
+    'ddp_price_rmb',
     'internal_notes',
     'material',
     'status',

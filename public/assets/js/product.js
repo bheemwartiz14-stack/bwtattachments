@@ -1,5 +1,6 @@
 $(function () {
     initCategorySubcategory();
+    initCurrencyConverter();
 });
 
 $(document).on('livewire:navigated', function () {
@@ -39,6 +40,40 @@ function initCategorySubcategory() {
     });
 }
 
+function initCurrencyConverter() {
+    var $rmb = $('#ddp_price_rmb');
+    var $eur = $('#ddp_price');
+    if (!$rmb.length || !$eur.length) return;
+
+    var rate = null;
+    var $hint = $('#currency-rate-hint');
+
+    function convert() {
+        var val = parseFloat($rmb.val());
+        if (rate && !isNaN(val) && val > 0) {
+            $eur.val((val * rate).toFixed(2));
+        } else {
+            $eur.val('');
+        }
+    }
+
+    $.get('/admin/currency/rate/CNY/EUR', function (res) {
+        if (res && res.rate) {
+            rate = res.rate;
+            if ($hint.length) {
+                $hint.text('1 CNY = ' + rate + ' EUR');
+            }
+            convert();
+        }
+    }).fail(function () {
+        if ($hint.length) {
+            $hint.text('Could not load exchange rate. Enter the EUR price manually.');
+        }
+    });
+
+    $rmb.on('input change', convert);
+}
+
 window.toggleQuoteItem = function (btn) {
     var $btn = $(btn);
     var productId = $btn.data('quote');
@@ -69,13 +104,7 @@ window.toggleQuoteItem = function (btn) {
 
     $.post(url, { _token: csrf }, function (res) {
         $btn.data('added', res.added);
-        if (res.added) {
-            $btn.removeClass('bg-orange-500 hover:bg-orange-600').addClass('bg-emerald-500 hover:bg-emerald-600');
-            $btn.html('Added <span class="text-xs ml-1">✓</span>');
-        } else {
-            $btn.removeClass('bg-emerald-500 hover:bg-emerald-600').addClass('bg-orange-500 hover:bg-orange-600');
-            $btn.text('Add To Quotation');
-        }
+
         if (window.showToast) {
             window.showToast(res.message, res.added ? 'success' : 'info');
         }

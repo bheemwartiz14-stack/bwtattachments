@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\ConnectionController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ManageAdminProductController as AdminProductController;
@@ -112,6 +113,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('subcategories', SubcategoryController::class)->except(['show']);
         Route::resource('connections', ConnectionController::class)->except(['show']);
         Route::resource('products', AdminProductController::class);
+        Route::get('/currency/rate/{from}/{to}', [CurrencyController::class, 'rate'])->name('currency.rate');
         Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
         Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');

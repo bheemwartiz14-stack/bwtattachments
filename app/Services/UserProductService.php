@@ -43,7 +43,7 @@ class UserProductService
         return [
             'added' => $inCart,
             'count' => $this->getCartCount($user),
-            'message' => $inCart ? 'Added to cart' : 'Removed from cart',
+             'message' => $inCart ? 'Added to quotation' : 'Removed from quotation',
         ];
     }
 

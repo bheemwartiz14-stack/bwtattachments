@@ -43,6 +43,7 @@ class ProductService
             $media = $this->extractMedia($data);
             $media = $this->resolveTempMedia($data, $media);
             $this->unsetMediaKeys($data);
+            $this->resolveCurrencyConversion($data);
             $product = $this->productRepository->create($data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
@@ -59,6 +60,7 @@ class ProductService
             $media = $this->extractMedia($data);
             $media = $this->resolveTempMedia($data, $media);
             $this->unsetMediaKeys($data);
+            $this->resolveCurrencyConversion($data);
             $product = $this->productRepository->update($id, $data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
@@ -114,6 +116,21 @@ class ProductService
     public function paginateActiveProductsForUser(array $filters, int $perPage, $userId = null): LengthAwarePaginator
     {
         return $this->productRepository->paginateActiveProductsForUser($filters, $perPage, $userId);
+    }
+
+    private function resolveCurrencyConversion(array &$data): void
+    {
+        $rmb = (float) ($data['ddp_price_rmb'] ?? 0);
+
+        if ($rmb <= 0) {
+            return;
+        }
+
+        $converted = app(CurrencyService::class)->convert($rmb, 'CNY', 'EUR');
+
+        if ($converted !== null) {
+            $data['ddp_price'] = number_format($converted, 2, '.', '');
+        }
     }
 
     private function extractMedia(array &$data): array

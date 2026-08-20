@@ -49,6 +49,7 @@ class UpdateProductRequest extends FormRequest
             'pin_center' => ['nullable', 'string'],
             'cutting_edge_thickness' => ['nullable', 'string'],
             'ddp_price' => ['nullable', 'string'],
+            'ddp_price_rmb' => ['nullable', 'numeric', 'min:0'],
             'product_feature_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'product_gallery_images' => ['nullable', 'array'],
             'product_gallery_images.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],

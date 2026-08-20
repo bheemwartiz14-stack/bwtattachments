@@ -9,8 +9,7 @@
                     $pdfUrl = '';
                 }
 
-        @endphp ?>
-
+        @endphp
     <x-slot:title>{{ $isEdit ? 'Edit Product' : 'Create Product' }} - BWT</x-slot:title>
 
     <x-breadcrumb :items="[
@@ -82,8 +81,18 @@
                     <x-forms.textarea name="internal_notes" label="Additional Info" rows="3" :value="$product->internal_notes ?? ''"
                         placeholder="Internal notes for admin reference" hint="Admin only" />
                     <div class="grid gap-4 md:grid-cols-2">
+                        <div>
+                            <x-forms.currency
+                                name="ddp_price_rmb"
+                                label="DDP Price (CNY)"
+                                :value="$product->ddp_price_rmb ?? ''"
+                                placeholder="0.00"
+                                symbol="¥"
+                            />
+                            <p id="currency-rate-hint" class="mt-1 text-xs text-gray-500 dark:text-neutral-400">Loading exchange rate...</p>
+                        </div>
                         <x-forms.currency name="ddp_price" label="DDP Price (EUR)" :value="$product->ddp_price ?? ''"
-                            placeholder="0.00" />
+                            placeholder="0.00" readonly />
                         <x-forms.toggle name="status" label="Product Status" :checked="$product->status ?? true" description="Active" />
                     </div>
                 </div>
