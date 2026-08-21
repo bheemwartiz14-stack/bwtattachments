@@ -93,6 +93,7 @@ class ProductPricingRepository
      */
     public function create(array $data): ProductPrices
     {
+        // dd($data);
         return $this->model->create($data);
     }
 
@@ -141,4 +142,24 @@ class ProductPricingRepository
     {
         return $this->model->upsert($rows, $uniqueBy, $update);
     }
+    public function getProductPriceForUserRole($roleName, $userId,$productId, $parentPrice){
+        $productPriceList = $this->model->query()->where('product_id', $productId)->where('user_id', $userId)->where('type', $roleName)->first();
+        return $productPriceList;
+    }
+
+  public function saveProductPrice(array $data): ProductPrices
+{
+    return $this->model->updateOrCreate(
+        [
+            'product_id' => $data['product_id'],
+            'user_id' => $data['user_id'],
+            'type' => $data['type'],
+        ],
+        [
+            'base_price' => $data['base_price'],
+            'final_price' => $data['final_price'],
+            'margin' => $data['margin'],
+        ]
+    );
+}
 }

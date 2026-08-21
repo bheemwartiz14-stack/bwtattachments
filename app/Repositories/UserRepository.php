@@ -215,4 +215,15 @@ class UserRepository
             ->orderBy('name')
             ->get(['id', 'name', 'email', 'phone']);
     }
+
+        public function getWholesalerHierarchyWithMargins()
+    {
+         return User::role('wholesaler')
+        ->with([
+            'parent.userMargin',
+            'userMargin',
+            'children.userMargin',
+        ])
+        ->get();
+    }
 }

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 namespace App\Services;
-
+use App\Http\Resources\WholesalerHierarchyResource;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,6 +14,11 @@ class UserService
 {
     public function __construct(protected UserRepository $userRepository) {}
 
+
+    public function getWholesalerHierarchyWithMargins()
+    {
+            return $this->userRepository->getWholesalerHierarchyWithMargins();
+    }
     public function getAll(): Collection
     {
         return $this->userRepository->getAll();

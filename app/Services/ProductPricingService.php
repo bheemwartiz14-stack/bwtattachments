@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace App\Services;
+use App\Models\ProductPrices;
 
 use App\Models\Product;
 use App\Repositories\ProductPricingRepository;
@@ -13,6 +14,10 @@ class ProductPricingService
     public function __construct(
         protected ProductPricingRepository $productPricingRepository,
     ) {}
+
+    public function getProductPriceForUserRole($role_name, $user_id,$productId, $parentPrice){
+        return  $this->productPricingRepository->getProductPriceForUserRole($role_name, $user_id,$productId, $parentPrice);
+    }
 
     public function getPrice(Product $product): ?float
     {
@@ -80,6 +85,7 @@ class ProductPricingService
 
     public function syncProductPricesForAllUsers(array $payload): void
     {
+     
         $rows = array_map(fn($item) => [
             'product_id'  => $item['product_id'],
             'user_id'     => $item['user_id'],
@@ -90,9 +96,19 @@ class ProductPricingService
             'created_at'  => now(),
             'updated_at'  => now(),
         ], $payload);
+   
 
         $this->upsertRows($rows);
     }
+
+public function updateOrCreateProductPrice(
+    array $payload
+): ProductPrices {
+    return $this->productPricingRepository
+        ->saveProductPrice($payload);
+}      
+
+
 
     private function upsertRows(array $rows): void
     {

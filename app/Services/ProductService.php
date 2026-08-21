@@ -6,15 +6,19 @@ namespace App\Services;
 use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use App\Services\UserService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
+use App\Http\Resources\WholesalerHierarchyResource;
+use App\Events\ProductPriceHierarchyProcessing;
+use Illuminate\Support\Facades\Auth;
 class ProductService
 {
     public function __construct(
         protected ProductRepository $productRepository,
         protected ProductMediaService $productMediaService,
+        protected UserService $userServices
     ) {}
 
     public function getAll(): Collection
@@ -47,6 +51,7 @@ class ProductService
             $product = $this->productRepository->create($data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
+            $this->updateProductPrices($product);
             return $product->load('media');
         });
     }
@@ -64,8 +69,8 @@ class ProductService
             $product = $this->productRepository->update($id, $data);
             $this->handleMedia($product, $media);
             $this->cleanupTemp($media);
-
             $newPrice = (float) ($product->ddp_price ?? 0);
+            $this->updateProductPrices($product);
             return $product->load('media');
         });
     }
@@ -116,6 +121,20 @@ class ProductService
     public function paginateActiveProductsForUser(array $filters, int $perPage, $userId = null): LengthAwarePaginator
     {
         return $this->productRepository->paginateActiveProductsForUser($filters, $perPage, $userId);
+    }
+
+    private function updateProductPrices($productList){
+        $mainPrice = $productList->ddp_price;
+        $product_id = $productList->id;
+        $wholesalers = $this->userServices->getWholesalerHierarchyWithMargins();
+        $displayData = [
+            'product_id' => $productList->id,
+            'main_price' => $productList->ddp_price,
+            'users' => WholesalerHierarchyResource::collection(
+                $this->userServices->getWholesalerHierarchyWithMargins()
+            )->resolve(),
+        ];
+        event(new ProductPriceHierarchyProcessing($displayData));
     }
 
     private function resolveCurrencyConversion(array &$data): void
