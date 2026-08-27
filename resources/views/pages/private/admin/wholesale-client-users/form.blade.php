@@ -114,9 +114,9 @@
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
                         <x-forms.input name="name" label="Full Name" placeholder="John Doe" :value="$isEdit ? $user->name : ''"
                             :required="true" :generateUsername="$isEdit ? '' : '#username'" :error="$errors->first('name')" />
-                        <x-forms.email name="email" label="Email Address" placeholder="client@company.com"
-                            :value="$isEdit ? $user->email : ''" :required="!$isEdit" :disabled="$isEdit" :error="$errors->first('email')"
-                            :hint="$isEdit ? 'Email cannot be changed after creation' : ''" />
+                        <x-forms.email name="email" label="Email Address"  placeholder="client@company.com"
+                            :value="$isEdit ? $user->email : ''" :required="!$isEdit" :error="$errors->first('email')"
+                        />
                         <x-forms.phone name="phone" label="Phone Number" placeholder="Enter phone number"
                             :value="$isEdit ? $user->phone : ''" :required="true" :error="$errors->first('phone')" />
                         <x-forms.input name="username" id="username" label="Username"
