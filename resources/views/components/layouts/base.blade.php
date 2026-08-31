@@ -21,8 +21,14 @@
     <link rel="manifest" href="{{ config('app.asset_url') }}/site.webmanifest">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     <style>
-        ol, ul { padding-left: 1.5em; }
-        p { margin-bottom: 0.5em; }
+        ol,
+        ul {
+            padding-left: 1.5em;
+        }
+
+        p {
+            margin-bottom: 0.5em;
+        }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/pwa.js'])
     @livewireStyles
@@ -33,6 +39,11 @@
     {{-- PWA: install button (hidden until beforeinstallprompt fires) --}}
     {{ $slot }}
     <x-toast />
+    <script>
+        window.APP_URL = @json(config('app.url'));
+        window.ASSET_URL = @json(config('app.asset_url'));
+        window.CSRF_TOKEN = @json(csrf_token());
+    </script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/product.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>

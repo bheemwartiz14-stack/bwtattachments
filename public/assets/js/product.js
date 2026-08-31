@@ -91,9 +91,8 @@ window.toggleQuoteItem = async function (btn) {
     var productId = btn.dataset.quote;
     if (!productId) return;
 
-    var url = '/quote-cart/toggle/' + productId;
+    var url = window.APP_CONFIG.appUrl + '/quote-cart/toggle/' + productId;
     var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-
     btn.dataset.loading = 'true';
     btn.disabled = true;
     var originalText = btn.textContent;
@@ -188,7 +187,7 @@ window.toggleQuoteItem = async function (btn) {
 window.toggleFavorite = function (btn) {
     var $btn = $(btn);
     var productId = $btn.data('favorite');
-    var url = '/favorites/toggle/' + productId;
+    var url = window.APP_CONFIG.appUrl + '/favorites/toggle/' + productId;
     var csrf = $('meta[name="csrf-token"]').attr('content');
 
     $.post(url, { _token: csrf }, function (res) {
