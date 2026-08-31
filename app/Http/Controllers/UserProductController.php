@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Services\UserProductService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 
 class UserProductController extends Controller
 {
@@ -23,8 +24,24 @@ class UserProductController extends Controller
 
     public function toggleCart(Product $product): JsonResponse
     {
-        return response()->json(
-            $this->userProductService->toggleCart(auth()->user(), $product)
-        );
+        $result = $this->userProductService->toggleCart(auth()->user(), $product);
+
+        return response()->json([
+            'success' => true,
+            'added' => $result['added'],
+            'cartCount' => $result['count'],
+            'count' => $result['count'],
+            'message' => $result['message'],
+        ]);
+    }
+
+    public function cart(): View
+    {
+        $user = auth()->user();
+        $cartItems = $this->userProductService->getQuotationItems($user);
+
+        $cartIds = $cartItems->pluck('product_id')->toArray();
+
+        return view('pages.public.cart.index', compact('cartItems', 'cartIds'));
     }
 }

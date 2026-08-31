@@ -318,8 +318,8 @@
                                         data-quote="{{ $product->id }}"
                                         data-added="{{ $inCart ? 'true' : 'false' }}"
                                         onclick="toggleQuoteItem(this)"
-                                        class="rounded-md text-white text-center py-2 text-xs font-semibold transition w-full sm:w-auto px-5 {{ $inCart ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-orange-500 hover:bg-orange-600' }}">
-                                        Add To Quotation
+                                        class="rounded-md text-white text-center py-2 text-xs font-semibold transition w-full sm:w-auto px-5 disabled:opacity-60 disabled:cursor-not-allowed {{ $inCart ? 'bg-blue-400 hover:bg-blue-500' : 'bg-bwtblue hover:bg-bwtblue2' }}">
+                                        {{ $inCart ? '✓ Added To Quotation' : 'Add To Quotation' }}
                                     </button>
                                 @endrole
                             @else

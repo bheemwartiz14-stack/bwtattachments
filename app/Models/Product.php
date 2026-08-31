@@ -154,10 +154,11 @@ class Product extends Model implements HasMedia
             return false;
         }
 
-        return $this->userProducts()
-            ->where('user_id', $user->id)
-            ->where('is_quotation', true)
-            ->exists();
+        return in_array(
+            (string) $this->id,
+            app(\App\Services\UserProductService::class)->getQuotationProductIds($user),
+            true,
+        );
     }
 
     public function userProducts()

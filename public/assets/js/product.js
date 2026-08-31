@@ -74,45 +74,115 @@ function initCurrencyConverter() {
     $rmb.on('input change', convert);
 }
 
-window.toggleQuoteItem = function (btn) {
-    var $btn = $(btn);
-    var productId = $btn.data('quote');
-    var url = '/quote-cart/toggle/' + productId;
-    var csrf = $('meta[name="csrf-token"]').attr('content');
+function updateCartBadge(cartCount) {
+    var count = parseInt(cartCount, 10) || 0;
+    document.querySelectorAll('[data-cart-badge]').forEach(function (badge) {
+        badge.textContent = count;
+        if (count > 0) {
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    });
+}
 
-    // Offline path: optimistically update the UI and queue the change for sync.
+window.toggleQuoteItem = async function (btn) {
+    if (btn.dataset.loading === 'true') return;
+    var productId = btn.dataset.quote;
+    if (!productId) return;
+
+    var url = '/quote-cart/toggle/' + productId;
+    var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    btn.dataset.loading = 'true';
+    btn.disabled = true;
+    var originalText = btn.textContent;
+    var originalClasses = btn.className;
+
+    // Session carts are server-side, so they cannot be changed while offline.
     if (window.BWTPWA && !window.BWTPWA.isOnline()) {
-        var adding = $btn.data('added') !== true;
-        var op = adding
-            ? { entity: 'user_product', operation: 'update', payload: { product_id: String(productId), is_quotation: true } }
-            : { entity: 'user_product', operation: 'delete', payload: { product_id: String(productId) } };
-        window.BWTPWA.enqueue(op).then(function () {
-            $btn.data('added', adding);
-            if (adding) {
-                $btn.removeClass('bg-orange-500 hover:bg-orange-600').addClass('bg-emerald-500 hover:bg-emerald-600');
-                $btn.html('Added <span class="text-xs ml-1">✓</span>');
-            } else {
-                $btn.removeClass('bg-emerald-500 hover:bg-emerald-600').addClass('bg-orange-500 hover:bg-orange-600');
-                $btn.text('Add To Quotation');
-            }
-            if (window.showToast) {
-                window.showToast(adding ? 'Queued for sync when online' : 'Removed (queued for sync)', adding ? 'success' : 'info');
-            }
-        });
+        if (window.showToast) window.showToast('Reconnect to update your quotation cart.', 'error');
+        btn.dataset.loading = 'false';
+        btn.disabled = false;
         return;
     }
 
-    $.post(url, { _token: csrf }, function (res) {
-        $btn.data('added', res.added);
+    try {
+        var response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ _token: csrfToken }),
+            credentials: 'same-origin'
+        });
 
-        if (window.showToast) {
-            window.showToast(res.message, res.added ? 'success' : 'info');
+        if (response.status === 401) {
+            if (window.showToast) window.showToast('Please login to use quotation cart.', 'error');
+            window.location.href = '/login';
+            return;
         }
-    }).fail(function () {
-        if (window.showToast) {
-            window.showToast('Failed to update quotation cart', 'error');
+        if (response.status === 419) {
+            if (window.showToast) window.showToast('Session expired. Please refresh and try again.', 'error');
+            return;
         }
-    });
+        if (!response.ok) {
+            var errText = await response.text();
+            throw new Error(errText || 'Request failed');
+        }
+
+        var data = await response.json();
+        if (!data.success) {
+            throw new Error(data.message || 'Unable to update quotation.');
+        }
+
+        var added = !!data.added;
+        var cartCount = data.cartCount !== undefined ? data.cartCount : (data.count !== undefined ? data.count : 0);
+
+        updateCartBadge(cartCount);
+        // Update cart header count if on cart page
+        var headerCountEl = document.querySelector('[data-cart-header-count]');
+        if (headerCountEl) {
+            headerCountEl.textContent = cartCount + ' ' + (cartCount === 1 ? 'item' : 'items');
+        }
+
+        btn.dataset.added = added ? 'true' : 'false';
+        btn.textContent = added ? '✓ Added To Quotation' : 'Add To Quotation';
+        if (added) {
+            btn.classList.remove('bg-bwtblue', 'hover:bg-bwtblue2');
+            btn.classList.add('bg-blue-400', 'hover:bg-blue-500');
+        } else {
+            btn.classList.remove('bg-blue-400', 'hover:bg-blue-500');
+            btn.classList.add('bg-bwtblue', 'hover:bg-bwtblue2');
+        }
+
+        // If removed from cart page, remove the table row
+        if (!added) {
+            var tr = btn.closest('tr');
+            if (tr && tr.closest('table')) {
+                tr.style.transition = 'opacity 0.2s';
+                tr.style.opacity = '0';
+                setTimeout(function() {
+                    tr.remove();
+                    var tbody = document.querySelector('table tbody');
+                    if (tbody && tbody.querySelectorAll('tr').length === 0 && window.location.pathname === '/cart') {
+                        location.reload();
+                    }
+                }, 200);
+            }
+        }
+
+        if (window.showToast) window.showToast(data.message || (added ? 'Added to quotation' : 'Removed from quotation'), added ? 'success' : 'info');
+    } catch (error) {
+        console.error(error);
+        if (window.showToast) window.showToast(error.message || 'Failed to update quotation cart', 'error');
+    } finally {
+        btn.dataset.loading = 'false';
+        btn.disabled = false;
+    }
 };
 
 window.toggleFavorite = function (btn) {

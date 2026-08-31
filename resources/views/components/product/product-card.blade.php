@@ -150,8 +150,8 @@
                         @endphp
                         <button type="button" data-quote="{{ $product->id }}" data-added="{{ $inCart ? 'true' : 'false' }}"
                             onclick="toggleQuoteItem(this)"
-                            class="mt-3 w-full rounded-md text-white text-center py-2 text-xs font-semibold transition bg-blue-500 hover:bg-blue-600">
-                            Add To Quotation
+                            class="mt-3 w-full rounded-md text-white text-center py-2 text-xs font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed {{ $inCart ? 'bg-blue-400 hover:bg-blue-500' : 'bg-bwtblue hover:bg-bwtblue2' }}">
+                            {{ $inCart ? 'Added To Quotation' : 'Add To Quotation' }}
                         </button>
                     @endrole
 

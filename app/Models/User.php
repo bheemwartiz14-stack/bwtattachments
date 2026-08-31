@@ -97,10 +97,7 @@ class User extends Authenticatable implements HasMedia
 
     public function getQuotationProductIds(): array
     {
-        return $this->userProducts()
-            ->where('is_quotation', true)
-            ->pluck('product_id')
-            ->toArray();
+        return app(\App\Services\UserProductService::class)->getQuotationProductIds($this);
     }
 
     public function getQuotationProductList(): array

@@ -4,7 +4,7 @@ $iconMap = [
     'Dashboard' => 'heroicon-o-home', 'Manage Wholesale' => 'heroicon-o-users', 'Manage Retailer Users' => 'heroicon-o-user-group',
     'Manage Customer Users' => 'heroicon-o-users', 'Categories' => 'heroicon-o-rectangle-stack', 'Subcategories' => 'heroicon-o-tag',
     'Connections' => 'heroicon-o-link', 'Products' => 'heroicon-o-cube', 'Contact Messages' => 'heroicon-o-envelope',
-    'Site Settings' => 'heroicon-o-cog-6-tooth', 'Terms & Conditions' => 'heroicon-o-document-text', 'Quotations' => 'heroicon-o-document-text',
+    'Site Settings' => 'heroicon-o-cog-6-tooth', 'Terms & Conditions' => 'heroicon-o-document-text', 'Quotations' => 'heroicon-o-document-text','Manage Orders' => 'heroicon-o-document-text',
     'Profile' => 'heroicon-o-user',
 ];
 $rolePrefix = match (true) {
@@ -28,6 +28,7 @@ if ($user->hasRole('Admin')) {
         ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
         ['label' => 'Manage Resellers', 'route' => 'client.reseller-users.index', 'pattern' => 'client.reseller-users.*', 'icon' => 'heroicon-o-truck'],
         ['label' => 'Products', 'route' => 'client.products.index', 'pattern' => 'client.products.*'],
+        // ['label' => 'Manage Orders', 'route' => 'client.order.index', 'pattern' => 'client.order.*'],
         ['label' => 'Quotations', 'route' => 'client.quotations.index', 'pattern' => 'client.quotations.*'],
         ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
     ];
