@@ -40,9 +40,11 @@
     {{ $slot }}
     <x-toast />
     <script>
-        window.APP_URL = @json(config('app.url'));
-        window.ASSET_URL = @json(config('app.asset_url'));
-        window.CSRF_TOKEN = @json(csrf_token());
+        window.APP_CONFIG = {
+            appUrl: @json(config('app.url')),
+            assetUrl: @json(config('app.asset_url')),
+            csrfToken: @json(csrf_token()),
+        };
     </script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/product.js') }}"></script>
