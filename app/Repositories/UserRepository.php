@@ -75,7 +75,6 @@ class UserRepository
                     $filters['status'] === 'active'
                 )
             )
-            ->latest()
             ->paginate($perPage);
     }
 
