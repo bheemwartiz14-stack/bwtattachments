@@ -22,7 +22,7 @@ class WholesaleClientUserController extends Controller
     public function index(Request $request): View
     {
         $filters = $request->only(['search', 'role', 'status']);
-        $users = $this->wholesaleClientUserServices->paginate(10, $filters);
+        $users = $this->wholesaleClientUserServices->paginate(50, $filters);
         return view('pages.private.admin.wholesale-client-users.index', compact('users'));
     }
     public function create(): View
