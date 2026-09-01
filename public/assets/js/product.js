@@ -138,7 +138,7 @@ window.toggleQuoteItem = async function (btn) {
 
     // Session carts are server-side, so they cannot be changed while offline.
     if (window.BWTPWA && !window.BWTPWA.isOnline()) {
-        if (window.showToast) window.showToast('Reconnect to update your quotation cart.', 'error');
+        if (window.showToast) window.showToast('Reconnect to update your cart.', 'error');
         btn.dataset.loading = 'false';
         btn.disabled = false;
         return;
@@ -187,7 +187,7 @@ window.toggleQuoteItem = async function (btn) {
         }
 
         btn.dataset.added = added ? 'true' : 'false';
-        btn.textContent = added ? '✓ Added To Quotation' : 'Add To Quotation';
+        btn.textContent = added ? '✓ Added To Cart' : 'Add To Cart';
         if (added) {
             btn.classList.remove('bg-bwtblue', 'hover:bg-bwtblue2');
             btn.classList.add('bg-blue-400', 'hover:bg-blue-500');
