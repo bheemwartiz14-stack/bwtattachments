@@ -15,6 +15,7 @@ use App\Models\ContactMessage;
 use App\Models\Quotation;
 use App\Models\ResellerApplication;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -25,79 +26,17 @@ class HomeController extends Controller
         return view('pages.public.index');
     }
 
-    public function send_email(): JsonResponse
+        public function send_email(): JsonResponse
     {
-        $results = [];
-
-        $user = User::first();
-        if ($user) {
-            try {
-                event(new WelcomeOnboardingUser($user, 'test-password', 'wholesale'));
-                $results[] = 'WelcomeOnboardingUser: ok';
-            } catch (\Throwable $e) {
-                $results[] = 'WelcomeOnboardingUser: ' . $e->getMessage();
-            }
-        } else {
-            $results[] = 'WelcomeOnboardingUser: skipped (no user)';
-        }
-
-        $contactMessage = ContactMessage::first();
-        if ($contactMessage) {
-            try {
-                event(new ContactMessageSubmitted($contactMessage));
-                $results[] = 'ContactMessageSubmitted: ok';
-            } catch (\Throwable $e) {
-                $results[] = 'ContactMessageSubmitted: ' . $e->getMessage();
-            }
-        } else {
-            $results[] = 'ContactMessageSubmitted: skipped (no contact message)';
-        }
-
-        $quotation = Quotation::first();
-        if ($quotation) {
-            try {
-                event(new QuotationCreated($quotation));
-                $results[] = 'QuotationCreated: ok';
-            } catch (\Throwable $e) {
-                $results[] = 'QuotationCreated: ' . $e->getMessage();
-            }
-        } else {
-            $results[] = 'QuotationCreated: skipped (no quotation)';
-        }
-
-        $application = ResellerApplication::first();
-
-        if ($application) {
-            try {
-                event(new ResellerApplicationSubmitted($application));
-                $results[] = 'ResellerApplicationSubmitted: ok';
-            } catch (\Throwable $e) {
-                $results[] = 'ResellerApplicationSubmitted: ' . $e->getMessage();
-            }
-        } else {
-            $results[] = 'ResellerApplicationSubmitted: skipped (no application)';
-        }
-
-        try {
-            event(new UpdateUserMargins(
-                new UserData(
-                    user_id: $user?->id ?? 'test-id',
-                    parent_id: null,
-                    role_name: 'wholesale',
-                    name: $user?->name ?? 'Test',
-                    margin_type: 'percentage',
-                    type: 'wholesale',
-                    margin_value: 10.0,
-                )
-            ));
-            $results[] = 'UpdateUserMargins: ok';
-        } catch (\Throwable $e) {
-            $results[] = 'UpdateUserMargins: ' . $e->getMessage();
-        }
+        Mail::raw('Hello', function ($message) {
+            $message
+                ->to('bheem.wartiz14@gmail.com')
+                ->subject('Test Email');
+        });
 
         return response()->json([
             'success' => true,
-            'results' => $results,
+            'message' => 'Test email sent successfully.',
         ]);
     }
 }
