@@ -187,14 +187,10 @@ window.toggleQuoteItem = async function (btn) {
         }
 
         btn.dataset.added = added ? 'true' : 'false';
-        btn.textContent = added ? '✓ Added To Cart' : 'Add To Cart';
-        if (added) {
-            btn.classList.remove('bg-bwtblue', 'hover:bg-bwtblue2');
-            btn.classList.add('bg-blue-400', 'hover:bg-blue-500');
-        } else {
-            btn.classList.remove('bg-blue-400', 'hover:bg-blue-500');
-            btn.classList.add('bg-bwtblue', 'hover:bg-bwtblue2');
-        }
+        btn.textContent = 'Add To Cart';
+        // Keep green color as requested (not toggling to blue)
+        btn.classList.remove('bg-bwtblue', 'hover:bg-bwtblue2', 'bg-blue-400', 'hover:bg-blue-500');
+        btn.classList.add('bg-green-600', 'hover:bg-green-700');
 
         // If removed from cart page, remove the table row
         if (!added) {

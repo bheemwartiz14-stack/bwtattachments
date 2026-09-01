@@ -152,7 +152,7 @@
 
                         <button type="button" data-quote="{{ $product->id }}" data-added="{{ $inCart ? 'true' : 'false' }}"
                             onclick="toggleQuoteItem(this)"
-                            class="mt-3 w-full rounded-md bg-bwtblue hover:bg-bwtblue2 text-white text-center py-2 text-xs font-semibold transition">Add
+                            class="cursor-pointer mt-3 w-full rounded-md bg-green-600 hover:bg-green-700 text-white text-center py-2 text-xs font-semibold transition">Add
                             To Cart</button>
                     @endrole
 

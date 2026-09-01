@@ -381,8 +381,9 @@
             var headerCountEl = document.querySelector('[data-cart-header-count]');
             if (headerCountEl) headerCountEl.textContent = cartCount + ' ' + (cartCount===1?'item':'items');
             btn.dataset.added = added ? 'true' : 'false';
-            // Keep button static as Add To Quotation (requested)
-            btn.textContent = 'Add To Quotation';
+            btn.textContent = 'Add To Cart';
+            btn.classList.remove('bg-bwtblue','hover:bg-bwtblue2','bg-blue-400','hover:bg-blue-500');
+            btn.classList.add('bg-green-600','hover:bg-green-700');
             var cardQtyWrap = document.getElementById('qty-wrap-' + productId);
             if (cardQtyWrap) {
                 if (added) { cardQtyWrap.classList.remove('hidden'); cardQtyWrap.classList.add('flex'); var qEl=document.getElementById('qty-'+productId); if(qEl) qEl.textContent='1'; }

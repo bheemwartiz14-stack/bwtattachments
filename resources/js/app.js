@@ -255,7 +255,9 @@ window.toggleQuoteItem = window.toggleQuoteItem || async function(btn){
         var added=!!data.added; var cartCount=data.cartCount??data.count??0;
         window.updateCartBadge(cartCount);
         var h=document.querySelector('[data-cart-header-count]'); if(h) h.textContent=cartCount+' '+(cartCount===1?'item':'items');
-        btn.dataset.added=added?'true':'false'; btn.textContent=added?'✓ Added To Quotation':'Add To Quotation';
+        btn.dataset.added=added?'true':'false'; btn.textContent='Add To Cart';
+        btn.classList.remove('bg-bwtblue','hover:bg-bwtblue2','bg-blue-400','hover:bg-blue-500');
+        btn.classList.add('bg-green-600','hover:bg-green-700');
         var wrap=document.getElementById('qty-wrap-'+productId);
         if(wrap){ if(added){wrap.classList.remove('hidden');wrap.classList.add('flex'); var q=document.getElementById('qty-'+productId); if(q) q.textContent='1';} else {wrap.classList.add('hidden');wrap.classList.remove('flex');}}
         if(window.showToast) window.showToast(data.message|| (added?'Added':'Removed'), added?'success':'info');
