@@ -1,0 +1,178 @@
+<x-layouts.app>
+    @php $displayNumber = $order->order_number ?? $order->quotation_number ?? ''; @endphp
+    <x-slot:title>{{ $displayNumber }} - BWT</x-slot:title>
+    <x-breadcrumb :items="[
+        ['label' => 'Wholesaler Portal', 'url' => route('client.dashboard')],
+        ['label' => 'Orders', 'url' => route('client.orders.index')],
+        ['label' => $displayNumber],
+    ]" />
+
+    @if (session('success'))
+        <div
+            class="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm font-medium text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div
+            class="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-medium text-red-800 dark:border-red-900/50 dark:bg-red-900/30 dark:text-red-300">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <div class="mb-6">
+        <x-ui.hero title="Order {{ $displayNumber }}" icon="heroicon-o-document-text"
+            subtitle="View order details">
+            <x-slot:actions>
+                <form action="{{ route('client.orders.download', $order) }}" method="GET" class="inline">
+                    <x-ui.button type="submit" variant="secondary" label="Download PDF">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </x-ui.button>
+                </form>
+                <a href="{{ route('client.orders.index') }}" wire:navigate
+                    class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
+                    Back to Orders
+                </a>
+            </x-slot:actions>
+        </x-ui.hero>
+    </div>
+
+    <div class="space-y-6">
+
+        <div
+            class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-neutral-800 flex items-center justify-between">
+                <div>
+                    <h2 class="text-sm font-mono font-semibold text-black dark:text-neutral-100">
+                        {{ $displayNumber }}</h2>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Created
+                        {{ $order->created_at->format('M d, Y') }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    @php
+                        $statusClasses = [
+                            'draft' => 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300',
+                            'sent' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300',
+                            'pending' => 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300',
+                            'approved' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300',
+                            'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+                            'submitted' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+                        ];
+                        $statusValue = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status;
+                        $class = $statusClasses[$statusValue] ?? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300';
+                    @endphp
+                    <span
+                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $class }}">
+                        {{ ucfirst($statusValue) }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="divide-y divide-slate-100 dark:divide-neutral-800">
+                @forelse($order->items as $item)
+                    @php $lineTotal = $item->price * $item->quantity; @endphp
+                    <div class="px-6 py-4 hover:bg-rose-50 dark:hover:bg-neutral-900/50 transition-colors">
+                        <div class="flex items-start gap-4">
+                            @php $imgUrl = $item->product?->getFirstMediaUrl('images', 'thumb') ?: $item->product?->getFirstMediaUrl('images') ?: null; @endphp
+                            @if($imgUrl)
+                                <img src="{{ $imgUrl }}" alt="{{ $item->product?->product_title ?? 'Product' }}" class="h-14 w-14 rounded-lg object-cover border border-slate-200 dark:border-neutral-800 shrink-0" loading="lazy" />
+                            @else
+                            <div
+                                class="flex h-14 w-14 items-center justify-center rounded-lg bg-slate-100 dark:bg-neutral-900 shrink-0">
+                                <svg class="w-7 h-7 text-gray-400 dark:text-neutral-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            @endif
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-black dark:text-neutral-100">
+                                            {{ $item->product?->product_title ?? ($item->product?->product_title ?? 'Product') }}
+                                        </p>
+                                        <p class="text-xs font-mono text-gray-400 dark:text-neutral-500 mt-0.5">
+                                            {{ $item->product?->product_code }}</p>
+                                    </div>
+                                </div>
+                                <div class="mt-2 grid grid-cols-3 gap-4 text-xs text-gray-700 dark:text-neutral-400">
+                                    <span>Quantity: <span
+                                            class="font-medium text-black dark:text-neutral-100">{{ $item->quantity }}</span></span>
+                                    <span>Unit Price: <span
+                                            class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($item->price, 2) }}</span></span>
+                                    <span>Total: <span
+                                            class="font-medium text-emerald-600 dark:text-emerald-400">{{ config('app.currency_symbol') }}{{ number_format($lineTotal, 2) }}</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-6 py-12 text-center">
+                        <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                        </svg>
+                        <p class="mt-3 text-sm text-gray-400 dark:text-neutral-500">No items in this quotation</p>
+                    </div>
+                @endforelse
+            </div>
+
+            @php
+                $rawVatPerc = $order->getAttributes()['vat_percentage'] ?? 0;
+                $taxRate = is_string($rawVatPerc) ? str_replace(',', '', $rawVatPerc) : $rawVatPerc;
+                $rawSub = $order->getAttributes()['sub_total'] ?? 0;
+                $rawVatAmt = $order->getAttributes()['vat_amount'] ?? $order->getAttributes()['vat_amount'] ?? 0;
+                $rawGrand = $order->getAttributes()['grand_total'] ?? 0;
+            @endphp
+            <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800 bg-rose-50 dark:bg-neutral-900/50">
+                <div class="max-w-sm ml-auto space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-700 dark:text-neutral-400">Subtotal</span>
+                        <span class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format((float)str_replace(',', '', (string)$rawSub), 2) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-700 dark:text-neutral-400">VAT ({{ $taxRate }}%)</span>
+                        <span class="font-medium text-amber-600 dark:text-amber-400">{{ config('app.currency_symbol') }}{{ number_format((float)str_replace(',', '', (string)$rawVatAmt), 2) }}</span>
+                    </div>
+
+                    <div
+                        class="flex items-center justify-between text-lg font-bold pt-2 border-t border-slate-100 dark:border-neutral-800">
+                        <span class="text-black dark:text-neutral-100">Total incl. VAT</span>
+                        <span class="text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format((float)str_replace(',', '', (string)$rawGrand), 2) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            @if ($order->notes)
+                <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800">
+                    <p class="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-1">
+                        Notes</p>
+                    <div class="prose prose-sm lg:prose-base max-w-none dark:prose-invert">
+                        {!! $order->notes !!}
+                    </div>
+            @endif
+
+
+            <div class="px-6 py-4 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between">
+                <p class="text-xs text-gray-400 dark:text-neutral-500">
+                    {{ $order->items->count() }} item(s) &middot; Generated on
+                    {{ $order->created_at->format('M d, Y') }}
+                </p>
+                <form action="{{ route('client.orders.download', $order) }}" method="GET" class="inline">
+                    <x-ui.button type="submit" variant="secondary" label="Download PDF">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </x-ui.button>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-layouts.app>

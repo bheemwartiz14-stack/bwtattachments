@@ -86,13 +86,51 @@ function updateCartBadge(cartCount) {
     });
 }
 
+window.changeQuoteQty = function(productId, delta) {
+    var qtyEl = document.getElementById('qty-' + productId);
+    if (!qtyEl) return;
+    var current = parseInt(qtyEl.textContent) || 1;
+    var newQty = current + delta;
+    if (newQty < 1 || newQty > 50) return;
+    qtyEl.textContent = newQty;
+    var wrap = qtyEl.closest('div');
+    if (wrap) {
+        var decBtn = wrap.querySelector('button[aria-label="Decrease quantity"]');
+        if (decBtn) decBtn.disabled = newQty <= 1;
+    }
+};
+
 window.toggleQuoteItem = async function (btn) {
     if (btn.dataset.loading === 'true') return;
     var productId = btn.dataset.quote;
     if (!productId) return;
+    // If already added, second click should update quantity to displayed qty (not toggle off)
+    if (btn.dataset.added === 'true') {
+        var qElCheck = document.getElementById('qty-' + productId);
+        if (qElCheck) {
+            var curQty = parseInt(qElCheck.textContent) || 1;
+            // Keep qty display, sync to server with current qty
+            var urlQty = window.APP_CONFIG.appUrl + '/quote-cart/quantity/' + productId;
+            var csrfQty = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            fetch(urlQty, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfQty, 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ quantity: curQty, _token: csrfQty }),
+                credentials: 'same-origin'
+            }).then(function(r){ return r.json(); }).then(function(d){
+                if (d.success && d.quantity) {
+                    qElCheck.textContent = d.quantity;
+                    if (window.showToast) window.showToast('Quantity updated to '+d.quantity, 'success');
+                }
+            }).catch(function(e){ console.error(e); });
+            return;
+        }
+    }
 
     var url = window.APP_CONFIG.appUrl + '/quote-cart/toggle/' + productId;
     var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    var qtyElForAdd = document.getElementById('qty-' + productId);
+    var selectedQtyForAdd = qtyElForAdd ? parseInt(qtyElForAdd.textContent) || 1 : 1;
     btn.dataset.loading = 'true';
     btn.disabled = true;
     var originalText = btn.textContent;
@@ -115,7 +153,7 @@ window.toggleQuoteItem = async function (btn) {
                 'X-CSRF-TOKEN': csrfToken,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({ _token: csrfToken }),
+            body: JSON.stringify({ _token: csrfToken, quantity: selectedQtyForAdd }),
             credentials: 'same-origin'
         });
 

@@ -16,6 +16,8 @@ class ProductFilters extends Component
 {
     use WithPagination;
 
+    public array $quantities = [];
+
     #[Url(except: '')]
     public string $search = '';
     #[Url(except: '')]
@@ -45,6 +47,38 @@ class ProductFilters extends Component
     {
         $this->reset(['search', 'category', 'subcategory', 'connection', 'machine_class']);
         $this->resetPage();
+    }
+
+    public function increaseQuantity(string $productId): void
+    {
+        $current = (int) ($this->quantities[$productId] ?? 1);
+        $this->quantities[$productId] = min(50, max(1, $current + 1));
+    }
+
+    public function decreaseQuantity(string $productId): void
+    {
+        $current = (int) ($this->quantities[$productId] ?? 1);
+        $this->quantities[$productId] = max(1, $current - 1);
+    }
+
+    public function addToQuotation(string $productId): void
+    {
+        $quantity = (int) ($this->quantities[$productId] ?? 1);
+        $quantity = min(50, max(1, $quantity));
+        $this->validate([
+            "quantities.{$productId}" => ['integer', 'min:1', 'max:50'],
+        ]);
+
+        $product = \App\Models\Product::findOrFail($productId);
+        $user = auth()->user();
+        if (! $user) {
+            abort(403);
+        }
+
+        // Final desired quantity (not increment) – updateOrCreate style
+        app(\App\Services\UserProductService::class)->addToCart($user, $product, $quantity);
+
+        $this->dispatch('cartUpdated', count: app(\App\Services\UserProductService::class)->getCartCount($user));
     }
 
     public function render(ProductService $productService): View

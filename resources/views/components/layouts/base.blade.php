@@ -47,7 +47,6 @@
         };
     </script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/product.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     @livewireScripts
     @stack('scripts')

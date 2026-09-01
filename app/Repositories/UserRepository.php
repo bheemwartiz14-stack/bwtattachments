@@ -225,4 +225,12 @@ class UserRepository
         ])
         ->get();
     }
+
+
+    public function getAdminUser(): ?User
+    {
+        return User::role('Admin')
+        ->orderBy('name')
+        ->first(['id', 'name', 'email', 'phone']);
+    }
 }

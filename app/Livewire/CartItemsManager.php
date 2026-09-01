@@ -32,13 +32,26 @@ class CartItemsManager extends Component
         $items = old('items');
         if ($items) {
             $decoded = is_string($items) ? json_decode($items, true) : $items;
-            if (is_array($decoded)) {
+            if (is_array($decoded) && ! empty($decoded)) {
+                // Old input may be array of strings (productIds) or array of item arrays.
+                $first = reset($decoded);
+                if (is_array($first) && array_key_exists('product_id', $first)) {
+                    $this->items = $decoded;
+                } elseif (is_string($first)) {
+                    // Treat as productIds list – merge into productIds instead of items
+                    $productIds = array_merge((array) $productIds, $decoded);
+                }
+            } elseif (is_array($decoded)) {
                 $this->items = $decoded;
             }
         }
         if ($this->productId) {
             $productIds[] = $this->productId;
             $this->productId = null;
+        }
+        // Sanitize: remove any stray string entries (e.g. from old('items') as productIds)
+        if (! empty($this->items)) {
+            $this->items = array_values(array_filter($this->items, fn ($v) => is_array($v) && isset($v['product_id'])));
         }
         if (Auth::check() && empty($this->items)) {
             $this->loadCartFromSession();
@@ -170,13 +183,16 @@ class CartItemsManager extends Component
     {
         $userId = $this->customerId ?? Auth::id();
         foreach ($this->items as $i => $item) {
+            if (! is_array($item) || ! isset($item['product_id'])) {
+                continue;
+            }
             $product = $this->productService->getActiveProductsWithUserPrices($userId)->firstWhere('id', $item['product_id']);
             if ($product) { $price = $product->productPrices->first()?->final_price ?? $product->ddp_price ?? 0; $this->items[$i]['price'] = (float) $price; }
         }
         if (count($this->items) > 0) $this->dispatchItemsUpdated();
     }
     protected function dispatchItemsUpdated(): void { $this->dispatch('itemsUpdated', items: $this->items); }
-    public function getSubtotalProperty(): float { $total = 0; foreach ($this->items as $item) $total += ($item['price'] ?? 0) * ($item['quantity'] ?? 1); return $total; }
+    public function getSubtotalProperty(): float { $total = 0; foreach ($this->items as $item) { if (! is_array($item)) continue; $total += ($item['price'] ?? 0) * ($item['quantity'] ?? 1); } return $total; }
     public function getTaxRateProperty(): int { return $this->deliveryCountry === 'NL' ? 21 : 0; }
     public function getTaxAmountProperty(): float { return $this->subtotal * ($this->taxRate / 100); }
     public function getGrandTotalProperty(): float { return $this->subtotal + $this->taxAmount; }

@@ -123,7 +123,7 @@ class QuotationController extends Controller
         }
 
         $quotation->load('reseller');
-$this->quotationService->generatePdf($quotation);
+        $this->quotationService->generatePdf($quotation);
         $this->quotationService->sendEmail($quotation);
         $this->quotationService->update($id, ['status' => 'sent']);
 

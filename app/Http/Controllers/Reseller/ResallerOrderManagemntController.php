@@ -1,38 +1,42 @@
 <?php
-
-namespace App\Http\Controllers\Client;
-
+namespace App\Http\Controllers\Reseller;
 use App\Http\Controllers\Controller;
 use App\Services\UserProductService;
 use App\Services\OrderServices;
 use App\Services\UserService;
-use App\Http\Requests\Client\Order\StoreWholesaleOrderRequest;
+use App\Http\Requests\Reseller\Order\StoreResellerOrderRequest;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Http\Request;
 
-use Illuminate\View\View;
-
-class WholesaleOrderPlacementController extends Controller
+class ResallerOrderManagemntController extends Controller
 {
-    public function __construct(
+     public function __construct(
         protected UserProductService $userProductService,
         protected OrderServices $orderServices,
         protected UserService $userService
     ) {}
-    public function index(): View
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
         $orders = $this->orderServices->findByUser(auth()->id());
-        return view('pages.private.client.orders.index', compact('orders'));
+        return view('pages.private.reseller.orders.index', compact('orders'));
     }
 
-    public function create(): View
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
         $user = $this->userService->getAuthenticatedUser();
         $meta = $this->userService->getAuthenticatedUserMetadata();
         $orderNumber = $this->orderServices->generateOrderNumber();
-        $admin = $this->userService->getAdminUser();
+        $wholesallerUser = $this->userService->getParentUser();
         $cartIds = $this->userProductService->getQuotationProductIds($user);
         $usermargin = $user?->userMargin?->margin_value ?? 0;
         $cartItems = $this->userProductService->getQuotationItems($user);
@@ -51,18 +55,20 @@ class WholesaleOrderPlacementController extends Controller
                 'price' => (float) $price,
             ];
         })->values()->toArray();
-        return view('pages.private.client.orders.create', [
+        return view('pages.private.reseller.orders.create', [
             'user' => $user,
             'meta' => $meta,
-            'admin' => $admin,
+            'wholesallerUser' => $wholesallerUser,
             'cartIds' => $cartIds,
             'cartItemsJson' => $cartItemsJson,
             'orderNumber' => $orderNumber,
             'usermargin' => $usermargin,
         ]);
     }
-
-     public function store(StoreWholesaleOrderRequest $request): RedirectResponse
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreResellerOrderRequest $request)
     {
         $data = $request->validated();
         $action = $request->input('action', 'draft');
@@ -80,16 +86,20 @@ class WholesaleOrderPlacementController extends Controller
             'send' => 'Order created successfully, PDF generated, and sent to the admin successfully.',
             default => 'Order saved as draft successfully.',
         };
-        return redirect()->route('client.orders.index')->with('success', $message);
+        return redirect()->route('reseller.orders.index')->with('success', $message);
     }
 
-     public function show(string $id): View
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
         $order = $this->orderServices->findById($id);
-        return view('pages.private.client.orders.show', compact('order'));
+        return view('pages.private.reseller.orders.show', compact('order'));
+        //
     }
 
-       public function download(string $id): BinaryFileResponse|RedirectResponse|StreamedResponse
+      public function download(string $id): BinaryFileResponse|RedirectResponse|StreamedResponse
     {
         $order = $this->orderServices->findById($id);
         $order = $this->orderServices->generateOrderPdf($order);
@@ -100,11 +110,9 @@ class WholesaleOrderPlacementController extends Controller
         return Storage::disk('public')->download($order->pdf_file);
     }
 
-
-       public function sendEmail(string $id): RedirectResponse
-    {
+        public function sendEmail(string $id): RedirectResponse
+ {
         $order = $this->orderServices->findById($id);
-
         $fromId = $order->order_from_user_id ?? $order->user_id ?? null;
         if ((string) $fromId !== (string) auth()->id()) {
             abort(403);
@@ -115,8 +123,4 @@ class WholesaleOrderPlacementController extends Controller
         return back()->with('success', 'Order sent successfully.');
     }
 
-    public function preview(string $id)
-    {
-        return $this->orderServices->previewPdf($id);
-    }
 }

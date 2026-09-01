@@ -1,4 +1,5 @@
 
+import "./libs/patch-custom-elements";
 import "./libs/lexxy";
 // Dark Mode
 function initDarkMode() {
@@ -190,6 +191,77 @@ $(document).on('click', '[data-view-toggle]', function() {
 $(document).on('focus', 'input[data-select-all]', function() {
     $(this).select();
 });
+
+// Global quantity handler for product-card (fallback for non-Livewire pages like category)
+window.changeQuoteQty = window.changeQuoteQty || function(productId, delta) {
+    var qtyEl = document.getElementById('qty-' + productId);
+    if (!qtyEl) return;
+    var current = parseInt(qtyEl.textContent) || 1;
+    var newQty = current + delta;
+    if (newQty < 1 || newQty > 50) return;
+    qtyEl.textContent = newQty;
+    var wrap = qtyEl.closest('div');
+    if (wrap) {
+        var decBtn = wrap.querySelector('button[aria-label="Decrease quantity"]');
+        if (decBtn) decBtn.disabled = newQty <= 1;
+    }
+};
+
+window.updateCartBadge = window.updateCartBadge || function(cartCount) {
+    var count = parseInt(cartCount, 10) || 0;
+    document.querySelectorAll('[data-cart-badge]').forEach(function(badge){
+        badge.textContent = count;
+        if(count>0) badge.classList.remove('hidden'); else badge.classList.add('hidden');
+    });
+};
+
+document.addEventListener('cartUpdated', function(e){
+    var c = e.detail?.count ?? e.detail?.[0]?.count ?? e.detail?.count;
+    if(c!==undefined) {
+        window.updateCartBadge(c);
+        var h=document.querySelector('[data-cart-header-count]');
+        if(h) h.textContent=c+' '+(c===1?'item':'items');
+    }
+});
+document.addEventListener('livewire:init', function(){
+    if(window.Livewire){
+        Livewire.on('cartUpdated', function(data){
+            var c = data.count ?? data[0]?.count;
+            if(c!==undefined){
+                window.updateCartBadge(c);
+                var h=document.querySelector('[data-cart-header-count]');
+                if(h) h.textContent=c+' '+(c===1?'item':'items');
+            }
+        });
+    }
+});
+
+window.toggleQuoteItem = window.toggleQuoteItem || async function(btn){
+    if(btn.dataset.loading==='true') return;
+    var productId = btn.dataset.quote; if(!productId) return;
+    if(btn.dataset.added==='true'){
+        var qEl=document.getElementById('qty-'+productId);
+        if(qEl){ window.changeQuoteQty(productId,1); return; }
+    }
+    var url = (window.APP_CONFIG?.appUrl||'') + '/quote-cart/toggle/' + productId;
+    var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')||'';
+    var qtyEl2=document.getElementById('qty-'+productId);
+    var selectedQty = qtyEl2 ? parseInt(qtyEl2.textContent)||1 : 1;
+    btn.dataset.loading='true'; btn.disabled=true;
+    try{
+        var response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':csrfToken,'X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({_token:csrfToken,quantity:selectedQty}),credentials:'same-origin'});
+        if(!response.ok) throw new Error(await response.text()||'Request failed');
+        var data=await response.json(); if(!data.success) throw new Error(data.message||'Unable');
+        var added=!!data.added; var cartCount=data.cartCount??data.count??0;
+        window.updateCartBadge(cartCount);
+        var h=document.querySelector('[data-cart-header-count]'); if(h) h.textContent=cartCount+' '+(cartCount===1?'item':'items');
+        btn.dataset.added=added?'true':'false'; btn.textContent=added?'✓ Added To Quotation':'Add To Quotation';
+        var wrap=document.getElementById('qty-wrap-'+productId);
+        if(wrap){ if(added){wrap.classList.remove('hidden');wrap.classList.add('flex'); var q=document.getElementById('qty-'+productId); if(q) q.textContent='1';} else {wrap.classList.add('hidden');wrap.classList.remove('flex');}}
+        if(window.showToast) window.showToast(data.message|| (added?'Added':'Removed'), added?'success':'info');
+    }catch(e){ console.error(e); if(window.showToast) window.showToast(e.message||'Failed','error'); }
+    finally{ btn.dataset.loading='false'; btn.disabled=false; }
+};
 
 
 

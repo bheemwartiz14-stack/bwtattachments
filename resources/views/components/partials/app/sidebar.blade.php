@@ -28,7 +28,7 @@ if ($user->hasRole('Admin')) {
         ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
         ['label' => 'Manage Resellers', 'route' => 'client.reseller-users.index', 'pattern' => 'client.reseller-users.*', 'icon' => 'heroicon-o-truck'],
         ['label' => 'Products', 'route' => 'client.products.index', 'pattern' => 'client.products.*'],
-        // ['label' => 'Manage Orders', 'route' => 'client.order.index', 'pattern' => 'client.order.*'],
+        ['label' => 'Manage Orders', 'route' => 'client.orders.index', 'pattern' => 'client.order.*'],
         ['label' => 'Quotations', 'route' => 'client.quotations.index', 'pattern' => 'client.quotations.*'],
         ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
     ];
@@ -37,6 +37,7 @@ if ($user->hasRole('Admin')) {
         ['label' => 'Dashboard', 'route' => 'reseller.dashboard', 'pattern' => 'reseller.dashboard'],
         ['label' => 'Manage Customer', 'route' => 'reseller.customer-users.index', 'pattern' => 'reseller.customer-users.*', 'icon' => 'heroicon-o-user-group'],
         ['label' => 'Products', 'route' => 'reseller.products.index', 'pattern' => 'reseller.products.*'],
+         ['label' => 'Manage Orders', 'route' => 'reseller.orders.index', 'pattern' => 'reseller.orders.*'],
         ['label' => 'Quotations', 'route' => 'reseller.quotations.index', 'pattern' => 'reseller.quotations.*'],
         ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
     ];

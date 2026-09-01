@@ -1,0 +1,402 @@
+(function () {
+    'use strict';
+
+    var quotationItems = [];
+    var autoSaveTimer = null;
+
+    function ready(fn) {
+        if (document.readyState !== 'loading') { fn(); }
+        else { document.addEventListener('DOMContentLoaded', fn); }
+    }
+
+    ready(function () {
+        initCustomerSelection();
+        initDateDefaults();
+        initQuillEditor();
+        initDateSync();
+        initFormSubmission();
+        initAutoSave();
+        initDropZones();
+        initCollapsibleSections();
+        initDeliveryCountrySync();
+    });
+
+    /* ---------- CUSTOMER SELECTION ---------- */
+    function initCustomerSelection() {
+        var contactInfo = document.getElementById('contact-info');
+        var nameDisplay = document.getElementById('contact-name-display');
+        var emailDisplay = document.getElementById('contact-email-display');
+        var phoneDisplay = document.getElementById('contact-phone-display');
+
+        function ensureHidden(id, name) {
+            if (document.getElementById(id)) return;
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.id = id;
+            input.name = name;
+            var form = document.getElementById('order-form') || document.getElementById('quotation-form');
+            if (form) form.appendChild(input);
+        }
+        ensureHidden('contact_name', 'contact_name');
+        ensureHidden('contact_email', 'contact_email');
+        ensureHidden('contact_phone', 'contact_phone');
+        ensureHidden('reseller_id', 'reseller_id');
+
+        window.addEventListener('customerSelected', function (e) {
+            if (e.detail) {
+                if (contactInfo) {
+                    contactInfo.classList.remove('hidden');
+                    if (nameDisplay) nameDisplay.textContent = e.detail.name || '—';
+                    if (emailDisplay) emailDisplay.textContent = e.detail.email || '—';
+                    if (phoneDisplay) phoneDisplay.textContent = e.detail.phone || '—';
+                }
+                setVal('contact_name', e.detail.name || '');
+                setVal('contact_email', e.detail.email || '');
+                setVal('contact_phone', e.detail.phone || '');
+                setVal('reseller_id', e.detail.id || '');
+                var marginSpan = document.getElementById('margin_percentage');
+                if (marginSpan) marginSpan.textContent = (e.detail.margin ?? 0).toFixed(2) + '%';
+                setVal('margin_percentage_hidden', e.detail.margin ?? 0);
+            }
+        });
+        window.addEventListener('customerCleared', function () {
+            if (contactInfo) contactInfo.classList.add('hidden');
+            if (nameDisplay) nameDisplay.textContent = '—';
+            if (emailDisplay) emailDisplay.textContent = '—';
+            if (phoneDisplay) phoneDisplay.textContent = '—';
+            ['contact_name', 'contact_email', 'contact_phone', 'reseller_id'].forEach(function (id) { setVal(id, ''); });
+            var marginSpan = document.getElementById('margin_percentage');
+            if (marginSpan) marginSpan.textContent = '0.00%';
+            setVal('margin_percentage_hidden', 0);
+        });
+    }
+
+    /* ---------- DATE DEFAULTS ---------- */
+    function initDateDefaults() {
+        var today = new Date();
+        var dateStr = today.toISOString().split('T')[0];
+        var el = document.getElementById('issue_date');
+        if (el && !el.value) el.value = dateStr;
+
+        var validUntil = document.querySelector('input[name="valid_until"]');
+        if (validUntil && !validUntil.value) {
+            var d = new Date();
+            d.setDate(d.getDate() + 30);
+            validUntil.value = d.toISOString().split('T')[0];
+        }
+    }
+
+    /* ---------- DELIVERY COUNTRY SYNC ---------- */
+    function initDeliveryCountrySync() {
+        var select = document.getElementById('delivery_country');
+        if (select && typeof Livewire !== 'undefined') {
+            select.addEventListener('change', function () {
+                Livewire.dispatch('countryChanged', { country: this.value });
+            });
+        }
+    }
+
+    /* ---------- FORM SUBMISSION ---------- */
+    function initFormSubmission() {
+        var form = document.getElementById('order-form');
+        if (!form) return;
+        var itemsJsonInput = document.getElementById('items-json');
+        if (!itemsJsonInput) {
+            itemsJsonInput = document.createElement('input');
+            itemsJsonInput.type = 'hidden';
+            itemsJsonInput.id = 'items-json';
+            itemsJsonInput.name = 'items';
+            form.appendChild(itemsJsonInput);
+        }
+
+        var marginHidden = document.getElementById('margin_percentage_hidden');
+
+        // Initialize from current hidden value (handles server-rendered cartItemsJson)
+        try {
+            var initial = JSON.parse(itemsJsonInput.value || '[]');
+            if (Array.isArray(initial) && initial.length > 0) {
+                // Only accept array of objects with product_id
+                var valid = initial.filter(function (it) { return it && typeof it === 'object' && it.product_id; });
+                if (valid.length > 0) quotationItems = valid;
+                else if (initial.length > 0 && typeof initial[0] === 'string') {
+                    // Strings will be hydrated server-side, keep empty to allow server hydration
+                    quotationItems = [];
+                }
+            }
+        } catch (e) {}
+
+        window.addEventListener('itemsUpdated', function (e) {
+            if (e.detail && e.detail.items) {
+                quotationItems = e.detail.items;
+                itemsJsonInput.value = JSON.stringify(quotationItems);
+            }
+            if (e.detail && e.detail.margin !== undefined && marginHidden) {
+                marginHidden.value = e.detail.margin;
+            }
+        });
+        if (typeof Livewire !== 'undefined' && Livewire.on) {
+            Livewire.on('itemsUpdated', function (data) {
+                var items = data.items || (data.detail && data.detail.items) || data;
+                if (Array.isArray(items)) {
+                    quotationItems = items;
+                    itemsJsonInput.value = JSON.stringify(quotationItems);
+                }
+                if (data.margin !== undefined && marginHidden) marginHidden.value = data.margin;
+            });
+        }
+
+        // Keep hidden #form-action in sync with clicked button's data-action (draft/pdf/send)
+        form.querySelectorAll('button[data-action]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var actionInput = document.getElementById('form-action');
+                if (actionInput) actionInput.value = this.getAttribute('data-action') || 'draft';
+            });
+        });
+
+        form.addEventListener('submit', function (e) {
+            var submitter = e.submitter;
+            var action = submitter ? submitter.getAttribute('data-action') : (document.getElementById('form-action').value || 'draft');
+            var actionInput = document.getElementById('form-action');
+            if (actionInput) actionInput.value = action;
+            if (quotationItems.length === 0) {
+                try {
+                    var parsed = JSON.parse(itemsJsonInput.value);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        quotationItems = parsed;
+                        itemsJsonInput.value = JSON.stringify(quotationItems);
+                    }
+                } catch(e) {}
+            }
+            if (quotationItems.length === 0) {
+                e.preventDefault();
+                alert('Please add at least one item to the quotation.');
+                return;
+            }
+            // Wholesale orders are sent to admin, no reseller selection required.
+            var isOrderForm = form && form.id === 'order-form';
+            if (! isOrderForm) {
+                var r = document.getElementById('reseller_id');
+                if (!r || !r.value) {
+                    e.preventDefault();
+                    alert('Please select a customer.');
+                    return;
+                }
+            }
+        });
+    }
+
+    /* ---------- AUTO-SAVE ---------- */
+    function initAutoSave() {
+        var form = document.getElementById('order-form') || document.getElementById('quotation-form');
+        if (!form) return;
+
+        form.addEventListener('input', function () {
+            markDirty();
+        });
+    }
+
+    function markDirty() {
+        var indicator = document.getElementById('last-saved');
+        if (indicator) indicator.textContent = 'Unsaved changes...';
+    }
+
+    /* ---------- DROP ZONES ---------- */
+    function initDropZones() {
+        document.querySelectorAll('.drop-zone').forEach(function (zone) {
+            zone.addEventListener('click', function () {
+                var input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function (e) {
+                    var file = e.target.files[0];
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function (ev) {
+                            zone.innerHTML = '<img src="' + ev.target.result + '" class="max-h-32 mx-auto rounded-lg">';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            });
+        });
+    }
+
+    /* ---------- COLLAPSIBLE SECTIONS ---------- */
+    function initCollapsibleSections() {
+        document.querySelectorAll('.section-collapsible').forEach(function (header) {
+            header.addEventListener('click', function () {
+                this.classList.toggle('collapsed');
+            });
+        });
+    }
+
+    /* ---------- QUILL EDITOR ---------- */
+    function initQuillEditor() {
+        var editorEl = document.getElementById('notes_editor');
+        var hiddenInput = document.getElementById('notes_input');
+        if (editorEl && hiddenInput && typeof Quill !== 'undefined') {
+            var quill = new Quill(editorEl, {
+                theme: 'snow',
+                placeholder: 'Enter any additional notes, terms, or instructions...',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block'],
+                        ['link'],
+                        ['clean']
+                    ]
+                }
+            });
+            if (hiddenInput.value) {
+                quill.root.innerHTML = hiddenInput.value;
+            }
+            quill.on('text-change', function() {
+                hiddenInput.value = quill.root.innerHTML;
+            });
+            var form = document.getElementById('order-form') || document.getElementById('quotation-form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    hiddenInput.value = quill.root.innerHTML;
+                });
+            }
+        }
+    }
+
+    /* ---------- DATE SYNC ---------- */
+    function initDateSync() {
+        var issueDate = document.getElementById('issue_date');
+        var validUntil = document.getElementById('valid_until');
+        if (issueDate && validUntil) {
+            issueDate.addEventListener('change', function() {
+                validUntil.min = this.value;
+                if (validUntil.value && validUntil.value < this.value) {
+                    validUntil.value = this.value;
+                }
+            });
+        }
+    }
+
+    /* ---------- CART BADGE + QUOTATION (for product-card) ---------- */
+    document.addEventListener('cartUpdated', function(e){
+        var c = e.detail?.count ?? e.detail?.[0]?.count;
+        if(c!==undefined){
+            var badgeUpdate = typeof updateCartBadge === 'function' ? updateCartBadge : function(){};
+            try{ badgeUpdate(c); }catch(e){}
+            var h=document.querySelector('[data-cart-header-count]');
+            if(h) h.textContent=c+' '+(c===1?'item':'items');
+        }
+    });
+    document.addEventListener('livewire:init', function(){
+        if(window.Livewire){
+            Livewire.on('cartUpdated', function(data){
+                var c = data.count ?? data[0]?.count;
+                if(c!==undefined){
+                    updateCartBadge(c);
+                    var h=document.querySelector('[data-cart-header-count]');
+                    if(h) h.textContent=c+' '+(c===1?'item':'items');
+                }
+            });
+        }
+    });
+
+    function updateCartBadge(cartCount) {
+        var count = parseInt(cartCount, 10) || 0;
+        document.querySelectorAll('[data-cart-badge]').forEach(function (badge) {
+            badge.textContent = count;
+            if (count > 0) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+        });
+    }
+
+    window.changeQuoteQty = function(productId, delta, btn) {
+        if (!productId) return;
+        var qtyEl = document.getElementById('qty-' + productId);
+        if (!qtyEl) return;
+        var current = parseInt(qtyEl.textContent) || 1;
+        var newQty = current + delta;
+        if (newQty < 1 || newQty > 50) return;
+        qtyEl.textContent = newQty;
+        var wrap = qtyEl.closest('div');
+        if (wrap) {
+            var decBtn = wrap.querySelector('button[aria-label="Decrease quantity"]');
+            if (decBtn) decBtn.disabled = newQty <= 1;
+        }
+    };
+
+    window.toggleQuoteItem = async function (btn) {
+        if (btn.dataset.loading === 'true') return;
+        var productId = btn.dataset.quote;
+        if (!productId) return;
+        // If already added, second click should update quantity to displayed qty (not toggle off)
+        if (btn.dataset.added === 'true') {
+            var qtyElCheck = document.getElementById('qty-' + productId);
+            if (qtyElCheck) {
+                var curQty = parseInt(qtyElCheck.textContent) || 1;
+                var newQty = curQty + 1;
+                if (newQty > 50) newQty = 50;
+                // Update local display first
+                window.changeQuoteQty(productId, 1, btn);
+                // Sync displayed quantity (now newQty) to server
+                var csrfQ = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                fetch(window.APP_CONFIG.appUrl + '/quote-cart/quantity/' + productId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfQ, 'X-Requested-With': 'XMLHttpRequest' },
+                    body: JSON.stringify({ quantity: newQty, _token: csrfQ }),
+                    credentials: 'same-origin'
+                }).then(function(r){ return r.json(); }).then(function(d){
+                    if (d.success && d.quantity) {
+                        qtyElCheck.textContent = d.quantity;
+                        if (window.showToast) window.showToast('Quantity updated to '+d.quantity, 'success');
+                    }
+                }).catch(function(e){ console.error(e); });
+                return;
+            }
+        }
+        var url = window.APP_CONFIG.appUrl + '/quote-cart/toggle/' + productId;
+        var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        var qtyEl2 = document.getElementById('qty-' + productId);
+        var selectedQty = qtyEl2 ? parseInt(qtyEl2.textContent) || 1 : 1;
+        btn.dataset.loading = 'true';
+        btn.disabled = true;
+        if (window.BWTPWA && !window.BWTPWA.isOnline()) {
+            if (window.showToast) window.showToast('Reconnect to update your quotation cart.', 'error');
+            btn.dataset.loading = 'false'; btn.disabled = false; return;
+        }
+        try {
+            var response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ _token: csrfToken, quantity: selectedQty }),
+                credentials: 'same-origin'
+            });
+            if (!response.ok) throw new Error(await response.text() || 'Request failed');
+            var data = await response.json();
+            if (!data.success) throw new Error(data.message || 'Unable');
+            var added = !!data.added;
+            var cartCount = data.cartCount ?? data.count ?? 0;
+            updateCartBadge(cartCount);
+            var headerCountEl = document.querySelector('[data-cart-header-count]');
+            if (headerCountEl) headerCountEl.textContent = cartCount + ' ' + (cartCount===1?'item':'items');
+            btn.dataset.added = added ? 'true' : 'false';
+            // Keep button static as Add To Quotation (requested)
+            btn.textContent = 'Add To Quotation';
+            var cardQtyWrap = document.getElementById('qty-wrap-' + productId);
+            if (cardQtyWrap) {
+                if (added) { cardQtyWrap.classList.remove('hidden'); cardQtyWrap.classList.add('flex'); var qEl=document.getElementById('qty-'+productId); if(qEl) qEl.textContent='1'; }
+                else { cardQtyWrap.classList.add('hidden'); cardQtyWrap.classList.remove('flex'); }
+            }
+            if (window.showToast) window.showToast(data.message || (added?'Added':'Removed'), added?'success':'info');
+        } catch (e) { console.error(e); if (window.showToast) window.showToast(e.message||'Failed','error'); }
+        finally { btn.dataset.loading='false'; btn.disabled=false; }
+    };
+
+    /* ---------- HELPERS ---------- */
+    function setVal(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.value = val;
+    }
+
+})();

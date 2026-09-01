@@ -35,6 +35,7 @@ use App\Http\Controllers\Reseller\RetailerDashboardController;
 use App\Http\Controllers\Reseller\CustomerUserController;
 use App\Http\Controllers\Reseller\RetailerProductController;
 use App\Http\Controllers\Reseller\CustomerQuotationController;
+use App\Http\Controllers\Reseller\ResallerOrderManagemntController;
 // Customers Routes
 use App\Http\Controllers\Customers\CustomerDashboardController;
 use App\Http\Controllers\Customers\CustomerProductController;
@@ -106,6 +107,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::post('/favorites/toggle/{product}', [UserProductController::class, 'toggleFavorite'])->name('favorites.toggle');
     Route::post('/quote-cart/toggle/{product}', [UserProductController::class, 'toggleCart'])->name('quote-cart.toggle');
+    Route::post('/quote-cart/quantity/{product}', [UserProductController::class, 'updateQuantity'])->name('quote-cart.quantity');
     // Admin routes
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -138,12 +140,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/products', [ClientProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product}', [ClientProductController::class, 'show'])->name('products.show');
         // order
-        Route::resource('order', WholesaleOrderPlacementController::class)->only(['index', 'create']);
+        Route::resource('orders', WholesaleOrderPlacementController::class)->except(['delete']);
+        Route::get('/orders/{order}/download', [WholesaleOrderPlacementController::class, 'download'])->name('orders.download');
+        Route::post('/orders/{order}/send-email', [WholesaleOrderPlacementController::class, 'sendEmail'])->name('orders.send-email');
+
         // quotations Roures
         Route::resource('quotations', ClientQuotationController::class)->except(['delete']);
         Route::get('/quotations/{quotation}/download', [ClientQuotationController::class, 'download'])->name('quotations.download');
         Route::get('/quotations/{quotation}/preview', [ClientQuotationController::class, 'preview'])->name('quotations.preview');
         Route::post('/quotations/{quotation}/send-email', [ClientQuotationController::class, 'sendEmail'])->name('quotations.send-email');
+
         Route::patch('/quotations/{quotation}/status', [ClientQuotationController::class, 'updateStatus'])->name('quotations.update-status');
         Route::get('/profile', [ClientProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
@@ -161,6 +167,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/products', [RetailerProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product}', [RetailerProductController::class, 'show'])->name('products.show');
         // QUAOTATION
+
+        Route::resource('orders', ResallerOrderManagemntController::class);
+        Route::get('/orders/{order}/download', [ResallerOrderManagemntController::class, 'download'])->name('orders.download');
+        Route::post('/orders/{order}/send-email', [ResallerOrderManagemntController::class, 'sendEmail'])->name('orders.send-email');
+
         Route::resource('quotations', CustomerQuotationController::class);
         Route::controller(CustomerQuotationController::class)->prefix('quotations')->name('quotations.')->group(function () {
             Route::get('{quotation}/download', 'download')->name('download');

@@ -5,8 +5,8 @@
     <x-slot:title>New Order  - {{ $siteTitle }}</x-slot:title>
 
     <x-breadcrumb :items="[
-        ['label' => 'Wholesaler Portal', 'url' => route('client.dashboard')],
-        ['label' => 'Orders', 'url' => route('client.orders.index')],
+        ['label' => 'Reseller Portal', 'url' => route('reseller.dashboard')],
+        ['label' => 'Orders', 'url' => route('reseller.orders.index')],
         ['label' => 'Create Order'],
     ]" />
 
@@ -31,11 +31,11 @@
         </div>
     @endif
 
-    <form id="order-form" action="{{ route('client.orders.store') }}" method="POST" class="space-y-6">
+    <form id="order-form" action="{{ route('reseller.orders.store') }}" method="POST" class="space-y-6">
         @csrf
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="user_id" name="order_from_user_id" value="{{ $user->id }}">
-        <input type="hidden" id="order_to_user_id" name="order_to_user_id" value="{{ $admin->id }}">
+        <input type="hidden" id="order_to_user_id" name="order_to_user_id" value="{{ $wholesallerUser->id }}">
         <input type="hidden" id="items-json" name="items" value="{{ old('items', json_encode($cartItemsJson ?? $cartIds)) }}">
          <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="{{$usermargin}}">
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -151,12 +151,12 @@
                     class="mt-2 flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900/50">
                     <div
                         class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700 dark:bg-blue-900/50 dark:text-blue-400">
-                        {{ strtoupper(substr($admin?->name ?? '?', 0, 1)) }}
+                        {{ strtoupper(substr($wholesallerUser?->name ?? '?', 0, 1)) }}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-slate-900 dark:text-white">{{ $admin?->name }}</p>
+                        <p class="text-sm font-medium text-slate-900 dark:text-white">{{ $wholesallerUser?->name }}</p>
                         <p class="text-xs text-slate-500 dark:text-neutral-400">
-                            {{ $admin?->email }}{{ $admin?->phone ? ' · ' . $admin?->phone : '' }}</p>
+                            {{ $wholesallerUser?->email }}{{ $wholesallerUser?->phone ? ' · ' . $wholesallerUser?->phone : '' }}</p>
                     </div>
                 </div>
 

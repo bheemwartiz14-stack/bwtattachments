@@ -1,5 +1,4 @@
 @php
-    $userPrice = auth()->check() ? $product->productPrices->firstWhere('user_id', auth()->id()) : null;
     $img = $product->getFirstMediaUrl('images');
     $isFavorited = auth()->check() && $product->is_favorite;
 @endphp
@@ -9,23 +8,15 @@
 
     {{-- Product Image --}}
     <div class="relative">
-
         <a href="{{ route('public.products.show', $product) }}" wire:navigate>
-
             <div class="h-44 flex items-center justify-center bg-white p-4">
-
                 @if ($img)
                     <img src="{{ $img }}" alt="{{ $product->product_title }}" class="max-h-48 object-contain">
                 @else
-                    <div class="text-gray-400">
-                        No Image
-                    </div>
+                    <div class="text-gray-400">No Image</div>
                 @endif
-
             </div>
-
         </a>
-
     </div>
 
     {{-- Body --}}
@@ -33,28 +24,23 @@
 
         {{-- Title --}}
         <a href="{{ route('public.products.show', $product) }}" wire:navigate>
-
             <h3 class="text-base font-bold text-slate-900 leading-5">
                 {{ $product->product_title }}
             </h3>
-
         </a>
 
         {{-- Categories --}}
         <div class="flex flex-wrap gap-1.5 mt-2">
-
             @if ($product->category)
                 <span class="px-3 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium">
                     {{ $product->category->name }}
                 </span>
             @endif
-
             @if ($product->subcategory)
                 <span class="px-3 py-1 rounded-md bg-green-50 text-green-700 text-xs font-medium">
                     {{ $product->subcategory->name }}
                 </span>
             @endif
-
         </div>
 
         {{-- Specs --}}
@@ -62,48 +48,39 @@
 
             {{-- Left --}}
             <div class="space-y-1.5 text-xs">
-
                 @if ($product->machine_class)
                     <div>
                         <p class="text-gray-500">Machine Class:</p>
                         <p class="font-semibold">{{ $product->machine_class }} t</p>
                     </div>
                 @endif
-
                 @if ($product->connection)
                     <div>
                         <p class="text-gray-500">Connection:</p>
                         <p class="font-semibold">{{ $product->connection->name }}</p>
                     </div>
                 @endif
-
                 @if ($product->weight)
                     <div>
                         <p class="text-gray-500">Weight:</p>
                         <p class="font-semibold">
-                            {{ rtrim(rtrim(number_format($product->weight, 2, '.', ''), '0'), '.') }} kg
-                        </p>
+                            {{ rtrim(rtrim(number_format($product->weight, 2, '.', ''), '0'), '.') }} kg</p>
                     </div>
                 @endif
-
                 @if ($product->width)
                     <div>
                         <p class="text-gray-500">Width:</p>
                         <p class="font-semibold">
-                            {{ rtrim(rtrim(number_format($product->width, 2, '.', ''), '0'), '.') }} mm
-                        </p>
+                            {{ rtrim(rtrim(number_format($product->width, 2, '.', ''), '0'), '.') }} mm</p>
                     </div>
                 @endif
-
                 @if ($product->volume)
                     <div>
                         <p class="text-gray-500">Volume:</p>
                         <p class="font-semibold">
-                            {{ rtrim(rtrim(number_format($product->volume, 2, '.', ''), '0'), '.') }} m³
-                        </p>
+                            {{ rtrim(rtrim(number_format($product->volume, 2, '.', ''), '0'), '.') }} m³</p>
                     </div>
                 @endif
-
             </div>
 
             {{-- Right --}}
@@ -129,30 +106,54 @@
 
                     {{-- Price --}}
                     <div>
-
                         <p class="text-xs uppercase font-semibold tracking-wide text-gray-500">
                             Wholesaler Price
                         </p>
-                        @php
-                            $price = $product->price;
-                        @endphp
+                        @php $price = $product->price; @endphp
                         <p class="text-xl font-bold text-green-600 mt-1">
-                            {{ config('app.currency_symbol') }}
-                            {{ number_format($price, 2) }}
+                            {{ config('app.currency_symbol') }} {{ number_format($price, 2) }}
                         </p>
-
                     </div>
 
-                    {{-- Button --}}
+                    {{-- Quantity + Add To Quotation (per-product independent, Livewire quantities) --}}
                     @role('Wholesaler|Reseller')
                         @php
-                            $inCart = $product->is_in_cart;
+                            $isLivewire = isset($quantities);
+                            $qty = $isLivewire
+                                ? $quantities[$product->id] ?? 1
+                                : (auth()->check()
+                                    ? app(\App\Services\UserProductService::class)->getCartQuantity(
+                                        auth()->user(),
+                                        (string) $product->id,
+                                    )
+                                    : 1);
+                            $qty = max(1, min(50, (int) $qty));
                         @endphp
+
+                        {{-- Fallback JS (outside Livewire) --}}
+                        @php $inCart = $product->is_in_cart; @endphp
+                        <div id="qty-wrap-{{ $product->id }}" class="mt-3 flex items-center gap-1 justify-center">
+                            <button type="button" onclick="changeQuoteQty('{{ $product->id }}', -1, this)"
+                                @disabled($qty <= 1)
+                                class="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"><svg
+                                    class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                                </svg></button>
+                            <span id="qty-{{ $product->id }}"
+                                class="inline-flex h-7 min-w-[2rem] items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-slate-900">{{ $qty }}</span>
+                            <button type="button" onclick="changeQuoteQty('{{ $product->id }}', 1, this)"
+                                class="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50"><svg
+                                    class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+                                </svg></button>
+                        </div>
+
                         <button type="button" data-quote="{{ $product->id }}" data-added="{{ $inCart ? 'true' : 'false' }}"
                             onclick="toggleQuoteItem(this)"
-                            class="mt-3 w-full rounded-md text-white text-center py-2 text-xs font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed {{ $inCart ? 'bg-blue-400 hover:bg-blue-500' : 'bg-bwtblue hover:bg-bwtblue2' }}">
-                            {{ $inCart ? 'Added To Quotation' : 'Add To Quotation' }}
-                        </button>
+                            class="mt-3 w-full rounded-md bg-bwtblue hover:bg-bwtblue2 text-white text-center py-2 text-xs font-semibold transition">Add
+                            To Quotation</button>
                     @endrole
 
                 @endauth
@@ -164,3 +165,9 @@
     </div>
 
 </div>
+
+@once
+    @push('scripts')
+        <script src="{{ asset('assets/js/Order.js') }}"></script>
+    @endpush
+@endonce

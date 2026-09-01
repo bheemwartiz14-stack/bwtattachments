@@ -90,9 +90,9 @@
                             <td class="px-3 py-3 text-right text-sm font-semibold text-slate-900 dark:text-neutral-100">
                                 {{ config('app.currency_symbol') }}{{ number_format($lineTotal, 2) }}</td>
                             <td class="px-3 py-3 text-right">
-                                <button type="button" data-quote="{{ $item['product_id'] }}" data-added="true"
-                                    onclick="toggleQuoteItem(this)"
-                                    class="rounded-lg p-1.5 text-red-300 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
+                                <button type="button" wire:click="removeItem({{ $index }})"
+                                    wire:loading.attr="disabled" wire:target="removeItem({{ $index }})"
+                                    class="rounded-lg p-1.5 text-red-300 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 disabled:opacity-40"
                                     aria-label="Remove from quotation">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                         stroke-width="2">
@@ -143,7 +143,7 @@
                             <span
                                 class="font-semibold text-amber-600 dark:text-amber-400">{{ config('app.currency_symbol') }}{{ number_format($this->taxAmount, 2) }}</span>
                             <input type="hidden" name="vat_percentage" value="{{ $this->taxRate }}">
-                            <input type="hidden" name="tax_amount"
+                            <input type="hidden" name="vat_amount"
                                 value="{{ number_format($this->taxAmount, 2) }}">
                         </div>
                         <div

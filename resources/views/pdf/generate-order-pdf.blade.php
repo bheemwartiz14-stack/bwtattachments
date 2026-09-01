@@ -1,79 +1,57 @@
 @php
-    $sender = $quotation->user;
-    $role = $sender?->roles->first()?->name;
+    $sender = $order->fromUser ?? ($order->user ?? null);
+    $recipient = $order->toUser ?? null;
     $senderMeta = $sender?->userMeta?->metadata ?? [];
-    $senderLogoPath = '';
+    $recipientMeta = $recipient?->userMeta?->metadata ?? [];
+    $senderRole = $sender?->roles->first()?->name;
     $senderLogoBase64 = '';
-    if ($role === 'Wholesaler') {
-        $senderLogoPath = $sender?->getFirstMediaPath('wholesale_client_logo');
-        $senderCompany = $senderMeta['wholesale_company_name'] ?? ($senderMeta['company_name'] ?? '');
-    } elseif ($role === 'Reseller') {
-        $senderLogoPath = $sender?->getFirstMediaPath('retailer_client_logo');
-        $senderCompany = $senderMeta['company_name'] ?? ($senderMeta['retailer_client_name'] ?? '');
-    } else {
-        $senderCompany = $senderMeta['company_name'] ?? '';
-    }
+    $senderLogoPath = $senderRole === 'Wholesaler'? $sender?->getFirstMediaPath('wholesale_client_logo')  : $sender?->getFirstMediaPath('retailer_client_logo');
     if ($senderLogoPath && file_exists($senderLogoPath)) {
-        $type = pathinfo($senderLogoPath, PATHINFO_EXTENSION);
-        $type = $type ?: 'png';
+        $type = pathinfo($senderLogoPath, PATHINFO_EXTENSION) ?: 'png';
         $data = @file_get_contents($senderLogoPath);
         if ($data) {
             $senderLogoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
     }
-    // Reseller (recipient) logo
-    $reseller = $quotation->reseller ?? null;
-    $resellerMeta = $reseller?->userMeta?->metadata ?? [];
-    $resellerLogoPath = $reseller?->getFirstMediaPath('retailer_client_logo');
-    $resellerLogoBase64 = '';
-    if ($resellerLogoPath && file_exists($resellerLogoPath)) {
-        $type = pathinfo($resellerLogoPath, PATHINFO_EXTENSION);
-        $type = $type ?: 'png';
-        $data = @file_get_contents($resellerLogoPath);
+    $recipientLogoPath =
+        $recipient?->getFirstMediaPath('retailer_client_logo') ?:
+        $recipient?->getFirstMediaPath('wholesale_client_logo');
+    $recipientLogoBase64 = '';
+    if ($recipientLogoPath && file_exists($recipientLogoPath)) {
+        $type = pathinfo($recipientLogoPath, PATHINFO_EXTENSION) ?: 'png';
+        $data = @file_get_contents($recipientLogoPath);
         if ($data) {
-            $resellerLogoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            $recipientLogoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
     }
-    // Top-right company block (recipient header in screenshot: Reseller name side)
-    // Screenshot shows right side: Reseller name, Street, Place, Country, T:, E:
-    $topRightName = $reseller->name ?? ($senderCompany ?: 'Reseller name');
-    // Try to build address from reseller meta
-    $topRightStreet = $resellerMeta['address'] ?? 'Street name';
-    $topRightCity = trim(($resellerMeta['postal_code'] ?? '1234AB') . ' ' . ($resellerMeta['city'] ?? 'Place'));
-    $topRightCountry = $resellerMeta['country'] ?? 'Country';
-    $topRightPhone = $reseller->phone ?? ($resellerMeta['phone'] ?? '+31620315250');
-    $topRightEmail = $reseller->email ?? 'john@unit84.com';
-
-    // Quotation to block details (Storm buckets example)
-    $custName = $reseller->name ?? '';
-    $custAddressLine1 = $resellerMeta['address'] ?? 'Korte kerkstraat 6';
-    $custAddressLine2 = trim(($resellerMeta['postal_code'] ?? '5524AX') . ' ' . ($resellerMeta['city'] ?? 'Steensel'));
-    $custAddressLine3 = $resellerMeta['country'] ?? 'The Netherlands';
-    // fallback to custAddress built
-    $rawSub = $quotation->getAttributes()['sub_total'] ?? 0;
-    $rawTax = $quotation->getAttributes()['tax_amount'] ?? 0;
-    $rawGrand = $quotation->getAttributes()['grand_total'] ?? 0;
-    $rawVatPerc = $quotation->getAttributes()['vat_percentage'] ?? 0;
+    $topRightName = $sender?->name ?? 'Admin';
+    $topRightStreet = $senderMeta['address'] ?? 'Street name';
+    $topRightCity = trim(($senderMeta['postal_code'] ?? '1234AB') . ' ' . ($senderMeta['city'] ?? 'Place'));
+    $topRightCountry = $senderMeta['country'] ?? 'Country';
+    $topRightPhone = $sender->phone ?? ($senderMeta['phone'] ?? '+31620315250');
+    $topRightEmail = $sender->email ?? 'admin@bwt.com';
+    // Safe raw values bypass decimal: cast issue with comma
+    $rawSub = $order->getAttributes()['sub_total'] ?? ($order->attributesToArray()['sub_total'] ?? 0);
+    $rawVatAmt = $order->getAttributes()['vat_amount'] ?? ($order->getAttributes()['tax_amount'] ?? 0);
+    $rawGrand = $order->getAttributes()['grand_total'] ?? 0;
+    $rawVatPerc = $order->getAttributes()['vat_percentage'] ?? 0;
     $subTotal = (float) str_replace([','], '', (string) $rawSub);
-    $taxAmount = (float) str_replace([','], '', (string) $rawTax);
+    $taxAmount = (float) str_replace([','], '', (string) $rawVatAmt);
     $grandTotal = (float) str_replace([','], '', (string) $rawGrand);
     $vatPerc = (string) str_replace([','], '', (string) $rawVatPerc);
     $currency = config('app.currency_symbol', '€');
-    $rowCount = max(15, count($quotation->items) + 5);
 @endphp
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
-    <title>Quotation {{ $quotation->quotation_number }}</title>
+    <title>Order {{ $order->order_number }}</title>
 </head>
 
 <body
     style="margin:0;padding:0;background:#fff;color:#000;font-family:Helvetica,Arial,sans-serif;font-size:9pt;line-height:1.4;">
     <div style="width:100%;padding:18px 28px 18px 28px;">
-
-        <!-- TOP : logos area + right contact -->
         <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
             <tr>
                 <td style="width:72%;vertical-align:top;padding-right:10px;">
@@ -86,20 +64,12 @@
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
-                                            @else
-                                                <div
-                                                    style="height:42px;line-height:42px;font-size:7pt;color:#999;text-align:center;">
-                                                    Wholesaler logo</div>
                                             @endif
                                         </td>
                                         <td style="width:50%;vertical-align:middle;text-align:left;height:46px;">
-                                            @if ($resellerLogoBase64)
-                                                <img src="{{ $resellerLogoBase64 }}"
+                                            @if ($recipientLogoBase64)
+                                                <img src="{{ $recipientLogoBase64 }}"
                                                     style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
-                                            @else
-                                                <div
-                                                    style="height:42px;line-height:42px;font-size:7pt;color:#999;text-align:center;">
-                                                    Reseller logo</div>
                                             @endif
                                         </td>
                                     </tr>
@@ -109,61 +79,50 @@
                     </table>
                 </td>
                 <td style="width:28%;vertical-align:top;text-align:right;padding-left:10px;">
-                    <div style="font-size:9pt;font-weight:bold;color:#000;line-height:1.35;">{{ $topRightName }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{ $topRightStreet }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{ $topRightCity }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{ $topRightCountry }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;margin-top:4px;">T: {{ $topRightPhone }}
+                    <div style="font-size:9pt;font-weight:bold;color:#000;line-height:1.35;">{{ $sender?->name ?? 'Admin' }}</div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{$senderMeta['address'] ?? 'Street name' }}</div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{trim(($senderMeta['postal_code'] ?? '1234AB') . ' ' . ($senderMeta['city'] ?? 'Place')) }}</div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{ $senderMeta['country'] ?? 'Country' }}</div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;margin-top:4px;">T: {{ $sender?->phone ?? 'Admin' }}
                     </div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">E: {{ $topRightEmail }}</div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">E: {{ $sender?->email ?? 'Admin' }}</div>
                 </td>
             </tr>
         </table>
-
-        <!-- TITLE -->
         <div
             style="margin-top:18px;margin-bottom:12px;font-size:20pt;font-weight:bold;color:#111;letter-spacing:0.3px;">
-            QUOTATION</div>
-
-        <!-- Quote meta -->
+            ORDER</div>
         <table style="width:100%;border-collapse:collapse;border:1px solid #000;" cellpadding="0" cellspacing="0">
             <tr>
                 <td style="width:50%;border-right:1px solid #000;padding:5px 8px;font-size:8.5pt;background:#fff;"><span
-                        style="font-weight:bold;">Quote No.:</span> {{ $quotation->quotation_number }}</td>
+                        style="font-weight:bold;">Order No.:</span> {{ $order->order_number }}</td>
                 <td style="width:50%;padding:5px 8px;font-size:8.5pt;background:#fff;"><span
-                        style="font-weight:bold;">Quote date:</span> {{ $quotation->created_at->format('d M Y') }}</td>
+                        style="font-weight:bold;">Order date:</span>
+                    {{ $order->order_date?->format('d M Y') ?? $order->created_at->format('d M Y') }}</td>
             </tr>
         </table>
-
-        <!-- Quotation to -->
         <table style="width:100%;border-collapse:collapse;border:1px solid #000;margin-top:8px;" cellpadding="0"
             cellspacing="0">
             <tr>
                 <td colspan="2"
-                    style="background:#404040;color:#fff;font-weight:bold;padding:5px 8px;font-size:9pt;">Quotation to:
-                </td>
+                    style="background:#404040;color:#fff;font-weight:bold;padding:5px 8px;font-size:9pt;">Order to:</td>
             </tr>
             <tr>
                 <td
                     style="width:55%;vertical-align:top;padding:7px 8px;font-size:8.5pt;line-height:1.45;border-right:1px solid #000;">
-                    <div style="font-weight:bold;">{{ $custName ?: 'Storm buckets' }}</div>
-                    <div>John van de Wiel</div>
-                    <div>{{ $custAddressLine1 }}</div>
-                    <div>{{ $custAddressLine2 }}</div>
-                    <div>{{ $custAddressLine3 }}</div>
+                    <div style="font-weight:bold;">{{ $recipient?->name ?? 'Admin' }}</div>
+                    <div>{{ $recipientMeta['address'] ?? '' }}</div>
+                    <div>{{ $recipientMeta['postal_code'] ?? '' }} {{ $recipientMeta['city'] ?? '' }}</div>
+                    <div>{{ $recipientMeta['country'] ?? '' }}</div>
                 </td>
                 <td style="width:45%;vertical-align:top;padding:7px 8px;font-size:8.5pt;line-height:1.45;">
-                    <div>Tel.: {{ $reseller->phone ?? '+31404021009' }}</div>
-                    <div>Email: {{ $reseller->email ?? 'john@dtmedia.nl' }}</div>
-                    @php $vat = $resellerMeta['vat_number'] ?? 'NL811021774B01'; @endphp
-                    @if ($vat)
-                        <div style="margin-top:4px;">VAT: {{ $vat }}</div>
-                    @endif
+                    <div>Tel. : {{ $recipient?->phone ?? '-' }}</div>
+                      <div>Email : {{ $recipient->email ?? $recipientMeta['email'] ?? 'Email' }}</div>
+                    @php $vat = $recipientMeta['vat_number'] ?? ''; @endphp
+                   <div style="margin-top:4px;">VAT: {{ $vat }}</div>
                 </td>
             </tr>
         </table>
-
-        <!-- Items -->
         <table style="width:100%;border-collapse:collapse;border:1px solid #000;margin-top:8px;" cellpadding="0"
             cellspacing="0">
             <thead>
@@ -186,18 +145,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($quotation->items as $item)
+                @foreach ($order->items as $item)
                     @php
-                        $p = (float) str_replace([','], '', (string) ($item->getAttributes()['price'] ?? $item->price));
+                        $p = (float) str_replace([','], '', (string) $item->getAttributes()['price'] ?? $item->price);
                         $total = $p * (int) $item->quantity;
                     @endphp
                     <tr>
                         <td
                             style="padding:5px 6px;font-size:7.5pt;border-right:1px solid #000;border-bottom:1px solid #000;">
-                            {{ $item->product->product_code ?? ($item->product_code ?? '') }}</td>
+                            {{ $item->product->product_code ?? '' }}</td>
                         <td
                             style="padding:5px 6px;font-size:7.5pt;border-right:1px solid #000;border-bottom:1px solid #000;">
-                            {{ $item->product->product_title ?? ($item->product_title ?? '') }}</td>
+                            {{ $item->product->product_title ?? '' }}</td>
                         <td
                             style="padding:5px 6px;font-size:7.5pt;text-align:right;border-right:1px solid #000;border-bottom:1px solid #000;white-space:nowrap;">
                             {{ $currency }} {{ number_format($p, 2, '.', ',') }}</td>
@@ -209,7 +168,7 @@
                             {{ $currency }} {{ number_format($total, 2, '.', ',') }}</td>
                     </tr>
                 @endforeach
-                @for ($i = count($quotation->items); $i < 15; $i++)
+                @for ($i = count($order->items); $i < 15; $i++)
                     <tr>
                         <td
                             style="padding:5px 6px;font-size:7.5pt;border-right:1px solid #000;border-bottom:1px solid #000;height:14px;">
@@ -229,12 +188,14 @@
                 @endfor
             </tbody>
         </table>
-
-        <!-- Totals -->
         <table style="width:100%;border-collapse:collapse;margin-top:0;" cellpadding="0" cellspacing="0">
             <tr>
                 <td style="width:62%;vertical-align:top;padding-top:6px;">
-                    <div style="font-size:7.5pt;line-height:1.4;">{!! $quotation->notes !!}</div>
+                    <div style="font-size:7.5pt;line-height:1.4;">{!! $order->notes !!}</div>
+                    @if ($order->order_email_message)
+                        <div style="margin-top:8px;padding:6px;border:1px dashed #000;font-size:7.5pt;">
+                            {!! nl2br(e($order->order_email_message)) !!}</div>
+                    @endif
                 </td>
                 <td style="width:38%;vertical-align:top;">
                     <table style="width:100%;border-collapse:collapse;border:1px solid #000;margin-top:0;"
@@ -267,7 +228,6 @@
                 </td>
             </tr>
         </table>
-
     </div>
 </body>
 

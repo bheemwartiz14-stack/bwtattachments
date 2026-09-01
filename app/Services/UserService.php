@@ -14,6 +14,29 @@ class UserService
 {
     public function __construct(protected UserRepository $userRepository) {}
 
+    public function getAuthenticatedUserMetadata(): array
+    {
+        return auth()->user()?->userMeta?->metadata ?? [];
+    }
+
+    public function getAuthenticatedUser(): ?Model
+    {
+        return auth()->user();
+    }
+
+    public function getParentUser(): ?Model
+    {
+        $user = auth()->user();
+        if ($user && $user->parent_id) {
+            return $this->userRepository->findById($user->parent_id);
+        }
+        return null;
+    }
+
+    public function getAdminUser(): ?\App\Models\User
+    {
+        return $this->userRepository->getAdminUser();
+    }
 
     public function getWholesalerHierarchyWithMargins()
     {
