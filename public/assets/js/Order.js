@@ -123,7 +123,7 @@
                     quotationItems = [];
                 }
             }
-        } catch (e) {}
+        } catch (e) { }
 
         window.addEventListener('itemsUpdated', function (e) {
             if (e.detail && e.detail.items) {
@@ -165,7 +165,7 @@
                         quotationItems = parsed;
                         itemsJsonInput.value = JSON.stringify(quotationItems);
                     }
-                } catch(e) {}
+                } catch (e) { }
             }
             if (quotationItems.length === 0) {
                 e.preventDefault();
@@ -174,7 +174,7 @@
             }
             // Wholesale orders are sent to admin, no reseller selection required.
             var isOrderForm = form && form.id === 'order-form';
-            if (! isOrderForm) {
+            if (!isOrderForm) {
                 var r = document.getElementById('reseller_id');
                 if (!r || !r.value) {
                     e.preventDefault();
@@ -243,7 +243,7 @@
                     toolbar: [
                         [{ 'header': [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                         ['blockquote', 'code-block'],
                         ['link'],
                         ['clean']
@@ -253,12 +253,12 @@
             if (hiddenInput.value) {
                 quill.root.innerHTML = hiddenInput.value;
             }
-            quill.on('text-change', function() {
+            quill.on('text-change', function () {
                 hiddenInput.value = quill.root.innerHTML;
             });
             var form = document.getElementById('order-form') || document.getElementById('quotation-form');
             if (form) {
-                form.addEventListener('submit', function() {
+                form.addEventListener('submit', function () {
                     hiddenInput.value = quill.root.innerHTML;
                 });
             }
@@ -270,7 +270,7 @@
         var issueDate = document.getElementById('issue_date');
         var validUntil = document.getElementById('valid_until');
         if (issueDate && validUntil) {
-            issueDate.addEventListener('change', function() {
+            issueDate.addEventListener('change', function () {
                 validUntil.min = this.value;
                 if (validUntil.value && validUntil.value < this.value) {
                     validUntil.value = this.value;
@@ -280,23 +280,23 @@
     }
 
     /* ---------- CART BADGE + QUOTATION (for product-card) ---------- */
-    document.addEventListener('cartUpdated', function(e){
+    document.addEventListener('cartUpdated', function (e) {
         var c = e.detail?.count ?? e.detail?.[0]?.count;
-        if(c!==undefined){
-            var badgeUpdate = typeof updateCartBadge === 'function' ? updateCartBadge : function(){};
-            try{ badgeUpdate(c); }catch(e){}
-            var h=document.querySelector('[data-cart-header-count]');
-            if(h) h.textContent=c+' '+(c===1?'item':'items');
+        if (c !== undefined) {
+            var badgeUpdate = typeof updateCartBadge === 'function' ? updateCartBadge : function () { };
+            try { badgeUpdate(c); } catch (e) { }
+            var h = document.querySelector('[data-cart-header-count]');
+            if (h) h.textContent = c + ' ' + (c === 1 ? 'item' : 'items');
         }
     });
-    document.addEventListener('livewire:init', function(){
-        if(window.Livewire){
-            Livewire.on('cartUpdated', function(data){
+    document.addEventListener('livewire:init', function () {
+        if (window.Livewire) {
+            Livewire.on('cartUpdated', function (data) {
                 var c = data.count ?? data[0]?.count;
-                if(c!==undefined){
+                if (c !== undefined) {
                     updateCartBadge(c);
-                    var h=document.querySelector('[data-cart-header-count]');
-                    if(h) h.textContent=c+' '+(c===1?'item':'items');
+                    var h = document.querySelector('[data-cart-header-count]');
+                    if (h) h.textContent = c + ' ' + (c === 1 ? 'item' : 'items');
                 }
             });
         }
@@ -311,7 +311,7 @@
         });
     }
 
-    window.changeQuoteQty = function(productId, delta, btn) {
+    window.changeQuoteQty = function (productId, delta, btn) {
         if (!productId) return;
         var qtyEl = document.getElementById('qty-' + productId);
         if (!qtyEl) return;
@@ -322,77 +322,137 @@
         var wrap = qtyEl.closest('div');
         if (wrap) {
             var decBtn = wrap.querySelector('button[aria-label="Decrease quantity"]');
-            if (decBtn) decBtn.disabled = newQty <= 1;
+            if (!decBtn) decBtn = wrap.querySelector('button:first-child');
+            if (decBtn) {
+                decBtn.disabled = newQty <= 1;
+                if (newQty <= 1) decBtn.setAttribute('disabled','disabled');
+                else decBtn.removeAttribute('disabled');
+            }
+            var incBtn = wrap.querySelector('button[aria-label="Increase quantity"]');
+            if (!incBtn) incBtn = wrap.querySelector('button:last-child');
+            if (incBtn) {
+                incBtn.disabled = newQty >= 50;
+                if (newQty >= 50) incBtn.setAttribute('disabled','disabled');
+                else incBtn.removeAttribute('disabled');
+            }
+        }
+        var quoteBtn = document.querySelector('[data-quote="' + productId + '"]');
+        if (quoteBtn && quoteBtn.dataset.added === 'true') {
+            var csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            var urlQty = (window.APP_CONFIG?.appUrl || '') + '/quote-cart/quantity/' + productId;
+            if (!window.APP_CONFIG?.appUrl) urlQty = '/quote-cart/quantity/' + productId;
+            fetch(urlQty, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ quantity: newQty, _token: csrf }),
+                credentials: 'same-origin'
+            }).then(function(r){ return r.json(); }).then(function(d){
+                if (d.success !== false && d.quantity) {
+                    qtyEl.textContent = d.quantity;
+                    var cartCount = d.cartCount ?? d.count ?? 0;
+                    updateCartBadge(cartCount);
+                }
+            }).catch(function(e){ console.error(e); });
         }
     };
 
-    window.toggleQuoteItem = async function (btn) {
+   window.toggleQuoteItem = async function (btn) {
         if (btn.dataset.loading === 'true') return;
         var productId = btn.dataset.quote;
         if (!productId) return;
-        // If already added, second click should update quantity to displayed qty (not toggle off)
-        if (btn.dataset.added === 'true') {
-            var qtyElCheck = document.getElementById('qty-' + productId);
-            if (qtyElCheck) {
-                var curQty = parseInt(qtyElCheck.textContent) || 1;
-                var newQty = curQty + 1;
-                if (newQty > 50) newQty = 50;
-                // Update local display first
-                window.changeQuoteQty(productId, 1, btn);
-                // Sync displayed quantity (now newQty) to server
-                var csrfQ = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-                fetch(window.APP_CONFIG.appUrl + '/quote-cart/quantity/' + productId, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfQ, 'X-Requested-With': 'XMLHttpRequest' },
-                    body: JSON.stringify({ quantity: newQty, _token: csrfQ }),
-                    credentials: 'same-origin'
-                }).then(function(r){ return r.json(); }).then(function(d){
-                    if (d.success && d.quantity) {
-                        qtyElCheck.textContent = d.quantity;
-                        if (window.showToast) window.showToast('Quantity updated to '+d.quantity, 'success');
-                    }
-                }).catch(function(e){ console.error(e); });
-                return;
-            }
-        }
-        var url = window.APP_CONFIG.appUrl + '/quote-cart/toggle/' + productId;
-        var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
         var qtyEl2 = document.getElementById('qty-' + productId);
         var selectedQty = qtyEl2 ? parseInt(qtyEl2.textContent) || 1 : 1;
+        selectedQty = Math.min(50, Math.max(1, selectedQty));
+        var url = (window.APP_CONFIG?.appUrl || '') + '/quote-cart/quantity/' + productId;
+        if (!window.APP_CONFIG?.appUrl) url = '/quote-cart/quantity/' + productId;
+        var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
         btn.dataset.loading = 'true';
         btn.disabled = true;
-        if (window.BWTPWA && !window.BWTPWA.isOnline()) {
-            if (window.showToast) window.showToast('Reconnect to update your quotation cart.', 'error');
-            btn.dataset.loading = 'false'; btn.disabled = false; return;
-        }
         try {
             var response = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'X-Requested-With': 'XMLHttpRequest' },
+                headers: {'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':csrfToken,'X-Requested-With':'XMLHttpRequest'},
                 body: JSON.stringify({ _token: csrfToken, quantity: selectedQty }),
                 credentials: 'same-origin'
             });
-            if (!response.ok) throw new Error(await response.text() || 'Request failed');
-            var data = await response.json();
-            if (!data.success) throw new Error(data.message || 'Unable');
-            var added = !!data.added;
-            var cartCount = data.cartCount ?? data.count ?? 0;
-            updateCartBadge(cartCount);
-            var headerCountEl = document.querySelector('[data-cart-header-count]');
-            if (headerCountEl) headerCountEl.textContent = cartCount + ' ' + (cartCount===1?'item':'items');
-            btn.dataset.added = added ? 'true' : 'false';
-            btn.textContent = 'Add To Cart';
-            btn.classList.remove('bg-bwtblue','hover:bg-bwtblue2','bg-blue-400','hover:bg-blue-500');
-            btn.classList.add('bg-green-600','hover:bg-green-700');
-            var cardQtyWrap = document.getElementById('qty-wrap-' + productId);
-            if (cardQtyWrap) {
-                if (added) { cardQtyWrap.classList.remove('hidden'); cardQtyWrap.classList.add('flex'); var qEl=document.getElementById('qty-'+productId); if(qEl) qEl.textContent='1'; }
-                else { cardQtyWrap.classList.add('hidden'); cardQtyWrap.classList.remove('flex'); }
+            if (!response.ok) {
+                throw new Error((await response.text()) || 'Request failed');
             }
-            if (window.showToast) window.showToast(data.message || (added?'Added':'Removed'), added?'success':'info');
-        } catch (e) { console.error(e); if (window.showToast) window.showToast(e.message||'Failed','error'); }
-        finally { btn.dataset.loading='false'; btn.disabled=false; }
-    };
+            var data = await response.json();
+            if (data.success === false) {throw new Error(data.message || 'Failed to update quantity' );
+            }
+            var cartCount = data.cartCount ?? data.count ?? 0;
+            var newQty = data.quantity ?? selectedQty;
+            var qEl = document.getElementById('qty-' + productId);
+            if (qEl) {
+                qEl.textContent = newQty;
+            }
+            btn.dataset.added = 'true';
+           // Update cart badge
+           updateCartBadge(cartCount);
+           var headerCountEl = document.querySelector('[data-cart-header-count]');
+           if (headerCountEl) {
+               headerCountEl.textContent = `${cartCount} ${cartCount === 1 ? 'item' : 'items'}`;
+           }
+
+           // --------------------------------
+           // Show quantity wrapper
+           // --------------------------------
+
+           var cardQtyWrap =
+               document.getElementById('qty-wrap-' + productId);
+
+           if (cardQtyWrap) {
+               cardQtyWrap.classList.remove('hidden');
+               cardQtyWrap.classList.add('flex');
+           }
+
+           // --------------------------------
+           // Update button
+           // --------------------------------
+
+           btn.textContent = 'Add To Cart';
+
+           btn.classList.remove(
+               'bg-bwtblue',
+               'hover:bg-bwtblue2',
+               'bg-blue-400',
+               'hover:bg-blue-500'
+           );
+
+           btn.classList.add(
+               'bg-green-600',
+               'hover:bg-green-700'
+           );
+
+           // --------------------------------
+           // Success Toast
+           // --------------------------------
+
+           if (window.showToast) {
+               window.showToast(
+                   data.message || 'Quantity updated successfully',
+                   'success'
+               );
+           }
+
+       } catch (e) {
+
+           console.error('Quantity update error:', e);
+
+           if (window.showToast) {
+               window.showToast(
+                   e.message || 'Failed to update quantity',
+                   'error'
+               );
+           }
+
+       } finally {
+
+           btn.dataset.loading = 'false';
+           btn.disabled = false;
+       }
+};
 
     /* ---------- HELPERS ---------- */
     function setVal(id, val) {

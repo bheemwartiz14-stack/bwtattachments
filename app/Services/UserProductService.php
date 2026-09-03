@@ -80,7 +80,8 @@ class UserProductService
 
     public function getCartQuantity(User $user, string $productId): int
     {
-        return max(1, (int) ($this->cart($user)[$productId] ?? 1));
+        $cart = $this->cart($user);
+        return (int) ($cart[$productId] ?? 0);
     }
 
     public function addToCart(User $user, Product $product, int $quantity = 1): void

@@ -23,7 +23,10 @@ class OrderServices
     // generate a unique order number based on the current timestamp
     public function generateOrderNumber(): string
     {
-        return 'ORD-'.now()->format('Ymd-His');
+        $year = now()->format('Y');
+        $lastOrder = Order::where('order_number', 'like', "BWT-{$year}-%") ->orderByDesc('id')->first();
+        $nextNumber = $lastOrder ? ((int) substr($lastOrder->order_number, -4)) + 1 : 244;
+        return 'BWT-' . $year . '-' . str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
     }
 
     public function create(array $data): Model

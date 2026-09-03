@@ -60,21 +60,13 @@ class UserProductController extends Controller
     public function updateQuantity(Product $product, Request $request): JsonResponse
     {
         $quantity = (int) $request->input('quantity', 1);
-        $delta = (int) $request->input('delta', 0);
-
         $current = $this->userProductService->getCartQuantity(auth()->user(), (string) $product->id);
-        if ($delta !== 0) {
-            $quantity = $current + $delta;
-        }
-        $quantity = min(50, max(1, $quantity));
-
-        // Ensure product is in cart
+        $quantity = $current + $quantity;
         if (! in_array((string) $product->id, $this->userProductService->getQuotationProductIds(auth()->user()), true)) {
             $this->userProductService->addToCart(auth()->user(), $product, $quantity);
         } else {
             $this->userProductService->updateCartQuantity(auth()->user(), (string) $product->id, $quantity);
         }
-
         return response()->json([
             'success' => true,
             'quantity' => $quantity,

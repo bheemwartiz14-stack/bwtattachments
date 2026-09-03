@@ -120,18 +120,20 @@
                         @php
                             $isLivewire = isset($quantities);
                             $qty = $isLivewire
-                                ? $quantities[$product->id] ?? 1
+                                ? ($quantities[$product->id] ?? 1)
                                 : (auth()->check()
-                                    ? app(\App\Services\UserProductService::class)->getCartQuantity(
-                                        auth()->user(),
-                                        (string) $product->id,
-                                    )
+                                    ? app(\App\Services\UserProductService::class)->getCartQuantity(auth()->user(), (string) $product->id)
                                     : 1);
+                            // getCartQuantity returns 0 if not in cart, show 1 as default selector
                             $qty = max(1, min(50, (int) $qty));
+                            if ($qty === 1 && !auth()->check()) $qty = 1;
+                            $inCart = $product->is_in_cart;
+                            // if in cart, use actual stored qty (override max dance)
+                            if ($inCart && ! $isLivewire && auth()->check()) {
+                                $stored = app(\App\Services\UserProductService::class)->getCartQuantity(auth()->user(), (string) $product->id);
+                                if ($stored > 0) $qty = max(1, min(50, $stored));
+                            }
                         @endphp
-
-                        {{-- Fallback JS (outside Livewire) --}}
-                        @php $inCart = $product->is_in_cart; @endphp
                         <div id="qty-wrap-{{ $product->id }}" class="mt-3 flex items-center gap-1 justify-center">
                             <button type="button" onclick="changeQuoteQty('{{ $product->id }}', -1, this)"
                                 @disabled($qty <= 1)

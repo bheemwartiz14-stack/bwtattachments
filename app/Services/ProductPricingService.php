@@ -22,6 +22,7 @@ class ProductPricingService
     public function getPrice(Product $product): ?float
     {
         $user = Auth::user();
+
         $price = null;
 
         if (!$user) {
@@ -74,9 +75,7 @@ class ProductPricingService
                     break;
 
                 default:
-                    $price = $product->productPrices()
-                        ->where('type', 'wholesale')
-                        ->first();
+                   return (float) ($product->ddp_price ?? 0);
             }
         }
 
@@ -85,7 +84,7 @@ class ProductPricingService
 
     public function syncProductPricesForAllUsers(array $payload): void
     {
-     
+
         $rows = array_map(fn($item) => [
             'product_id'  => $item['product_id'],
             'user_id'     => $item['user_id'],
@@ -96,7 +95,7 @@ class ProductPricingService
             'created_at'  => now(),
             'updated_at'  => now(),
         ], $payload);
-   
+
 
         $this->upsertRows($rows);
     }
@@ -106,7 +105,7 @@ public function updateOrCreateProductPrice(
 ): ProductPrices {
     return $this->productPricingRepository
         ->saveProductPrice($payload);
-}      
+}
 
 
 

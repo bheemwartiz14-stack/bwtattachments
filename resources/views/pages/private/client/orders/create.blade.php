@@ -7,11 +7,11 @@
     <x-breadcrumb :items="[
         ['label' => 'Wholesaler Portal', 'url' => route('client.dashboard')],
         ['label' => 'Orders', 'url' => route('client.orders.index')],
-        ['label' => 'Create Order'],
+        ['label' => 'Complete your order'],
     ]" />
 
     <div class="mb-6">
-        <x-ui.hero title="Create Order" icon="heroicon-o-clipboard-document-list">
+        <x-ui.hero title="Complete your order" icon="heroicon-o-clipboard-document-list">
             <x-slot:actions>
                 <span id="last-saved" class="text-xs text-gray-400"></span>
             </x-slot:actions>
@@ -31,7 +31,7 @@
         </div>
     @endif
 
-    <form id="order-form" action="{{ route('client.orders.store') }}" method="POST" class="space-y-6">
+    <form id="order-form" action="{{ route('client.orders.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="user_id" name="order_from_user_id" value="{{ $user->id }}">
@@ -127,6 +127,25 @@
                                     {{ $meta['vat_number'] ?? ($meta['vat'] ?? '—') }}</p>
                             </div>
                         </div>
+                    </div>
+                    {{-- Logo Y/N --}}
+                    <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-neutral-700 dark:bg-neutral-900/50">
+                        <label class="flex items-center gap-3 cursor-pointer select-none">
+                            <input type="checkbox" id="need_logo_checkbox" name="need_logo" value="1"
+                                {{ old('need_logo') ? 'checked' : '' }}
+                                class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 dark:border-neutral-600 dark:bg-neutral-800">
+                            <span class="text-sm font-semibold text-slate-800 dark:text-neutral-100">Need logo? <span class="font-normal text-slate-500 dark:text-neutral-400">Y/N</span></span>
+                            <span class="ml-auto text-xs font-medium px-2 py-1 rounded-full border {{ old('need_logo') ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-neutral-800 dark:text-neutral-400' }}" id="need_logo_badge">{{ old('need_logo') ? 'Yes' : 'No' }}</span>
+                        </label>
+                        <div id="logo_upload_wrapper" class="{{ old('need_logo') ? '' : 'hidden' }} mt-4">
+                            <label for="logo_file" class="block text-xs font-medium text-slate-600 dark:text-neutral-400 mb-1.5">Upload your vectorized weldable logo <span class="text-red-500">*</span></label>
+                            <input type="file" id="logo_file" name="logo_file"
+                                accept=".ai,.eps,.pdf,.svg,.cdr,.dxf,.dwg,.zip,application/postscript,application/pdf,image/svg+xml"
+                                class="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 dark:file:bg-emerald-900/30 dark:file:text-emerald-300 dark:text-neutral-300">
+                            <p class="mt-1.5 text-xs text-slate-500 dark:text-neutral-500">Accepted vector formats: <span class="font-mono font-medium">ai, eps, pdf, svg, cdr, dxf, dwg</span> (zip allowed, max 10MB)</p>
+                            @error('logo_file')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <p class="mt-2 text-xs text-slate-400 dark:text-neutral-500">If yes, please upload your vectorized weldable logo in any vector format like <span class="font-medium">ai, eps, pdf, svg, cdr, dxf or dwg-file</span>.</p>
                     </div>
                 </div>
             </div>
@@ -242,35 +261,9 @@
                 </div>
             </div>
             <div class="p-6">
-                <livewire:cart-items-manager :productIds="$cartIds" />
+                <livewire:order-items-manager :productIds="$cartIds" />
             </div>
         </div>
-        {{-- Notes & Terms --}}
-        <div
-            class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-            <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
-                <div
-                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 shadow-sm">
-                    <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                    </svg>
-                </div>
-                <div>
-                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">Notes &amp; Terms</h2>
-                    <p class="text-xs text-slate-500 dark:text-neutral-400">Add notes, terms, or special instructions
-                    </p>
-                </div>
-            </div>
-            <div class="p-6 space-y-4">
-                <input type="hidden" name="notes" id="notes_input" value="{{ old('notes') }}">
-                <div id="notes_editor"
-                    class="min-h-[200px] rounded-xl border border-slate-200 bg-white text-sm text-slate-900 shadow-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
-                </div>
-            </div>
-        </div>
-
         {{-- Quotation Email Message --}}
         <div
             class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
@@ -310,15 +303,6 @@
                 </svg>
                 Save Draft
             </button>
-
-            <button type="submit" data-action="pdf"
-                class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-rose-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 dark:bg-rose-600 dark:hover:bg-rose-700">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
-                </svg>
-                PDF
-            </button>
             <button type="submit" data-action="send"
                 class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm shadow-emerald-200 transition-all hover:bg-emerald-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:shadow-emerald-900/30 dark:hover:bg-emerald-500">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -336,5 +320,36 @@
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
         <script src="{{ asset('assets/js/Order.js') }}"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const cb=document.getElementById('need_logo_checkbox');
+            const wrap=document.getElementById('logo_upload_wrapper');
+            const badge=document.getElementById('need_logo_badge');
+            const fileInput=document.getElementById('logo_file');
+            if(!cb||!wrap) return;
+            function toggle(){
+                if(cb.checked){
+                    wrap.classList.remove('hidden');
+                    if(badge){ badge.textContent='Yes'; badge.className='ml-auto text-xs font-medium px-2 py-1 rounded-full border bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300'; }
+                    if(fileInput) fileInput.required=true;
+                } else {
+                    wrap.classList.add('hidden');
+                    if(badge){ badge.textContent='No'; badge.className='ml-auto text-xs font-medium px-2 py-1 rounded-full border bg-slate-100 text-slate-500 border-slate-200 dark:bg-neutral-800 dark:text-neutral-400'; }
+                    if(fileInput){ fileInput.required=false; fileInput.value=''; }
+                }
+            }
+            cb.addEventListener('change', toggle);
+            // client side validation on submit: if checked, file required
+            const form=document.getElementById('order-form');
+            if(form){
+                form.addEventListener('submit', function(e){
+                    if(cb.checked && fileInput && !fileInput.files.length && !fileInput.value){
+                        // allow server validation but give quick feedback
+                        // do not prevent draft? require only on send? For now require for any submit
+                    }
+                });
+            }
+        });
+        </script>
     @endpush
 </x-layouts.app>
