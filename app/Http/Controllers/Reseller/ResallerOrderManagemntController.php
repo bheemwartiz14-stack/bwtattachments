@@ -71,8 +71,13 @@ class ResallerOrderManagemntController extends Controller
     public function store(StoreResellerOrderRequest $request)
     {
         $data = $request->validated();
+        // dd($data);
         $action = $request->input('action', 'draft');
         $data['status'] = $action === 'send' ? 'sent' : 'draft';
+        $retailer_client_logo = $data['retailer_client_logo_temp'];
+        if($retailer_client_logo){
+            $this->userService->updateUserCompayLogo($data);
+        }
         $order = $this->orderServices->create($data);
         if (in_array($action, ['pdf', 'send'])) {
             $this->orderServices->generateOrderPdf($order);

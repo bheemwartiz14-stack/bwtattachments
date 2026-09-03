@@ -95,12 +95,14 @@ class StoreWholesaleOrderRequest extends FormRequest
             'grand_total' => ['required', 'string'],
             'delivery_country' => ['required', 'string', 'size:2'],
             'order_reference' => ['nullable', 'string', 'max:255'],
+            'show_logo_on_pdf' => ['nullable', 'boolean'],
             'notes' => ['nullable', 'string', 'max:5000'],
             'order_email_message' => ['nullable', 'string', 'max:10000'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
+            'wholesale_client_logo_temp' => ['nullable', 'string'],
         ];
     }
 }

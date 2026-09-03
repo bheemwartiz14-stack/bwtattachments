@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'order_reference',
     'pdf_file',
     'status',
+    'show_logo_on_pdf',
 ])]
 class Order extends Model
 {

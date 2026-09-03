@@ -73,19 +73,6 @@ function initCurrencyConverter() {
 
     $rmb.on('input change', convert);
 }
-
-function updateCartBadge(cartCount) {
-    var count = parseInt(cartCount, 10) || 0;
-    document.querySelectorAll('[data-cart-badge]').forEach(function (badge) {
-        badge.textContent = count;
-        if (count > 0) {
-            badge.classList.remove('hidden');
-        } else {
-            badge.classList.add('hidden');
-        }
-    });
-}
-
 window.toggleFavorite = function (btn) {
     var $btn = $(btn);
     var productId = $btn.data('favorite');

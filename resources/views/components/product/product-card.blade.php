@@ -109,7 +109,9 @@
                         <p class="text-xs uppercase font-semibold tracking-wide text-gray-500">
                             Wholesaler Price
                         </p>
-                        @php $price = $product->price; @endphp
+                        @php
+
+                        $price = $product->price; @endphp
                         <p class="text-xl font-bold text-green-600 mt-1">
                             {{ config('app.currency_symbol') }} {{ number_format($price, 2) }}
                         </p>
@@ -118,40 +120,13 @@
                     {{-- Quantity + Add To Quotation (per-product independent, Livewire quantities) --}}
                     @role('Wholesaler|Reseller')
                         @php
-                            $isLivewire = isset($quantities);
-                            $qty = $isLivewire
-                                ? ($quantities[$product->id] ?? 1)
-                                : (auth()->check()
-                                    ? app(\App\Services\UserProductService::class)->getCartQuantity(auth()->user(), (string) $product->id)
-                                    : 1);
-                            // getCartQuantity returns 0 if not in cart, show 1 as default selector
-                            $qty = max(1, min(50, (int) $qty));
-                            if ($qty === 1 && !auth()->check()) $qty = 1;
+                            $qty = 1;
                             $inCart = $product->is_in_cart;
-                            // if in cart, use actual stored qty (override max dance)
-                            if ($inCart && ! $isLivewire && auth()->check()) {
-                                $stored = app(\App\Services\UserProductService::class)->getCartQuantity(auth()->user(), (string) $product->id);
-                                if ($stored > 0) $qty = max(1, min(50, $stored));
-                            }
                         @endphp
                         <div id="qty-wrap-{{ $product->id }}" class="mt-3 flex items-center gap-1 justify-center">
-                            <button type="button" onclick="changeQuoteQty('{{ $product->id }}', -1, this)"
-                                @disabled($qty <= 1)
-                                class="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"><svg
-                                    class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                    stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                                </svg></button>
-                            <span id="qty-{{ $product->id }}"
-                                class="inline-flex h-7 min-w-[2rem] items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-slate-900">{{ $qty }}</span>
-                            <button type="button" onclick="changeQuoteQty('{{ $product->id }}', 1, this)"
-                                class="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50"><svg
-                                    class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                    stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
-                                </svg></button>
+                            <input type="number" id="qty-{{ $product->id }}" value="{{ $qty }}" min="1" max="50"
+                                class="inline-flex h-7 w-16 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                         </div>
-
                         <button type="button" data-quote="{{ $product->id }}" data-added="{{ $inCart ? 'true' : 'false' }}"
                             onclick="toggleQuoteItem(this)"
                             class="cursor-pointer mt-3 w-full rounded-md bg-green-600 hover:bg-green-700 text-white text-center py-2 text-xs font-semibold transition">Add

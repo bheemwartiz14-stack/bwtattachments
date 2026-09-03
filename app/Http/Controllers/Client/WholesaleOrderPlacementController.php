@@ -67,6 +67,10 @@ class WholesaleOrderPlacementController extends Controller
         $data = $request->validated();
         $action = $request->input('action', 'draft');
         $data['status'] = $action === 'send' ? 'sent' : 'draft';
+        $wholesale_client_logo = $data['wholesale_client_logo_temp'];
+        if($wholesale_client_logo){
+            $this->userService->updateUserCompayLogo($data);
+        }
         $order = $this->orderServices->create($data);
         if (in_array($action, ['pdf', 'send'])) {
             $this->orderServices->generateOrderPdf($order);
@@ -114,7 +118,6 @@ class WholesaleOrderPlacementController extends Controller
         $this->orderServices->update($id, ['status' => 'sent']);
         return back()->with('success', 'Order sent successfully.');
     }
-
     public function preview(string $id)
     {
         return $this->orderServices->previewPdf($id);

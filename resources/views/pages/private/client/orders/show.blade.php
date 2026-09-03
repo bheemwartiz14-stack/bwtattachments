@@ -72,55 +72,45 @@
                 </div>
             </div>
 
-            <div class="divide-y divide-slate-100 dark:divide-neutral-800">
-                @forelse($order->items as $item)
-                    @php $lineTotal = $item->price * $item->quantity; @endphp
-                    <div class="px-6 py-4 hover:bg-rose-50 dark:hover:bg-neutral-900/50 transition-colors">
-                        <div class="flex items-start gap-4">
-                            @php $imgUrl = $item->product?->getFirstMediaUrl('images', 'thumb') ?: $item->product?->getFirstMediaUrl('images') ?: null; @endphp
-                            @if($imgUrl)
-                                <img src="{{ $imgUrl }}" alt="{{ $item->product?->product_title ?? 'Product' }}" class="h-14 w-14 rounded-lg object-cover border border-slate-200 dark:border-neutral-800 shrink-0" loading="lazy" />
-                            @else
-                            <div
-                                class="flex h-14 w-14 items-center justify-center rounded-lg bg-slate-100 dark:bg-neutral-900 shrink-0">
-                                <svg class="w-7 h-7 text-gray-400 dark:text-neutral-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            @endif
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-black dark:text-neutral-100">
-                                            {{ $item->product?->product_title ?? ($item->product?->product_title ?? 'Product') }}
-                                        </p>
-                                        <p class="text-xs font-mono text-gray-400 dark:text-neutral-500 mt-0.5">
-                                            {{ $item->product?->product_code }}</p>
-                                    </div>
-                                </div>
-                                <div class="mt-2 grid grid-cols-3 gap-4 text-xs text-gray-700 dark:text-neutral-400">
-                                    <span>Quantity: <span
-                                            class="font-medium text-black dark:text-neutral-100">{{ $item->quantity }}</span></span>
-                                    <span>Unit Price: <span
-                                            class="font-medium text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($item->price, 2) }}</span></span>
-                                    <span>Total: <span
-                                            class="font-medium text-emerald-600 dark:text-emerald-400">{{ config('app.currency_symbol') }}{{ number_format($lineTotal, 2) }}</span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="px-6 py-12 text-center">
-                        <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                        </svg>
-                        <p class="mt-3 text-sm text-gray-400 dark:text-neutral-500">No items in this quotation</p>
-                    </div>
-                @endforelse
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm table-fixed">
+                    <thead>
+                        <tr class="border-b border-slate-200 bg-slate-50/70 dark:border-neutral-800 dark:bg-neutral-900/50">
+                            <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500" style="width:15%">Product code</th>
+                            <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500" style="width:30%">Product name</th>
+                            <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500" style="width:18%">Unit price</th>
+                            <th class="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500" style="width:17%">Qty</th>
+                            <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500" style="width:20%">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
+                        @forelse($order->items as $item)
+                            @php $lineTotal = $item->price * $item->quantity; @endphp
+                            <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-neutral-900/50">
+                                <td class="px-3 py-3 text-left align-middle">
+                                    <span class="text-xs font-mono font-semibold text-slate-700 dark:text-neutral-300">{{ $item->product?->product_code ?? '—' }}</span>
+                                </td>
+                                <td class="px-3 py-3 text-left align-middle">
+                                    <p class="text-sm font-semibold text-slate-900 dark:text-neutral-100 leading-tight">{{ $item->product?->product_title ?? 'Product' }}</p>
+                                </td>
+                                <td class="px-3 py-3 text-center text-sm font-medium text-slate-900 dark:text-neutral-100 align-middle">{{ config('app.currency_symbol') }}{{ number_format($item->price, 2) }}</td>
+                                <td class="px-3 py-3 text-center align-middle">
+                                    <span class="inline-flex h-7 min-w-[2.2rem] items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm font-bold text-slate-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white">{{ $item->quantity }}</span>
+                                </td>
+                                <td class="px-3 py-3 text-right text-sm font-bold text-slate-900 dark:text-neutral-100 align-middle">{{ config('app.currency_symbol') }}{{ number_format($lineTotal, 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center">
+                                    <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                    </svg>
+                                    <p class="mt-3 text-sm text-gray-400 dark:text-neutral-500">No items in this order</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
 
             @php

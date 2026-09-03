@@ -101,6 +101,9 @@ class StoreResellerOrderRequest extends FormRequest
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
+            'retailer_client_logo_temp' => ['nullable', 'string'],
+             'show_logo_on_pdf' => ['nullable', 'boolean'],
+
         ];
     }
 }

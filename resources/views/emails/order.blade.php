@@ -1,142 +1,51 @@
 @php
     $sender = $order->fromUser ?? ($order->user ?? null);
-    $role = $sender?->roles->first()?->name;
     $meta = $sender?->userMeta?->metadata ?? [];
-    $logoUrl = '';
-    if ($role === 'Wholesaler') {
-        $logoUrl = $sender?->getFirstMediaUrl('wholesale_client_logo');
-        $companyName = $meta['wholesale_company_name'] ?? ($meta['company_name'] ?? '—');
-        $senderLabel = 'Wholesaler';
-    } elseif ($role === 'Reseller') {
-        $logoUrl = $sender?->getFirstMediaUrl('retailer_client_logo');
-        $companyName = $meta['company_name'] ?? ($meta['retailer_client_name'] ?? '—');
-        $senderLabel = 'Reseller';
-    } else {
-        $logoUrl = '';
-        $companyName = $meta['company_name'] ?? ($meta['customer_client_name'] ?? '—');
-        $senderLabel = 'Customer';
-    }
-    $addressParts = array_filter([
-        $meta['address'] ?? null,
-        $meta['postal_code'] ?? null,
-        $meta['city'] ?? null,
-        $meta['country'] ?? null,
-    ]);
-    $addressLine = implode(', ', $addressParts);
-    $supportEmail = config('site_settings.contact_email', config('mail.from.address'));
-    $appUrl = config('app.url');
-    $appName = config('app.name');
-    $senderName = config('mail.from.name', $appName);
+    $companyName = $meta['wholesale_company_name'] ?? ($meta['company_name'] ?? $sender?->name ?? 'Test Company Limited');
+    $recipientName = $order->toUser?->name ?? 'John';
+    $recipientFirstName = trim(explode(' ', $recipientName)[0] ?? $recipientName) ?: 'John';
 @endphp
-
-@include('emails.partials.header', [
-    'pageTitle' => 'Order ' . $order->order_number,
-    'previewText' => "Order {$order->order_number} from {$companyName} — details inside.",
-    'heroHeading' => "Order<br>{$order->order_number}",
-    'heroSubtitle' => 'Please find your order details below.',
-])
-
-<!-- Intro -->
-<tr>
-    <td class="fluid-padding" style="padding:36px 40px 6px 40px;">
-        <p
-            style="margin:0 0 16px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; line-height:24px; color:#4b5563;">
-            Dear <strong style="color:#111827;">{{ $order->toUser->name}}</strong>,
-        </p>
-        <p
-            style="margin:0 0 8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; line-height:24px; color:#4b5563;">
-            You have received a new order from <strong>{{ $companyName }}</strong> ({{ $sender->email }}). Details
-            below.
-        </p>
-    </td>
-</tr>
-
-@if (!empty($order->order_email_message))
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order {{ $order->order_number }}</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f3f4f6;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f4f6;">
     <tr>
-        <td class="fluid-padding" style="padding:22px 40px 6px 40px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
-                style="background-color:#eef2ff; border-radius:14px; border:1px solid #e0e7ff;">
+        <td align="center" style="padding:32px 16px;">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; overflow:hidden;">
                 <tr>
-                    <td
-                        style="padding:20px 24px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:22px; color:#4338ca;">
-                        {!! nl2br(e($order->order_email_message)) !!}
+                    <td style="padding:32px 40px 24px 40px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#1f2937;">
+                        <p style="margin:0 0 16px 0;">Dear {{ $recipientFirstName }},</p>
+
+                        <p style="margin:0 0 16px 0;">This is an automated generated email from bwtattachments.com</p>
+
+                        <p style="margin:0 0 16px 0;">You have received a new order from <strong>{{ $companyName }}</strong></p>
+
+                        @if(!empty($order->order_email_message))
+                            <p style="margin:0 0 16px 0; white-space:pre-line;">{{ $order->order_email_message }}</p>
+                        @elseif(!empty($order->notes) && strip_tags($order->notes) !== '')
+                            <p style="margin:0 0 16px 0;">{{ strip_tags($order->notes) }}</p>
+                        @else
+                            <p style="margin:0 0 16px 0;">All attachments need to be CAT yellow if possible</p>
+                        @endif
+
+                        <p style="margin:24px 0 4px 0;">Best regards,</p>
+                        <p style="margin:0; font-weight:700; color:#111827;">BWT</p>
+                        <p style="margin:0;"><a href="mailto:sales@bwtattachments.com" style="color:#2563eb; text-decoration:none;">sales@bwtattachments.com</a></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:16px 40px; background-color:#f9fafb; border-top:1px solid #e5e7eb; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#6b7280; text-align:center;">
+                        This is an automated email, please do not reply directly. PDF attached.
                     </td>
                 </tr>
             </table>
         </td>
     </tr>
-@endif
-
-<!-- Order Details -->
-<tr>
-    <td class="fluid-padding" style="padding:16px 40px 6px 40px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
-            style="background-color:#f9fafb; border-radius:14px;">
-            <tr>
-                <td class="details-cell" style="padding:22px 24px;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                        <tr>
-                            <td class="row-label"
-                                style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; color:#9ca3af;">
-                                Order Number</td>
-                            <td class="row-value"
-                                style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; font-weight:600; text-align:right;">
-                                {{ $order->order_number }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border-top:1px solid #eef0f4; font-size:1px; line-height:1px;">
-                                &nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td class="row-label"
-                                style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; color:#9ca3af;">
-                                Order Date</td>
-                            <td class="row-value"
-                                style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; font-weight:600; text-align:right;">
-                                {{ $order->order_date?->format('d M Y') ?? $order->created_at->format('d M Y') }}</td>
-                        </tr>
-                        @if ($order->order_reference)
-                            <tr>
-                                <td colspan="2"
-                                    style="border-top:1px solid #eef0f4; font-size:1px; line-height:1px;">&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="row-label"
-                                    style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; color:#9ca3af;">
-                                    Reference</td>
-                                <td class="row-value"
-                                    style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; font-weight:600; text-align:right;">
-                                    {{ $order->order_reference }}</td>
-                            </tr>
-                        @endif
-                        <tr>
-                            <td colspan="2" style="border-top:1px solid #eef0f4; font-size:1px; line-height:1px;">
-                                &nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td class="row-label"
-                                style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; color:#9ca3af;">
-                                Grand Total</td>
-                            <td class="row-value"
-                                style="padding:8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13.5px; font-weight:600; text-align:right;">
-                                {{ config('app.currency_symbol') }}
-                                {{ number_format((float) str_replace(',', '', (string) ($order->getAttributes()['grand_total'] ?? $order->grand_total)), 2) }}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </td>
-</tr>
-
-<tr>
-    <td class="fluid-padding" style="padding:22px 40px 40px 40px;">
-        <p
-            style="margin:0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:14px; line-height:22px; color:#4b5563;">
-            Please check the attached PDF for full order details.
-        </p>
-    </td>
-</tr>
-
-@include('emails.partials.footer')
+</table>
+</body>
+</html>

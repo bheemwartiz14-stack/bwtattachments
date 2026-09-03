@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('order_reference', 255)->nullable();
             $table->string('pdf_file')->nullable();
             $table->string('status')->default('draft');
+            $table->boolean('show_logo_on_pdf')->default(true);
             $table->timestamps();
         });
     }

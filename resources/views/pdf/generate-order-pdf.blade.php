@@ -1,11 +1,15 @@
 @php
+    // dd($order);
     $sender = $order->fromUser ?? ($order->user ?? null);
     $recipient = $order->toUser ?? null;
     $senderMeta = $sender?->userMeta?->metadata ?? [];
     $recipientMeta = $recipient?->userMeta?->metadata ?? [];
     $senderRole = $sender?->roles->first()?->name;
     $senderLogoBase64 = '';
-    $senderLogoPath = $senderRole === 'Wholesaler'? $sender?->getFirstMediaPath('wholesale_client_logo')  : $sender?->getFirstMediaPath('retailer_client_logo');
+    $senderLogoPath =
+        $senderRole === 'Wholesaler'
+            ? $sender?->getFirstMediaPath('wholesale_client_logo')
+            : $sender?->getFirstMediaPath('retailer_client_logo');
     if ($senderLogoPath && file_exists($senderLogoPath)) {
         $type = pathinfo($senderLogoPath, PATHINFO_EXTENSION) ?: 'png';
         $data = @file_get_contents($senderLogoPath);
@@ -40,6 +44,7 @@
     $grandTotal = (float) str_replace([','], '', (string) $rawGrand);
     $vatPerc = (string) str_replace([','], '', (string) $rawVatPerc);
     $currency = config('app.currency_symbol', '€');
+    $show_pdf = $order->show_logo_on_pdf;
 @endphp
 <!DOCTYPE html>
 <html>
@@ -55,35 +60,47 @@
         <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
             <tr>
                 <td style="width:72%;vertical-align:top;padding-right:10px;">
-                    <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td style="padding:4px 8px;vertical-align:top;">
-                                <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
-                                    <tr>
-                                        <td style="width:50%;vertical-align:middle;text-align:left;height:46px;">
-                                            @if ($senderLogoBase64)
-                                                <img src="{{ $senderLogoBase64 }}"
-                                                    style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
-                                            @endif
-                                        </td>
-                                        <td style="width:50%;vertical-align:middle;text-align:left;height:46px;">
-                                            @if ($recipientLogoBase64)
-                                                <img src="{{ $recipientLogoBase64 }}"
-                                                    style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
+                    @if ($show_pdf)
+                        <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="padding:4px 8px;vertical-align:top;">
+                                    <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td style="width:50%;vertical-align:middle;text-align:left;height:46px;">
+                                                @if ($senderLogoBase64)
+                                                    <img src="{{ $senderLogoBase64 }}"
+                                                        style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
+                                                @else
+                                                    <div style="height:42px;line-height:42px;font-size:7pt;color:#999;text-align:center;">Wholesaler logo</div>
+                                                @endif
+                                            </td>
+                                            {{-- <td style="width:50%;vertical-align:middle;text-align:left;height:46px;">
+                                                @if ($recipientLogoBase64)
+                                                    <img src="{{ $recipientLogoBase64 }}"
+                                                        style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
+                                                @else
+                                                    <div style="height:42px;line-height:42px;font-size:7pt;color:#999;text-align:center;">Customer logo</div>
+                                                @endif
+                                            </td> --}}
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    @endif
                 </td>
                 <td style="width:28%;vertical-align:top;text-align:right;padding-left:10px;">
-                    <div style="font-size:9pt;font-weight:bold;color:#000;line-height:1.35;">{{ $sender?->name ?? 'Admin' }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{$senderMeta['address'] ?? 'Street name' }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{trim(($senderMeta['postal_code'] ?? '1234AB') . ' ' . ($senderMeta['city'] ?? 'Place')) }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{ $senderMeta['country'] ?? 'Country' }}</div>
-                    <div style="font-size:8.5pt;color:#000;line-height:1.35;margin-top:4px;">T: {{ $sender?->phone ?? 'Admin' }}
+                    <div style="font-size:9pt;font-weight:bold;color:#000;line-height:1.35;">
+                        {{ $sender?->name ?? 'Admin' }}</div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">
+                        {{ $senderMeta['address'] ?? 'Street name' }}</div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">
+                        {{ trim(($senderMeta['postal_code'] ?? '1234AB') . ' ' . ($senderMeta['city'] ?? 'Place')) }}
+                    </div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;">{{ $senderMeta['country'] ?? 'Country' }}
+                    </div>
+                    <div style="font-size:8.5pt;color:#000;line-height:1.35;margin-top:4px;">T:
+                        {{ $sender?->phone ?? 'Admin' }}
                     </div>
                     <div style="font-size:8.5pt;color:#000;line-height:1.35;">E: {{ $sender?->email ?? 'Admin' }}</div>
                 </td>
@@ -117,9 +134,9 @@
                 </td>
                 <td style="width:45%;vertical-align:top;padding:7px 8px;font-size:8.5pt;line-height:1.45;">
                     <div>Tel. : {{ $recipient?->phone ?? '-' }}</div>
-                      <div>Email : {{ $recipient->email ?? $recipientMeta['email'] ?? 'Email' }}</div>
+                    <div>Email : {{ $recipient->email ?? ($recipientMeta['email'] ?? 'Email') }}</div>
                     @php $vat = $recipientMeta['vat_number'] ?? ''; @endphp
-                   <div style="margin-top:4px;">VAT: {{ $vat }}</div>
+                    <div style="margin-top:4px;">VAT: {{ $vat }}</div>
                 </td>
             </tr>
         </table>
@@ -191,11 +208,7 @@
         <table style="width:100%;border-collapse:collapse;margin-top:0;" cellpadding="0" cellspacing="0">
             <tr>
                 <td style="width:62%;vertical-align:top;padding-top:6px;">
-                    <div style="font-size:7.5pt;line-height:1.4;">{!! $order->notes !!}</div>
-                    @if ($order->order_email_message)
-                        <div style="margin-top:8px;padding:6px;border:1px dashed #000;font-size:7.5pt;">
-                            {!! nl2br(e($order->order_email_message)) !!}</div>
-                    @endif
+                    <div style="font-size:7.5pt;line-height:1.4;">{!! $order->notes ?? '' !!}</div>
                 </td>
                 <td style="width:38%;vertical-align:top;">
                     <table style="width:100%;border-collapse:collapse;border:1px solid #000;margin-top:0;"
@@ -222,7 +235,7 @@
                                 Grand total:</td>
                             <td
                                 style="padding:4px 8px;font-size:7.5pt;text-align:right;font-weight:bold;white-space:nowrap;">
-                                {{ number_format($grandTotal, 2, '.', ',') }}</td>
+                                {{ $currency }} {{ number_format($grandTotal, 2, '.', ',') }}</td>
                         </tr>
                     </table>
                 </td>

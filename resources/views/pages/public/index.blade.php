@@ -23,5 +23,6 @@
     </main>
         @push('scripts')
         <script src="{{ asset('assets/js/product.js') }}"></script>
+        <script src="{{ asset('assets/js/Order.js') }}"></script>
     @endpush
 </x-layouts.public>

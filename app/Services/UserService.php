@@ -7,11 +7,13 @@ use App\Http\Resources\WholesalerHierarchyResource;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use App\Traits\ResolvesTempFiles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserService
 {
+    use ResolvesTempFiles;
     public function __construct(protected UserRepository $userRepository) {}
 
     public function getAuthenticatedUserMetadata(): array
@@ -105,5 +107,21 @@ class UserService
     {
         return $this->userRepository->getMyCustomers($id);
 
+    }
+    public function updateUserCompayLogo($filetempData)
+    {
+        $user = $this->getAuthenticatedUser();
+        $role = $user->roles->first()?->name;
+        if($role =='Wholesaler'){
+            $logo = $this->resolveTempImage($filetempData, 'wholesale_client_logo');
+           if ($logo) {
+            $user->addMedia($logo)->toMediaCollection('wholesale_client_logo');
+        }
+        }if($role =='Reseller'){
+            $logo = $this->resolveTempImage($filetempData, 'retailer_client_logo');
+           if ($logo) {
+            $user->addMedia($logo)->toMediaCollection('retailer_client_logo');
+        }
+        }
     }
 }

@@ -28,7 +28,7 @@ if ($user->hasRole('Admin')) {
         ['label' => 'Dashboard', 'route' => 'client.dashboard', 'pattern' => 'client.dashboard'],
         ['label' => 'Manage Resellers', 'route' => 'client.reseller-users.index', 'pattern' => 'client.reseller-users.*', 'icon' => 'heroicon-o-truck'],
         ['label' => 'Products', 'route' => 'client.products.index', 'pattern' => 'client.products.*'],
-        ['label' => 'Manage Orders', 'route' => 'client.orders.index', 'pattern' => 'client.order.*'],
+        ['label' => 'Manage Orders', 'route' => 'client.orders.index', 'pattern' => 'client.orders.*'],
         ['label' => 'Quotations', 'route' => 'client.quotations.index', 'pattern' => 'client.quotations.*'],
         ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
     ];
