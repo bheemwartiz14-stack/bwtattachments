@@ -41,6 +41,7 @@ use App\Http\Controllers\Customers\CustomerDashboardController;
 use App\Http\Controllers\Customers\CustomerProductController;
 use App\Http\Controllers\Customers\ProfileController as CustomerProfileController;
 use App\Http\Controllers\UserProductController;
+use App\Http\Controllers\Customers\CustomersOrderManagemntController;
 use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -198,5 +199,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/profile/logo/retailer', [CustomerProfileController::class, 'deleteLogo'])->name('profile.logo.retailer.delete');
         Route::get('/products', [CustomerProductController::class, 'index'])->name('products.index');
         Route::get('/products/{product}', [CustomerProductController::class, 'show'])->name('products.show');
-    });
+        // Order
+        Route::resource('orders', CustomersOrderManagemntController::class);
+        Route::get('/orders/{order}/download', [CustomersOrderManagemntController::class, 'download'])->name('orders.download');
+        Route::post('/orders/{order}/send-email', [CustomersOrderManagemntController::class, 'sendEmail'])->name('orders.send-email');
+
+     });
 });

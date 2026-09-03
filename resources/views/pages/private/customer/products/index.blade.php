@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>Manage Products - {{ $siteTitle }}</x-slot:title>
-    <x-breadcrumb :items="[['label' => 'Csutomer Portal', 'url' => route('customer.dashboard')], ['label' => 'Products']]" />
+    <x-breadcrumb :items="[['label' => 'Customer Portal', 'url' => route('customer.dashboard')], ['label' => 'Products']]" />
 
     <div class="space-y-6">
         <x-ui.hero title="Products">

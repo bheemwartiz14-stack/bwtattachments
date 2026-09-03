@@ -45,6 +45,7 @@ if ($user->hasRole('Admin')) {
     $sidebarItems = [
         ['label' => 'Dashboard', 'route' => 'customer.dashboard', 'pattern' => 'customer.dashboard'],
         ['label' => 'Products', 'route' => 'customer.products.index', 'pattern' => 'customer.products.*'],
+        ['label' => 'Manage Orders', 'route' => 'customer.orders.index', 'pattern' => 'customer.orders.*'],
         ['label' => 'Terms & Conditions', 'route' => 'terms.index', 'pattern' => 'terms.*'],
     ];
 } else { $sidebarItems = []; }

@@ -118,7 +118,7 @@
                     </div>
 
                     {{-- Quantity + Add To Quotation (per-product independent, Livewire quantities) --}}
-                    @role('Wholesaler|Reseller')
+                    @role('Wholesaler|Reseller|customer')
                         @php
                             $qty = 1;
                             $inCart = $product->is_in_cart;

@@ -1,0 +1,104 @@
+<x-layouts.app>
+    <x-slot:title>My Orders - BWT</x-slot:title>
+    <x-breadcrumb :items="[['label' => 'Customer Portal', 'url' => route('customer.dashboard')], ['label' => 'My Orders']]" />
+
+    @if(session('success'))
+        <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm font-medium text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="space-y-6">
+        <x-ui.hero title="My Orders" icon="heroicon-o-document-text">
+            <x-slot:actions>
+                <a href="{{ route('customer.orders.create') }}" wire:navigate
+                    class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                    New Order
+                </a>
+            </x-slot:actions>
+        </x-ui.hero>
+
+        <div class="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-100 bg-white dark:border-neutral-800 dark:bg-neutral-900/50">
+                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Quotation #</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Items</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Total</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
+                        @forelse($orders ?? [] as $quotation)
+                            @php $isOrder = isset($quotation->order_number); $rawGrand = $quotation->getAttributes()['grand_total'] ?? $quotation->attributesToArray()['grand_total'] ?? 0; @endphp
+                            <tr class="transition-colors hover:bg-rose-50 dark:hover:bg-neutral-900/50">
+                               <td class="px-6 py-4">
+                                    <a href="{{ route('customer.orders.show', $quotation) }}" wire:navigate class="font-mono text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400">{{ $quotation->order_number }}</a>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->created_at->format('M d, Y') }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->items_count ?? $quotation->items->count() }}</td>
+                                <td class="px-6 py-4 text-sm font-semibold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format((float)str_replace(',', '', (string)$rawGrand), 2) }}</td>
+                                <td class="px-6 py-4">
+                                    @php
+                                        $statusClasses = [
+                                            'draft' => 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300',
+                                            'sent' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300',
+                                        ];
+                                        $statusValue = $quotation->status instanceof \BackedEnum ? $quotation->status->value : (string) $quotation->status;
+                                        $class = $statusClasses[$statusValue] ?? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300';
+                                    @endphp
+                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $class }}">
+                                        {{ ucfirst($statusValue) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('customer.orders.show', $quotation) }}" wire:navigate class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-black shadow-sm transition-colors hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                            View
+                                        </a>
+                                        <form action="{{ route('customer.orders.download', $quotation) }}" method="GET" class="inline">
+                                            <button type="submit" class="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-black shadow-sm transition-colors hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800">
+                                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                PDF
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('customer.orders.send-email', $quotation) }}" class="inline">
+                                            @csrf
+                                            <button type="submit" class="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-black shadow-sm transition-colors hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800">
+                                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                                Send
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-16 text-center">
+                                    <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                    <p class="mt-4 text-sm font-medium text-gray-500 dark:text-neutral-400">No orders yet</p>
+                                    <p class="mt-1 text-sm text-gray-400 dark:text-neutral-500">Create your first order to get started</p>
+                                    <a href="{{ route('customer.orders.create') }}"  wire:navigate class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                                        Create order
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            @if(method_exists($orders ?? [], 'links'))
+                <div class="border-t border-slate-100 px-6 py-3 dark:border-neutral-800">
+                    {{ $orders->links() }}
+                </div>
+            @endif
+        </div>
+    </div>
+</x-layouts.app>

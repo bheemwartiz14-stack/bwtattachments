@@ -6,10 +6,12 @@
     $recipientMeta = $recipient?->userMeta?->metadata ?? [];
     $senderRole = $sender?->roles->first()?->name;
     $senderLogoBase64 = '';
-    $senderLogoPath =
-        $senderRole === 'Wholesaler'
-            ? $sender?->getFirstMediaPath('wholesale_client_logo')
-            : $sender?->getFirstMediaPath('retailer_client_logo');
+    $senderLogoPath = match (strtolower($senderRole ?? '')) {
+        'wholesaler' => $sender?->getFirstMediaPath('wholesale_client_logo'),
+        'reseller'   => $sender?->getFirstMediaPath('retailer_client_logo'),
+        'customer'   => $sender?->getFirstMediaPath('customer_logo'),
+        default      => null,
+    };
     if ($senderLogoPath && file_exists($senderLogoPath)) {
         $type = pathinfo($senderLogoPath, PATHINFO_EXTENSION) ?: 'png';
         $data = @file_get_contents($senderLogoPath);
