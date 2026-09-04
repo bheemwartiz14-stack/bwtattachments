@@ -17,8 +17,7 @@
         <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Reseller" icon="heroicon-o-truck" />
 
         @if ($errors->any())
-            <div
-                class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/50 dark:bg-red-900/20">
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/50 dark:bg-red-900/20">
                 <div class="flex items-start gap-3">
                     <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
@@ -46,6 +45,9 @@
             @if ($isEdit)
                 @method('PUT')
             @endif
+            <input type="hidden" id="country_code" name="country_code"
+                value="{{ old('country_code', $user->country_code ?? '') }}">
+            <input type="hidden" id="country_name" name="country" value="{{ old('country', $user->country ?? '') }}">
 
             <div
                 class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
@@ -75,8 +77,8 @@
                             :required="true" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
                             :required="true" :error="$errors->first('city')" />
-                        <x-forms.input name="country" label="Country" placeholder="United Kingdom" :value="$meta['country'] ?? ''"
-                            :required="true" :error="$errors->first('country')" />
+                        <x-forms.select name="vat_id" label="Country" :options="$vatcountries" :selected="old('country', $user->country ?? null)"
+                            placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
                     </div>
@@ -100,9 +102,8 @@
 
                         <x-forms.input name="name" label="Full Name" placeholder="John Doe" :value="$isEdit ? $user->name : ''"
                             :required="true" :generateUsername="$isEdit ? '' : '#username'" :error="$errors->first('name')" />
-                            <x-forms.email name="email" label="Email Address" placeholder="reseller@company.com"
-                                :value="$isEdit ? $user->email : ''" :required="!$isEdit"  :error="$errors->first('email')"
-                        />
+                        <x-forms.email name="email" label="Email Address" placeholder="reseller@company.com"
+                            :value="$isEdit ? $user->email : ''" :required="!$isEdit" :error="$errors->first('email')" />
 
 
                         <x-forms.phone name="phone" label="Phone Number" placeholder="Enter phone number"
@@ -225,6 +226,13 @@
                     pwd.value = s;
                 }
             })();
+            $('#vat_id').on('change', function() {
+                const $selectedOption = $(this).find('option:selected');
+                const selectedName = $selectedOption.data('name') || '';
+                const countryCode = $selectedOption.data('iso-id') || '';
+                $('#country_code').val(countryCode);
+                $('#country_name').val(selectedName);
+            });
         </script>
     @endpush
 </x-layouts.app>

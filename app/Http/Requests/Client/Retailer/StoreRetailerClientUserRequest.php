@@ -35,7 +35,9 @@ class StoreRetailerClientUserRequest extends FormRequest
             'address' => ['required', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'max:20'],
             'city' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
+            'vat_id' => [ 'required','uuid','exists:vat_rates,id',],
+            'country_code' => [ 'required', 'string', 'max:3',],
+            'country' => ['required', 'string', 'max:255', ],
             'website' => ['nullable', 'url', 'max:255'],
              'retailer_client_logo_temp' => ['nullable', 'string'],
         ];
@@ -62,7 +64,11 @@ class StoreRetailerClientUserRequest extends FormRequest
             'address.required' => 'The address field is required.',
             'postal_code.required' => 'The postal code field is required.',
             'city.required' => 'The city field is required.',
-            'country.required' => 'The country field is required.',
+            'vat_id.required' => 'Please select a country.',
+            'vat_id.uuid' => 'The selected VAT rate is invalid.',
+            'vat_id.exists' => 'The selected country is invalid.',
+            'country_code.required' => 'The country code is required.',
+            'country.required' => 'The country is required.',
             'website.url' => 'Please enter a valid URL.',
         ];
     }

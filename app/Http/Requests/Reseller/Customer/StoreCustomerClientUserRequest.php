@@ -37,7 +37,9 @@ class StoreCustomerClientUserRequest extends FormRequest
             'address' => ['required', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'max:20'],
             'city' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
+            'vat_id' => [ 'required','uuid','exists:vat_rates,id',],
+            'country_code' => [ 'required', 'string', 'max:3',],
+            'country' => ['required', 'string', 'max:255', ],
             'website' => ['nullable', 'url', 'max:255'],
             'customer_logo_temp' => ['nullable', 'string'],
             //

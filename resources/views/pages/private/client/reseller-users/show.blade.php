@@ -11,10 +11,10 @@
         $margin = $user->userMargin?->margin_value ?? 0;
         $logoMedia = $user->getFirstMedia('retailer_client_logo');
         $logoUrl = $logoMedia?->getUrl();
+        $orderCount = $user->orders->count();
+        $draftCount = $user->orders->where('status', 'draft')->count();
+        $sentCount = $user->orders->where('status', 'sent')->count();
         $quotationsCount = $user->quotations->count();
-        $draftCount = $user->quotations->where('status', 'draft')->count();
-        $sentCount = $user->quotations->where('status', 'sent')->count();
-        $approvedCount = $user->quotations->where('status', 'approved')->count();
     @endphp
 
     <div class="space-y-6">
@@ -227,11 +227,11 @@
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Recent Quotations</h2>
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Recent Orders</h2>
                         </div>
                         <span
                             class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-neutral-800 dark:text-neutral-400">
-                            {{ $quotationsCount }} total
+                            {{ $orderCount }} total
                         </span>
                     </div>
                     <div class="overflow-x-auto">
@@ -241,7 +241,7 @@
                                     class="border-b border-slate-100 bg-slate-50/50 dark:border-neutral-800 dark:bg-neutral-900/50">
                                     <th
                                         class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
-                                        Quotation #</th>
+                                        Order Number #</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
                                         Date</th>
@@ -254,35 +254,33 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
-                                @forelse($user->quotations as $quotation)
+                                @forelse($user->orders as $order)
                                     <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-neutral-800/50">
                                         <td class="px-6 py-4">
                                             <span
-                                                class="font-mono text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $quotation->quotation_number }}</span>
+                                                class="font-mono text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $order->order_number }}</span>
                                         </td>
                                         <td class="px-6 py-4 text-sm text-slate-600 dark:text-neutral-400">
-                                            {{ $quotation->created_at->format('M d, Y') }}</td>
+                                            {{ $order->order_date->format('M d, Y') }}</td>
+                                        @php $statusStr = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status; @endphp
                                         <td class="px-6 py-4">
                                             <span
                                                 class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                                                {{ $quotation->status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : '' }}
-                                                {{ $quotation->status === 'pending' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300' : '' }}
-                                                {{ $quotation->status === 'draft' ? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300' : '' }}
-                                                {{ $quotation->status === 'sent' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : '' }}
-                                                {{ $quotation->status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : '' }}">
-                                                {{ ucfirst($quotation->status) }}
+                                                {{ $statusStr === 'draft' ? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300' : '' }}
+                                                {{ $statusStr === 'sent' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : '' }}">
+                                                {{ ucfirst($statusStr) }}
                                             </span>
                                         </td>
                                         <td
                                             class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-neutral-100">
-                                            {{ config('app.currency_symbol') }}{{ number_format($quotation->items->sum(fn($i) => $i->price * $i->quantity) * (1 + ($quotation->margin_percentage ?: 0) / 100), 2) }}
+                                            {{ config('app.currency_symbol') }}{{ number_format($order->items->sum(fn($i) => $i->price * $i->quantity), 2) }}
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="4"
                                             class="px-6 py-12 text-center text-sm text-slate-400 dark:text-neutral-500">
-                                            No quotations yet.</td>
+                                            No Order yet.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -363,7 +361,7 @@
                         <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Quick Stats</h3>
                     </div>
                     <div class="space-y-3">
-                        @foreach ([['Total Quotations', $quotationsCount, 'text-slate-900', 'dark:text-white'], ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-300'], ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-300'], ['Approved', $approvedCount, 'text-emerald-600', 'dark:text-emerald-300']] as [$label, $val, $color, $darkColor])
+                        @foreach ([['Total Quotations', $orderCount, 'text-slate-900', 'dark:text-white'], ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-300'], ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-300']] as [$label, $val, $color, $darkColor])
                             <div
                                 class="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2.5 dark:bg-neutral-800">
                                 <span class="text-sm text-slate-600 dark:text-neutral-300">{{ $label }}</span>

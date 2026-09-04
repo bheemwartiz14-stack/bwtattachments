@@ -94,6 +94,17 @@ class StoreWholesaleClientUserRequest extends FormRequest
                 'max:255',
             ],
 
+            // VAT / Country
+            'vat_id' => [
+                'required',
+                'uuid',
+                'exists:vat_rates,id',
+            ],
+            'country_code' => [
+                'required',
+                'string',
+                'max:3',
+            ],
             'country' => [
                 'required',
                 'string',
@@ -159,19 +170,34 @@ class StoreWholesaleClientUserRequest extends FormRequest
 
             'city.required' => 'The city is required.',
 
+            'vat_id.required' => 'Please select a country.',
+            'vat_id.uuid' => 'The selected VAT rate is invalid.',
+            'vat_id.exists' => 'The selected country is invalid.',
+
+            'country_code.required' => 'The country code is required.',
             'country.required' => 'The country is required.',
 
             'website.url' => 'Please enter a valid website URL.',
 
             'vat_number.required' => 'The VAT number is required.',
 
-            'commission_percentage.numeric' => 'The commission percentage must be a number.',
-            'commission_percentage.between' => 'The commission percentage must be between 0 and 100.',
-            'commission_percentage.decimal' => 'The commission percentage may have up to 2 decimal places.',
+            'commission_percentage.numeric' =>
+                'The commission percentage must be a number.',
 
-            'wholesale_client_logo.image' => 'The logo must be an image.',
-            'wholesale_client_logo.mimes' => 'The logo must be a JPEG, JPG, PNG, or WebP image.',
-            'wholesale_client_logo.max' => 'The logo must not be larger than 2 MB.',
+            'commission_percentage.between' =>
+                'The commission percentage must be between 0 and 100.',
+
+            'commission_percentage.decimal' =>
+                'The commission percentage may have up to 2 decimal places.',
+
+            'wholesale_client_logo.image' =>
+                'The logo must be an image.',
+
+            'wholesale_client_logo.mimes' =>
+                'The logo must be a JPEG, JPG, PNG, or WebP image.',
+
+            'wholesale_client_logo.max' =>
+                'The logo must not be larger than 2 MB.',
         ];
     }
 }

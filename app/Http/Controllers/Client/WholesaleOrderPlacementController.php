@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Services\UserProductService;
 use App\Services\OrderServices;
+use App\Services\VatRateService;
 use App\Services\UserService;
 use App\Http\Requests\Client\Order\StoreWholesaleOrderRequest;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,8 @@ class WholesaleOrderPlacementController extends Controller
     public function __construct(
         protected UserProductService $userProductService,
         protected OrderServices $orderServices,
-        protected UserService $userService
+        protected UserService $userService,
+        protected VatRateService $vatRateService
     ) {}
     public function index(): View
     {
@@ -33,6 +35,7 @@ class WholesaleOrderPlacementController extends Controller
         $meta = $this->userService->getAuthenticatedUserMetadata();
         $orderNumber = $this->orderServices->generateOrderNumber();
         $admin = $this->userService->getAdminUser();
+        $vatList =$this->vatRateService->getTransactionVatCountryInfo($user, $admin);
         $cartIds = $this->userProductService->getQuotationProductIds($user);
         $usermargin = $user?->userMargin?->margin_value ?? 0;
         $cartItems = $this->userProductService->getQuotationItems($user);
@@ -59,6 +62,7 @@ class WholesaleOrderPlacementController extends Controller
             'cartItemsJson' => $cartItemsJson,
             'orderNumber' => $orderNumber,
             'usermargin' => $usermargin,
+            'vatList' => $vatList
         ]);
     }
 
@@ -97,7 +101,6 @@ class WholesaleOrderPlacementController extends Controller
     {
         $order = $this->orderServices->findById($id);
         $order = $this->orderServices->generateOrderPdf($order);
-
         if (!$order->pdf_file || !Storage::disk('public')->exists($order->pdf_file)) {
             return back()->with('error', 'PDF file not found.');
         }

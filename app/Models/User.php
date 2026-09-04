@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Order;
 use App\Models\UserMargin;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
@@ -25,6 +26,9 @@ use Spatie\Permission\Traits\HasRoles;
     'phone',
     'password',
     'parent_id',
+    'vat_id',
+    'country',
+    'country_code',
 ])]
 #[Hidden([
     'password',
@@ -64,6 +68,10 @@ class User extends Authenticatable implements HasMedia
     public function quotations()
     {
         return $this->hasMany(Quotation::class);
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'order_from_user_id');
     }
 
     public function parent()

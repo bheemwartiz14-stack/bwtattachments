@@ -8,6 +8,7 @@ use App\Services\RoleService;
 use App\Http\Requests\Client\Retailer\StoreRetailerClientUserRequest;
 use App\Http\Requests\Client\Retailer\UpdateRetailerClientUserRequest;
 use App\Services\Client\RetailerClientUserService;
+use App\Services\VatRateService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
@@ -18,6 +19,7 @@ class ResellerClientUserController extends Controller
      public function __construct(
         protected RoleService $roleService,
         protected RetailerClientUserService $retailerClientUserService,
+        protected VatRateService $vatRateService
     ) {}
     /**
      * Display a listing of the resource.
@@ -39,7 +41,8 @@ class ResellerClientUserController extends Controller
     public function create()
     {
         $roles = $this->roleService->getByNames(['Reseller']);
-        return view('pages.private.client.reseller-users.form', compact('roles'));
+        $vatcountries = $this->vatRateService->options();
+        return view('pages.private.client.reseller-users.form', compact('roles','vatcountries'));
     }
 
     /**
@@ -60,7 +63,10 @@ class ResellerClientUserController extends Controller
     public function show(string $id)
     {
         $user = $this->retailerClientUserService->findById($id);
-        $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)]);
+        $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)
+        ,'orders' => fn ($q) => $q->latest()->take(10)
+        ],
+        );
         return view('pages.private.client.reseller-users.show', compact('user'));
     }
     /**
@@ -71,11 +77,13 @@ class ResellerClientUserController extends Controller
         $user = $this->retailerClientUserService->findById($id);
         $userRole = $user->roles->first()?->name ?? 'Retailer';
         $meta = $user->userMeta?->metadata ?? [];
-        return view('pages.private.client.reseller-users.form', compact('user', 'userRole', 'meta'));
+        $vatcountries = $this->vatRateService->options();
+        return view('pages.private.client.reseller-users.form', compact('user', 'userRole', 'meta','vatcountries'));
     }
 
     public function update(UpdateRetailerClientUserRequest $request, string $id): RedirectResponse
     {
+        $data = $request->validated();
         $this->retailerClientUserService->update($id, $request->validated());
         return redirect()->route('client.reseller-users.index')->with('success', 'Reseller updated successfully.');
     }

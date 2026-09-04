@@ -37,24 +37,20 @@ class UpdateWholesaleClientUserRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-
             'password' => [
                 'nullable',
                 'string',
                 'min:8',
             ],
-
             'wholesale_company_name' => [
                 'required',
                 'string',
                 'max:255',
             ],
-
             'phone' => [
                 'required',
                 'regex:/^[0-9+\-\s()]{10,20}$/',
             ],
-
             'address' => [
                 'required',
                 'string',
@@ -72,13 +68,9 @@ class UpdateWholesaleClientUserRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-
-            'country' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
+            'vat_id' => [ 'required','string'],
+            'country_code' => ['sometimes' ],
+            'country' => ['sometimes' ],
             'website' => [
                 'nullable',
                 'url',
@@ -129,7 +121,7 @@ class UpdateWholesaleClientUserRequest extends FormRequest
 
             'city.required' => 'The city is required.',
 
-            'country.required' => 'The country is required.',
+            'vat_id.required' => 'The country is required.',
 
             'website.url' => 'Please enter a valid website URL.',
 

@@ -16,7 +16,8 @@ class OrderItemsManager extends Component
 {
     public array $items = [];
     public string $search = '';
-    public string $deliveryCountry = '';
+    public string $deliveryCountry = 'NL';
+    public array $vatList = [];
     public ?string $customerId = null;
     public ?string $productId = null;
     public bool $showModal = false;
@@ -27,8 +28,19 @@ class OrderItemsManager extends Component
         $this->productService = $productService;
         $this->userProductService = $userProductService;
     }
-    public function mount($productIds = []): void
+    public function mount($productIds = [], $vatList = []): void
     {
+        if (! empty($vatList) && isset($vatList['iso_code'])) {
+            $this->vatList = $vatList;
+            // Sync deliveryCountry with vatList iso_code for display
+            if (! empty($vatList['iso_code'])) {
+                $this->deliveryCountry = $vatList['iso_code'];
+            }
+        } elseif (is_array($vatList) && ! empty($vatList)) {
+            // Support both single vat info and full list
+            $this->vatList = $vatList;
+        }
+
         $items = old('items');
         if ($items) {
             $decoded = is_string($items) ? json_decode($items, true) : $items;
@@ -193,7 +205,14 @@ class OrderItemsManager extends Component
     }
     protected function dispatchItemsUpdated(): void { $this->dispatch('itemsUpdated', items: $this->items); }
     public function getSubtotalProperty(): float { $total = 0; foreach ($this->items as $item) { if (! is_array($item)) continue; $total += ($item['price'] ?? 0) * ($item['quantity'] ?? 1); } return $total; }
-    public function getTaxRateProperty(): int { return $this->deliveryCountry === 'NL' ? 21 : 0; }
+    public function getTaxRateProperty(): float {
+        // Use vatList from VatRateService (transaction based) if provided, otherwise fallback to deliveryCountry logic
+        if (isset($this->vatList['standard_vat_rate'])) {
+            return (float) $this->vatList['standard_vat_rate'];
+        }
+        // Legacy fallback
+        return $this->deliveryCountry === 'NL' ? 21 : 0;
+    }
     public function getTaxAmountProperty(): float { return $this->subtotal * ($this->taxRate / 100); }
     public function getGrandTotalProperty(): float { return $this->subtotal + $this->taxAmount; }
     public function render(): \Illuminate\Contracts\View\View

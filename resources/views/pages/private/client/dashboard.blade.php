@@ -81,21 +81,21 @@
                     <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-neutral-100">Browse Products</p>
                     <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">View catalog</p>
                 </a>
-                <a href="{{ route('client.quotations.create') }}" wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-blue-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-blue-800">
+                <a href="{{ route('client.orders.create') }}" wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-blue-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-blue-800">
                     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors group-hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:group-hover:bg-blue-900/50">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     </span>
-                    <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-neutral-100">Create Quotation</p>
-                    <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">New quote</p>
+                    <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-neutral-100">Create Order</p>
+                    <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">New Order</p>
                 </a>
-                <a href="{{ route('client.quotations.index', ['status' => 'draft']) }}" wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-amber-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-amber-800">
+                <a href="{{ route('client.orders.index', ['status' => 'draft']) }}" wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-amber-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-amber-800">
                     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-amber-50 text-amber-600 transition-colors group-hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:group-hover:bg-amber-900/50">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     </span>
                     <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-neutral-100">Saved Drafts</p>
-                    <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">{{ $stats['draft_quotations'] }} pending</p>
+                    <p class="mt-1 text-xs text-gray-400 dark:text-neutral-500">{{ $stats['draft_orders'] }} pending</p>
                 </a>
-                <a href="{{ route('client.quotations.index') }}"  wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-purple-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-purple-800">
+                <a href="{{ route('client.orders.index') }}"  wire:navigate class="group rounded-xl border border-slate-100 bg-white p-4 text-center transition-all hover:border-purple-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-purple-800">
                     <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-purple-50 text-purple-600 transition-colors group-hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 dark:group-hover:bg-purple-900/50">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     </span>
@@ -110,10 +110,10 @@
             <x-stat-card label="Products" :value="number_format($stats['total_products'])"
                 iconBg="bg-emerald-50 dark:bg-emerald-900/30"
                 icon='<svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>' />
-            <x-stat-card label="Draft Quotes" :value="$stats['draft_quotations']"
+            <x-stat-card label="Draft Quotes" :value="$stats['draft_orders']"
                 iconBg="bg-amber-50 dark:bg-amber-900/30"
                 icon='<svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>' />
-            <x-stat-card label="Sent Quotes" :value="$stats['sent_quotations']"
+            <x-stat-card label="Sent Quotes" :value="$stats['sent_orders']"
                 iconBg="bg-blue-50 dark:bg-blue-900/30"
                 icon='<svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>' />
             <x-stat-card label="Downloads" :value="$stats['downloads']"
@@ -124,14 +124,14 @@
         {{-- Recent Quotations table --}}
         <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
             <div class="flex items-center justify-between">
-                <h2 class="text-sm font-semibold text-slate-950 dark:text-neutral-100">Recent Quotations</h2>
-                <a href="{{ route('client.quotations.index') }}" wire:navigate class="text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400 dark:hover:text-neutral-200">View all</a>
+                <h2 class="text-sm font-semibold text-slate-950 dark:text-neutral-100">Recent Orders</h2>
+                <a href="{{ route('client.orders.index') }}" wire:navigate class="text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400 dark:hover:text-neutral-200">View all</a>
             </div>
             <div class="mt-4 overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-slate-100 dark:border-neutral-800">
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Quotation #</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Order Number #</th>
                             <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Date</th>
                             <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Items</th>
                             <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Total</th>
@@ -139,24 +139,25 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
-                        @forelse($recentQuotations ?? [] as $quotation)
+                        @forelse($recentOrders ?? [] as $order)
                             <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-neutral-900/50">
                                 <td class="px-4 py-4">
-                                    <a href="{{ route('client.quotations.show', $quotation) }}" wire:navigate class="font-mono text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400">
-                                        {{ $quotation->quotation_number }}
+                                    <a href="{{ route('client.orders.show', $order) }}" wire:navigate class="font-mono text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-neutral-400">
+                                        {{ $order->order_number }}
                                     </a>
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->created_at->format('M d, Y') }}</td>
-                                <td class="px-4 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $quotation->items_count ?? $quotation->items->count() }}</td>
-                                <td class="px-4 py-4 text-sm font-semibold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->items->sum(fn($i) => $i->price * $i->quantity) * (1 + ($quotation->margin_percentage ?: 0) / 100), 2) }}</td>
+                                <td class="px-4 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $order->created_at->format('M d, Y') }}</td>
+                                <td class="px-4 py-4 text-sm text-gray-700 dark:text-neutral-400">{{ $order->items_count ?? $order->items->count() }}</td>
+                                <td class="px-4 py-4 text-sm font-semibold text-black dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($order->items->sum(fn($i) => $i->price * $i->quantity), 2) }}</td>
                                 <td class="px-4 py-4">
+                                    @php $statusStr = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status; @endphp
                                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                                        {{ $quotation->status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : '' }}
-                                        {{ $quotation->status === 'pending' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300' : '' }}
-                                        {{ $quotation->status === 'draft' ? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300' : '' }}
-                                        {{ $quotation->status === 'sent' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : '' }}
-                                        {{ $quotation->status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : '' }}">
-                                        {{ ucfirst($quotation->status) }}
+                                        {{ $statusStr === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : '' }}
+                                        {{ $statusStr === 'pending' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300' : '' }}
+                                        {{ $statusStr === 'draft' ? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300' : '' }}
+                                        {{ $statusStr === 'sent' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : '' }}
+                                        {{ $statusStr === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : '' }}">
+                                        {{ ucfirst($statusStr) }}
                                     </span>
                                 </td>
                             </tr>
@@ -164,8 +165,8 @@
                             <tr>
                                 <td colspan="5" class="px-4 py-12 text-center">
                                     <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                    <p class="mt-3 text-sm text-gray-400 dark:text-neutral-500">No quotations yet</p>
-                                    <a href="{{ route('client.quotations.create') }}" wire:navigate class="mt-3 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-slate-600">Create your first quotation</a>
+                                    <p class="mt-3 text-sm text-gray-400 dark:text-neutral-500">No Orders yet</p>
+                                    <a href="{{ route('client.orders.create') }}" wire:navigate class="mt-3 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-slate-600">Create your first Order</a>
                                 </td>
                             </tr>
                         @endforelse

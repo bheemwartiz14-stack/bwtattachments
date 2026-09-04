@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reseller;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reseller\Customer\{StoreCustomerClientUserRequest, UpdateCustomerClientUserRequest};
 use App\Services\RoleService;
+use App\Services\VatRateService;
 use App\Services\Reseller\CustomerService;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class CustomerUserController extends Controller
     public function __construct(
         protected RoleService $roleService,
         protected CustomerService $customerService,
+        protected VatRateService $vatRateService
     ) {}
 
     /**
@@ -35,7 +37,8 @@ class CustomerUserController extends Controller
     public function create()
     {
         $roles = $this->roleService->getByNames(['customer']);
-        return view('pages.private.reseller.customer-users.form', compact('roles'));
+        $vatcountries = $this->vatRateService->options();
+        return view('pages.private.reseller.customer-users.form', compact('roles','vatcountries'));
         //
     }
 
@@ -53,8 +56,8 @@ class CustomerUserController extends Controller
      */
     public function show(string $id)
     {
-         $user = $this->customerService->findById($id);
-         $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)]);
+        $user = $this->customerService->findById($id);
+        $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10),'orders' => fn ($q) => $q->latest()->take(10)],);
         return view('pages.private.reseller.customer-users.show', compact('user'));
     }
 
@@ -64,10 +67,11 @@ class CustomerUserController extends Controller
      */
     public function edit(string $id)
     {
-         $user = $this->customerService->findById($id);
-          $userRole = $user->roles->first()?->name;
-           $meta = $user->userMeta?->metadata ?? [];
-           return view('pages.private.reseller.customer-users.form', compact('user', 'userRole', 'meta'));
+        $user = $this->customerService->findById($id);
+        $userRole = $user->roles->first()?->name;
+        $meta = $user->userMeta?->metadata ?? [];
+        $vatcountries = $this->vatRateService->options();
+        return view('pages.private.reseller.customer-users.form', compact('user', 'userRole', 'meta','vatcountries'));
         //
     }
 
@@ -76,8 +80,9 @@ class CustomerUserController extends Controller
      */
     public function update(UpdateCustomerClientUserRequest $request, string $id)
     {
-         $this->customerService->update($id, $request->validated());
-           return redirect()->route('reseller.customer-users.index') ->with('success', 'Customer account Updated successfully.');
+        $data = $request->validated();
+        $this->customerService->update($id, $request->validated());
+        return redirect()->route('reseller.customer-users.index') ->with('success', 'Customer account Updated successfully.');
     }
 
     /**

@@ -93,7 +93,7 @@ class StoreWholesaleOrderRequest extends FormRequest
             'sub_total' => ['required', 'string'],
             'vat_amount' => ['required', 'string'],
             'grand_total' => ['required', 'string'],
-            'delivery_country' => ['required', 'string', 'size:2'],
+            'delivery_country' => ['nullable', 'string', 'size:2'],
             'order_reference' => ['nullable', 'string', 'max:255'],
             'show_logo_on_pdf' => ['nullable', 'boolean'],
             'notes' => ['nullable', 'string', 'max:5000'],

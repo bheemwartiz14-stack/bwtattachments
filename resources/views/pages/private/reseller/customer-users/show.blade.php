@@ -6,10 +6,10 @@
         $margin = $user->userMargin?->margin_value ?? 0;
         $logoMedia = $user->getFirstMedia('customer_logo');
         $logoUrl = $logoMedia?->getUrl();
+        $orderCount = $user->orders->count();
+        $draftCount = $user->orders->where('status', 'draft')->count();
+        $sentCount = $user->orders->where('status', 'sent')->count();
         $quotationsCount = $user->quotations->count();
-        $draftCount = $user->quotations->where('status', 'draft')->count();
-        $sentCount = $user->quotations->where('status', 'sent')->count();
-        $approvedCount = $user->quotations->where('status', 'approved')->count();
     @endphp
     <div class="space-y-6">
         <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm dark:border-neutral-800 dark:from-neutral-900 dark:to-neutral-950">
@@ -160,50 +160,73 @@
                 </div>
 
                 {{-- Recent Quotations --}}
-                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
-                    <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
+                    <div
+                    class="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
+                    <div
+                        class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
                         <div class="flex items-center gap-3">
-                            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-900/20">
-                                <svg class="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                            <div
+                                class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-900/20">
+                                <svg class="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
                             </div>
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Recent Quotations</h2>
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Recent Orders</h2>
                         </div>
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-neutral-800 dark:text-neutral-400">
-                            {{ $quotationsCount }} total
+                        <span
+                            class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-neutral-800 dark:text-neutral-400">
+                            {{ $orderCount }} total
                         </span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
-                                <tr class="border-b border-slate-100 bg-slate-50/50 dark:border-neutral-800 dark:bg-neutral-900/50">
-                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">Quotation #</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">Total</th>
+                                <tr
+                                    class="border-b border-slate-100 bg-slate-50/50 dark:border-neutral-800 dark:bg-neutral-900/50">
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
+                                        Order Number #</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
+                                        Date</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
+                                        Total</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-neutral-800">
-                                @forelse($user->quotations as $quotation)
+                                @forelse($user->orders as $order)
                                     <tr class="transition-colors hover:bg-slate-50 dark:hover:bg-neutral-800/50">
                                         <td class="px-6 py-4">
-                                            <span class="font-mono text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $quotation->quotation_number }}</span>
+                                            <span
+                                                class="font-mono text-sm font-medium text-slate-700 dark:text-neutral-300">{{ $order->order_number }}</span>
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-slate-600 dark:text-neutral-400">{{ $quotation->created_at->format('M d, Y') }}</td>
+                                        <td class="px-6 py-4 text-sm text-slate-600 dark:text-neutral-400">
+                                            {{ $order->order_date->format('M d, Y') }}</td>
+                                        @php $statusStr = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status; @endphp
                                         <td class="px-6 py-4">
-                                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                                                {{ $quotation->status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' : '' }}
-                                                {{ $quotation->status === 'pending' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300' : '' }}
-                                                {{ $quotation->status === 'draft' ? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300' : '' }}
-                                                {{ $quotation->status === 'sent' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : '' }}
-                                                {{ $quotation->status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' : '' }}">
-                                                {{ ucfirst($quotation->status) }}
+                                            <span
+                                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
+                                                {{ $statusStr === 'draft' ? 'bg-slate-100 text-slate-800 dark:bg-neutral-900 dark:text-neutral-300' : '' }}
+                                                {{ $statusStr === 'sent' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : '' }}">
+                                                {{ ucfirst($statusStr) }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-neutral-100">{{ config('app.currency_symbol') }}{{ number_format($quotation->items->sum(fn($i) => $i->price * $i->quantity) * (1 + ($quotation->margin_percentage ?: 0) / 100), 2) }}</td>
+                                        <td
+                                            class="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-neutral-100">
+                                            {{ config('app.currency_symbol') }}{{ number_format($order->items->sum(fn($i) => $i->price * $i->quantity), 2) }}
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-6 py-12 text-center text-sm text-slate-400 dark:text-neutral-500">No quotations yet.</td>
+                                        <td colspan="4"
+                                            class="px-6 py-12 text-center text-sm text-slate-400 dark:text-neutral-500">
+                                            No Order yet.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -254,23 +277,26 @@
                 </div>
 
                 {{-- Quick Stats --}}
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
+               <div
+                    class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
                     <div class="flex items-center gap-2.5 mb-4">
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-900/20">
-                            <svg class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+                        <div
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-900/20">
+                            <svg class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                            </svg>
                         </div>
                         <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Quick Stats</h3>
                     </div>
                     <div class="space-y-3">
-                        @foreach([
-                            ['Total Quotations', $quotationsCount, 'text-slate-900', 'dark:text-white'],
-                            ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-300'],
-                            ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-300'],
-                            ['Approved', $approvedCount, 'text-emerald-600', 'dark:text-emerald-300'],
-                        ] as [$label, $val, $color, $darkColor])
-                            <div class="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2.5 dark:bg-neutral-800">
+                        @foreach ([['Total Orders', $orderCount, 'text-slate-900', 'dark:text-white'], ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-300'], ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-300']] as [$label, $val, $color, $darkColor])
+                            <div
+                                class="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2.5 dark:bg-neutral-800">
                                 <span class="text-sm text-slate-600 dark:text-neutral-300">{{ $label }}</span>
-                                <span class="text-sm font-semibold {{ $color }} {{ $darkColor }}">{{ $val }}</span>
+                                <span
+                                    class="text-sm font-semibold {{ $color }} {{ $darkColor }}">{{ $val }}</span>
                             </div>
                         @endforeach
                     </div>

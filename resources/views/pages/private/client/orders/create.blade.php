@@ -46,35 +46,13 @@
         <input type="hidden" id="items-json" name="items"
             value="{{ old('items', json_encode($cartItemsJson ?? $cartIds)) }}">
         <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="{{ $usermargin }}">
+        <input type="hidden" id="delivery_country" name="delivery_country" value="{{ old('delivery_country', $vatList['iso_code'] ?? '') }}">
         <x-forms.input name="order_number" :value="$orderNumber" readonly hidden />
         <x-forms.input name="order_date" type="date" :value="now()->format('Y-m-d')" hidden />
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Quotation Info --}}
             <div
                 class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-
-                {{-- Header --}}
-                <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
-                    <div
-                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 shadow-sm">
-                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 7.5h18M5.25 7.5v11.25A2.25 2.25 0 007.5 21h9a2.25 2.25 0 002.25-2.25V7.5M8.25 7.5V5.25A2.25 2.25 0 0110.5 3h3a2.25 2.25 0 012.25 2.25V7.5M9 11.25v5.25m6-5.25v5.25" />
-                        </svg>
-                    </div>
-
-                    <div class="min-w-0">
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">
-                            Manage Wholesaller  Company Information
-                        </h2>
-
-                        <p class="mt-0.5 text-xs leading-5 text-slate-500 dark:text-neutral-400">
-                            Manage the company logo and choose whether it should be displayed on PDFs.
-                        </p>
-                    </div>
-                </div>
-
                 {{-- Content --}}
                 <div class="p-6">
                     <div class="max-w-xl space-y-6">
@@ -96,37 +74,42 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+            {{-- Send To --}}
+            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col dark:border-neutral-800 dark:bg-neutral-950">
                 <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
-                    <div
-                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
-                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
+                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 003.712.872M15 19.128v-3.13m0 3.13a9.38 9.38 0 01-3.712.872M15 15.998a9.38 9.38 0 00-3.712-.872M3 7.5h18M12 3v1.5m0 15V21m-6.364-3.636l1.06-1.06M17.304 7.696l1.06-1.06M4.5 12H3m18 0h-1.5M6.696 7.696l-1.06-1.06m12.728 10.728l-1.06-1.06M12 18a6 6 0 100-12 6 6 0 000 12z" />
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Delivery</h2>
-                        <p class="text-xs text-slate-500 dark:text-neutral-400">Delivery country for VAT calculation
-                        </p>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Send To</h2>
+                        <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Wholesaler notification recipient</p>
                     </div>
                 </div>
-                <div class="p-6">
-                    <x-forms.select name="delivery_country" id="delivery_country" label="Delivery Country"
-                        :options="[
-                            'NL' => 'Netherlands',
-                            'BE' => 'Belgium',
-                            'DE' => 'Germany',
-                            'FR' => 'France',
-                            'IT' => 'Italy',
-                            'ES' => 'Spain',
-                            'GB' => 'United Kingdom',
-                            'OTHER' => 'Other (Outside EU)',
-                        ]" value="FR" />
+                <div class="p-6 flex-1">
+                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700 ring-4 ring-white dark:bg-blue-900/50 dark:text-blue-400 dark:ring-neutral-950">
+                            {{ strtoupper(substr($admin?->name ?? '?', 0, 1)) }}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2">
+                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $admin?->name ?? 'Unknown User' }}</p>
+                                <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">Admin</span>
+                            </div>
+                            <p class="mt-1 truncate text-xs text-slate-500 dark:text-neutral-400">{{ $admin?->email ?? 'No email available' }}</p>
+                            @if ($admin?->phone)
+                                <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{{ $admin->phone }}</p>
+                            @endif
+                        </div>
+                        <div class="hidden shrink-0 sm:block">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
         </div>
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Quotation Info --}}
@@ -153,37 +136,7 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-                <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
-                    <div
-                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
-                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Delivery</h2>
-                        <p class="text-xs text-slate-500 dark:text-neutral-400">Delivery country for VAT calculation
-                        </p>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <x-forms.select name="delivery_country" id="delivery_country" label="Delivery Country"
-                        :options="[
-                            'NL' => 'Netherlands',
-                            'BE' => 'Belgium',
-                            'DE' => 'Germany',
-                            'FR' => 'France',
-                            'IT' => 'Italy',
-                            'ES' => 'Spain',
-                            'GB' => 'United Kingdom',
-                            'OTHER' => 'Other (Outside EU)',
-                        ]" value="FR" />
-                </div>
-            </div>
+
         </div>
         {{-- Items --}}
         <div
@@ -205,7 +158,7 @@
                 </div>
             </div>
             <div class="p-6">
-                <livewire:order-items-manager :productIds="$cartIds" />
+                <livewire:order-items-manager :productIds="$cartIds" :vatList="$vatList" />
             </div>
         </div>
         {{-- Quotation Email Message --}}

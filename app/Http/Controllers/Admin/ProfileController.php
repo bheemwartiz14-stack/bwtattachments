@@ -24,11 +24,14 @@ class ProfileController extends Controller
         /** @var User $user */
         $user = auth()->user()->load(['userMeta', 'userMargin']);
         $avatar = $user->getFirstMedia('avatar');
-
+        $country_name = $user->country  ?? '';
+        $country_code = $user->country_code  ?? '';
         return view('pages.private.admin.profile.edit', [
             'user' => $user,
             'avatarUrl' => $avatar?->getUrl(),
             'avatarId' => $avatar?->id,
+            'country_name'=> $country_name,
+            'country_code'=> $country_code,
             'prefix' => 'admin',
             'breadcrumbLabel' => 'Admin',
             'breadcrumbRoute' => 'admin.dashboard',
@@ -40,6 +43,7 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
+        $data = $request->validated();
         $user = $request->user();
         $this->profileService->updateProfile($user, $request->validated());
 

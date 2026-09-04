@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Services\UserProductService;
+use App\Services\VatRateService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,6 +16,8 @@ class UserProductController extends Controller
 {
     public function __construct(
         private readonly UserProductService $userProductService,
+        protected UserService $userService,
+        protected VatRateService $vatRateService
     ) {}
 
     public function toggleFavorite(Product $product): JsonResponse
@@ -77,10 +81,11 @@ class UserProductController extends Controller
     public function cart(): View
     {
         $user = auth()->user();
+         $role = $user->roles->first()?->name;
+        $salleruser = $role === 'Wholesaler' ? $this->userService->getAdminUser() : $this->userService->getParentUser();
+        $vatList =$this->vatRateService->getTransactionVatCountryInfo($user, $salleruser);
         $cartItems = $this->userProductService->getQuotationItems($user);
-
         $cartIds = $cartItems->pluck('id')->map(fn ($id) => (string) $id)->toArray();
-
-        return view('pages.public.cart.index', compact('cartItems', 'cartIds'));
+        return view('pages.public.cart.index', compact('cartItems', 'cartIds','vatList'));
     }
 }

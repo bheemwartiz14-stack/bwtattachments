@@ -25,7 +25,7 @@
                                 {{ $cartItems->count() === 1 ? 'item' : 'items' }}</span>
                         </span>
                     </div>
-                    <livewire:cart-items-manager :productIds="$cartIds" />
+                  <livewire:order-items-manager :productIds="$cartIds" :vatList="$vatList" />
                     <div
                         class="flex flex-col-reverse gap-3 border-t border-slate-200 bg-white px-4 py-4 sm:flex-row sm:justify-end dark:border-neutral-800 dark:bg-neutral-900">
                         <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

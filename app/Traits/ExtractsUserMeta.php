@@ -16,6 +16,7 @@ trait ExtractsUserMeta
             'postal_code' => $data['postal_code'] ?? null,
             'city' => $data['city'] ?? null,
             'country' => $data['country'] ?? null,
+            'country_code' => $data['country_code'] ?? null,
             'website' => $data['website'] ?? null,
         ];
         $margin = $data['commission_percentage'] ?? 0;
@@ -26,7 +27,6 @@ trait ExtractsUserMeta
             $data['address'],
             $data['postal_code'],
             $data['city'],
-            $data['country'],
             $data['website'],
             $data['commission_percentage'],
         );

@@ -21,6 +21,7 @@ class WholesaleClientUserServices
 
     public function create(array $data): Model
     {
+
         $plainPassword = $data['password'] ?? null;
         [$meta, $margin] = $this->extract($data);
         $meta['plain_password'] = \App\Helpers\PasswordHelper::encrypt($plainPassword);

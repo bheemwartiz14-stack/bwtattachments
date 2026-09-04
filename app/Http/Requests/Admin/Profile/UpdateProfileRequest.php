@@ -22,6 +22,8 @@ class UpdateProfileRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'avatar_temp' => ['nullable', 'string'],
+            'country_name' => [ 'sometimes', ],
+            'country_code' => ['sometimes' ],
         ];
     }
 }

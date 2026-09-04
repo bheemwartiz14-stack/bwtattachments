@@ -82,7 +82,6 @@ Route::get('/site.webmanifest', function () {
 
 Route::get('/', [HomeController::class, 'index'])->name('public.home.index');
 Route::get('/sent-email', [HomeController::class, 'send_email'])->name('public.home.email');
-
 Route::get('/products', [PublicProductController::class, 'index'])->name('public.products.index');
 Route::get('/products/{product:slug}', [PublicProductController::class, 'show'])->name('public.products.show');
 Route::get('/products/{product:slug}/pdf', [PublicProductController::class, 'downloadPdf'])->name('public.products.pdf');

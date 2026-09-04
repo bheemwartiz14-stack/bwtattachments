@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Services\UserProductService;
 use App\Services\OrderServices;
 use App\Services\UserService;
+use App\Services\VatRateService;
 use App\Http\Requests\Customers\StoreCustomerOrderRequest;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -17,7 +18,8 @@ class CustomersOrderManagemntController extends Controller
       public function __construct(
         protected UserProductService $userProductService,
         protected OrderServices $orderServices,
-        protected UserService $userService
+        protected UserService $userService,
+        protected VatRateService $vatRateService
     ) {}
     /**
      * Display a listing of the resource.
@@ -36,7 +38,8 @@ class CustomersOrderManagemntController extends Controller
         $user = $this->userService->getAuthenticatedUser();
         $meta = $this->userService->getAuthenticatedUserMetadata();
         $orderNumber = $this->orderServices->generateOrderNumber();
-        $wholesallerUser = $this->userService->getParentUser();
+        $resalleruser = $this->userService->getParentUser();
+        $vatList =$this->vatRateService->getTransactionVatCountryInfo($user, $resalleruser);
         $cartIds = $this->userProductService->getQuotationProductIds($user);
         $usermargin = $user?->userMargin?->margin_value ?? 0;
         $cartItems = $this->userProductService->getQuotationItems($user);
@@ -58,11 +61,12 @@ class CustomersOrderManagemntController extends Controller
         return view('pages.private.customer.orders.create', [
             'user' => $user,
             'meta' => $meta,
-            'wholesallerUser' => $wholesallerUser,
+            'resalleruser' => $resalleruser,
             'cartIds' => $cartIds,
             'cartItemsJson' => $cartItemsJson,
             'orderNumber' => $orderNumber,
             'usermargin' => $usermargin,
+              'vatList' => $vatList
         ]);
         //
     }

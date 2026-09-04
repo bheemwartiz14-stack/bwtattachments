@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Services\UserProductService;
 use App\Services\OrderServices;
 use App\Services\UserService;
+use App\Services\VatRateService;
 use App\Http\Requests\Reseller\Order\StoreResellerOrderRequest;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -16,7 +17,8 @@ class ResallerOrderManagemntController extends Controller
      public function __construct(
         protected UserProductService $userProductService,
         protected OrderServices $orderServices,
-        protected UserService $userService
+        protected UserService $userService,
+        protected VatRateService $vatRateService
     ) {}
 
     /**
@@ -37,6 +39,7 @@ class ResallerOrderManagemntController extends Controller
         $meta = $this->userService->getAuthenticatedUserMetadata();
         $orderNumber = $this->orderServices->generateOrderNumber();
         $wholesallerUser = $this->userService->getParentUser();
+        $vatList =$this->vatRateService->getTransactionVatCountryInfo($user, $wholesallerUser);
         $cartIds = $this->userProductService->getQuotationProductIds($user);
         $usermargin = $user?->userMargin?->margin_value ?? 0;
         $cartItems = $this->userProductService->getQuotationItems($user);
@@ -63,6 +66,7 @@ class ResallerOrderManagemntController extends Controller
             'cartItemsJson' => $cartItemsJson,
             'orderNumber' => $orderNumber,
             'usermargin' => $usermargin,
+            'vatList' => $vatList
         ]);
     }
     /**
@@ -71,7 +75,6 @@ class ResallerOrderManagemntController extends Controller
     public function store(StoreResellerOrderRequest $request)
     {
         $data = $request->validated();
-        // dd($data);
         $action = $request->input('action', 'draft');
         $data['status'] = $action === 'send' ? 'sent' : 'draft';
         $retailer_client_logo = $data['retailer_client_logo_temp'];

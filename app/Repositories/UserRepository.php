@@ -231,6 +231,6 @@ class UserRepository
     {
         return User::role('Admin')
         ->orderBy('name')
-        ->first(['id', 'name', 'email', 'phone']);
+        ->first();
     }
 }

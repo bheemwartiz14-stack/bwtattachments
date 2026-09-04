@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Quotation;
+use App\Models\Order;
 use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Support\Carbon;
@@ -20,9 +21,8 @@ class DashboardController extends Controller
         $totalCategories = Category::count();
         $totalSubcategories = Subcategory::count();
         $totalClients = User::role('Wholesaler')->count();
-        $totalQuotations = Quotation::count();
+        $totalOrder = Order::count();
         $totalUsers = User::count();
-
         $stats = [
             'total_products' => $totalProducts,
             'new_products' => Product::where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
@@ -32,17 +32,12 @@ class DashboardController extends Controller
             'total_subcategories' => $totalSubcategories,
             'active_clients' => $totalClients,
             'new_clients' => User::role('Wholesaler')->where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
-            'total_quotations' => $totalQuotations,
-            'weekly_quotations' => Quotation::where('created_at', '>=', Carbon::now()->startOfWeek())->count(),
-            'monthly_quotations' => Quotation::where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
-            'quotation_target' => 50,
+            'total_order' => $totalOrder,
             'total_users' => $totalUsers,
             'active_users' => User::where('status', true)->count(),
         ];
 
-        $recentProducts = Product::latest()->take(5)->get();
-        $recentQuotations = Quotation::with('user')->latest()->take(5)->get();
 
-        return view('pages.private.admin.dashboard', compact('stats', 'recentProducts', 'recentQuotations'));
+        return view('pages.private.admin.dashboard', compact('stats'));
     }
 }

@@ -63,8 +63,6 @@
                         src="{{ $existingImageUrl ?? '' }}">
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="preview-name text-sm font-medium text-slate-900 dark:text-white">@if($existingImageUrl)Current image @endif</p>
-                    <p class="preview-size text-xs text-slate-400 dark:text-neutral-500"></p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" class="change-btn inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
@@ -136,8 +134,6 @@
 
         function updatePreview(data) {
             $previewImg.attr('src', data && data.url ? data.url : existingUrl);
-            $previewName.text(data ? data.name : (existingUrl ? 'Current image' : ''));
-            $previewSize.text(data && data.size ? formatSize(data.size) : '');
         }
 
         function formatSize(bytes) {

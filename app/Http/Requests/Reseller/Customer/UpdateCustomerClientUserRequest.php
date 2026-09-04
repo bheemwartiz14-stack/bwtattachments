@@ -36,7 +36,9 @@ class UpdateCustomerClientUserRequest extends FormRequest
             'address' => ['required', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'max:20'],
             'city' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
+            'vat_id' => [ 'required','string'],
+            'country_code' => ['sometimes' ],
+            'country' => ['sometimes' ],
             'website' => ['nullable', 'url', 'max:255'],
                  'customer_logo_temp' => ['nullable', 'string'],
         ];
