@@ -281,7 +281,7 @@
                                     <tr>
                                         <td colspan="4"
                                             class="px-6 py-12 text-center text-sm text-slate-400 dark:text-neutral-500">
-                                            No quotations yet.</td>
+                                            No Order yet.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
