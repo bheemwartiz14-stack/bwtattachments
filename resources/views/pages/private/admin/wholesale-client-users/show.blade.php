@@ -362,7 +362,7 @@
                         <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Quick Stats</h3>
                     </div>
                     <div class="space-y-3">
-                        @foreach ([['Total Quotations', $orderCount, 'text-slate-900', 'dark:text-white'], ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-300'], ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-300']] as [$label, $val, $color, $darkColor])
+                        @foreach ([['Total Orders', $orderCount, 'text-slate-900', 'dark:text-white'], ['Drafts', $draftCount, 'text-amber-600', 'dark:text-amber-300'], ['Sent', $sentCount, 'text-blue-600', 'dark:text-blue-300']] as [$label, $val, $color, $darkColor])
                             <div
                                 class="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2.5 dark:bg-neutral-800">
                                 <span class="text-sm text-slate-600 dark:text-neutral-300">{{ $label }}</span>
