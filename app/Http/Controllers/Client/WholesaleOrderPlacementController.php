@@ -100,7 +100,7 @@ class WholesaleOrderPlacementController extends Controller
        public function download(string $id): BinaryFileResponse|RedirectResponse|StreamedResponse
     {
         $order = $this->orderServices->findById($id);
-        $order = $this->orderServices->generateOrderPdf($order);
+        $this->orderServices->generateOrderPdf($order);
         if (!$order->pdf_file || !Storage::disk('public')->exists($order->pdf_file)) {
             return back()->with('error', 'PDF file not found.');
         }

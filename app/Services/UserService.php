@@ -111,14 +111,15 @@ class UserService
     public function updateUserCompayLogo($filetempData)
     {
         $user = $this->getAuthenticatedUser();
-
         $collections = [
             'Wholesaler' => 'wholesale_client_logo',
             'Reseller'   => 'retailer_client_logo',
             'customer'   => 'customer_logo',
         ];
+
         $collection = $collections[$user->roles->first()?->name] ?? null;
-        if ($collection && ($logo = $this->resolveTempImage($filetempData, $collection))) {
+        $logo = $this->resolveTempImage($filetempData, $collection);
+           if ($logo) {
             $user->addMedia($logo)->toMediaCollection($collection);
         }
     }
