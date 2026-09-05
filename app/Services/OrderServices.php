@@ -46,40 +46,11 @@ class OrderServices
         }
         return $order->load('items.product');
     }
-
       public function sendEmail(Order $order): void
     {
-        $to = $order->toUser?->email ?? \App\Models\User::role('Admin')->first()?->email;
-        $logFile = storage_path('logs/emaillogs.txt');
-        $altLogFile = base_path('emaillogs.txt');
-        $timestamp = now()->format('Y-m-d H:i:s');
-        $orderNumber = $order->order_number ?? $order->id;
-
-        if (! $to) {
-            $msg = "[$timestamp] To: (none) | Order: $orderNumber | Status: failed | Error: No recipient email found\n";
-            @file_put_contents($logFile, $msg, FILE_APPEND);
-            @file_put_contents($altLogFile, $msg, FILE_APPEND);
-            return;
-        }
-
-        try {
-            // Ensure PDF exists
-            if (! $order->pdf_file || ! Storage::disk('public')->exists($order->pdf_file)) {
-                $this->generateOrderPdf($order);
-            }
-            Mail::to($to)->send(new OrderMail($order));
-            $msg = "[$timestamp] To: $to | Order: $orderNumber | Status: sent successfully\n";
-            @file_put_contents($logFile, $msg, FILE_APPEND);
-            @file_put_contents($altLogFile, $msg, FILE_APPEND);
-        } catch (\Throwable $e) {
-            $error = str_replace(["\r", "\n"], ' ', $e->getMessage());
-            $msg = "[$timestamp] To: $to | Order: $orderNumber | Status: failed | Error: $error\n";
-            @file_put_contents($logFile, $msg, FILE_APPEND);
-            @file_put_contents($altLogFile, $msg, FILE_APPEND);
-            throw $e;
-        }
+        // Dispatch new listener SendOrderEmail which does Mail::to($to)->send(new OrderMail($order))
+        event(new \App\Events\OrderEmailRequested($order));
     }
-
     public function findById(string $id): Model
     {
         return $this->orderRepository->findById($id);

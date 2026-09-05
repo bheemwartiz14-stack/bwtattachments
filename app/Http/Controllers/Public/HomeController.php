@@ -26,17 +26,21 @@ class HomeController extends Controller
         return view('pages.public.index');
     }
 
-        public function send_email(): JsonResponse
+    public function send_email(): JsonResponse
     {
-        Mail::raw('Hello', function ($message) {
-            $message
-                ->to('bheem.wartiz14@gmail.com')
-                ->subject('Test Email');
-        });
+        // Temporary email delivery test
+        Mail::raw(
+            'This is a temporary email delivery test from the BWT Attachments application.',
+            function ($message) {
+                $message
+                    ->to('bheem.wartiz14@gmail.com')
+                    ->subject('BWT Attachments - Email Delivery Test');
+            }
+        );
 
         return response()->json([
             'success' => true,
-            'message' => 'Test email sent successfully.',
+            'message' => 'Email delivery test sent successfully.',
         ]);
     }
 }

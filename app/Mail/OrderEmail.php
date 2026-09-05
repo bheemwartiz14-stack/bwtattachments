@@ -13,21 +13,14 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 
-class OrderMail extends Mailable
+class OrderEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct(
         public Order $order,
-    ) {
-    }
+    ) {}
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -35,14 +28,12 @@ class OrderMail extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         $this->order->loadMissing([
             'items.product',
-            'user.userMeta',
+            'fromUser.userMeta',
+            'toUser.userMeta',
         ]);
 
         return new Content(
@@ -50,9 +41,6 @@ class OrderMail extends Mailable
         );
     }
 
-    /**
-     * Get the message attachments.
-     */
     public function attachments(): array
     {
         if (empty($this->order->pdf_file)) {
