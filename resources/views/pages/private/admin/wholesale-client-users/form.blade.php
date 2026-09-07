@@ -85,7 +85,7 @@
                             :required="true" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
                             :required="true" :error="$errors->first('city')" />
-                        <x-forms.select name="vat_id" label="Country" :options="$vatcountries" :selected="old('country', $user->country ?? null)"
+                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('country', $user->country ?? null)"
                             placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
