@@ -114,27 +114,6 @@
                                 <dd class="mt-1 text-sm text-slate-700 dark:text-neutral-100">{{ $user->phone ?? '—' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Username</dt>
-                                <dd class="mt-1 text-sm font-mono font-medium text-slate-900 dark:text-neutral-100">{{ $user->username }}</dd>
-                            </div>
-                            <div class="md:col-span-2">
-                                 @php
-                                    $decryptedPass = \App\Helpers\PasswordHelper::isEncrypted($meta['plain_password'])
-                                        ? \App\Helpers\PasswordHelper::decrypt($meta['plain_password'])
-                                        : $meta['plain_password'];
-                                @endphp
-                                <x-forms.password
-                                    name="password"
-                                    label="Password"
-                                    :value="$decryptedPass"
-                                    readonly
-                                    :showGenerator="false"
-                                    :showToggle="true"
-                                    :showCopy="true"
-                                    wrapperClass="w-full"
-                                />
-                            </div>
-                            <div>
                                 <dt class="text-xs font-medium uppercase tracking-wider text-slate-400 dark:text-neutral-500">Role</dt>
                                 <dd class="mt-1">
                                     <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">

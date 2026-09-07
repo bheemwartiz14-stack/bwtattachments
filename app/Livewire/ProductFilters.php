@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Connection;
 use App\Models\Subcategory;
 use App\Services\ProductService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -17,9 +18,16 @@ class ProductFilters extends Component
     use WithPagination;
 
     public array $quantities = [];
-
     #[Url(except: '')]
     public string $search = '';
+    #[Url(except: '')]
+    public string $sort_by = '';
+    #[Url(except: '')]
+    public string $min_weight = '';
+    #[Url(except: '')]
+    public string $max_weight = '';
+    #[Url(except: '')]
+    public string $perPage = '';
     #[Url(except: '')]
     public string $category = '';
     #[Url(except: '')]
@@ -34,18 +42,27 @@ class ProductFilters extends Component
         $this->resetPage();
     }
 
-    public function applyFilters(string $category = '', string $subcategory = '', string $connection = '', string $machine_class = ''): void
+    public function updatingSortBy(): void
     {
-        $this->category = $category;
-        $this->subcategory = $subcategory;
-        $this->connection = $connection;
-        $this->machine_class = $machine_class;
+        $this->resetPage();
+    }
+
+    public function applyFilters(?string $category = '', ?string $sort_by = '', ?string $subcategory = '', ?string $connection = '', ?string $machine_class = '', ?string $min_weight = '', ?string $max_weight = '' ,?string $perPage = ''): void
+    {
+        $this->sort_by = $sort_by ?? '';
+        $this->category = $category ?? '';
+        $this->subcategory = $subcategory ?? '';
+        $this->connection = $connection ?? '';
+        $this->machine_class = $machine_class ?? '';
+        $this->min_weight = $min_weight ?? '';
+        $this->max_weight = $max_weight ?? '';
+        $this->perPage = $perPage ?? '';
         $this->resetPage();
     }
 
     public function clearFilters(): void
     {
-        $this->reset(['search', 'category', 'subcategory', 'connection', 'machine_class']);
+        $this->reset(['search', 'sort_by','category', 'subcategory', 'connection', 'machine_class', 'min_weight', 'max_weight','perPage']);
         $this->resetPage();
     }
 
@@ -85,22 +102,25 @@ class ProductFilters extends Component
     {
         $filters = array_filter([
             'search' => $this->search ?: null,
+            'user_id'=> Auth::id(),
+            'sort_by' => $this->sort_by ?: null,
+            'min_weight' => $this->min_weight !== '' ? $this->min_weight : null,
+            'max_weight' => $this->max_weight !== '' ? $this->max_weight : null,
+            'perPage' => $this->perPage !== '' ? $this->perPage : null,
             'category' => $this->resolveSlug(Category::class, $this->category ?: null),
             'subcategory' => $this->resolveSlug(Subcategory::class, $this->subcategory ?: null),
             'connection' => $this->resolveSlug(Connection::class, $this->connection ?: null),
             'machine_class' => $this->machine_class ?: null,
             'status' => '1',
         ]);
-
-        $hasFilters = $this->search !== '' || $this->category !== '' || $this->subcategory !== '' || $this->connection !== '' || $this->machine_class !== '';
-        $products = $hasFilters ? $productService->paginate(28, $filters) : collect();
+        $hasFilters = $this->search !== '' || $this->sort_by !== '' || $this->min_weight !== '' || $this->max_weight !== '' || $this->category !== '' || $this->subcategory !== '' || $this->connection !== '' || $this->machine_class !== '';
+        $products = $hasFilters ? $productService->filterProducts($filters) : collect();
         $categories = Category::query()->orderBy('name')->pluck('name', 'slug')->toArray();
-        $subcategories = Subcategory::query()
-            ->with('category:id,name,slug')
-            ->orderBy('name')
-            ->get(['id', 'name', 'slug', 'category_id']);
+        $sortOptions = $productService->getSortOptions();
+        $pageOptions = $productService->getPerPageOptions();
+        $subcategories = Subcategory::query()->with('category:id,name,slug')->orderBy('name')->get(['id', 'name', 'slug', 'category_id']);
         $connections = Connection::query()->orderBy('name')->pluck('name', 'slug')->toArray();
-        return view('livewire.product-filters', compact('products', 'categories', 'subcategories', 'connections', 'hasFilters'));
+        return view('livewire.product-filters', compact('products', 'categories', 'sortOptions','pageOptions','subcategories', 'connections', 'hasFilters'));
     }
 
     private function resolveSlug(string $modelClass, ?string $value): ?string

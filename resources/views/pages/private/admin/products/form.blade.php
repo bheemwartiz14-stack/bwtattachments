@@ -1,15 +1,15 @@
 <x-layouts.app>
     @php
         $isEdit = !empty($product);
-                $pdfMedia = $product?->getFirstMedia('pdfs');
+        $pdfMedia = $product?->getFirstMedia('pdfs');
 
-                if ($pdfMedia) {
-                    $pdfUrl = url('public/storage/' . $pdfMedia->getPathRelativeToRoot());
-                } else {
-                    $pdfUrl = '';
-                }
+        if ($pdfMedia) {
+            $pdfUrl = url('public/storage/' . $pdfMedia->getPathRelativeToRoot());
+        } else {
+            $pdfUrl = '';
+        }
 
-        @endphp
+    @endphp
     <x-slot:title>{{ $isEdit ? 'Edit Product' : 'Create Product' }} - BWT</x-slot:title>
 
     <x-breadcrumb :items="[
@@ -19,12 +19,10 @@
     ]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="{{ $isEdit ? 'Edit Product' : 'Create Product' }}"
-            icon="heroicon-o-cube" />
+        <x-ui.hero title="{{ $isEdit ? 'Edit Product' : 'Create Product' }}" icon="heroicon-o-cube" />
 
         @if ($errors->any())
-            <div
-                class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/50 dark:bg-red-900/20">
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/50 dark:bg-red-900/20">
                 <div class="flex items-start gap-3">
                     <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
@@ -82,17 +80,13 @@
                         placeholder="Internal notes for admin reference" hint="Admin only" />
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
-                            <x-forms.currency
-                                name="ddp_price_rmb"
-                                label="DDP Price (CNY)"
-                                :value="$product->ddp_price_rmb ?? ''"
-                                placeholder="0.00"
-                                symbol="¥"
-                            />
-                            <p id="currency-rate-hint" class="mt-1 text-xs text-gray-500 dark:text-neutral-400">Loading exchange rate...</p>
+                            <x-forms.currency name="ddp_price_rmb" label="DDP Price (CNY)" :value="$product->ddp_price_rmb ?? ''"
+                                placeholder="0.00" symbol="¥" />
+                            <p id="currency-rate-hint" class="mt-1 text-xs text-gray-500 dark:text-neutral-400">Loading
+                                exchange rate...</p>
                         </div>
-                        <x-forms.currency name="ddp_price" label="DDP Price (EUR)" :value="$product->ddp_price ?? ''"
-                            placeholder="0.00" readonly />
+                        <x-forms.currency name="ddp_price" label="DDP Price (EUR)" :value="$product->ddp_price ?? ''" placeholder="0.00"
+                            readonly />
                         <x-forms.toggle name="status" label="Product Status" :checked="$product->status ?? true" description="Active" />
                     </div>
                 </div>
@@ -134,28 +128,66 @@
                     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         @php
                             $specs = [
-                                'weight' => ['label' => 'Weight (kg)', 'placeholder' => 'e.g. 1.5 or 1.5-2.0'],
-                                'width' => ['label' => 'Width (mm)', 'placeholder' => 'e.g. 200 or 200-250'],
-                                'volume' => ['label' => 'Volume (m3)', 'placeholder' => 'e.g. 0.5 or 0.5-0.8'],
+                                'weight' => [
+                                    'label' => 'Weight (kg)',
+                                    'placeholder' => 'e.g. 1.5 or 1.5-2.0',
+                                    'type' => 'text',
+                                ],
+                                'width' => [
+                                    'label' => 'Width (mm)',
+                                    'placeholder' => 'e.g. 200 or 200-250',
+                                    'type' => 'text',
+                                ],
+                                'volume' => [
+                                    'label' => 'Volume (m3)',
+                                    'placeholder' => 'e.g. 0.5 or 0.5-0.8',
+                                    'type' => 'text',
+                                ],
                                 'machine_class' => [
                                     'label' => 'Machine class (t)',
                                     'placeholder' => 'e.g. 20 or 20-30',
+                                    'type' => 'text',
                                 ],
                                 'cutting_edge_thickness' => [
                                     'label' => 'Cutting Edge Thickness (mm)',
                                     'placeholder' => 'e.g. 10 or 10-15',
+                                    'type' => 'text',
                                 ],
-                                'teeth' => ['label' => 'Teeth', 'placeholder' => 'e.g. 4 or 4-6'],
-                                'pin_hole' => ['label' => 'Pin Hole (mm)', 'placeholder' => 'e.g. 30 or 30-40'],
+                                'teeth' => [
+                                    'label' => 'Teeth',
+                                    'placeholder' => 'e.g. 4 or 4-6',
+                                    'type' => 'text',
+                                ],
+                                'pin_hole' => [
+                                    'label' => 'Pin Hole (mm)',
+                                    'placeholder' => 'e.g. 30 or 30-40',
+                                    'type' => 'text',
+                                ],
                                 'pin_center' => [
                                     'label' => 'Pin center to Pin center (mm)',
                                     'placeholder' => 'e.g. 50 or 50-60',
+                                    'type' => 'text',
                                 ],
-                                'stick_width' => ['label' => 'Stick Width (mm)', 'placeholder' => 'e.g. 80 or 80-100'],
+                                'stick_width' => [
+                                    'label' => 'Stick Width (mm)',
+                                    'placeholder' => 'e.g. 80 or 80-100',
+                                    'type' => 'text',
+                                ],
+
+                                'manufacture_year' => [
+                                    'label' => 'Manufacture Year',
+                                    'placeholder' => 'e.g. 2024',
+                                    'type' => 'number',
+                                    'min' => 1900,
+                                    'max' => 3000,
+                                    'required' => true,
+                                ],
                             ];
                         @endphp
+
                         @foreach ($specs as $field => $config)
-                            <x-forms.input name="{{ $field }}" :label="$config['label']"
+                            <x-forms.input name="{{ $field }}" :label="$config['label']" :type="$config['type']"
+                                :min="$config['min'] ?? null" :max="$config['max'] ?? null" :required="$config['required'] ?? false"
                                 placeholder="{{ $config['placeholder'] }}" :value="$product->$field ?? ''" />
                         @endforeach
                     </div>

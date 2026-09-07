@@ -10,9 +10,7 @@
     }
 
     ready(function () {
-        initCustomerSelection();
         initDateDefaults();
-        initQuillEditor();
         initDateSync();
         initFormSubmission();
         initAutoSave();
@@ -22,54 +20,6 @@
     });
 
     /* ---------- CUSTOMER SELECTION ---------- */
-    function initCustomerSelection() {
-        var contactInfo = document.getElementById('contact-info');
-        var nameDisplay = document.getElementById('contact-name-display');
-        var emailDisplay = document.getElementById('contact-email-display');
-        var phoneDisplay = document.getElementById('contact-phone-display');
-
-        function ensureHidden(id, name) {
-            if (document.getElementById(id)) return;
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.id = id;
-            input.name = name;
-            var form = document.getElementById('order-form') || document.getElementById('quotation-form');
-            if (form) form.appendChild(input);
-        }
-        ensureHidden('contact_name', 'contact_name');
-        ensureHidden('contact_email', 'contact_email');
-        ensureHidden('contact_phone', 'contact_phone');
-        ensureHidden('reseller_id', 'reseller_id');
-
-        window.addEventListener('customerSelected', function (e) {
-            if (e.detail) {
-                if (contactInfo) {
-                    contactInfo.classList.remove('hidden');
-                    if (nameDisplay) nameDisplay.textContent = e.detail.name || '—';
-                    if (emailDisplay) emailDisplay.textContent = e.detail.email || '—';
-                    if (phoneDisplay) phoneDisplay.textContent = e.detail.phone || '—';
-                }
-                setVal('contact_name', e.detail.name || '');
-                setVal('contact_email', e.detail.email || '');
-                setVal('contact_phone', e.detail.phone || '');
-                setVal('reseller_id', e.detail.id || '');
-                var marginSpan = document.getElementById('margin_percentage');
-                if (marginSpan) marginSpan.textContent = (e.detail.margin ?? 0).toFixed(2) + '%';
-                setVal('margin_percentage_hidden', e.detail.margin ?? 0);
-            }
-        });
-        window.addEventListener('customerCleared', function () {
-            if (contactInfo) contactInfo.classList.add('hidden');
-            if (nameDisplay) nameDisplay.textContent = '—';
-            if (emailDisplay) emailDisplay.textContent = '—';
-            if (phoneDisplay) phoneDisplay.textContent = '—';
-            ['contact_name', 'contact_email', 'contact_phone', 'reseller_id'].forEach(function (id) { setVal(id, ''); });
-            var marginSpan = document.getElementById('margin_percentage');
-            if (marginSpan) marginSpan.textContent = '0.00%';
-            setVal('margin_percentage_hidden', 0);
-        });
-    }
 
     /* ---------- DATE DEFAULTS ---------- */
     function initDateDefaults() {
@@ -230,55 +180,6 @@
             });
         });
     }
-
-    /* ---------- QUILL EDITOR ---------- */
-    function initQuillEditor() {
-        var editorEl = document.getElementById('notes_editor');
-        var hiddenInput = document.getElementById('notes_input');
-        if (editorEl && hiddenInput && typeof Quill !== 'undefined') {
-            var quill = new Quill(editorEl, {
-                theme: 'snow',
-                placeholder: 'Enter any additional notes, terms, or instructions...',
-                modules: {
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        ['blockquote', 'code-block'],
-                        ['link'],
-                        ['clean']
-                    ]
-                }
-            });
-            if (hiddenInput.value) {
-                quill.root.innerHTML = hiddenInput.value;
-            }
-            quill.on('text-change', function () {
-                hiddenInput.value = quill.root.innerHTML;
-            });
-            var form = document.getElementById('order-form') || document.getElementById('quotation-form');
-            if (form) {
-                form.addEventListener('submit', function () {
-                    hiddenInput.value = quill.root.innerHTML;
-                });
-            }
-        }
-    }
-
-    /* ---------- DATE SYNC ---------- */
-    function initDateSync() {
-        var issueDate = document.getElementById('issue_date');
-        var validUntil = document.getElementById('valid_until');
-        if (issueDate && validUntil) {
-            issueDate.addEventListener('change', function () {
-                validUntil.min = this.value;
-                if (validUntil.value && validUntil.value < this.value) {
-                    validUntil.value = this.value;
-                }
-            });
-        }
-    }
-
     /* ---------- CART BADGE + QUOTATION (for product-card) ---------- */
     document.addEventListener('cartUpdated', function (e) {
         var c = e.detail?.count ?? e.detail?.[0]?.count;

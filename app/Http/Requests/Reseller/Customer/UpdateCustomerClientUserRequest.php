@@ -26,8 +26,6 @@ class UpdateCustomerClientUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email:rfc,dns', 'max:255'],
-            'username' => ['nullable', 'string', 'max:255'],
-            'password' => ['nullable', 'string', 'min:8'],
             'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{10,20}$/'],
             'retailer_client_logo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'commission_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],

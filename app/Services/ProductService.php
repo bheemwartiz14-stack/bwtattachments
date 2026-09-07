@@ -21,6 +21,29 @@ class ProductService
         protected UserService $userServices
     ) {}
 
+    public function getSortOptions(): array
+    {
+        return [
+            ['value' => 'newest', 'name' => 'Newest first'],
+            ['value' => 'oldest', 'name' => 'Oldest first'],
+            ['value' => 'manufacture_year_high_low', 'name' => 'Manufacture year (High-Low)'],
+            ['value' => 'manufacture_year_low_high', 'name' => 'Manufacture year (Low-High)'],
+            ['value' => 'price_high_low', 'name' => 'Price (High-Low)'],
+            ['value' => 'price_low_high', 'name' => 'Price (Low-High)'],
+        ];
+    }
+
+        public function getPerPageOptions(): array
+    {
+        return [
+            
+            25 => '25 per page',
+            50 => '50 per page',
+            75 => '75 per page',
+            100 => '100 per page',
+        ];
+    }
+
     public function getAll(): Collection
     {
         return $this->productRepository->getAll();
@@ -30,6 +53,10 @@ class ProductService
     {
         return $this->productRepository->activeQuery();
     }
+
+   public function filterProducts(array $filters = []){
+        return $this->productRepository->filterProducts($filters);
+     }
 
     public function paginate(int $perPage = 10, array $filters = [] , ): LengthAwarePaginator
     {

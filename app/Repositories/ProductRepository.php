@@ -47,8 +47,8 @@ class ProductRepository
      */
     public function activeQuery(array $select = ['*']): Builder
     {
-        return $this->model
-            ->query()
+
+        return $this->model->query()
             ->where('status', 1)
             ->with(self::RELATIONS)
             ->select($select);
@@ -56,9 +56,117 @@ class ProductRepository
 
     }
 
-    /**
-     * Paginate products
-     */
+
+    public function filterProducts( array $filters = []){
+
+        $userId = $filters['user_id'] ?? null;
+        $perPage = isset($filters['perPage']) && in_array((int) $filters['perPage'], [25, 50, 75, 100], true)
+            ? (int) $filters['perPage']
+            : 28;
+        $query = $this->model->query()->with(self::RELATIONS)->where('status', 1);
+        if (!empty($filters['search'])) {
+        $query->where(function ($q) use ($filters) {
+                $q->where('product_code', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('product_title', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('product_description', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+        if (!empty($filters['category'])) {
+            $query->where('category_id', $filters['category']);
+        }
+        if (!empty($filters['subcategory'])) {
+            $query->where('subcategory_id', $filters['subcategory']);
+        }
+        if (!empty($filters['connection'])) {
+             $query->where('connection_id', $filters['connection']);
+        }
+        if (!empty($filters['machine_class'])) {
+            $machineClass = trim((string) $filters['machine_class']);
+            if (str_ends_with($machineClass, '+')) {
+                $query->where('machine_class', '>=', (int) $machineClass);
+            } elseif (str_contains($machineClass, '-')) {
+                [$min, $max] = array_map('intval', explode('-', $machineClass, 2));
+                $query->whereBetween('machine_class', [min($min, $max), max($min, $max)]);
+            } else {
+                $query->where('machine_class', $machineClass);
+            }
+        }
+        // Weight Min and Max (0-10000 = slider defaults = no filter)
+        if ( isset($filters['min_weight']) && isset($filters['max_weight']) &&  $filters['min_weight'] !== '' &&  $filters['max_weight'] !== '' ) {
+            $minWeight = (int) $filters['min_weight'];
+            $maxWeight = (int) $filters['max_weight'];
+            if (! ($minWeight == 0 && $maxWeight == 10000)) {
+                if ($minWeight > $maxWeight) {
+                    [$minWeight, $maxWeight] = [$maxWeight, $minWeight];
+                }
+                $query->whereRaw(
+            'CAST(weight AS UNSIGNED) BETWEEN ? AND ?',
+            [$minWeight, $maxWeight]
+        );
+            }
+        }
+        if (!empty($filters['sort_by'])) {
+            $this->applySorting( $query, $filters['sort_by'] );
+        } else {
+            $query->orderBy('products.created_at', 'desc');
+        }
+
+        return $query->paginate($perPage);
+}
+
+    private  function applySorting(Builder $query, string $sortBy): void
+    {
+        $allowed = ['newest', 'oldest', 'manufacture_year_high_low', 'manufacture_year_low_high', 'price_high_low', 'price_low_high'];
+        if (! in_array($sortBy, $allowed, true)) {
+            $query->orderBy('products.created_at', 'desc');
+            return;
+        }
+        $userId = auth()->id();
+        switch ($sortBy) {
+            case 'newest':
+                $query->latest('products.created_at');
+                break;
+            case 'oldest':
+                $query->orderBy('products.created_at', 'asc');
+                break;
+            case 'manufacture_year_high_low':
+                $query->orderByRaw('products.manufacture_year IS NULL, products.manufacture_year DESC');
+                break;
+            case 'manufacture_year_low_high':
+                $query->orderByRaw('products.manufacture_year IS NULL, products.manufacture_year ASC');
+                break;
+            case 'price_high_low':
+                   if ($userId) {
+                        $query->leftJoin('product_prices as pp', function ($join) use ($userId) {
+                            $join->on('pp.product_id', '=', 'products.id')
+                                ->where('pp.user_id', '=', $userId);
+                        });
+                        $query->select('products.*')
+                            ->orderByRaw(
+                                'COALESCE(pp.final_price, products.ddp_price) DESC'
+                            );
+                    } else {
+                        $query->orderByDesc('products.ddp_price');
+                    }
+                break;
+            case 'price_low_high':
+                $query->orderByRaw(
+                    'COALESCE(
+                        (
+                            SELECT final_price
+                            FROM product_prices
+                            WHERE product_prices.product_id = products.id
+                            AND product_prices.user_id = ?
+                            LIMIT 1
+                        ),
+                        products.ddp_price
+                    ) ASC',
+                    [$userId]
+                );
+                break;
+        }
+    }
+
  public function paginate(
     int $perPage = 10,
     array $filters = []

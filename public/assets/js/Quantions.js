@@ -53,6 +53,7 @@
                 setVal('contact_email', e.detail.email || '');
                 setVal('contact_phone', e.detail.phone || '');
                 setVal('reseller_id', e.detail.id || '');
+                setVal('delivery_country', e.detail.iso_code || '');
                 var marginSpan = document.getElementById('margin_percentage');
                 if (marginSpan) marginSpan.textContent = (e.detail.margin ?? 0).toFixed(2) + '%';
                 setVal('margin_percentage_hidden', e.detail.margin ?? 0);

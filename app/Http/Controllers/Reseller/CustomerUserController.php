@@ -72,7 +72,6 @@ class CustomerUserController extends Controller
         $meta = $user->userMeta?->metadata ?? [];
         $vatcountries = $this->vatRateService->options();
         return view('pages.private.reseller.customer-users.form', compact('user', 'userRole', 'meta','vatcountries'));
-        //
     }
 
     /**
@@ -91,7 +90,7 @@ class CustomerUserController extends Controller
     public function destroy(string $id)
     {
           $this->customerService->delete($id);
-        return redirect()->route('client.reseller-users.index')->with('success', 'Customer account Updated successfully.');
+        return redirect()->route('reseller.customer-users.index')->with('success', 'Customer account Updated successfully.');
         //
     }
 }

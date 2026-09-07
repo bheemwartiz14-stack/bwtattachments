@@ -153,6 +153,7 @@
                             'pin_hole' => ['label' => 'Pin Hole (mm)', 'unit' => 'mm'],
                             'pin_center' => ['label' => 'Pin center to Pin center (mm)', 'unit' => 'mm'],
                             'stick_width' => ['label' => 'Stick Width', 'unit' => 'mm'],
+                            'manufacture_year' => ['label' => 'Manufacture Year', 'unit' => null],
                             ];
                     @endphp
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">

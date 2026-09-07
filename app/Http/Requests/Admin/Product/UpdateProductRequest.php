@@ -18,7 +18,7 @@ class UpdateProductRequest extends FormRequest
         return [
             // ================= BASIC INFO =================
             'product_title' => ['required', 'string', 'max:255'],
-            
+
 
             'product_code' => [
                 'required',
@@ -39,6 +39,7 @@ class UpdateProductRequest extends FormRequest
             'volume' => ['nullable', 'string'],
             'teeth' => ['nullable', 'string'],
             'pin_hole' => ['nullable', 'string'],
+            'manufacture_year' => ['required','integer', 'min:1900', 'max:3000', ],
             'machine_class' => ['nullable', 'string'],
             'material' => ['nullable', 'string', 'max:255'],
             'thickness' => ['nullable', 'string'],
@@ -47,6 +48,10 @@ class UpdateProductRequest extends FormRequest
             'hinges' => ['nullable', 'string', 'max:255'],
             'stick_width' => ['nullable', 'string'],
             'pin_center' => ['nullable', 'string'],
+            'manufacture_year.required' => 'Please enter the manufacture year.',
+            'manufacture_year.integer' => 'Manufacture year must be a whole number.',
+            'manufacture_year.min' => 'Manufacture year must be at least 1900.',
+            'manufacture_year.max' => 'Manufacture year cannot be greater than 3000.',
             'cutting_edge_thickness' => ['nullable', 'string'],
             'ddp_price' => ['nullable', 'string'],
             'ddp_price_rmb' => ['nullable', 'numeric', 'min:0'],
@@ -61,7 +66,7 @@ class UpdateProductRequest extends FormRequest
             'product_prices' => ['nullable', 'array'],
             'product_prices.*.user_id' => ['required', 'string', 'exists:users,id'],
             'product_prices.*.price' => ['required', 'numeric', 'min:0'],
-        
+
             'internal_notes' => ['nullable', 'string'],
         ];
     }
@@ -113,6 +118,7 @@ class UpdateProductRequest extends FormRequest
             'stick_width' => 'stick width',
             'pin_center' => 'pin center',
             'pin_hole' => 'pin hole',
+            'manufacture_year' => 'manufacture year',
             'ddp_price' => 'DDP price',
             'product_feature_image' => 'feature image',
             'product_gallery_images' => 'gallery images',

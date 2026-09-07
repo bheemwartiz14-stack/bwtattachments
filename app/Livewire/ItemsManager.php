@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Livewire;
@@ -15,7 +16,9 @@ class ItemsManager extends Component
 
     public string $search = '';
 
-    public string $deliveryCountry = 'NL';
+    public string $deliveryCountry = '';
+
+    public float $customerVatRate = 0;
 
     public ?string $customerId = null;
 
@@ -33,19 +36,26 @@ class ItemsManager extends Component
     public function mount($productIds = []): void
     {
         $items = old('items');
+
         if ($items) {
-            $decoded = is_string($items) ? json_decode($items, true) : $items;
+            $decoded = is_string($items)
+                ? json_decode($items, true)
+                : $items;
+
             if (is_array($decoded)) {
                 $this->items = $decoded;
             }
         }
+
         if ($this->productId) {
             $productIds[] = $this->productId;
             $this->productId = null;
         }
+
         foreach (array_unique($productIds) as $id) {
             $this->addItem($id);
         }
+
         if (count($this->items) > 0) {
             $this->recalculatePrices();
         }
@@ -65,16 +75,23 @@ class ItemsManager extends Component
 
     public function addItem(string $productId): void
     {
-        if (collect($this->items)->contains('product_id', $productId)) return;
+        if (collect($this->items)->contains('product_id', $productId)) {
+            return;
+        }
 
         $userId = $this->customerId ?? Auth::id();
 
-        $product = $this->productService->getActiveProductsWithUserPrices($userId)
+        $product = $this->productService
+            ->getActiveProductsWithUserPrices($userId)
             ->firstWhere('id', $productId);
 
-        if (!$product) return;
+        if (!$product) {
+            return;
+        }
 
-        $price = $product->productPrices->first()?->final_price ?? $product->ddp_price ?? 0;
+        $price = $product->productPrices->first()?->final_price
+            ?? $product->ddp_price
+            ?? 0;
 
         $this->items[] = [
             'product_id' => $product->id,
@@ -85,6 +102,7 @@ class ItemsManager extends Component
         ];
 
         $this->dispatchItemsUpdated();
+
         $this->showModal = false;
         $this->search = '';
     }
@@ -93,6 +111,7 @@ class ItemsManager extends Component
     {
         if (isset($this->items[$index])) {
             array_splice($this->items, $index, 1);
+
             $this->dispatchItemsUpdated();
         }
     }
@@ -100,7 +119,11 @@ class ItemsManager extends Component
     public function updateQty(int $index, int $value): void
     {
         if (isset($this->items[$index])) {
-            $this->items[$index]['quantity'] = min(50, max(1, $value));
+            $this->items[$index]['quantity'] = min(
+                50,
+                max(1, $value)
+            );
+
             $this->dispatchItemsUpdated();
         }
     }
@@ -109,6 +132,7 @@ class ItemsManager extends Component
     {
         if (isset($this->items[$index])) {
             $this->items[$index]['price'] = max(0, $value);
+
             $this->dispatchItemsUpdated();
         }
     }
@@ -116,14 +140,29 @@ class ItemsManager extends Component
     #[On('countryChanged')]
     public function updateCountry($country): void
     {
-        $this->deliveryCountry = is_array($country) ? ($country['country'] ?? 'NL') : $country;
+        $this->deliveryCountry = is_array($country)
+            ? ($country['country'] ?? 'NL')
+            : $country;
+
         $this->dispatchItemsUpdated();
     }
 
     #[On('customerIdChanged')]
-    public function updateCustomerId($id): void
-    {
-        $this->customerId = is_array($id) ? ($id['id'] ?? null) : $id;
+    public function updateCustomerId(
+        $id,
+        $iso_code = null,
+        $standard_vat_rate = null
+    ): void {
+        $this->customerId = is_array($id)
+            ? ($id['id'] ?? null)
+            : $id;
+
+        $this->deliveryCountry = $iso_code ?: 'NL';
+
+        $this->customerVatRate = $standard_vat_rate !== null
+            ? (float) $standard_vat_rate
+            : 21;
+
         $this->recalculatePrices();
     }
 
@@ -131,6 +170,11 @@ class ItemsManager extends Component
     public function onCustomerCleared(): void
     {
         $this->customerId = null;
+
+        $this->deliveryCountry = 'NL';
+
+        $this->customerVatRate = 21;
+
         $this->recalculatePrices();
     }
 
@@ -139,11 +183,15 @@ class ItemsManager extends Component
         $userId = $this->customerId ?? Auth::id();
 
         foreach ($this->items as $i => $item) {
-            $product = $this->productService->getActiveProductsWithUserPrices($userId)
+            $product = $this->productService
+                ->getActiveProductsWithUserPrices($userId)
                 ->firstWhere('id', $item['product_id']);
 
             if ($product) {
-                $price = $product->productPrices->first()?->final_price ?? $product->ddp_price ?? 0;
+                $price = $product->productPrices->first()?->final_price
+                    ?? $product->ddp_price
+                    ?? 0;
+
                 $this->items[$i]['price'] = (float) $price;
             }
         }
@@ -155,21 +203,27 @@ class ItemsManager extends Component
 
     protected function dispatchItemsUpdated(): void
     {
-        $this->dispatch('itemsUpdated', items: $this->items);
+        $this->dispatch(
+            'itemsUpdated',
+            items: $this->items
+        );
     }
 
     public function getSubtotalProperty(): float
     {
         $total = 0;
+
         foreach ($this->items as $item) {
-            $total += ($item['price'] ?? 0) * ($item['quantity'] ?? 1);
+            $total += ($item['price'] ?? 0)
+                * ($item['quantity'] ?? 1);
         }
+
         return $total;
     }
 
-    public function getTaxRateProperty(): int
+    public function getTaxRateProperty(): float
     {
-        return $this->deliveryCountry === 'NL' ? 21 : 0;
+        return $this->customerVatRate;
     }
 
     public function getTaxAmountProperty(): float
@@ -185,17 +239,29 @@ class ItemsManager extends Component
     public function render(): View
     {
         $userId = $this->customerId ?? Auth::id();
-        // dd($userId);
 
-        $products = $this->productService->getActiveProductsWithUserPrices($userId);
+        $products = $this->productService
+            ->getActiveProductsWithUserPrices($userId);
 
         if ($this->search) {
             $s = strtolower($this->search);
-            $products = $products->filter(function ($p) use ($s) {
-                return stripos($p->product_title, $s) !== false
-                    || stripos($p->product_code ?? '', $s) !== false
-                    || stripos($p->product_description ?? '', $s) !== false;
-            })->values();
+
+            $products = $products
+                ->filter(function ($p) use ($s) {
+                    return stripos(
+                        $p->product_title,
+                        $s
+                    ) !== false
+                        || stripos(
+                            $p->product_code ?? '',
+                            $s
+                        ) !== false
+                        || stripos(
+                            $p->product_description ?? '',
+                            $s
+                        ) !== false;
+                })
+                ->values();
         }
 
         return view('livewire.items-manager', [

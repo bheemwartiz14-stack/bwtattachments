@@ -48,5 +48,5 @@
         @endif
     </div>
 @else
-    <a href="{{ route('login') }}" wire:navigate class="{{ $class }}">Reseller Login</a>
+    <a href="{{ route('login') }}" wire:navigate class="{{ $class }}">Login</a>
 @endauth

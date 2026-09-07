@@ -101,24 +101,14 @@
                 </div>
                 <div class="p-8">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
-
                         <x-forms.input name="name" label="Full Name" placeholder="John Doe" :value="$isEdit ? $user->name : ''"
-                            :required="true" :generateUsername="$isEdit ? '' : '#username'" :error="$errors->first('name')" />
+                            :required="true" :error="$errors->first('name')" />
                         <x-forms.email name="email" label="Email Address"    placeholder="retailer@company.com"
                             :value="$isEdit ? $user->email : ''" :required="!$isEdit"  :error="$errors->first('email')" />
                         <x-forms.phone name="phone" label="Phone Number" placeholder="Enter phone number"
                             :value="$isEdit ? $user->phone : ''" :required="true" :error="$errors->first('phone')" />
-                        <x-forms.input name="username" id="username" label="Username"
-                            placeholder="Auto-generated from name" :value="$isEdit ? $user->username : ''" :readonly="$isEdit"
-                            :required="true" :error="$errors->first('username')" :hint="$isEdit ? 'Username cannot be changed' : ''" />
                         <div class="lg:col-span-2">
                             <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-3">
-                                @if (!$isEdit)
-                                    <div>
-                                        <x-forms.password name="password" label="Password" :required="true"
-                                            :showGenerator="false" :error="$errors->first('password')" />
-                                    </div>
-                                @endif
                                 <div>
                                     <input type="hidden" name="parent_id" value="{{ auth()->id() }}">
                                     <label
@@ -211,20 +201,6 @@
 
     @push('scripts')
         <script>
-            $('#name').on('input', function() {
-                const name = $(this).val();
-                const username = name.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-');
-                $('#username').val(username);
-            });
-            (function() {
-                var pwd = document.querySelector('[data-password-input]');
-                if (pwd && !pwd.value) {
-                    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
-                    var s = '';
-                    for (var i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)];
-                    pwd.value = s;
-                }
-            })();
           $('#vat_id').on('change', function() {
                 const $selectedOption = $(this).find('option:selected');
                 const selectedName = $selectedOption.data('name') || '';

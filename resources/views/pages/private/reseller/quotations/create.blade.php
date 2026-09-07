@@ -41,8 +41,9 @@
         @csrf
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="reseller_id" name="reseller_id" value="{{ old('reseller_id') }}">
-              <input type="hidden" id="items-json" name="items" value="{{ json_encode($cartIds) }}">
+        <input type="hidden" id="items-json" name="items" value="{{ json_encode($cartIds) }}">
         <input type="hidden" id="tax_rate" name="tax_rate" value="21">
+         <input type="hidden" id="delivery_country" name="delivery_country" value="{{ old('delivery_country') }}">
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Company Information --}}
@@ -213,37 +214,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div
-                class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-                <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
-                    <div
-                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
-                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Delivery</h2>
-                        <p class="text-xs text-slate-500 dark:text-neutral-400">Delivery country for VAT calculation
-                        </p>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <x-forms.select name="delivery_country" id="delivery_country" label="Delivery Country"
-                        :options="[
-                            'NL' => 'Netherlands',
-                            'BE' => 'Belgium',
-                            'DE' => 'Germany',
-                            'FR' => 'France',
-                            'IT' => 'Italy',
-                            'ES' => 'Spain',
-                            'GB' => 'United Kingdom',
-                            'OTHER' => 'Other (Outside EU)',
-                        ]" value="NL" />
                 </div>
             </div>
         </div>

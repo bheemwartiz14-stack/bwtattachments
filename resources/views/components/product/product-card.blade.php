@@ -81,6 +81,13 @@
                             {{ rtrim(rtrim(number_format($product->volume, 2, '.', ''), '0'), '.') }} m³</p>
                     </div>
                 @endif
+                 @if ($product->manufacture_year)
+                    <div>
+                        <p class="text-gray-500">Manufacture Year:</p>
+                        <p class="font-semibold">
+                            {{ $product->manufacture_year}} </p>
+                    </div>
+                @endif
             </div>
 
             {{-- Right --}}

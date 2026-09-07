@@ -204,6 +204,7 @@
                             'pin_hole' => ['label' => 'Pin Hole (mm)', 'unit' => 'mm'],
                             'pin_center' => ['label' => 'Pin center to Pin center (mm)', 'unit' => 'mm'],
                             'stick_width' => ['label' => 'Stick Width', 'unit' => 'mm'],
+                            'manufacture_year' => ['label' => 'Manufacture Year', 'unit' => null],
                         ];
                     @endphp
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -284,7 +285,8 @@
                                     <div class="shrink-0 w-24 aspect-[15/10] rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-80 {{ $index === 0 ? 'ring-2 ring-emerald-500' : 'opacity-60 hover:opacity-100' }}"
                                         data-img-src="{{ $media->getUrl() }}"
                                         onclick="switchAdminImage(this, '{{ $media->getUrl() }}', '{{ $media->getUrl() }}')">
-                                        <img src="{{ $media->getUrl() }}" alt="" class="w-full h-full object-contain">
+                                        <img src="{{ $media->getUrl() }}" alt=""
+                                            class="w-full h-full object-contain">
                                     </div>
                                 @endforeach
                             </div>

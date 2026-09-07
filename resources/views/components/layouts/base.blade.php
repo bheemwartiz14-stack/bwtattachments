@@ -31,7 +31,7 @@
             margin-bottom: 0.5em;
         }
     </style>
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/pwa.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('styles')
 </head>
