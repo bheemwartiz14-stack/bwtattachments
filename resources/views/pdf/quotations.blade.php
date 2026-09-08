@@ -86,20 +86,11 @@
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
-                                            @else
-                                                <div
-                                                    style="height:42px;line-height:42px;font-size:7pt;color:#999;text-align:center;">
-                                                    Wholesaler logo</div>
-                                            @endif
                                         </td>
                                         <td style="width:50%;vertical-align:middle;text-align:left;height:46px;">
                                             @if ($resellerLogoBase64)
                                                 <img src="{{ $resellerLogoBase64 }}"
                                                     style="height:42px;width:auto;max-width:190px;object-fit:contain;" />
-                                            @else
-                                                <div
-                                                    style="height:42px;line-height:42px;font-size:7pt;color:#999;text-align:center;">
-                                                    Reseller logo</div>
                                             @endif
                                         </td>
                                     </tr>
