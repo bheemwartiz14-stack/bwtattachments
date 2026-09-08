@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -45,12 +46,27 @@ return new class extends Migration
         }
 
         if (! $this->foreignKeyExists('users', 'users_vat_id_foreign')) {
-            Schema::table('users', function (Blueprint $table) {
-                $table->foreign('vat_id')
-                    ->references('id')
-                    ->on('vat_rates')
-                    ->nullOnDelete();
-            });
+            try {
+                Schema::table('users', function (Blueprint $table) {
+                    $table->foreign('vat_id')
+                        ->references('id')
+                        ->on('vat_rates')
+                        ->nullOnDelete();
+                });
+            } catch (\Illuminate\Database\QueryException $e) {
+                // MySQL 1215 (e.g. engine/collation/index mismatch on legacy
+                // tables): don't block the deploy. Keep a plain index for
+                // lookup performance and enforce integrity at app level.
+                if (! $this->indexExists('users', 'users_vat_id_index')) {
+                    Schema::table('users', function (Blueprint $table) {
+                        $table->index('vat_id');
+                    });
+                }
+
+                Log::warning('Skipped users.vat_id foreign key (MySQL 1215); using plain index instead.', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
     }
 
@@ -80,6 +96,15 @@ return new class extends Migration
             ->where('table_schema', DB::getDatabaseName())
             ->where('table_name', $table)
             ->where('constraint_name', $constraint)
+            ->exists();
+    }
+
+    private function indexExists(string $table, string $index): bool
+    {
+        return DB::table('information_schema.statistics')
+            ->where('table_schema', DB::getDatabaseName())
+            ->where('table_name', $table)
+            ->where('index_name', $index)
             ->exists();
     }
 };
