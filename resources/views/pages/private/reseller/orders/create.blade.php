@@ -1,7 +1,7 @@
 <x-layouts.app>
     @php
         $logoMedia =
-        $user->getFirstMedia('retailer_client_logo') ?: $user->userMeta?->getFirstMedia('retailer_client_logo');
+            $user->getFirstMedia('retailer_client_logo') ?: $user->userMeta?->getFirstMedia('retailer_client_logo');
         $logoUrl = $logoMedia?->getUrl();
         $logoId = $logoMedia?->id;
     @endphp
@@ -46,11 +46,11 @@
         <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="{{ $usermargin }}">
         <input type="hidden" id="delivery_country" name="delivery_country"
             value="{{ old('delivery_country', $vatList['iso_code'] ?? '') }}">
-         <x-forms.input name="order_number" :value="$orderNumber" readonly hidden />
+        <x-forms.input name="order_number" :value="$orderNumber" readonly hidden />
         <x-forms.input name="order_date" type="date" :value="now()->format('Y-m-d')" hidden />
-         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Quotation Info --}}
-              <div
+            <div
                 class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
                 <div class="p-6">
                     <div class="max-w-xl space-y-6">
@@ -81,8 +81,8 @@
                                 }
                             },
                             syncLogoPath() {
-                                // Must match the BIG Logo preview image above.
-                                const BIG_LOGO_PATH = 'images/Big Logo.jpeg';
+                                // Must match the BIG Logo preview image above (full URL).
+                                const BIG_LOGO_PATH = '{{ asset('images/Big Logo.jpeg') }}';
                                 const form = document.getElementById('order-form');
                                 let path = '';
                                 if (this.weldingLogo === 'big') {
@@ -90,14 +90,19 @@
                                 } else if (this.weldingLogo === 'custom') {
                                     const temp = form ? form.querySelector('input[name=&quot;welding_logo_file_temp&quot;]') : null;
                                     if (temp && temp.value) {
-                                        try { path = JSON.parse(temp.value).path || ''; } catch (err) {}
+                                        try {
+                                            const token = JSON.parse(temp.value);
+                                            const raw = token.url || token.path || '';
+                                            path = raw ? new URL(raw, window.location.origin).href : '';
+                                        } catch (err) {}
                                     }
                                 }
                                 if (this.$refs.logoFilePath) {
                                     this.$refs.logoFilePath.value = path;
                                 }
                             },
-                        }" x-init="initWeldingLogo()" @file-upload-dropzone:uploaded.window="syncLogoPath()"
+                        }" x-init="initWeldingLogo()"
+                            @file-upload-dropzone:uploaded.window="syncLogoPath()"
                             @file-upload-dropzone:removed.window="syncLogoPath()">
                             <input type="hidden" name="orderlogotype" :value="weldingLogo" value="big" />
                             <input type="hidden" name="orderfilepath" x-ref="logoFilePath" value="" />
@@ -125,7 +130,8 @@
                                     </span>
                                     <span
                                         class="mt-5 flex h-20 items-center justify-center overflow-hidden rounded-lg bg-slate-50 dark:bg-neutral-800">
-                                        <img src="{{ asset('images/Big Logo.jpeg') }}" alt="Attachment with large welded B logo"
+                                        <img src="{{ asset('images/Big Logo.jpeg') }}"
+                                            alt="Attachment with large welded B logo"
                                             class="h-full w-full object-cover" />
                                     </span>
                                     <span class="mt-2 block text-sm font-semibold text-slate-900 dark:text-white">BIG
@@ -189,7 +195,8 @@
                                     <span
                                         class="mt-2 block text-sm font-semibold text-slate-900 dark:text-white">Custom
                                         Logo</span>
-                                    <span class="mt-1 block text-xs leading-5 text-slate-500 dark:text-neutral-400">Upload
+                                    <span
+                                        class="mt-1 block text-xs leading-5 text-slate-500 dark:text-neutral-400">Upload
                                         your own<br>welding logo.</span>
                                 </label>
                             </div>
@@ -197,11 +204,11 @@
                                 <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                             {{-- Custom logo upload --}}
-                            <div x-show="weldingLogo === 'custom'" x-transition x-cloak class="mt-4" id="welding-logo-upload" @click="uploadError = ''" @drop="uploadError = ''">
+                            <div x-show="weldingLogo === 'custom'" x-transition x-cloak class="mt-4"
+                                id="welding-logo-upload" @click="uploadError = ''" @drop="uploadError = ''">
                                 <x-forms.file-upload-dropzone name="welding_logo_file"
                                     label="Upload your vectorised weldable logo"
-                                    accept=".ai,.eps,.pdf,.svg,.cdr,.dxf,.dwg" :maxSize="10485760"
-                                    accent="blue"
+                                    accept=".ai,.eps,.pdf,.svg,.cdr,.dxf,.dwg" :maxSize="10485760" accent="blue"
                                     hint="AI, EPS, PDF, SVG, CDR, DXF, DWG (Max. 10MB)" />
                                 <p x-show="uploadError" x-cloak x-text="uploadError" role="alert"
                                     class="mt-2 text-xs font-medium text-red-600 dark:text-red-400"></p>
@@ -227,34 +234,45 @@
                 </div>
             </div>
             {{-- Send To --}}
-            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col dark:border-neutral-800 dark:bg-neutral-950">
+            <section
+                class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col dark:border-neutral-800 dark:bg-neutral-950">
                 <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
-                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 003.712.872M15 19.128v-3.13m0 3.13a9.38 9.38 0 01-3.712.872M15 15.998a9.38 9.38 0 00-3.712-.872M3 7.5h18M12 3v1.5m0 15V21m-6.364-3.636l1.06-1.06M17.304 7.696l1.06-1.06M4.5 12H3m18 0h-1.5M6.696 7.696l-1.06-1.06m12.728 10.728l-1.06-1.06M12 18a6 6 0 100-12 6 6 0 000 12z" />
+                    <div
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
+                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 19.128a9.38 9.38 0 003.712.872M15 19.128v-3.13m0 3.13a9.38 9.38 0 01-3.712.872M15 15.998a9.38 9.38 0 00-3.712-.872M3 7.5h18M12 3v1.5m0 15V21m-6.364-3.636l1.06-1.06M17.304 7.696l1.06-1.06M4.5 12H3m18 0h-1.5M6.696 7.696l-1.06-1.06m12.728 10.728l-1.06-1.06M12 18a6 6 0 100-12 6 6 0 000 12z" />
                         </svg>
                     </div>
                     <div>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">Send To</h2>
-                        <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Wholesaler notification recipient</p>
+                        <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Wholesaler notification
+                            recipient</p>
                     </div>
                 </div>
                 <div class="p-6 flex-1">
-                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
-                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700 ring-4 ring-white dark:bg-blue-900/50 dark:text-blue-400 dark:ring-neutral-950">
+                    <div
+                        class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
+                        <div
+                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700 ring-4 ring-white dark:bg-blue-900/50 dark:text-blue-400 dark:ring-neutral-950">
                             {{ strtoupper(substr($wholesallerUser?->name ?? '?', 0, 1)) }}
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $wholesallerUser?->name ?? 'Unknown User' }}</p>
+                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                                    {{ $wholesallerUser?->name ?? 'Unknown User' }}</p>
                             </div>
-                            <p class="mt-1 truncate text-xs text-slate-500 dark:text-neutral-400">{{ $wholesallerUser?->email ?? 'No email available' }}</p>
+                            <p class="mt-1 truncate text-xs text-slate-500 dark:text-neutral-400">
+                                {{ $wholesallerUser?->email ?? 'No email available' }}</p>
                             @if ($wholesallerUser?->phone)
-                                <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{{ $wholesallerUser->phone }}</p>
+                                <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">
+                                    {{ $wholesallerUser->phone }}</p>
                             @endif
                         </div>
                         <div class="hidden shrink-0 sm:block">
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+                            <span
+                                class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active
                             </span>
                         </div>
@@ -282,7 +300,7 @@
                     </div>
                 </div>
                 <div class="p-6">
-                      <div class="max-w-xl">
+                    <div class="max-w-xl">
                         <x-forms.input name="order_reference" label="Order Reference" placeholder="e.g. PO-12345"
                             help="Your internal PO / reference for this order" />
                     </div>
@@ -309,7 +327,7 @@
                 </div>
             </div>
             <div class="p-6">
-               <livewire:order-items-manager :productIds="$cartIds" :vatList="$vatList" />
+                <livewire:order-items-manager :productIds="$cartIds" :vatList="$vatList" />
             </div>
         </div>
         {{-- Quotation Email Message --}}
