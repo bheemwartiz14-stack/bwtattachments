@@ -36,7 +36,9 @@ class OrderServices
     public function create(array $data): Model
     {
       $orderlogotype = $data['orderlogotype'] ?? null;
-        $orderfilepath = $data['orderfilepath'] ?? null;
+        // The form submits a full URL; normalize to a public-disk-relative
+        // path (what copyFile() and OrderMail expect).
+        $orderfilepath = $this->toPublicDiskPath($data['orderfilepath'] ?? null);
         if (!$orderlogotype || !$orderfilepath || $orderlogotype === 'none') {
             $data['orderfilepath'] = '';
         } else {
@@ -61,6 +63,26 @@ class OrderServices
             ]);
         }
         return $order->load('items.product');
+    }
+
+    /**
+     * Normalize a submitted logo value (full URL or relative path) to a
+     * public-disk-relative path, e.g. "temp/{token}/logo.ai".
+     */
+    private function toPublicDiskPath(mixed $value): string
+    {
+        if (! is_string($value) || $value === '') {
+            return '';
+        }
+
+        $path = parse_url($value, PHP_URL_PATH) ?? $value;
+        $path = ltrim(urldecode((string) $path), '/');
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        return $path;
     }
       public function sendEmail(Order $order): void
     {

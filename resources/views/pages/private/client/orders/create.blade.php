@@ -77,8 +77,8 @@
                                 }
                             },
                             syncLogoPath() {
-                                // Must match the BIG Logo preview image above.
-                                const BIG_LOGO_PATH = 'images/Big Logo.jpeg';
+                                // Must match the BIG Logo preview image above (full URL).
+                                const BIG_LOGO_PATH = '{{ asset('images/Big Logo.jpeg') }}';
                                 const form = document.getElementById('order-form');
                                 let path = '';
                                 if (this.weldingLogo === 'big') {
@@ -86,7 +86,11 @@
                                 } else if (this.weldingLogo === 'custom') {
                                     const temp = form ? form.querySelector('input[name=&quot;welding_logo_file_temp&quot;]') : null;
                                     if (temp && temp.value) {
-                                        try { path = JSON.parse(temp.value).path || ''; } catch (err) {}
+                                        try {
+                                            const token = JSON.parse(temp.value);
+                                            const raw = token.url || token.path || '';
+                                            path = raw ? new URL(raw, window.location.origin).href : '';
+                                        } catch (err) {}
                                     }
                                 }
                                 if (this.$refs.logoFilePath) {
