@@ -136,33 +136,18 @@ class ProductRepository
                 $query->orderByRaw('products.manufacture_year IS NULL, products.manufacture_year ASC');
                 break;
             case 'price_high_low':
-                   if ($userId) {
-                        $query->leftJoin('product_prices as pp', function ($join) use ($userId) {
-                            $join->on('pp.product_id', '=', 'products.id')
-                                ->where('pp.user_id', '=', $userId);
-                        });
-                        $query->select('products.*')
-                            ->orderByRaw(
-                                'COALESCE(pp.final_price, products.ddp_price) DESC'
-                            );
-                    } else {
-                        $query->orderByDesc('products.ddp_price');
-                    }
-                break;
             case 'price_low_high':
-                $query->orderByRaw(
-                    'COALESCE(
-                        (
-                            SELECT final_price
-                            FROM product_prices
-                            WHERE product_prices.product_id = products.id
-                            AND product_prices.user_id = ?
-                            LIMIT 1
-                        ),
-                        products.ddp_price
-                    ) ASC',
-                    [$userId]
-                );
+                // ddp_price is stored as STRING, so cast for numeric ordering.
+                // NULL/empty prices sort last in both directions.
+                $dir = $sortBy === 'price_high_low' ? 'DESC' : 'ASC';
+                if ($userId) {
+                    $priceExpr = 'COALESCE((SELECT pp.final_price FROM product_prices AS pp WHERE pp.product_id = products.id AND pp.user_id = ? LIMIT 1), CAST(NULLIF(products.ddp_price, ?) AS DECIMAL(12,2)))';
+                    $bindings = [$userId, '', $userId, ''];
+                } else {
+                    $priceExpr = 'CAST(NULLIF(products.ddp_price, ?) AS DECIMAL(12,2))';
+                    $bindings = ['', ''];
+                }
+                $query->orderByRaw("{$priceExpr} IS NULL, {$priceExpr} {$dir}", $bindings);
                 break;
         }
     }
