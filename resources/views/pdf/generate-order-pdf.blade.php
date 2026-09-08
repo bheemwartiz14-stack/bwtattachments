@@ -268,21 +268,6 @@
                                                         object-fit:contain;
                                                     "
                                                 />
-
-                                            @else
-
-                                                <div
-                                                    style="
-                                                        height:42px;
-                                                        line-height:42px;
-                                                        font-size:7pt;
-                                                        color:#999;
-                                                        text-align:center;
-                                                    "
-                                                >
-                                                    Wholesaler logo
-                                                </div>
-
                                             @endif
 
                                         </td>
