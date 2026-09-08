@@ -118,7 +118,7 @@
             }
             if (quotationItems.length === 0) {
                 e.preventDefault();
-                alert('Please add at least one item to the quotation.');
+                alert('Please add at least one item to the Order.');
                 return;
             }
             // Wholesale orders are sent to admin, no reseller selection required.
