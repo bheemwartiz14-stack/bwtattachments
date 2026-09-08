@@ -64,6 +64,7 @@ class ProductFilters extends Component
     {
         $this->reset(['search', 'sort_by','category', 'subcategory', 'connection', 'machine_class', 'min_weight', 'max_weight','perPage']);
         $this->resetPage();
+        $this->dispatch('filters-cleared');
     }
 
     public function increaseQuantity(string $productId): void

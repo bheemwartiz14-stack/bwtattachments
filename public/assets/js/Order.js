@@ -11,7 +11,6 @@
 
     ready(function () {
         initDateDefaults();
-        initDateSync();
         initFormSubmission();
         initAutoSave();
         initDropZones();

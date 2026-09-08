@@ -102,7 +102,9 @@ class StoreWholesaleOrderRequest extends FormRequest
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
-            'wholesale_client_logo_temp' => ['nullable', 'string'],
+            'orderlogotype' => ['nullable', 'string'],
+            'orderfilepath' => ['nullable', 'string'],
+            'welding_logo_file_temp' => ['nullable', 'string'],
         ];
     }
 }

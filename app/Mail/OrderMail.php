@@ -53,24 +53,27 @@ class OrderMail extends Mailable
     /**
      * Get the message attachments.
      */
-    public function attachments(): array
-    {
-        if (empty($this->order->pdf_file)) {
-            return [];
-        }
-
-        $disk = Storage::disk('public');
-
-        if (! $disk->exists($this->order->pdf_file)) {
-            return [];
-        }
-
-        $path = $disk->path($this->order->pdf_file);
-
-        return [
-            Attachment::fromPath($path)
-                ->as("{$this->order->order_number}.pdf")
-                ->withMime('application/pdf'),
-        ];
+  public function attachments(): array
+{
+    $disk = Storage::disk('public');
+    $attachments = [];
+    // Order PDF
+    if (!empty($this->order->pdf_file) && $disk->exists($this->order->pdf_file)) {
+        $attachments[] = Attachment::fromPath(
+            $disk->path($this->order->pdf_file)
+        )
+            ->as("{$this->order->order_number}.pdf")
+            ->withMime('application/pdf');
     }
+    // Order logo/file
+    if (!empty($this->order->orderfilepath) && $disk->exists($this->order->orderfilepath)) {
+        $attachments[] = Attachment::fromPath(
+            $disk->path($this->order->orderfilepath)
+        )
+            ->as(basename($this->order->orderfilepath))
+            ->withMime($disk->mimeType($this->order->orderfilepath));
+    }
+    return $attachments;
+}
+
 }

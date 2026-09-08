@@ -9,7 +9,9 @@
                 placeholder="Search product code or description"
                 class="min-w-0 flex-1 border-0 bg-transparent py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0" />
         </div>
-        <x-ui.button type="submit" class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800" variant="black" label="Search" />
+        <x-ui.button type="submit"
+            class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800"
+            variant="black" label="Search" />
 
     </div>
 
@@ -29,44 +31,67 @@
             this.$watch('localCategory', (value, oldValue) => {
                 this.filterSubcategories();
             });
+            if (typeof window.Livewire !== 'undefined' && window.Livewire.hook) {
+                try {
+                    window.Livewire.hook('morph.updated', () => {
+                        this.updateWeightSlider();
+                    });
+                } catch (e) { /* morph hook unavailable - labels stay reactive via x-text */ }
+            }
         },
-        filterSubcategories() {
-            const subSelect = document.getElementById('filterSubcategory');
-            if (!subSelect) return;
-            Array.from(subSelect.options).forEach(opt => {
-                if (!opt.value || opt.dataset.categorySlug === this.localCategory || !this.localCategory) {
-                    opt.style.display = '';
-                } else {
-                    opt.style.display = 'none';
-                }
-            });
-            if (this.localSubcategory) {
-                const selected = Array.from(subSelect.options).find(opt => opt.value === this.localSubcategory);
-                if (selected && selected.style.display === 'none') {
+                filterSubcategories() {
+                    const subSelect = document.getElementById('filterSubcategory');
+                    if (!subSelect) return;
+                    Array.from(subSelect.options).forEach(opt => {
+                        if (!opt.value || opt.dataset.categorySlug === this.localCategory || !this.localCategory) {
+                            opt.style.display = '';
+                        } else {
+                            opt.style.display = 'none';
+                        }
+                    });
+                    if (this.localSubcategory) {
+                        const selected = Array.from(subSelect.options).find(opt => opt.value === this.localSubcategory);
+                        if (selected && selected.style.display === 'none') {
+                            this.localSubcategory = '';
+                        }
+                    }
+                },
+                applyFilters() {
+                    $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', this.localMachineClass ?? '', String(this.localMinWeight ?? ''), String(this.localMaxWeight ?? ''), String(this.localPagination ?? ''));
+                },
+                clearAllFilters() {
+                    this.resetLocals();
+                    $wire.clearFilters();
+                },
+                resetLocals() {
+                    this.localCategory = '';
+                    this.localSortBy = 'newest';
+                    this.localPagination = '25';
                     this.localSubcategory = '';
+                    this.localConnection = '';
+                    this.localMachineClass = '';
+                    this.localMinWeight = 0;
+                    this.localMaxWeight = 10000;
+                    this.filterSubcategories();
+                    this.updateWeightSlider();
+                },
+                updateWeightSlider() {
+                    let min = Number(this.localMinWeight);
+                    let max = Number(this.localMaxWeight);
+                    if (isNaN(min)) min = 0;
+                    if (isNaN(max)) max = 10000;
+                    min = Math.min(10000, Math.max(0, min));
+                    max = Math.min(10000, Math.max(0, max));
+                    if (min > max) min = max;
+                    this.localMinWeight = min;
+                    this.localMaxWeight = max;
+                    const range = document.getElementById('weightRange');
+                    if (range) {
+                        range.style.left = (min / 10000 * 100) + '%';
+                        range.style.right = (100 - max / 10000 * 100) + '%';
+                    }
                 }
-            }
-        },
-        applyFilters() {
-            $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', this.localMachineClass ?? '', String(this.localMinWeight ?? ''), String(this.localMaxWeight ?? ''), String(this.localPagination ?? ''));
-        },
-        updateWeightSlider() {
-            let min = Number(this.localMinWeight);
-            let max = Number(this.localMaxWeight);
-            if (isNaN(min)) min = 0;
-            if (isNaN(max)) max = 10000;
-            min = Math.min(10000, Math.max(0, min));
-            max = Math.min(10000, Math.max(0, max));
-            if (min > max) min = max;
-            this.localMinWeight = min;
-            this.localMaxWeight = max;
-            const range = document.getElementById('weightRange');
-            if (range) {
-                range.style.left = (min / 10000 * 100) + '%';
-                range.style.right = (100 - max / 10000 * 100) + '%';
-            }
-        }
-    }" class="bg-white rounded-xl shadow-sm mb-8">
+        }" @filters-cleared.window="resetLocals()" class="bg-white rounded-xl shadow-sm mb-8">
         <div class="flex items-center justify-between px-5 py-3 sm:px-6 lg:hidden border-b border-gray-100">
             <span class="text-sm font-semibold text-gray-800">Filters</span>
             <button @click="filtersOpen = !filtersOpen"
@@ -86,7 +111,7 @@
             <div class="p-4 space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     <!-- Added the Short By With the functionalty  -->
-                     <div>
+                    <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Sort by</label>
                         <select x-model="localSortBy"
                             class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
@@ -96,30 +121,32 @@
                         </select>
                     </div>
                     <!-- Added the New fucntion Weight Slider-->
-                     <div>
-                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Weight</label>
-                          <div class="px-2 pt-2">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Weight</label>
+                        <div class="px-2 pt-2">
                             <div class="relative h-6">
+                                <div
+                                    class="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-blue-200"></div>
                                 <div id="weightRange"
                                     class="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-blue-600"
                                     style="left: 0%; right: 0%;"></div>
-                                <input id="minWeightSlider" type="range" min="0" max="10000" step="100" x-model.number="localMinWeight" @input="updateWeightSlider()"
+                                <input id="minWeightSlider" type="range" min="0" max="10000" step="100"
+                                    x-model.number="localMinWeight" @input="updateWeightSlider()"
                                     class="weight-slider absolute inset-0 w-full" />
-                                <input id="maxWeightSlider" type="range" min="0" max="10000" step="100" x-model.number="localMaxWeight" @input="updateWeightSlider()"
+                                <input id="maxWeightSlider" type="range" min="0" max="10000" step="100"
+                                    x-model.number="localMaxWeight" @input="updateWeightSlider()"
                                     class="weight-slider absolute inset-0 w-full" />
                             </div>
                             <div class="mt-1 flex justify-between gap-3">
                                 <div class="flex-1">
-                                    <div
-                                        class="rounded-md bg-white px-3 py-2 text-sm text-slate-600 shadow-sm"
+                                    <div class="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-slate-600 shadow-sm"
                                         x-text="Number(localMinWeight).toLocaleString() + ' kg'">
                                         0 kg
                                     </div>
                                 </div>
 
                                 <div class="flex-1">
-                                    <div
-                                        class="rounded-md bg-white px-3 py-2 text-sm text-slate-600 shadow-sm"
+                                    <div class="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-slate-600 shadow-sm"
                                         x-text="Number(localMaxWeight).toLocaleString() + ' kg'">
                                         10,000 kg
                                     </div>
@@ -128,7 +155,7 @@
                         </div>
                     </div>
                     <!-- Create a New function Select Options New page -->
-                        <div>
+                    <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Per page</label>
                         <select x-model="localPagination"
                             class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
@@ -138,8 +165,8 @@
                         </select>
                     </div>
 
-                    
-                        <div>
+
+                    <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1.5">Category</label>
                         <select x-model="localCategory" id="filterCategory"
                             class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
@@ -188,9 +215,11 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <x-ui.button type="button" variant="black" label="Apply Filters" @click="applyFilters()" wire:loading.attr="disabled" />
+                    <x-ui.button type="button" variant="black" label="Apply Filters" @click="applyFilters()"
+                        wire:loading.attr="disabled" />
                     @if ($search || $sort_by || $min_weight || $max_weight || $category || $subcategory || $connection || $machine_class)
-                        <x-ui.button type="button" variant="red" label="Clear Filters" wire:click="clearFilters" wire:loading.attr="disabled" />
+                        <x-ui.button type="button" variant="red" label="Clear Filters" @click="clearAllFilters()"
+                            wire:loading.attr="disabled" />
                     @endif
                 </div>
             </div>
@@ -199,7 +228,8 @@
 
     <div wire:loading.delay.longest wire:target="applyFilters, search, sort_by"
         class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95">
-        <svg class="h-16 w-auto animate-pulse" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="h-16 w-auto animate-pulse" viewBox="0 0 120 40" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
             <text x="0" y="32" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="800"
                 fill="#0b5cab" letter-spacing="-0.5">BWT</text>
         </svg>

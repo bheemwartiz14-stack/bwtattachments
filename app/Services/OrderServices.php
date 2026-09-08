@@ -13,12 +13,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Services\FileService;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class OrderServices
 {
-    public function __construct(protected OrderRepository $orderRepository) {}
+    public function __construct(
+        protected OrderRepository $orderRepository,
+        protected FileService $fileService,
+        ) {}
 
     // generate a unique order number based on the current timestamp
     public function generateOrderNumber(): string
@@ -31,9 +35,21 @@ class OrderServices
 
     public function create(array $data): Model
     {
+      $orderlogotype = $data['orderlogotype'] ?? null;
+        $orderfilepath = $data['orderfilepath'] ?? null;
+        if (!$orderlogotype || !$orderfilepath || $orderlogotype === 'none') {
+            $data['orderfilepath'] = '';
+        } else {
+            $filename = $orderlogotype === 'big'
+                ? "orders/{$data['order_number']}/{$data['order_number']}_Big_logo.jpeg"
+                : "orders/{$data['order_number']}/{$data['order_number']}_" . basename($orderfilepath);
+            $data['orderfilepath'] = $this->fileService->copyFile(
+                $orderfilepath,
+                $filename
+            );
+        }
         $items = $data['items'] ?? [];
         unset($data['items']);
-        // Ensure order_reference never null (DB default '')
         $data['order_reference'] = $data['order_reference'] ?? '';
         $data['status'] = $data['status'] ?? 'draft';
         $order = $this->orderRepository->create($data);
@@ -94,13 +110,13 @@ class OrderServices
             'fromUser.userMeta',
             'toUser.userMeta',
         ]);
-        $filename = "orders/{$order->order_number}.pdf";
+       $filename = "orders/{$order->order_number}/{$order->order_number}.pdf";
         $content = Pdf::view('pdf.generate-order-pdf', compact('order'))
             ->format('a4')
             ->orientation('portrait')
             ->driver('dompdf')
             ->generatePdfContent();
-        Storage::disk('public')->put($filename, $content);
+        $this->fileService->storeFile($filename, $content);
         $order->pdf_file = $filename;
         $order->save();
         OrderCreated::dispatch($order);

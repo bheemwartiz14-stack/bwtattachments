@@ -15,7 +15,7 @@ class StoreFileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'mimes:jpeg,png,jpg,webp,gif,pdf', 'max:10240'],
+            'file' => ['required', 'file', 'extensions:jpeg,png,jpg,webp,gif,pdf,ai,eps,svg,cdr,dxf,dwg', 'max:10240'],
         ];
     }
 
@@ -23,7 +23,7 @@ class StoreFileRequest extends FormRequest
     {
         return [
             'file.required' => 'Please select a file to upload.',
-            'file.mimes' => 'Only JPEG, PNG, WebP, GIF images and PDF files are allowed.',
+            'file.extensions' => 'Only JPEG, PNG, WebP, GIF, PDF and vector files (AI, EPS, SVG, CDR, DXF, DWG) are allowed.',
             'file.max' => 'File must not exceed 10MB.',
         ];
     }

@@ -220,7 +220,7 @@
                 "
             >
 
-                @if ($show_pdf)
+
 
                     <table
                         style="width:100%;border-collapse:collapse;"
@@ -296,9 +296,6 @@
                         </tr>
 
                     </table>
-
-                @endif
-
             </td>
 
             {{-- Sender Information --}}

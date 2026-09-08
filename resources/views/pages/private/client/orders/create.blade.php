@@ -1,10 +1,4 @@
 <x-layouts.app>
-    @php
-        $logoMedia =
-        $user->getFirstMedia('wholesale_client_logo') ?: $user->userMeta?->getFirstMedia('wholesale_client_logo');
-        $logoUrl = $logoMedia?->getUrl();
-        $logoId = $logoMedia?->id;
-    @endphp
     @push('styles')
         <link href="{{ asset('assets/css/Quantions.css') }}" rel="stylesheet">
     @endpush
@@ -46,64 +40,229 @@
         <input type="hidden" id="items-json" name="items"
             value="{{ old('items', json_encode($cartItemsJson ?? $cartIds)) }}">
         <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="{{ $usermargin }}">
-        <input type="hidden" id="delivery_country" name="delivery_country" value="{{ old('delivery_country', $vatList['iso_code'] ?? '') }}">
+        <input type="hidden" id="delivery_country" name="delivery_country"
+            value="{{ old('delivery_country', $vatList['iso_code'] ?? '') }}">
         <x-forms.input name="order_number" :value="$orderNumber" readonly hidden />
         <x-forms.input name="order_date" type="date" :value="now()->format('Y-m-d')" hidden />
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Quotation Info --}}
             <div
                 class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
-                {{-- Content --}}
                 <div class="p-6">
                     <div class="max-w-xl space-y-6">
 
-                        {{-- Company Logo --}}
-                        <div>
-                            <x-forms.image-dropzone name="wholesale_client_logo" :existingImageUrl="$logoUrl" :existingImageId="$logoId"
-                                label="Company Logo" accept="image/jpeg,image/png,image/webp"
-                                hint="PNG, JPG or WebP (Max. 2MB)" />
-                        </div>
+                        {{-- Welding Logo --}}
+                        <div x-data="{
+                            weldingLogo: '{{ old('welding_logo', 'big') }}',
+                            uploadError: '',
+                            initWeldingLogo() {
+                                this.$watch('weldingLogo', () => this.syncLogoPath());
+                                this.syncLogoPath();
+                                const form = document.getElementById('order-form');
+                                if (form) {
+                                    form.addEventListener('submit', (e) => {
+                                        this.syncLogoPath();
+                                        if (this.weldingLogo !== 'custom') return;
+                                        const temp = form.querySelector('input[name=&quot;welding_logo_file_temp&quot;]');
+                                        if (!temp || !temp.value) {
+                                            e.preventDefault();
+                                            e.stopImmediatePropagation();
+                                            this.uploadError = 'Please upload your vector logo file to continue.';
+                                            const panel = document.getElementById('welding-logo-upload');
+                                            if (panel) {
+                                                panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            }
+                                        }
+                                    }, true);
+                                }
+                            },
+                            syncLogoPath() {
+                                // Must match the BIG Logo preview image above.
+                                const BIG_LOGO_PATH = 'images/BIG_LOGO_PATH';
+                                const form = document.getElementById('order-form');
+                                let path = '';
+                                if (this.weldingLogo === 'big') {
+                                    path = BIG_LOGO_PATH;
+                                } else if (this.weldingLogo === 'custom') {
+                                    const temp = form ? form.querySelector('input[name=&quot;welding_logo_file_temp&quot;]') : null;
+                                    if (temp && temp.value) {
+                                        try { path = JSON.parse(temp.value).path || ''; } catch (err) {}
+                                    }
+                                }
+                                if (this.$refs.logoFilePath) {
+                                    this.$refs.logoFilePath.value = path;
+                                }
+                            },
+                        }" x-init="initWeldingLogo()" @file-upload-dropzone:uploaded.window="syncLogoPath()"
+                            @file-upload-dropzone:removed.window="syncLogoPath()">
+                            <input type="hidden" name="orderlogotype" :value="weldingLogo" value="big" />
+                            <input type="hidden" name="orderfilepath" x-ref="logoFilePath" value="" />
+                            <h3 class="text-base font-semibold text-slate-900 dark:text-white">Welding Logo</h3>
+                            <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Choose how you'd like your
+                                welding logo on the product.</p>
 
-                        {{-- PDF Logo Toggle --}}
-                        <div
-                            class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-neutral-700 dark:bg-neutral-900">
-                            <x-forms.toggle name="show_logo_on_pdf" label="Show Logo on PDF"
-                                description="Display the company logo on generated PDF documents." />
+                            <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3" role="radiogroup"
+                                aria-label="Welding logo">
+                                {{-- BIG Logo --}}
+                                <label
+                                    :class="weldingLogo === 'big' ?
+                                        'border-blue-500 ring-1 ring-blue-500 bg-blue-50 dark:border-blue-500 dark:ring-blue-400 dark:bg-blue-950/30' :
+                                        'border-slate-200 hover:border-slate-300 hover:shadow-sm dark:border-neutral-700 dark:hover:border-neutral-600'"
+                                    class="relative cursor-pointer rounded-xl border bg-white p-4 text-center shadow-sm transition-all focus-within:ring-2 focus-within:ring-blue-500 dark:bg-neutral-900">
+                                    <input type="radio" name="welding_logo" value="big" x-model="weldingLogo"
+                                        class="sr-only" aria-label="BIG Logo" />
+                                    <span
+                                        class="absolute left-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-white dark:bg-neutral-900"
+                                        :class="weldingLogo === 'big' ? 'border-blue-600' :
+                                            'border-slate-300 dark:border-neutral-600'"
+                                        aria-hidden="true">
+                                        <span class="h-2.5 w-2.5 rounded-full bg-blue-600"
+                                            x-show="weldingLogo === 'big'"></span>
+                                    </span>
+                                    <span
+                                        class="mt-5 flex h-20 items-center justify-center overflow-hidden rounded-lg bg-slate-50 dark:bg-neutral-800">
+                                        <img src="{{ asset('images/Big Logo.jpeg') }}" alt="Attachment with large welded B logo"
+                                            class="h-full w-full object-cover" />
+                                    </span>
+                                    <span class="mt-2 block text-sm font-semibold text-slate-900 dark:text-white">BIG
+                                        Logo</span>
+                                    <span class="mt-1 block text-xs leading-5 text-slate-500 dark:text-neutral-400">Use
+                                        our standard<br>BWT logo (large).</span>
+                                </label>
+
+                                {{-- No Logo --}}
+                                <label
+                                    :class="weldingLogo === 'none' ?
+                                        'border-blue-500 ring-1 ring-blue-500 bg-blue-50 dark:border-blue-500 dark:ring-blue-400 dark:bg-blue-950/30' :
+                                        'border-slate-200 hover:border-slate-300 hover:shadow-sm dark:border-neutral-700 dark:hover:border-neutral-600'"
+                                    class="relative cursor-pointer rounded-xl border bg-white p-4 text-center shadow-sm transition-all focus-within:ring-2 focus-within:ring-blue-500 dark:bg-neutral-900">
+                                    <input type="radio" name="welding_logo" value="none" x-model="weldingLogo"
+                                        class="sr-only" aria-label="No Logo" />
+                                    <span
+                                        class="absolute left-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-white dark:bg-neutral-900"
+                                        :class="weldingLogo === 'none' ? 'border-blue-600' :
+                                            'border-slate-300 dark:border-neutral-600'"
+                                        aria-hidden="true">
+                                        <span class="h-2.5 w-2.5 rounded-full bg-blue-600"
+                                            x-show="weldingLogo === 'none'"></span>
+                                    </span>
+                                    <span class="mt-5 flex justify-center" aria-hidden="true">
+                                        <svg class="h-10 w-10 text-slate-500 dark:text-neutral-400" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                        </svg>
+                                    </span>
+                                    <span class="mt-2 block text-sm font-semibold text-slate-900 dark:text-white">No
+                                        Logo</span>
+                                    <span class="mt-1 block text-xs leading-5 text-slate-500 dark:text-neutral-400">No
+                                        logo on<br>the product.</span>
+                                </label>
+
+                                {{-- Custom Logo --}}
+                                <label
+                                    :class="weldingLogo === 'custom' ?
+                                        'border-blue-500 ring-1 ring-blue-500 bg-blue-50 dark:border-blue-500 dark:ring-blue-400 dark:bg-blue-950/30' :
+                                        'border-slate-200 hover:border-slate-300 hover:shadow-sm dark:border-neutral-700 dark:hover:border-neutral-600'"
+                                    class="relative cursor-pointer rounded-xl border bg-white p-4 text-center shadow-sm transition-all focus-within:ring-2 focus-within:ring-blue-500 dark:bg-neutral-900">
+                                    <input type="radio" name="welding_logo" value="custom" x-model="weldingLogo"
+                                        class="sr-only" aria-label="Custom Logo" />
+                                    <span
+                                        class="absolute left-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-white dark:bg-neutral-900"
+                                        :class="weldingLogo === 'custom' ? 'border-blue-600' :
+                                            'border-slate-300 dark:border-neutral-600'"
+                                        aria-hidden="true">
+                                        <span class="h-2.5 w-2.5 rounded-full bg-blue-600"
+                                            x-show="weldingLogo === 'custom'"></span>
+                                    </span>
+                                    <span class="mt-5 flex justify-center" aria-hidden="true">
+                                        <svg class="h-10 w-10 text-blue-500" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                                        </svg>
+                                    </span>
+                                    <span
+                                        class="mt-2 block text-sm font-semibold text-slate-900 dark:text-white">Custom
+                                        Logo</span>
+                                    <span class="mt-1 block text-xs leading-5 text-slate-500 dark:text-neutral-400">Upload
+                                        your own<br>welding logo.</span>
+                                </label>
+                            </div>
+                            @error('welding_logo')
+                                <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                            {{-- Custom logo upload --}}
+                            <div x-show="weldingLogo === 'custom'" x-transition x-cloak class="mt-4" id="welding-logo-upload" @click="uploadError = ''" @drop="uploadError = ''">
+                                <x-forms.file-upload-dropzone name="welding_logo_file"
+                                    label="Upload your vectorised weldable logo"
+                                    accept=".ai,.eps,.pdf,.svg,.cdr,.dxf,.dwg" :maxSize="10485760"
+                                    accent="blue"
+                                    hint="AI, EPS, PDF, SVG, CDR, DXF, DWG (Max. 10MB)" />
+                                <p x-show="uploadError" x-cloak x-text="uploadError" role="alert"
+                                    class="mt-2 text-xs font-medium text-red-600 dark:text-red-400"></p>
+                                @error('welding_logo_file_temp')
+                                    <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}
+                                    </p>
+                                @enderror
+                                <div
+                                    class="mt-3 flex gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-blue-800 dark:border-blue-900/50 dark:bg-blue-950/40 dark:text-blue-300">
+                                    <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                    </svg>
+                                    <p>Upload your vectorised weldable logo in any vector format like ai, eps,
+                                        pdf, svg, cdr, dxf or dwg-file. The logo must be in a vector format
+                                        suitable for cutting from a steel plate. Word files are not accepted.</p>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
                 </div>
             </div>
             {{-- Send To --}}
-            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col dark:border-neutral-800 dark:bg-neutral-950">
+            <section
+                class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col dark:border-neutral-800 dark:bg-neutral-950">
                 <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
-                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 003.712.872M15 19.128v-3.13m0 3.13a9.38 9.38 0 01-3.712.872M15 15.998a9.38 9.38 0 00-3.712-.872M3 7.5h18M12 3v1.5m0 15V21m-6.364-3.636l1.06-1.06M17.304 7.696l1.06-1.06M4.5 12H3m18 0h-1.5M6.696 7.696l-1.06-1.06m12.728 10.728l-1.06-1.06M12 18a6 6 0 100-12 6 6 0 000 12z" />
+                    <div
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-sm">
+                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 19.128a9.38 9.38 0 003.712.872M15 19.128v-3.13m0 3.13a9.38 9.38 0 01-3.712.872M15 15.998a9.38 9.38 0 00-3.712-.872M3 7.5h18M12 3v1.5m0 15V21m-6.364-3.636l1.06-1.06M17.304 7.696l1.06-1.06M4.5 12H3m18 0h-1.5M6.696 7.696l-1.06-1.06m12.728 10.728l-1.06-1.06M12 18a6 6 0 100-12 6 6 0 000 12z" />
                         </svg>
                     </div>
                     <div>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">Send To</h2>
-                        <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Wholesaler notification recipient</p>
+                        <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Wholesaler notification
+                            recipient</p>
                     </div>
                 </div>
                 <div class="p-6 flex-1">
-                    <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
-                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700 ring-4 ring-white dark:bg-blue-900/50 dark:text-blue-400 dark:ring-neutral-950">
+                    <div
+                        class="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/60">
+                        <div
+                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700 ring-4 ring-white dark:bg-blue-900/50 dark:text-blue-400 dark:ring-neutral-950">
                             {{ strtoupper(substr($admin?->name ?? '?', 0, 1)) }}
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $admin?->name ?? 'Unknown User' }}</p>
-                                <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">Admin</span>
+                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                                    {{ $admin?->name ?? 'Unknown User' }}</p>
+                                <span
+                                    class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">Admin</span>
                             </div>
-                            <p class="mt-1 truncate text-xs text-slate-500 dark:text-neutral-400">{{ $admin?->email ?? 'No email available' }}</p>
+                            <p class="mt-1 truncate text-xs text-slate-500 dark:text-neutral-400">
+                                {{ $admin?->email ?? 'No email available' }}</p>
                             @if ($admin?->phone)
                                 <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{{ $admin->phone }}</p>
                             @endif
                         </div>
                         <div class="hidden shrink-0 sm:block">
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+                            <span
+                                class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active
                             </span>
                         </div>

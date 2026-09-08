@@ -17,6 +17,7 @@ class FileResource extends JsonResource
             'url' => $this->resource['url'],
             'mime_type' => $this->resource['mime_type'] ?? null,
             'extension' => $this->resource['extension'] ?? null,
+            'path' => $this->resource['path'] ?? null,
         ];
     }
 }
