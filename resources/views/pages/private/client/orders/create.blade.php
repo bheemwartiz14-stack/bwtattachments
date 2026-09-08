@@ -78,7 +78,7 @@
                             },
                             syncLogoPath() {
                                 // Must match the BIG Logo preview image above.
-                                const BIG_LOGO_PATH = 'images/BIG_LOGO_PATH';
+                                const BIG_LOGO_PATH = 'images/Big Logo.jpeg';
                                 const form = document.getElementById('order-form');
                                 let path = '';
                                 if (this.weldingLogo === 'big') {

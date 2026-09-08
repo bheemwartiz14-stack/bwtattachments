@@ -44,7 +44,8 @@
         <input type="hidden" id="items-json" name="items"
             value="{{ old('items', json_encode($cartItemsJson ?? $cartIds)) }}">
         <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="{{ $usermargin }}">
-        <input type="hidden" id="delivery_country" name="delivery_country" value="{{ old('delivery_country', $vatList['iso_code'] ?? '') }}">
+        <input type="hidden" id="delivery_country" name="delivery_country"
+            value="{{ old('delivery_country', $vatList['iso_code'] ?? '') }}">
          <x-forms.input name="order_number" :value="$orderNumber" readonly hidden />
         <x-forms.input name="order_date" type="date" :value="now()->format('Y-m-d')" hidden />
          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -81,7 +82,7 @@
                             },
                             syncLogoPath() {
                                 // Must match the BIG Logo preview image above.
-                                const BIG_LOGO_PATH = 'images/BIG_LOGO_PATH';
+                                const BIG_LOGO_PATH = 'images/Big Logo.jpeg';
                                 const form = document.getElementById('order-form');
                                 let path = '';
                                 if (this.weldingLogo === 'big') {
