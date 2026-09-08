@@ -47,6 +47,7 @@ class OrderMail extends Mailable
 
         return new Content(
             view: 'emails.order',
+            text: 'emails.order-text',
         );
     }
 
