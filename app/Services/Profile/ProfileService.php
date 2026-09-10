@@ -28,8 +28,8 @@ class ProfileService
             return DB::transaction(function () use ($user, $data) {
                 $user = $this->userRepository->update($user->id, [
                     'name' => $data['name'],
-                    'country' => $data['country_name'],
-                    'country_code' => $data['country_code'],
+                    'country' => $data['country_name'] ?? '',
+                    'country_code' => $data['country_code'] ?? '',
                     'phone' => $data['phone'] ?? null,
                 ]);
                 if ($user->hasRole('Wholesaler')) {
