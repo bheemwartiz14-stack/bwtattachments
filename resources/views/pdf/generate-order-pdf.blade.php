@@ -149,11 +149,7 @@
         (string) $rawVatAmt
     );
 
-    $grandTotal = (float) str_replace(
-        [','],
-        '',
-        (string) $rawGrand
-    );
+    $grandTotal = (float) str_replace([','], '', (string) $rawGrand);
 
     $vatPerc = (string) str_replace(
         [','],
