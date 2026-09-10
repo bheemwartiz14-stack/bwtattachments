@@ -1,229 +1,224 @@
 <div>
-    <div class="flex items-stretch overflow-hidden rounded-xl border border-gray-300 bg-white shadow-sm mb-3">
-        <div class="flex flex-1 items-center gap-3 px-4">
-            <svg class="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input type="text" wire:model.live.debounce.300ms="search"
-                placeholder="Search product code or description"
-                class="min-w-0 flex-1 border-0 bg-transparent py-2.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0" />
-        </div>
-        <x-ui.button type="submit"
-            class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800"
-            variant="black" label="Search" />
-
-    </div>
-
     <div x-data="{
-        filtersOpen: window.innerWidth >= 1024,
         localCategory: '{{ $category }}',
-        localSortBy: '{{ $sort_by !== '' ? $sort_by : 'newest' }}',
+        localSortBy: '{{ $sort_by !== '' ? $sort_by : 'price_low_high' }}',
         localPagination: '{{ $perPage !== '' ? $perPage : '25' }}',
         localSubcategory: '{{ $subcategory }}',
         localConnection: '{{ $connection }}',
-        localMachineClass: '{{ $machine_class }}',
-        localMinWeight: '{{ $min_weight !== '' ? $min_weight : 0 }}',
-        localMaxWeight: '{{ $max_weight !== '' ? $max_weight : 10000 }}',
+        localMachineWeight: {{ is_numeric($machine_class) && (int) $machine_class >= 10 && (int) $machine_class <= 100 ? (int) $machine_class : 100 }},
+        showWeightBubble: true,
         init() {
             this.filterSubcategories();
-            this.updateWeightSlider();
-            this.$watch('localCategory', (value, oldValue) => {
+            this.$watch('localCategory', () => {
                 this.filterSubcategories();
             });
-            if (typeof window.Livewire !== 'undefined' && window.Livewire.hook) {
-                try {
-                    window.Livewire.hook('morph.updated', () => {
-                        this.updateWeightSlider();
-                    });
-                } catch (e) { /* morph hook unavailable - labels stay reactive via x-text */ }
+        },
+        filterSubcategories() {
+            const subSelect = document.getElementById('subcategory');
+            if (!subSelect) return;
+            Array.from(subSelect.options).forEach(opt => {
+                if (!opt.value || opt.dataset.categorySlug === this.localCategory || !this.localCategory) {
+                    opt.style.display = '';
+                } else {
+                    opt.style.display = 'none';
+                }
+            });
+            if (this.localSubcategory) {
+                const selected = Array.from(subSelect.options).find(opt => opt.value === this.localSubcategory);
+                if (selected && selected.style.display === 'none') {
+                    this.localSubcategory = '';
+                }
             }
         },
-                filterSubcategories() {
-                    const subSelect = document.getElementById('filterSubcategory');
-                    if (!subSelect) return;
-                    Array.from(subSelect.options).forEach(opt => {
-                        if (!opt.value || opt.dataset.categorySlug === this.localCategory || !this.localCategory) {
-                            opt.style.display = '';
-                        } else {
-                            opt.style.display = 'none';
-                        }
-                    });
-                    if (this.localSubcategory) {
-                        const selected = Array.from(subSelect.options).find(opt => opt.value === this.localSubcategory);
-                        if (selected && selected.style.display === 'none') {
-                            this.localSubcategory = '';
-                        }
-                    }
-                },
-                applyFilters() {
-                    $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', this.localMachineClass ?? '', String(this.localMinWeight ?? ''), String(this.localMaxWeight ?? ''), String(this.localPagination ?? ''));
-                },
-                clearAllFilters() {
-                    this.resetLocals();
-                    $wire.clearFilters();
-                },
-                resetLocals() {
-                    this.localCategory = '';
-                    this.localSortBy = 'newest';
-                    this.localPagination = '25';
-                    this.localSubcategory = '';
-                    this.localConnection = '';
-                    this.localMachineClass = '';
-                    this.localMinWeight = 0;
-                    this.localMaxWeight = 10000;
-                    this.filterSubcategories();
-                    this.updateWeightSlider();
-                },
-                updateWeightSlider() {
-                    let min = Number(this.localMinWeight);
-                    let max = Number(this.localMaxWeight);
-                    if (isNaN(min)) min = 0;
-                    if (isNaN(max)) max = 10000;
-                    min = Math.min(10000, Math.max(0, min));
-                    max = Math.min(10000, Math.max(0, max));
-                    if (min > max) min = max;
-                    this.localMinWeight = min;
-                    this.localMaxWeight = max;
-                    const range = document.getElementById('weightRange');
-                    if (range) {
-                        range.style.left = (min / 10000 * 100) + '%';
-                        range.style.right = (100 - max / 10000 * 100) + '%';
-                    }
-                }
-        }" @filters-cleared.window="resetLocals()" class="bg-white rounded-xl shadow-sm mb-8">
-        <div class="flex items-center justify-between px-5 py-3 sm:px-6 lg:hidden border-b border-gray-100">
-            <span class="text-sm font-semibold text-gray-800">Filters</span>
-            <button @click="filtersOpen = !filtersOpen"
-                class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                <span x-text="filtersOpen ? 'Hide' : 'Show'"></span>
-                <svg class="h-4 w-4 transition-transform" :class="{ 'rotate-180': filtersOpen }" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-            </button>
-        </div>
+        applyFilters() {
+            $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', String(this.localMachineWeight ?? ''), '', String(this.localPagination ?? ''));
+        },
+        clearAllFilters() {
+            this.resetLocals();
+            $wire.clearFilters();
+        },
+        resetLocals() {
+            this.localCategory = '';
+            this.localSortBy = 'price_low_high';
+            this.localPagination = '25';
+            this.localSubcategory = '';
+            this.localConnection = '';
+            this.localMachineWeight = 100;
+            this.showWeightBubble = false;
+            this.filterSubcategories();
+        },
+    }" @filters-cleared.window="resetLocals()">
+        <section class="w-full rounded-[22px] border border-gray-100 bg-white px-5 py-7 shadow-sm sm:px-8 lg:px-10">
 
-        <div x-show="filtersOpen" x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 -translate-y-2">
-            <div class="p-4 space-y-3">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <!-- Added the Short By With the functionalty  -->
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Sort by</label>
-                        <select x-model="localSortBy"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
-                            @foreach ($sortOptions as $option)
-                                <option value="{{ $option['value'] }}">{{ $option['name'] }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <!-- Added the New fucntion Weight Slider-->
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Weight</label>
-                        <div class="px-2 pt-2">
-                            <div class="relative h-6">
-                                <div
-                                    class="absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-blue-200"></div>
-                                <div id="weightRange"
-                                    class="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-blue-600"
-                                    style="left: 0%; right: 0%;"></div>
-                                <input id="minWeightSlider" type="range" min="0" max="10000" step="100"
-                                    x-model.number="localMinWeight" @input="updateWeightSlider()"
-                                    class="weight-slider absolute inset-0 w-full" />
-                                <input id="maxWeightSlider" type="range" min="0" max="10000" step="100"
-                                    x-model.number="localMaxWeight" @input="updateWeightSlider()"
-                                    class="weight-slider absolute inset-0 w-full" />
-                            </div>
-                            <div class="mt-1 flex justify-between gap-3">
-                                <div class="flex-1">
-                                    <div class="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-slate-600 shadow-sm"
-                                        x-text="Number(localMinWeight).toLocaleString() + ' kg'">
-                                        0 kg
-                                    </div>
-                                </div>
+            <h1 class="mb-5 text-2xl font-bold tracking-tight text-gray-950 sm:text-3xl">
+                Filter your search
+            </h1>
 
-                                <div class="flex-1">
-                                    <div class="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-slate-600 shadow-sm"
-                                        x-text="Number(localMaxWeight).toLocaleString() + ' kg'">
-                                        10,000 kg
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Create a New function Select Options New page -->
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Per page</label>
-                        <select x-model="localPagination"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
-                            @foreach ($pageOptions as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+            <!-- Top row -->
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-end">
 
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Category</label>
-                        <select x-model="localCategory" id="filterCategory"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                <!-- Category -->
+                <div class="lg:col-span-3">
+                    <label for="category" class="mb-2 block text-base font-medium text-slate-700">
+                        Category
+                    </label>
+                    <div class="relative">
+                        <select id="category" x-model="localCategory"
+                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
                             <option value="">All Categories</option>
                             @foreach ($categories ?? [] as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
                             @endforeach
                         </select>
+                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+                        </svg>
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Subcategory</label>
-                        <select x-model="localSubcategory" id="filterSubcategory"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                </div>
+
+
+                <!-- Attachment connection -->
+                <div class="lg:col-span-3">
+                    <label for="connection" class="mb-2 block text-base font-medium text-slate-700">
+                        Attachment connection
+                    </label>
+                    <div class="relative">
+                        <select id="connection" x-model="localConnection"
+                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            <option value="">All Connections</option>
+                            @foreach ($connections ?? [] as $slug => $name)
+                                <option value="{{ $slug }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+                        </svg>
+                    </div>
+                </div>
+
+
+                <!-- Search -->
+                <div class="lg:col-span-6">
+                    <label for="search" class="sr-only">Search product code or description</label>
+                    <div class="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+                        <div class="flex min-w-0 flex-1 items-center gap-3 px-4">
+                            <svg class="h-6 w-6 shrink-0 text-slate-500" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m21 21-4.35-4.35m2.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                            </svg>
+                            <input id="search" type="text" wire:model.live.debounce.300ms="search"
+                                placeholder="Search product code or description"
+                                class="min-w-0 flex-1 border-0 bg-transparent py-3.5 text-base text-slate-700 placeholder-slate-400 outline-none focus:ring-0" />
+                        </div>
+
+                        <x-ui.button type="submit"
+                            class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800"
+                            variant="black" label="Search" />
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom row -->
+            <div class="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-end">
+
+                <!-- Subcategory -->
+                <div class="lg:col-span-3">
+                    <label for="subcategory" class="mb-2 block text-base font-medium text-slate-700">
+                        Subcategory
+                    </label>
+                    <div class="relative">
+                        <select id="subcategory" x-model="localSubcategory"
+                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
                             <option value="">All Subcategories</option>
                             @foreach ($subcategories ?? [] as $sub)
                                 <option value="{{ $sub->slug }}" data-category-slug="{{ $sub->category?->slug }}">
                                     {{ $sub->name }}</option>
                             @endforeach
                         </select>
+                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Machine weight -->
+                <div class="lg:col-span-3">
+                    <label for="weight" class="mb-2 block text-base font-medium text-slate-700">
+                        Machine weight
+                    </label>
+
+                    <div class="relative px-2 pt-11">
+                        <span id="weightValue" x-show="showWeightBubble" x-text="localMachineWeight + ' ton'"
+                            x-bind:style="`--weight-position: ${((Math.min(100, Math.max(10, Number(localMachineWeight) || 100)) - 10) / 90) * 100}%`"
+                            class="mw-weight-bubble whitespace-nowrap rounded-lg bg-slate-100 px-3.5 py-2 text-base font-bold text-slate-900">
+                        </span>
+                        <input id="weight" type="range" min="10" max="100" step="1"
+                            x-model.number="localMachineWeight" @input="showWeightBubble = true"
+                            aria-label="Machine weight in tons"
+                            class="mw-slider w-full cursor-pointer bg-transparent" />
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Connection</label>
-                        <select x-model="localConnection"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
-                            <option value="">All Connections</option>
-                            @foreach ($connections ?? [] as $slug => $name)
-                                <option value="{{ $slug }}">{{ $name }}</option>
+                    <div class="mt-2 flex justify-between text-base text-slate-600">
+                        <span>10 ton</span>
+                        <span>100 ton</span>
+                    </div>
+                </div>
+
+                <!-- Sort -->
+                <div class="lg:col-span-3">
+                    <label for="sort" class="mb-2 block text-base font-medium text-slate-700">
+                        Sort by
+                    </label>
+                    <div class="relative">
+                        <select id="sort" x-model="localSortBy"
+                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            @foreach ($sortOptions as $option)
+                                <option value="{{ $option['value'] }}">{{ $option['name'] }}</option>
                             @endforeach
                         </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Machine Weight</label>
-                        <select x-model="localMachineClass"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
-                            <option value="">All Weights</option>
-                            <option value="0-10">0 - 10 t</option>
-                            <option value="10-20">10 - 20 t</option>
-                            <option value="20-30">20 - 30 t</option>
-                            <option value="30-50">30 - 50 t</option>
-                            <option value="50-100">50 - 100 t</option>
-                            <option value="100+">100+ t</option>
-                        </select>
+                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+                        </svg>
                     </div>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <x-ui.button type="button" variant="black" label="Apply Filters" @click="applyFilters()"
-                        wire:loading.attr="disabled" />
-                    @if ($search || $sort_by || $min_weight || $max_weight || $category || $subcategory || $connection || $machine_class)
-                        <x-ui.button type="button" variant="red" label="Clear Filters" @click="clearAllFilters()"
-                            wire:loading.attr="disabled" />
-                    @endif
+                <!-- Per page -->
+                <div class="lg:col-span-3">
+                    <label for="perPage" class="mb-2 block text-base font-medium text-slate-700">
+                        Per page
+                    </label>
+                    <div class="relative">
+                        <select id="perPage" x-model="localPagination"
+                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            @foreach ($pageOptions as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+                        </svg>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Action -->
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+                <x-ui.button type="button" variant="black" label="Apply Filters" @click="applyFilters()"
+                        wire:loading.attr="disabled" />
+                @if ($search || $sort_by || $machine_weight || $category || $subcategory || $connection || $machine_class)
+                     <x-ui.button type="button" variant="red" label="Clear Filters" @click="clearAllFilters()"
+                            wire:loading.attr="disabled" />
+                @endif
+            </div>
+
+        </section>
     </div>
 
     <div wire:loading.delay.longest wire:target="applyFilters, search, sort_by"
@@ -248,5 +243,4 @@
             </div>
         @endif
     </div>
-
 </div>

@@ -58,11 +58,8 @@ class ProductRepository
 
 
     public function filterProducts( array $filters = []){
-
         $userId = $filters['user_id'] ?? null;
-        $perPage = isset($filters['perPage']) && in_array((int) $filters['perPage'], [25, 50, 75, 100], true)
-            ? (int) $filters['perPage']
-            : 28;
+        $perPage = isset($filters['perPage']) && in_array((int) $filters['perPage'], [25, 50, 75, 100], true) ? (int) $filters['perPage']: 28;
         $query = $this->model->query()->with(self::RELATIONS)->where('status', 1);
         if (!empty($filters['search'])) {
         $query->where(function ($q) use ($filters) {
@@ -80,29 +77,24 @@ class ProductRepository
         if (!empty($filters['connection'])) {
              $query->where('connection_id', $filters['connection']);
         }
+        // Machine Weight slider (10-100 t): match ranges that include the selected tonnage.
         if (!empty($filters['machine_class'])) {
-            $machineClass = trim((string) $filters['machine_class']);
-            if (str_ends_with($machineClass, '+')) {
-                $query->where('machine_class', '>=', (int) $machineClass);
-            } elseif (str_contains($machineClass, '-')) {
-                [$min, $max] = array_map('intval', explode('-', $machineClass, 2));
-                $query->whereBetween('machine_class', [min($min, $max), max($min, $max)]);
-            } else {
-                $query->where('machine_class', $machineClass);
-            }
-        }
-        // Weight Min and Max (0-10000 = slider defaults = no filter)
-        if ( isset($filters['min_weight']) && isset($filters['max_weight']) &&  $filters['min_weight'] !== '' &&  $filters['max_weight'] !== '' ) {
-            $minWeight = (int) $filters['min_weight'];
-            $maxWeight = (int) $filters['max_weight'];
-            if (! ($minWeight == 0 && $maxWeight == 10000)) {
-                if ($minWeight > $maxWeight) {
-                    [$minWeight, $maxWeight] = [$maxWeight, $minWeight];
-                }
-                $query->whereRaw(
-            'CAST(weight AS UNSIGNED) BETWEEN ? AND ?',
-            [$minWeight, $maxWeight]
-        );
+            $tons = (int) $filters['machine_class'];
+            if ($tons >= 10 && $tons <= 100) {
+                $query->where(function ($q) use ($tons) {
+                    $normalized = "REPLACE(machine_class, ' ', '')";
+
+                    $q->whereRaw(
+                        "{$normalized} LIKE '%-%' AND CAST(SUBSTRING_INDEX({$normalized}, '-', 1) AS DECIMAL(10,2)) <= ? AND CAST(SUBSTRING_INDEX({$normalized}, '-', -1) AS DECIMAL(10,2)) >= ?",
+                        [$tons, $tons]
+                    )->orWhereRaw(
+                        "{$normalized} LIKE '%+%' AND CAST(SUBSTRING_INDEX({$normalized}, '+', 1) AS DECIMAL(10,2)) <= ?",
+                        [$tons]
+                    )->orWhereRaw(
+                        "{$normalized} NOT LIKE '%-%' AND {$normalized} NOT LIKE '%+%' AND CAST({$normalized} AS DECIMAL(10,2)) = ?",
+                        [$tons]
+                    );
+                });
             }
         }
         if (!empty($filters['sort_by'])) {

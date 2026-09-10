@@ -24,12 +24,12 @@ class ProductService
     public function getSortOptions(): array
     {
         return [
-            ['value' => 'newest', 'name' => 'Newest first'],
-            ['value' => 'oldest', 'name' => 'Oldest first'],
+            ['value' => 'price_low_high', 'name' => 'Price (Low-High)'],
+            ['value' => 'price_high_low', 'name' => 'Price (High-Low)'],
             ['value' => 'manufacture_year_high_low', 'name' => 'Manufacture year (High-Low)'],
             ['value' => 'manufacture_year_low_high', 'name' => 'Manufacture year (Low-High)'],
-            ['value' => 'price_high_low', 'name' => 'Price (High-Low)'],
-            ['value' => 'price_low_high', 'name' => 'Price (Low-High)'],
+            ['value' => 'newest', 'name' => 'Newest first'],
+            ['value' => 'oldest', 'name' => 'Oldest first'],
         ];
     }
 

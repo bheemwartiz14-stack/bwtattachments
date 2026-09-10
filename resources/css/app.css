@@ -338,3 +338,53 @@
 @utility text-balance {
     text-wrap: balance;
 }
+
+/* Machine Weight single slider (10–100 t) */
+input[type='range'].mw-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
+input[type='range'].mw-slider::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+}
+
+input[type='range'].mw-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -7px;
+    height: 22px;
+    width: 22px;
+    border-radius: 9999px;
+    background: #0f172a;
+    border: 3px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+    cursor: pointer;
+}
+
+input[type='range'].mw-slider::-moz-range-track {
+    height: 8px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+}
+
+input[type='range'].mw-slider::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 9999px;
+    background: #0f172a;
+    border: 3px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+    cursor: pointer;
+}
+
+.mw-weight-bubble {
+    position: absolute;
+    top: 0;
+    left: var(--weight-position, 100%);
+    display: block;
+    transform: translateX(-50%);
+}

@@ -36,7 +36,7 @@ class StoreQuotationRequest extends FormRequest
             'tax_amount' => ['required', 'string'],
             'margin_amount' => ['nullable', 'string'],
             'grand_total' => ['required', 'string'],
-            'delivery_country' => ['required', 'string', 'size:2'],
+            'delivery_country' => ['nullable', 'string', 'size:2'],
             'reference' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string', 'max:5000'],
             'quotation_email_message' => ['nullable', 'string', 'max:10000'],
@@ -44,7 +44,6 @@ class StoreQuotationRequest extends FormRequest
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
-            '',
         ];
     }
 }

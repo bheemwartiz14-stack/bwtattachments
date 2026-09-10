@@ -23,9 +23,7 @@ class ProductFilters extends Component
     #[Url(except: '')]
     public string $sort_by = '';
     #[Url(except: '')]
-    public string $min_weight = '';
-    #[Url(except: '')]
-    public string $max_weight = '';
+    public string $machine_weight = '';
     #[Url(except: '')]
     public string $perPage = '';
     #[Url(except: '')]
@@ -47,22 +45,21 @@ class ProductFilters extends Component
         $this->resetPage();
     }
 
-    public function applyFilters(?string $category = '', ?string $sort_by = '', ?string $subcategory = '', ?string $connection = '', ?string $machine_class = '', ?string $min_weight = '', ?string $max_weight = '' ,?string $perPage = ''): void
+    public function applyFilters(?string $category = '', ?string $sort_by = '', ?string $subcategory = '', ?string $connection = '', ?string $machine_class = '', ?string $machine_weight = '', ?string $perPage = ''): void
     {
         $this->sort_by = $sort_by ?? '';
         $this->category = $category ?? '';
         $this->subcategory = $subcategory ?? '';
         $this->connection = $connection ?? '';
         $this->machine_class = $machine_class ?? '';
-        $this->min_weight = $min_weight ?? '';
-        $this->max_weight = $max_weight ?? '';
+        $this->machine_weight = $machine_weight ?? '';
         $this->perPage = $perPage ?? '';
         $this->resetPage();
     }
 
     public function clearFilters(): void
     {
-        $this->reset(['search', 'sort_by','category', 'subcategory', 'connection', 'machine_class', 'min_weight', 'max_weight','perPage']);
+        $this->reset(['search', 'sort_by','category', 'subcategory', 'connection', 'machine_class', 'machine_weight','perPage']);
         $this->resetPage();
         $this->dispatch('filters-cleared');
     }
@@ -105,8 +102,7 @@ class ProductFilters extends Component
             'search' => $this->search ?: null,
             'user_id'=> Auth::id(),
             'sort_by' => $this->sort_by ?: null,
-            'min_weight' => $this->min_weight !== '' ? $this->min_weight : null,
-            'max_weight' => $this->max_weight !== '' ? $this->max_weight : null,
+            'machine_weight' => $this->machine_weight !== '' ? $this->machine_weight : null,
             'perPage' => $this->perPage !== '' ? $this->perPage : null,
             'category' => $this->resolveSlug(Category::class, $this->category ?: null),
             'subcategory' => $this->resolveSlug(Subcategory::class, $this->subcategory ?: null),
@@ -114,7 +110,7 @@ class ProductFilters extends Component
             'machine_class' => $this->machine_class ?: null,
             'status' => '1',
         ]);
-        $hasFilters = $this->search !== '' || $this->sort_by !== '' || $this->min_weight !== '' || $this->max_weight !== '' || $this->category !== '' || $this->subcategory !== '' || $this->connection !== '' || $this->machine_class !== '';
+        $hasFilters = $this->search !== '' || $this->sort_by !== '' || $this->machine_weight !== '' || $this->category !== '' || $this->subcategory !== '' || $this->connection !== '' || $this->machine_class !== '';
         $products = $hasFilters ? $productService->filterProducts($filters) : collect();
         $categories = Category::query()->orderBy('name')->pluck('name', 'slug')->toArray();
         $sortOptions = $productService->getSortOptions();
