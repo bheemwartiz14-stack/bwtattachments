@@ -5,13 +5,27 @@
         localPagination: '{{ $perPage !== '' ? $perPage : '25' }}',
         localSubcategory: '{{ $subcategory }}',
         localConnection: '{{ $connection }}',
-        localMachineWeight: {{ is_numeric($machine_class) && (int) $machine_class >= 10 && (int) $machine_class <= 100 ? (int) $machine_class : 100 }},
-        showWeightBubble: true,
+        localMachineWeight: {{ is_numeric($machine_weight) && (int) $machine_weight >= 10 && (int) $machine_weight <= 100 ? (int) $machine_weight : 10 }},
         init() {
             this.filterSubcategories();
+            this.updateFill();
             this.$watch('localCategory', () => {
                 this.filterSubcategories();
             });
+            this.$watch('localMachineWeight', () => {
+                this.updateFill();
+            });
+            if (typeof window.Livewire !== 'undefined' && window.Livewire.hook) {
+                try {
+                    window.Livewire.hook('morph.updated', () => {
+                        this.updateFill();
+                    });
+                } catch (e) { /* morph hook unavailable - fill stays reactive via :style */ }
+            }
+        },
+        updateFill() {
+            const el = document.getElementById('weight');
+            if (el) el.style.setProperty('--mw-fill', this.fillPercent() + '%');
         },
         filterSubcategories() {
             const subSelect = document.getElementById('subcategory');
@@ -30,8 +44,17 @@
                 }
             }
         },
+        fillPercent() {
+            const v = Math.min(100, Math.max(10, Number(this.localMachineWeight) || 10));
+            return (((v - 10) / 90) * 100).toFixed(2);
+        },
+        bubblePosition() {
+            const v = Math.min(100, Math.max(10, Number(this.localMachineWeight) || 10));
+            const pct = ((v - 10) / 90) * 100;
+            return Math.min(91, Math.max(9, pct)).toFixed(2);
+        },
         applyFilters() {
-            $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', String(this.localMachineWeight ?? ''), '', String(this.localPagination ?? ''));
+            $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', '', String(this.localMachineWeight ?? ''), String(this.localPagination ?? ''));
         },
         clearAllFilters() {
             this.resetLocals();
@@ -43,9 +66,9 @@
             this.localPagination = '25';
             this.localSubcategory = '';
             this.localConnection = '';
-            this.localMachineWeight = 100;
-            this.showWeightBubble = false;
+            this.localMachineWeight = 10;
             this.filterSubcategories();
+            this.updateFill();
         },
     }" @filters-cleared.window="resetLocals()">
         <section class="w-full rounded-[22px] border border-gray-100 bg-white px-5 py-7 shadow-sm sm:px-8 lg:px-10">
@@ -59,7 +82,7 @@
 
                 <!-- Category -->
                 <div class="lg:col-span-3">
-                    <label for="category" class="mb-2 block text-base font-medium text-slate-700">
+                    <label for="category" class="mb-2 block text-sm font-medium text-gray-500">
                         Category
                     </label>
                     <div class="relative">
@@ -80,7 +103,7 @@
 
                 <!-- Attachment connection -->
                 <div class="lg:col-span-3">
-                    <label for="connection" class="mb-2 block text-base font-medium text-slate-700">
+                    <label for="connection" class="mb-2 block text-sm font-medium text-gray-500">
                         Attachment connection
                     </label>
                     <div class="relative">
@@ -113,11 +136,10 @@
                                 placeholder="Search product code or description"
                                 class="min-w-0 flex-1 border-0 bg-transparent py-3.5 text-base text-slate-700 placeholder-slate-400 outline-none focus:ring-0" />
                         </div>
-
-                        <x-ui.button type="submit"
-                            class="bg-black px-5 text-sm font-medium text-white whitespace-nowrap transition-colors hover:bg-gray-800"
-                            variant="black" label="Search" />
-
+                             <x-ui.button type="button" label="Search"
+                             class="m-1.5 rounded-xl bg-black px-7 py-3 text-base font-semibold text-white transition hover:bg-gray-800"
+                             @click="applyFilters()"
+                        wire:loading.attr="disabled" />
                     </div>
                 </div>
             </div>
@@ -127,7 +149,7 @@
 
                 <!-- Subcategory -->
                 <div class="lg:col-span-3">
-                    <label for="subcategory" class="mb-2 block text-base font-medium text-slate-700">
+                    <label for="subcategory" class="mb-2 block text-sm font-medium text-gray-500">
                         Subcategory
                     </label>
                     <div class="relative">
@@ -146,32 +168,33 @@
                     </div>
                 </div>
 
-                <!-- Machine weight -->
-                <div class="lg:col-span-3">
-                    <label for="weight" class="mb-2 block text-base font-medium text-slate-700">
+                <!-- Machine weight (Alpine-managed: skipped by Livewire morph) -->
+                <div class="lg:col-span-3" wire:ignore>
+                    <label for="weight" class="mb-1 block text-sm font-medium text-gray-500">
                         Machine weight
                     </label>
 
-                    <div class="relative px-2 pt-11">
-                        <span id="weightValue" x-show="showWeightBubble" x-text="localMachineWeight + ' ton'"
-                            x-bind:style="`--weight-position: ${((Math.min(100, Math.max(10, Number(localMachineWeight) || 100)) - 10) / 90) * 100}%`"
-                            class="mw-weight-bubble whitespace-nowrap rounded-lg bg-slate-100 px-3.5 py-2 text-base font-bold text-slate-900">
+                    <div class="relative pt-9">
+                        <span id="weightValue" x-text="localMachineWeight + ' ton'"
+                            :style="{ left: bubblePosition() + '%' }"
+                            class="mw-weight-bubble">
+                            10 ton
                         </span>
                         <input id="weight" type="range" min="10" max="100" step="1"
-                            x-model.number="localMachineWeight" @input="showWeightBubble = true"
-                            aria-label="Machine weight in tons"
-                            class="mw-slider w-full cursor-pointer bg-transparent" />
-                    </div>
+                            x-model.number="localMachineWeight" aria-label="Machine weight in tons"
+                            :style="{ '--mw-fill': fillPercent() + '%' }"
+                            class="mw-slider mt-1 w-full cursor-pointer bg-transparent" />
 
-                    <div class="mt-2 flex justify-between text-base text-slate-600">
-                        <span>10 ton</span>
-                        <span>100 ton</span>
+                        <div class="mt-2 flex justify-between text-base text-slate-600">
+                            <span>10 ton</span>
+                            <span>100 ton</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Sort -->
                 <div class="lg:col-span-3">
-                    <label for="sort" class="mb-2 block text-base font-medium text-slate-700">
+                    <label for="sort" class="mb-2 block text-sm font-medium text-gray-500">
                         Sort by
                     </label>
                     <div class="relative">
@@ -190,7 +213,7 @@
 
                 <!-- Per page -->
                 <div class="lg:col-span-3">
-                    <label for="perPage" class="mb-2 block text-base font-medium text-slate-700">
+                    <label for="perPage" class="mb-2 block text-sm font-medium text-gray-500">
                         Per page
                     </label>
                     <div class="relative">
@@ -210,11 +233,11 @@
 
             <!-- Action -->
             <div class="mt-7 flex flex-wrap items-center gap-3">
-                <x-ui.button type="button" variant="black" label="Apply Filters" @click="applyFilters()"
+                   <x-ui.button type="button" variant="black" label="Apply Filters"  class="rounded-xl bg-black px-7 py-4 text-base font-semibold text-white transition hover:bg-gray-800 active:scale-[0.99]" @click="applyFilters()"
                         wire:loading.attr="disabled" />
                 @if ($search || $sort_by || $machine_weight || $category || $subcategory || $connection || $machine_class)
-                     <x-ui.button type="button" variant="red" label="Clear Filters" @click="clearAllFilters()"
-                            wire:loading.attr="disabled" />
+                    <x-ui.button type="button" variant="red" label="Clear Filters" @click="clearAllFilters()"
+                        wire:loading.attr="disabled" />
                 @endif
             </div>
 
@@ -232,7 +255,7 @@
 
     <div wire:loading.remove.delay.longest wire:target="applyFilters, search, sort_by">
         @if ($products->count())
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach ($products as $product)
                     <x-product.product-card :product="$product" />
                 @endforeach
