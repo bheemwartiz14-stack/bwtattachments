@@ -265,6 +265,18 @@
                                                     "
                                                 />
                                             @endif
+                                             @if ($recipientLogoBase64)
+
+                                                <img
+                                                    src="{{ $recipientLogoBase64 }}"
+                                                    style="
+                                                        height:42px;
+                                                        width:auto;
+                                                        max-width:190px;
+                                                        object-fit:contain;
+                                                    "
+                                                />
+                                            @endif
 
                                         </td>
 
@@ -409,7 +421,7 @@
                     background:#fff;
                 "
             >
-                <span style="font-weight:bold;">
+                <span>
                     Order No.:
                 </span>
 
@@ -424,7 +436,7 @@
                     background:#fff;
                 "
             >
-                <span style="font-weight:bold;">
+                <span>
                     Order date:
                 </span>
 
@@ -455,11 +467,10 @@
     >
 
         <tr>
-
             <td
                 colspan="2"
                 style="
-                    background:#404040;
+                    background:#666;
                     color:#fff;
                     font-weight:bold;
                     padding:5px 8px;
@@ -522,14 +533,10 @@
                     Email :
                     {{ $recipient->email ?? ($recipientMeta['email'] ?? 'Email') }}
                 </div>
-
-                @php
-                    $vat = $recipientMeta['vat_number'] ?? '';
-                @endphp
-
-                <div style="margin-top:4px;">
+                 <div style="height:5mm;"></div>
+                <div>
                     VAT:
-                    {{ $vat }}
+                    {{ $recipientMeta['vat_number'] ?? ''  }}
                 </div>
 
             </td>
@@ -560,7 +567,7 @@
 
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -575,7 +582,7 @@
 
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -590,7 +597,7 @@
 
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -605,7 +612,7 @@
 
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -620,7 +627,7 @@
 
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -722,8 +729,6 @@
 
             @endforeach
 
-
-            {{-- Empty Rows --}}
             @for ($i = count($order->items); $i < 15; $i++)
 
                 <tr>
@@ -789,163 +794,29 @@
                 </tr>
 
             @endfor
-
         </tbody>
+
 
     </table>
 
 
     {{-- =========================================================
-         NOTES + TOTALS
+         TOTALS
     ========================================================== --}}
 
-    <table
-        style="
-            width:100%;
-            border-collapse:collapse;
-            margin-top:0;
-        "
-        cellpadding="0"
-        cellspacing="0"
-    >
-
+    <table align="right" style="width:72mm;border-collapse:collapse;font-size:12px;margin-top:4mm;" cellpadding="0" cellspacing="0">
         <tr>
-
-            <td
-                style="
-                    width:62%;
-                    vertical-align:top;
-                    padding-top:6px;
-                "
-            >
-
-                <div
-                    style="
-                        font-size:7.5pt;
-                        line-height:1.4;
-                    "
-                >
-                    {!! $order->notes ?? '' !!}
-                </div>
-
-            </td>
-
-            <td
-                style="
-                    width:38%;
-                    vertical-align:top;
-                "
-            >
-
-                <table
-                    style="
-                        width:100%;
-                        border-collapse:collapse;
-                        border:1px solid #000;
-                        margin-top:0;
-                    "
-                    cellpadding="0"
-                    cellspacing="0"
-                >
-
-                    {{-- Sub Total --}}
-                    <tr>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                border-right:1px solid #000;
-                            "
-                        >
-                            Sub total:
-                        </td>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                white-space:nowrap;
-                            "
-                        >
-                            {{ $currency }}
-                            {{ number_format($subTotal, 2, '.', ',') }}
-                        </td>
-
-                    </tr>
-
-
-                    {{-- VAT --}}
-                    <tr>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                border-right:1px solid #000;
-                            "
-                        >
-                            VAT {{ $vatPerc }}%:
-                        </td>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                white-space:nowrap;
-                            "
-                        >
-                            {{ $currency }}
-                            {{ number_format($taxAmount, 2, '.', ',') }}
-                        </td>
-
-                    </tr>
-
-
-                    {{-- Grand Total --}}
-                    <tr>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                font-weight:bold;
-                                border-right:1px solid #000;
-                            "
-                        >
-                            Grand total:
-                        </td>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                font-weight:bold;
-                                white-space:nowrap;
-                            "
-                        >
-                            {{ $currency }}
-                            {{ number_format($grandTotal, 2, '.', ',') }}
-                        </td>
-
-                    </tr>
-
-                </table>
-
-            </td>
-
+            <td style="border:1px solid #777;padding:2mm;text-align:right;">Sub total:</td>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;width:35mm;">{{ $currency }}&nbsp; {{ number_format($subTotal, 2, '.', ',') }}</td>
         </tr>
-
+        <tr>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;">VAT {{ $vatPerc }}%:</td>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;">{{ $currency }}&nbsp; {{ number_format($taxAmount, 2, '.', ',') }}</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;font-weight:700;">Grand total:</td>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;font-weight:700;">{{ number_format($grandTotal, 2, '.', ',') }}</td>
+        </tr>
     </table>
 
 </div>

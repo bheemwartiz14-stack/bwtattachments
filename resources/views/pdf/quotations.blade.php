@@ -211,18 +211,7 @@
                                                 "
                                             />
                                         @endif
-                                    </td>
-
-                                    <!-- RESELLER LOGO -->
-                                    <td
-                                        style="
-                                            width:50%;
-                                            vertical-align:middle;
-                                            text-align:left;
-                                            height:46px;
-                                        "
-                                    >
-                                        @if ($resellerLogoBase64)
+                                         @if ($resellerLogoBase64)
                                             <img
                                                 src="{{ $resellerLogoBase64 }}"
                                                 style="
@@ -411,7 +400,7 @@
             <td
                 colspan="2"
                 style="
-                    background:#404040;
+                    background:#666;
                     color:#fff;
                     font-weight:bold;
                     padding:5px 8px;
@@ -521,7 +510,7 @@
                 <!-- PRODUCT CODE -->
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -538,7 +527,7 @@
                 <!-- PRODUCT NAME -->
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -555,7 +544,7 @@
                 <!-- UNIT PRICE -->
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -572,7 +561,7 @@
                 <!-- QUANTITY -->
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -589,7 +578,7 @@
                 <!-- TOTAL -->
                 <th
                     style="
-                        background:#404040;
+                        background:#666;
                         color:#fff;
                         font-size:7.5pt;
                         font-weight:bold;
@@ -783,158 +772,19 @@
     <!-- TOTALS -->
     <!-- ========================================================= -->
 
-    <table
-        style="
-            width:100%;
-            border-collapse:collapse;
-            margin-top:0;
-        "
-        cellpadding="0"
-        cellspacing="0"
-    >
-
+    <table align="right" style="width:72mm;border-collapse:collapse;font-size:12px;margin-top:4mm;" cellpadding="0" cellspacing="0">
         <tr>
-
-            <!-- NOTES -->
-            <td
-                style="
-                    width:62%;
-                    vertical-align:top;
-                    padding-top:6px;
-                "
-            >
-
-                @if (!empty($quotation->notes))
-                    <div
-                        style="
-                            font-size:7.5pt;
-                            line-height:1.4;
-                        "
-                    >
-                        {!! $quotation->notes !!}
-                    </div>
-                @endif
-
-            </td>
-
-
-            <!-- TOTALS BOX -->
-            <td
-                style="
-                    width:38%;
-                    vertical-align:top;
-                "
-            >
-
-                <table
-                    style="
-                        width:100%;
-                        border-collapse:collapse;
-                        border:1px solid #000;
-                        margin-top:0;
-                    "
-                    cellpadding="0"
-                    cellspacing="0"
-                >
-
-                    <!-- SUB TOTAL -->
-                    <tr>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                border-right:1px solid #000;
-                            "
-                        >
-                            Sub total:
-                        </td>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                white-space:nowrap;
-                            "
-                        >
-                            {{ $currency }}
-                            {{ number_format($subTotal, 2, '.', ',') }}
-                        </td>
-
-                    </tr>
-
-
-                    <!-- VAT -->
-                    <tr>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                border-right:1px solid #000;
-                            "
-                        >
-                            VAT {{ $vatPerc }}%:
-                        </td>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                border-bottom:1px solid #000;
-                                white-space:nowrap;
-                            "
-                        >
-                            {{ $currency }}
-                            {{ number_format($taxAmount, 2, '.', ',') }}
-                        </td>
-
-                    </tr>
-
-
-                    <!-- GRAND TOTAL -->
-                    <tr>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                font-weight:bold;
-                                border-right:1px solid #000;
-                            "
-                        >
-                            Grand total:
-                        </td>
-
-                        <td
-                            style="
-                                padding:4px 8px;
-                                font-size:7.5pt;
-                                text-align:right;
-                                font-weight:bold;
-                                white-space:nowrap;
-                            "
-                        >
-                            {{ $currency }}
-                            {{ number_format($grandTotal, 2, '.', ',') }}
-                        </td>
-
-                    </tr>
-
-                </table>
-
-            </td>
-
+            <td style="border:1px solid #777;padding:2mm;text-align:right;">Sub total:</td>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;width:35mm;">{{ $currency }}&nbsp; {{ number_format($subTotal, 2, '.', ',') }}</td>
         </tr>
-
+        <tr>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;">VAT {{ $vatPerc }}%:</td>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;">{{ $currency }}&nbsp; {{ number_format($taxAmount, 2, '.', ',') }}</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;font-weight:700;">Grand total:</td>
+            <td style="border:1px solid #777;padding:2mm;text-align:right;font-weight:700;">{{ number_format($grandTotal, 2, '.', ',') }}</td>
+        </tr>
     </table>
 
 </div>
