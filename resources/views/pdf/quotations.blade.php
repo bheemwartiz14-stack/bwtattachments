@@ -470,10 +470,12 @@
                     {{ $reseller->email ?? 'john@dtmedia.nl' }}
                 </div>
 
+                    <div style="height:5mm;"></div>
                 @php
                     $vat = $resellerMeta['vat_number']
                         ?? 'NL811021774B01';
                 @endphp
+
 
                 @if ($vat)
                     <div style="margin-top:4px;">
