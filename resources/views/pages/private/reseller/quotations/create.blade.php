@@ -221,7 +221,7 @@
         <livewire:items-manager :customerId="old('reseller_id')" :productId="$productId ?? null" :productIds="$cartIds ?? []" />
 
         {{-- Notes & Terms --}}
-        <div
+        {{-- <div
             class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
             <div class="flex items-center gap-3 border-b border-slate-100 px-6 py-4 dark:border-neutral-800">
                 <div
@@ -244,7 +244,7 @@
                     class="min-h-[200px] rounded-xl border border-slate-200 bg-white text-sm text-slate-900 shadow-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         {{-- Quotation Email Message --}}
         <div
