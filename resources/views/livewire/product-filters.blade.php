@@ -73,7 +73,7 @@
     }" @filters-cleared.window="resetLocals()">
         <section class="w-full rounded-[22px] border border-gray-100 bg-white px-5 py-7 shadow-sm sm:px-8 lg:px-10">
 
-            <h1 class="mb-5 text-2xl font-bold tracking-tight text-gray-950 sm:text-3xl">
+            <h1 class="mb-5 text-2xl font-bold text-gray-900">
                 Filter your search
             </h1>
 
@@ -82,42 +82,34 @@
 
                 <!-- Category -->
                 <div class="lg:col-span-3">
-                    <label for="category" class="mb-2 block text-sm font-medium text-gray-500">
+                    <label for="category" class="block text-xs font-medium text-gray-500 mb-1.5">
                         Category
                     </label>
                     <div class="relative">
                         <select id="category" x-model="localCategory"
-                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             <option value="">All Categories</option>
                             @foreach ($categories ?? [] as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
-                        </svg>
                     </div>
                 </div>
 
 
                 <!-- Attachment connection -->
                 <div class="lg:col-span-3">
-                    <label for="connection" class="mb-2 block text-sm font-medium text-gray-500">
+                    <label for="connection" class="block text-xs font-medium text-gray-500 mb-1.5">
                         Attachment connection
                     </label>
                     <div class="relative">
                         <select id="connection" x-model="localConnection"
-                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             <option value="">All Connections</option>
                             @foreach ($connections ?? [] as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
-                        </svg>
                     </div>
                 </div>
 
@@ -149,28 +141,24 @@
 
                 <!-- Subcategory -->
                 <div class="lg:col-span-3">
-                    <label for="subcategory" class="mb-2 block text-sm font-medium text-gray-500">
+                    <label for="subcategory" class="block text-xs font-medium text-gray-500 mb-1.5">
                         Subcategory
                     </label>
                     <div class="relative">
                         <select id="subcategory" x-model="localSubcategory"
-                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             <option value="">All Subcategories</option>
                             @foreach ($subcategories ?? [] as $sub)
                                 <option value="{{ $sub->slug }}" data-category-slug="{{ $sub->category?->slug }}">
                                     {{ $sub->name }}</option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
-                        </svg>
                     </div>
                 </div>
 
                 <!-- Machine weight (Alpine-managed: skipped by Livewire morph) -->
                 <div class="lg:col-span-3" wire:ignore>
-                    <label for="weight" class="mb-1 block text-sm font-medium text-gray-500">
+                    <label for="weight" class="block text-xs font-medium text-gray-500 mb-1.5">
                         Machine weight
                     </label>
 
@@ -194,39 +182,31 @@
 
                 <!-- Sort -->
                 <div class="lg:col-span-3">
-                    <label for="sort" class="mb-2 block text-sm font-medium text-gray-500">
+                    <label for="sort" class="block text-xs font-medium text-gray-500 mb-1.5">
                         Sort by
                     </label>
                     <div class="relative">
                         <select id="sort" x-model="localSortBy"
-                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             @foreach ($sortOptions as $option)
                                 <option value="{{ $option['value'] }}">{{ $option['name'] }}</option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
-                        </svg>
                     </div>
                 </div>
 
                 <!-- Per page -->
                 <div class="lg:col-span-3">
-                    <label for="perPage" class="mb-2 block text-sm font-medium text-gray-500">
+                    <label for="perPage" class="block text-xs font-medium text-gray-500 mb-1.5">
                         Per page
                     </label>
                     <div class="relative">
                         <select id="perPage" x-model="localPagination"
-                            class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3.5 pr-11 text-base text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100">
+                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             @foreach ($pageOptions as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-700"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
-                        </svg>
                     </div>
                 </div>
             </div>
