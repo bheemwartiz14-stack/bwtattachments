@@ -174,7 +174,7 @@
                         Machine weight
                     </label>
 
-                    <div class="relative pt-9">
+                    <div class="relative pt-1">
                         <span id="weightValue" x-text="localMachineWeight + ' ton'"
                             :style="{ left: bubblePosition() + '%' }"
                             class="mw-weight-bubble">
