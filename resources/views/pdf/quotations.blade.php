@@ -1,8 +1,9 @@
 @php
     $sender = $quotation->user;
+       // Reseller / recipient
+    $reseller = $quotation->reseller ?? null;
     $role = $sender?->roles->first()?->name;
     $senderMeta = $sender?->userMeta?->metadata ?? [];
-
     // Sender logo
     $senderLogoPath = '';
     $senderLogoBase64 = '';
@@ -129,6 +130,13 @@
     <title>
         Quotation {{ $quotation->quotation_number }}
     </title>
+
+    <style>
+        @page {
+            size: A4;
+            margin: 13mm;
+        }
+    </style>
 </head>
 
 <body
@@ -146,7 +154,8 @@
 <div
     style="
         width:100%;
-        padding:18px 28px 18px 28px;
+        margin:0;
+        padding:0;
     "
 >
 
@@ -519,7 +528,7 @@
                         padding:5px 6px;
                         text-align:left;
                         border-right:1px solid #000;
-                        width:16%;
+                        width:10%;
                     "
                 >
                     Product code
@@ -553,7 +562,7 @@
                         padding:5px 6px;
                         text-align:right;
                         border-right:1px solid #000;
-                        width:16%;
+                        width:10%;
                     "
                 >
                     Unit price
@@ -570,7 +579,7 @@
                         padding:5px 6px;
                         text-align:center;
                         border-right:1px solid #000;
-                        width:7%;
+                        width:5%;
                     "
                 >
                     Qty
@@ -586,7 +595,7 @@
                         font-weight:bold;
                         padding:5px 6px;
                         text-align:right;
-                        width:27%;
+                             width:10%;
                     "
                 >
                     Total
@@ -699,7 +708,7 @@
             <!-- EMPTY ROWS -->
             <!-- ================================================= -->
 
-            @for ($i = count($quotation->items); $i < 15; $i++)
+            @for ($i = count($quotation->items); $i < 3; $i++)
 
                 <tr>
 
@@ -773,21 +782,24 @@
     <!-- ========================================================= -->
     <!-- TOTALS -->
     <!-- ========================================================= -->
-
-    <table align="right" style="width:72mm;border-collapse:collapse;font-size:12px;margin-top:4mm;" cellpadding="0" cellspacing="0">
-        <tr>
-            <td style="border:1px solid #777;padding:2mm;text-align:right;">Sub total:</td>
-            <td style="border:1px solid #777;padding:2mm;text-align:right;width:35mm;">{{ $currency }}&nbsp; {{ number_format($subTotal, 2, '.', ',') }}</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #777;padding:2mm;text-align:right;">VAT {{ $vatPerc }}%:</td>
-            <td style="border:1px solid #777;padding:2mm;text-align:right;">{{ $currency }}&nbsp; {{ number_format($taxAmount, 2, '.', ',') }}</td>
-        </tr>
-        <tr>
-            <td style="border:1px solid #777;padding:2mm;text-align:right;font-weight:700;">Grand total:</td>
-            <td style="border:1px solid #777;padding:2mm;text-align:right;font-weight:700;">{{ number_format($grandTotal, 2, '.', ',') }}</td>
-        </tr>
-    </table>
+        <table align="right" style="width:37%;border-collapse:collapse;font-size:12px;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
+            cellspacing="0">
+            <tr>
+                <td style="border:1px solid #000;padding:2mm;text-align:right;width:50%;">Sub total:</td>
+                <td style="border:1px solid #000;padding:2mm;text-align:right;width:50%;">{{ $currency }}&nbsp;
+                    {{ number_format($subTotal, 2, '.', ',') }}</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #000;padding:2mm;text-align:right;">VAT {{ $vatPerc }}%:</td>
+                <td style="border:1px solid #000;padding:2mm;text-align:right;">{{ $currency }}&nbsp;
+                    {{ number_format($taxAmount, 2, '.', ',') }}</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #000;padding:2mm;text-align:right;font-weight:700;">Grand total:</td>
+                <td style="border:1px solid #000;padding:2mm;text-align:right;font-weight:700;">
+                    {{ number_format($grandTotal, 2, '.', ',') }}</td>
+            </tr>
+        </table>
 
 </div>
 
