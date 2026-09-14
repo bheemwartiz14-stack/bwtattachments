@@ -26,12 +26,18 @@ class ProfileController extends Controller
         $avatar = $user->getFirstMedia('avatar');
         $country_name = $user->country  ?? '';
         $country_code = $user->country_code  ?? '';
+        $meta = $user->userMeta?->metadata ?? [];
+        $companyLogo = $user->getFirstMedia('company_logo');
         return view('pages.private.admin.profile.edit', [
             'user' => $user,
             'avatarUrl' => $avatar?->getUrl(),
             'avatarId' => $avatar?->id,
             'country_name'=> $country_name,
             'country_code'=> $country_code,
+            'meta' => $meta,
+            'company_name' => $meta['company_name'] ?? '',
+            'companyLogoUrl' => $companyLogo?->getUrl(),
+            'companyLogoId' => $companyLogo?->id,
             'prefix' => 'admin',
             'breadcrumbLabel' => 'Admin',
             'breadcrumbRoute' => 'admin.dashboard',
@@ -43,13 +49,9 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $data = $request->validated();
         $user = $request->user();
         $this->profileService->updateProfile($user, $request->validated());
-
-        return redirect()
-            ->route('admin.profile.edit')
-            ->with('success', 'Profile updated successfully.');
+        return back() ->with('success', 'Profile updated successfully.');
     }
 
     public function updatePassword(UpdatePasswordRequest $request): RedirectResponse

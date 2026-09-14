@@ -107,6 +107,7 @@ class QuotationService
         $quotation->load([
             'items.product',
             'user.userMeta',
+               'user.parent',
         ]);
 
         $filename = "quotations/{$quotation->quotation_number}.pdf";

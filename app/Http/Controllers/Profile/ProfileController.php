@@ -125,6 +125,8 @@ class ProfileController extends Controller
     private function handleUpdate($request, callable $action, string $message): RedirectResponse
     {
         $user = $request->user();
+        dd($request->validated());
+
         $action($user, $request->validated());
 
         return $this->successRedirect($user, $message);

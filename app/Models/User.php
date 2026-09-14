@@ -79,6 +79,16 @@ class User extends Authenticatable implements HasMedia
                 'image/webp',
             ]);
 
+        // Company logo (admin profile) - single JPG/JPEG/PNG/WebP
+        $this->addMediaCollection('company_logo')
+            ->singleFile()
+            ->acceptsMimeTypes([
+                'image/jpeg',
+                'image/jpg',
+                'image/png',
+                'image/webp',
+            ]);
+
         // Customer logo - single JPG/JPEG/PNG/WebP
         $this->addMediaCollection('customer_logo')
             ->singleFile()

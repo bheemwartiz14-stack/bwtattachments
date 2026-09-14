@@ -27,7 +27,7 @@ class ProfileService
         try {
             return DB::transaction(function () use ($user, $data) {
                 $user = $this->userRepository->update($user->id, [
-                    'name' => $data['name'],
+                    'name' => $data['name'] ?? $user->name,
                     'country' => $data['country_name'] ?? '',
                     'country_code' => $data['country_code'] ?? '',
                     'phone' => $data['phone'] ?? null,
@@ -38,6 +38,10 @@ class ProfileService
 
                 if ($user->hasRole('Retailer')) {
                     $this->updateClientProfile($user, $data, 'retailer');
+                }
+
+                if ($user->hasRole('Admin')) {
+                    $this->updateCompanyProfile($user, $data);
                 }
 
                 $avatarPath = $this->resolveTempFile($data['avatar_temp'] ?? null);
@@ -78,6 +82,29 @@ class ProfileService
                 $user->clearMediaCollection('retailer_client_logo');
                 $user->addMedia($data[$logoField])->toMediaCollection('retailer_client_logo');
             }
+        }
+    }
+
+    private function updateCompanyProfile(User $user, array $data): void
+    {
+        $meta = $user->userMeta()->firstOrNew();
+        $metadata = $meta->metadata ?? [];
+        foreach (['company_name', 'vat_number', 'address', 'postal_code', 'city'] as $key) {
+            if (array_key_exists($key, $data)) {
+                $metadata[$key] = $data[$key] ?? '';
+            }
+        }
+        $meta->metadata = $metadata;
+        $meta->user()->associate($user);
+        $meta->save();
+
+        $logoFile = $data['company_logo'] ?? null;
+        if (! $logoFile instanceof UploadedFile) {
+            $logoFile = $this->resolveTempFile($data['company_logo_temp'] ?? null);
+        }
+        if ($logoFile) {
+            $user->clearMediaCollection('company_logo');
+            $user->addMedia($logoFile)->toMediaCollection('company_logo');
         }
     }
 
