@@ -111,7 +111,8 @@ class ProductFilters extends Component
             'status' => '1',
         ]);
         $hasFilters = $this->search !== '' || $this->sort_by !== '' || $this->machine_weight !== '' || $this->category !== '' || $this->subcategory !== '' || $this->connection !== '' || $this->machine_class !== '';
-        $products = $hasFilters ? $productService->filterProducts($filters) : collect();
+        // Machine weight is optional: with no filters (slider at 10-100) all products are shown.
+        $products = $productService->filterProducts($filters);
         $categories = Category::query()->orderBy('name')->pluck('name', 'slug')->toArray();
         $sortOptions = $productService->getSortOptions();
         $pageOptions = $productService->getPerPageOptions();

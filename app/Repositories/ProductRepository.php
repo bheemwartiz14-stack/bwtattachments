@@ -58,6 +58,7 @@ class ProductRepository
 
 
     public function filterProducts( array $filters = []){
+        // dd($filters);
         $userId = $filters['user_id'] ?? null;
         $perPage = isset($filters['perPage']) && in_array((int) $filters['perPage'], [25, 50, 75, 100], true) ? (int) $filters['perPage']: 28;
         $query = $this->model->query()->with(self::RELATIONS)->where('status', 1);
@@ -77,25 +78,15 @@ class ProductRepository
         if (!empty($filters['connection'])) {
              $query->where('connection_id', $filters['connection']);
         }
-        // Machine Weight slider (10-100 t): match ranges that include the selected tonnage.
-        if (!empty($filters['machine_class'])) {
-            $tons = (int) $filters['machine_class'];
-            if ($tons >= 10 && $tons <= 100) {
-                $query->where(function ($q) use ($tons) {
-                    $normalized = "REPLACE(machine_class, ' ', '')";
-
-                    $q->whereRaw(
-                        "{$normalized} LIKE '%-%' AND CAST(SUBSTRING_INDEX({$normalized}, '-', 1) AS DECIMAL(10,2)) <= ? AND CAST(SUBSTRING_INDEX({$normalized}, '-', -1) AS DECIMAL(10,2)) >= ?",
-                        [$tons, $tons]
-                    )->orWhereRaw(
-                        "{$normalized} LIKE '%+%' AND CAST(SUBSTRING_INDEX({$normalized}, '+', 1) AS DECIMAL(10,2)) <= ?",
-                        [$tons]
-                    )->orWhereRaw(
-                        "{$normalized} NOT LIKE '%-%' AND {$normalized} NOT LIKE '%+%' AND CAST({$normalized} AS DECIMAL(10,2)) = ?",
-                        [$tons]
-                    );
-                });
-            }
+        //if (!empty($filters['machine_weight'])) {
+        //     $query->where('machine_weight', $filters['machine_weight']);
+        // }
+       if (!empty($filters['machine_weight'])) {
+            [$minWeight, $maxWeight] = array_map('trim', explode('-', $filters['machine_weight']));
+            $query->whereBetween('machine_class', [
+                $minWeight,
+                $maxWeight
+            ]);
         }
         if (!empty($filters['sort_by'])) {
             $this->applySorting( $query, $filters['sort_by'] );

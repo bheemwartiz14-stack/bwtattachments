@@ -5,27 +5,54 @@
         localPagination: '{{ $perPage !== '' ? $perPage : '25' }}',
         localSubcategory: '{{ $subcategory }}',
         localConnection: '{{ $connection }}',
-        localMachineWeight: {{ is_numeric($machine_weight) && (int) $machine_weight >= 10 && (int) $machine_weight <= 100 ? (int) $machine_weight : 10 }},
+        localMinWeight: 10,
+        localMaxWeight: 100,
         init() {
+            const parts = String('{{ $machine_weight }}').split('-');
+            if (parts.length === 2) {
+                const a = parseInt(parts[0], 10);
+                const b = parseInt(parts[1], 10);
+                if (!isNaN(a)) this.localMinWeight = Math.min(100, Math.max(10, a));
+                if (!isNaN(b)) this.localMaxWeight = Math.min(100, Math.max(10, b));
+            }
             this.filterSubcategories();
-            this.updateFill();
+            this.updateWeightSlider();
             this.$watch('localCategory', () => {
                 this.filterSubcategories();
             });
-            this.$watch('localMachineWeight', () => {
-                this.updateFill();
+            this.$watch('localMinWeight', () => {
+                this.updateWeightSlider();
+            });
+            this.$watch('localMaxWeight', () => {
+                this.updateWeightSlider();
             });
             if (typeof window.Livewire !== 'undefined' && window.Livewire.hook) {
                 try {
                     window.Livewire.hook('morph.updated', () => {
-                        this.updateFill();
+                        this.updateWeightSlider();
                     });
-                } catch (e) { /* morph hook unavailable - fill stays reactive via :style */ }
+                } catch (e) { /* morph hook unavailable - range stays reactive via x-model */ }
             }
         },
-        updateFill() {
-            const el = document.getElementById('weight');
-            if (el) el.style.setProperty('--mw-fill', this.fillPercent() + '%');
+        updateWeightSlider() {
+            let min = Number(this.localMinWeight);
+            let max = Number(this.localMaxWeight);
+            if (isNaN(min)) min = 10;
+            if (isNaN(max)) max = 100;
+            min = Math.min(100, Math.max(10, min));
+            max = Math.min(100, Math.max(10, max));
+            if (min > max) {
+                const t = min;
+                min = max;
+                max = t;
+            }
+            this.localMinWeight = min;
+            this.localMaxWeight = max;
+            const range = document.getElementById('weightRange');
+            if (range) {
+                range.style.left = ((min - 10) / 90 * 100) + '%';
+                range.style.right = (100 - (max - 10) / 90 * 100) + '%';
+            }
         },
         filterSubcategories() {
             const subSelect = document.getElementById('subcategory');
@@ -44,17 +71,13 @@
                 }
             }
         },
-        fillPercent() {
-            const v = Math.min(100, Math.max(10, Number(this.localMachineWeight) || 10));
-            return (((v - 10) / 90) * 100).toFixed(2);
-        },
-        bubblePosition() {
-            const v = Math.min(100, Math.max(10, Number(this.localMachineWeight) || 10));
-            const pct = ((v - 10) / 90) * 100;
-            return Math.min(91, Math.max(9, pct)).toFixed(2);
-        },
         applyFilters() {
-            $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', '', String(this.localMachineWeight ?? ''), String(this.localPagination ?? ''));
+            const min = Number(this.localMinWeight) || 10;
+            const max = Number(this.localMaxWeight) || 100;
+            const lo = Math.min(min, max);
+            const hi = Math.max(min, max);
+            const weight = (lo <= 10 && hi >= 100) ? '' : (lo + '-' + hi);
+            $wire.applyFilters(this.localCategory ?? '', this.localSortBy ?? '', this.localSubcategory ?? '', this.localConnection ?? '', '', weight, String(this.localPagination ?? ''));
         },
         clearAllFilters() {
             this.resetLocals();
@@ -66,19 +89,20 @@
             this.localPagination = '25';
             this.localSubcategory = '';
             this.localConnection = '';
-            this.localMachineWeight = 10;
+            this.localMinWeight = 10;
+            this.localMaxWeight = 100;
             this.filterSubcategories();
-            this.updateFill();
+            this.updateWeightSlider();
         },
     }" @filters-cleared.window="resetLocals()">
-        <section class="w-full rounded-[22px] border border-gray-100 bg-white px-5 py-7 shadow-sm sm:px-8 lg:px-10">
+        <section class="w-full rounded-[22px] border border-gray-100 bg-white px-4 py-5 shadow-sm sm:px-6">
 
-            <h1 class="mb-5 text-2xl font-bold text-gray-900">
+            <h1 class="mb-4 text-xl font-bold tracking-tight text-gray-950 sm:text-2xl">
                 Filter your search
             </h1>
 
             <!-- Top row -->
-            <div class="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-end">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-end">
 
                 <!-- Category -->
                 <div class="lg:col-span-3">
@@ -87,7 +111,7 @@
                     </label>
                     <div class="relative">
                         <select id="category" x-model="localCategory"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                            class="block h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             <option value="">All Categories</option>
                             @foreach ($categories ?? [] as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
@@ -104,7 +128,7 @@
                     </label>
                     <div class="relative">
                         <select id="connection" x-model="localConnection"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                            class="block h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             <option value="">All Connections</option>
                             @foreach ($connections ?? [] as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
@@ -117,16 +141,16 @@
                 <!-- Search -->
                 <div class="lg:col-span-6">
                     <label for="search" class="sr-only">Search product code or description</label>
-                    <div class="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+                    <div class="flex h-11 items-center overflow-hidden rounded-xl border border-slate-200 bg-white">
                         <div class="flex min-w-0 flex-1 items-center gap-3 px-4">
-                            <svg class="h-6 w-6 shrink-0 text-slate-500" fill="none" viewBox="0 0 24 24"
+                            <svg class="h-5 w-5 shrink-0 text-slate-500" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="m21 21-4.35-4.35m2.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
                             </svg>
                             <input id="search" type="text" wire:model.live.debounce.300ms="search"
                                 placeholder="Search product code or description"
-                                class="min-w-0 flex-1 border-0 bg-transparent py-3.5 text-base text-slate-700 placeholder-slate-400 outline-none focus:ring-0" />
+                                class="min-w-0 flex-1 border-0 bg-transparent py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none focus:ring-0" />
                         </div>
                              <x-ui.button type="button" label="Search"
                              class="m-1.5 rounded-xl bg-black px-7 py-3 text-base font-semibold text-white transition hover:bg-gray-800"
@@ -137,7 +161,7 @@
             </div>
 
             <!-- Bottom row -->
-            <div class="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-end">
+            <div class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-end">
 
                 <!-- Subcategory -->
                 <div class="lg:col-span-3">
@@ -146,7 +170,7 @@
                     </label>
                     <div class="relative">
                         <select id="subcategory" x-model="localSubcategory"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                            class="block h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             <option value="">All Subcategories</option>
                             @foreach ($subcategories ?? [] as $sub)
                                 <option value="{{ $sub->slug }}" data-category-slug="{{ $sub->category?->slug }}">
@@ -156,24 +180,30 @@
                     </div>
                 </div>
 
-                <!-- Machine weight (Alpine-managed: skipped by Livewire morph) -->
+                <!-- Machine weight range (Alpine-managed: skipped by Livewire morph) -->
                 <div class="lg:col-span-3" wire:ignore>
-                    <label for="weight" class="block text-xs font-medium text-gray-500 mb-1.5">
-                        Machine weight
-                    </label>
-
-                    <div class="relative pt-6">
-                        <span id="weightValue" x-text="localMachineWeight + ' ton'"
-                            :style="{ left: bubblePosition() + '%' }"
-                            class="mw-weight-bubble">
-                            10 ton
-                        </span>
-                        <input id="weight" type="range" min="10" max="100" step="1"
-                            x-model.number="localMachineWeight" aria-label="Machine weight in tons"
-                            :style="{ '--mw-fill': fillPercent() + '%' }"
-                            class="mw-slider mt-1 w-full cursor-pointer bg-transparent" />
-
-                        <div class="mt-2 flex justify-between text-base text-slate-600">
+                    <div class="mb-1.5 flex items-center justify-between">
+                        <label for="weight" class="block text-xs font-medium text-gray-500">
+                            Machine weight
+                        </label>
+                        <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-700"
+                            x-text="localMinWeight + ' - ' + localMaxWeight + ' ton'">10 - 100 ton</span>
+                    </div>
+                    <div class="px-1 pt-1">
+                        <div class="relative h-5">
+                            <div class="absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-slate-200"></div>
+                            <div id="weightRange" class="absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-slate-700"
+                                style="left: 0%; right: 0%;"></div>
+                            <input id="minWeight" type="range" min="10" max="100" step="1"
+                                x-model.number="localMinWeight" @input="updateWeightSlider()" @change="applyFilters()"
+                                aria-label="Minimum machine weight in tons"
+                                class="weight-slider absolute inset-0 h-full w-full cursor-pointer" />
+                            <input id="maxWeight" type="range" min="10" max="100" step="1"
+                                x-model.number="localMaxWeight" @input="updateWeightSlider()" @change="applyFilters()"
+                                aria-label="Maximum machine weight in tons"
+                                class="weight-slider absolute inset-0 h-full w-full cursor-pointer" />
+                        </div>
+                        <div class="mt-1 flex justify-between text-xs text-slate-500">
                             <span>10 ton</span>
                             <span>100 ton</span>
                         </div>
@@ -187,7 +217,7 @@
                     </label>
                     <div class="relative">
                         <select id="sort" x-model="localSortBy"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                            class="block h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             @foreach ($sortOptions as $option)
                                 <option value="{{ $option['value'] }}">{{ $option['name'] }}</option>
                             @endforeach
@@ -202,7 +232,7 @@
                     </label>
                     <div class="relative">
                         <select id="perPage" x-model="localPagination"
-                            class="block w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
+                            class="block h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             @foreach ($pageOptions as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
@@ -212,7 +242,7 @@
             </div>
 
             <!-- Action -->
-            <div class="mt-7 flex flex-wrap items-center gap-3">
+            <div class="mt-5 flex flex-wrap items-center gap-3">
                    <x-ui.button type="button" variant="black" label="Apply Filters"  class="rounded-xl bg-black px-7 py-4 text-base font-semibold text-white transition hover:bg-gray-800 active:scale-[0.99]" @click="applyFilters()"
                         wire:loading.attr="disabled" />
                 @if ($search || $sort_by || $machine_weight || $category || $subcategory || $connection || $machine_class)
