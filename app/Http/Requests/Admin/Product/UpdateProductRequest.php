@@ -39,7 +39,6 @@ class UpdateProductRequest extends FormRequest
             'volume' => ['nullable', 'string'],
             'teeth' => ['nullable', 'string'],
             'pin_hole' => ['nullable', 'string'],
-            'manufacture_year' => ['required','integer', 'min:1900', 'max:3000', ],
             'machine_class' => ['nullable', 'string'],
             'material' => ['nullable', 'string', 'max:255'],
             'thickness' => ['nullable', 'string'],

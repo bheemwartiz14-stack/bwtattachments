@@ -66,13 +66,6 @@ class StoreProductRequest extends FormRequest
             'product_feature_image.image' => 'Feature image must be an image file.',
             'product_gallery_images.*.image' => 'Each gallery file must be an image.',
             'product_pdf.mimes' => 'Only PDF files are allowed.',
-
-
-            // Manufacture year
-            'manufacture_year.required' => 'Please enter the manufacture year.',
-            'manufacture_year.integer' => 'Manufacture year must be a whole number.',
-            'manufacture_year.min' => 'Manufacture year must be at least 1900.',
-            'manufacture_year.max' => 'Manufacture year cannot be greater than 3000.',
         ];
     }
 }
