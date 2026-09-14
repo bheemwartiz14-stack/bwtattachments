@@ -173,15 +173,6 @@
                                     'placeholder' => 'e.g. 80 or 80-100',
                                     'type' => 'text',
                                 ],
-
-                                'manufacture_year' => [
-                                    'label' => 'Manufacture Year',
-                                    'placeholder' => 'e.g. 2024',
-                                    'type' => 'number',
-                                    'min' => 1900,
-                                    'max' => 3000,
-                                    'required' => true,
-                                ],
                             ];
                         @endphp
 

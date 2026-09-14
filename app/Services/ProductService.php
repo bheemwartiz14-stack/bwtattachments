@@ -26,8 +26,8 @@ class ProductService
         return [
             ['value' => 'price_low_high', 'name' => 'Price (Low-High)'],
             ['value' => 'price_high_low', 'name' => 'Price (High-Low)'],
-            ['value' => 'manufacture_year_high_low', 'name' => 'Manufacture year (High-Low)'],
-            ['value' => 'manufacture_year_low_high', 'name' => 'Manufacture year (Low-High)'],
+            // ['value' => 'manufacture_year_high_low', 'name' => 'Manufacture year (High-Low)'],
+            // ['value' => 'manufacture_year_low_high', 'name' => 'Manufacture year (Low-High)'],
             ['value' => 'newest', 'name' => 'Newest first'],
             ['value' => 'oldest', 'name' => 'Oldest first'],
         ];
@@ -36,7 +36,7 @@ class ProductService
         public function getPerPageOptions(): array
     {
         return [
-            
+
             25 => '25 per page',
             50 => '50 per page',
             75 => '75 per page',
