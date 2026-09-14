@@ -87,7 +87,7 @@ class UserProductService
     public function addToCart(User $user, Product $product, int $quantity = 1): void
     {
         $cart = $this->cart($user);
-        $cart[(string) $product->id] = min(50, max(1, $quantity));
+        $cart[(string) $product->id] = min(999, max(1, $quantity));
         $this->storeCart($user, $cart);
     }
 
@@ -105,7 +105,7 @@ class UserProductService
             return;
         }
 
-        $cart[$productId] = min(50, max(1, $quantity));
+        $cart[$productId] = min(999, max(1, $quantity));
         $this->storeCart($user, $cart);
     }
 

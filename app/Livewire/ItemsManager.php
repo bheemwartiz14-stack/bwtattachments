@@ -120,7 +120,7 @@ class ItemsManager extends Component
     {
         if (isset($this->items[$index])) {
             $this->items[$index]['quantity'] = min(
-                50,
+                999,
                 max(1, $value)
             );
 

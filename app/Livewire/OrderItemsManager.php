@@ -160,7 +160,7 @@ class OrderItemsManager extends Component
             $currentQty = (int) ($item['quantity'] ?? 1);
             $newQty = $currentQty + $delta;
             if ($newQty < 1) return;
-            $newQty = min(50, max(1, $newQty));
+            $newQty = min(999, $newQty);
             $this->userProductService->updateCartQuantity(Auth::user(), $cartItemId, $newQty);
             foreach ($this->items as $i => $item) {
                 if ((string) ($item['product_id'] ?? '') === $cartItemId) { $this->items[$i]['quantity'] = $newQty; break; }

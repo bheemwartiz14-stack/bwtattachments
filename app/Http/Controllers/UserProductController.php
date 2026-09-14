@@ -66,6 +66,12 @@ class UserProductController extends Controller
         $quantity = (int) $request->input('quantity', 1);
         $current = $this->userProductService->getCartQuantity(auth()->user(), (string) $product->id);
         $quantity = $current + $quantity;
+        if ($quantity > 999) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Quantity cannot be more than 999.',
+                ], 400);
+        }
         if (! in_array((string) $product->id, $this->userProductService->getQuotationProductIds(auth()->user()), true)) {
             $this->userProductService->addToCart(auth()->user(), $product, $quantity);
         } else {

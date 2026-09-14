@@ -124,7 +124,7 @@
                             $inCart = $product->is_in_cart;
                         @endphp
                         <div id="qty-wrap-{{ $product->id }}" class="mt-3 flex items-center gap-1 justify-center">
-                            <input type="number" id="qty-{{ $product->id }}" value="{{ $qty }}" min="1" max="50"
+                            <input type="number" id="qty-{{ $product->id }}" value="{{ $qty }}"  min="1" max="999" step="1"
                                 class="inline-flex h-7 w-16 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-slate-900 text-center focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                         </div>
                         <button type="button" data-quote="{{ $product->id }}" data-added="{{ $inCart ? 'true' : 'false' }}"

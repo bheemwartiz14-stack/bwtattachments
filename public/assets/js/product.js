@@ -47,7 +47,6 @@ function initCurrencyConverter() {
 
     var rate = null;
     var $hint = $('#currency-rate-hint');
-
     function convert() {
         var val = parseFloat($rmb.val());
         if (rate && !isNaN(val) && val > 0) {

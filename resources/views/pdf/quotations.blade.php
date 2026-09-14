@@ -78,11 +78,7 @@
 
 <head>
     <meta charset="UTF-8">
-
-    <title>
-        Quotation {{ $quotation->quotation_number }}
-    </title>
-
+    <title> Quotation {{ $quotation->quotation_number }} </title>
     <style>
         @page {
             size: A4;
@@ -100,202 +96,155 @@
         font-family:Helvetica,Arial,sans-serif;
         font-size:9pt;
         line-height:1.4;
-    "
->
+    ">
 
-<div
-    style="
-        width:100%;
-        margin:0;
-        padding:0;
-    "
->
+    <div style=" width:100%; margin:0; padding:0; "> <!-- ========================================================= -->
+        <!-- TOP SECTION: LOGOS + RECIPIENT CONTACT -->
+        <!-- ========================================================= -->
+        <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+            <tr>
 
-    <!-- ========================================================= -->
-    <!-- TOP SECTION: LOGOS + RECIPIENT CONTACT -->
-    <!-- ========================================================= -->
-
-    <table
-        style="width:100%;border-collapse:collapse;"
-        cellpadding="0"
-        cellspacing="0"
-    >
-        <tr>
-
-            <!-- LEFT SIDE -->
-            <td
-                style="
+                <!-- LEFT SIDE -->
+                <td
+                    style="
                     width:72%;
                     vertical-align:top;
                     padding-right:10px;
-                "
-            >
+                ">
 
-                <table
-                    style="width:100%;border-collapse:collapse;"
-                    cellpadding="0"
-                    cellspacing="0"
-                >
-                    <tr>
+                    <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+                        <tr>
 
-                        <td
-                            style="
+                            <td
+                                style="
                                 padding:4px 8px;
                                 vertical-align:top;
-                            "
-                        >
+                            ">
 
-                            <table
-                                style="width:100%;border-collapse:collapse;"
-                                cellpadding="0"
-                                cellspacing="0"
-                            >
-                                <tr>
+                                <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+                                    <tr>
 
-                                    <!-- SENDER LOGO -->
-                                    <td
-                                        style="
+                                        <!-- SENDER LOGO -->
+                                        <td
+                                            style="
                                             width:50%;
                                             vertical-align:middle;
                                             text-align:left;
                                             height:46px;
-                                        "
-                                    >
-                                        @if ($senderLogoBase64)
-                                            <img
-                                                src="{{ $senderLogoBase64 }}"
-                                                style="
+                                        ">
+                                            @if ($senderLogoBase64)
+                                                <img src="{{ $senderLogoBase64 }}"
+                                                    style="
                                                     height:42px;
                                                     width:auto;
                                                     max-width:190px;
                                                     object-fit:contain;
-                                                "
-                                            />
-                                        @endif
-                                         @if ($resellerLogoBase64)
-                                            <img
-                                                src="{{ $resellerLogoBase64 }}"
-                                                style="
+                                                " />
+                                            @endif
+                                            @if ($resellerLogoBase64)
+                                                <img src="{{ $resellerLogoBase64 }}"
+                                                    style="
                                                     height:42px;
                                                     width:auto;
                                                     max-width:190px;
                                                     object-fit:contain;
-                                                "
-                                            />
-                                        @endif
-                                    </td>
+                                                " />
+                                            @endif
+                                        </td>
 
-                                </tr>
-                            </table>
+                                    </tr>
+                                </table>
 
-                        </td>
+                            </td>
 
-                    </tr>
-                </table>
+                        </tr>
+                    </table>
 
-            </td>
+                </td>
 
-            <!-- RIGHT SIDE CONTACT -->
-            <td
-                style="
+                <!-- RIGHT SIDE CONTACT -->
+                <td
+                    style="
                     width:28%;
                     vertical-align:top;
                     text-align:right;
                     padding-left:10px;
-                "
-            >
+                ">
 
-                <div
-                    style="
+                    <div
+                        style="
                         font-size:9pt;
                         font-weight:bold;
                         color:#000;
                         line-height:1.35;
-                    "
-                >
-                    {{ $topRightName }}
-                </div>
+                    ">
+                        {{ $topRightName }}
+                    </div>
 
-                <div
-                    style="
+                    <div
+                        style="
                         font-size:8.5pt;
                         color:#000;
                         line-height:1.35;
-                    "
-                >
-                    {{ $topRightStreet }}
-                </div>
+                    ">
+                        {{ $topRightStreet }}
+                    </div>
 
-                <div
-                    style="
+                    <div
+                        style="
                         font-size:8.5pt;
                         color:#000;
                         line-height:1.35;
-                    "
-                >
-                    {{ $topRightCity }}
-                </div>
+                    ">
+                        {{ $topRightCity }}
+                    </div>
 
-                <div
-                    style="
+                    <div
+                        style="
                         font-size:8.5pt;
                         color:#000;
                         line-height:1.35;
-                    "
-                >
-                    {{ $topRightCountry }}
-                </div>
+                    ">
+                        {{ $topRightCountry }}
+                    </div>
 
-                <div
-                    style="
+                    <div
+                        style="
                         font-size:8.5pt;
                         color:#000;
                         line-height:1.35;
                         margin-top:4px;
-                    "
-                >
-                    T: {{ $topRightPhone }}
-                </div>
+                    ">
+                        T: {{ $topRightPhone }}
+                    </div>
 
-                <div
-                    style="
+                    <div
+                        style="
                         font-size:8.5pt;
                         color:#000;
                         line-height:1.35;
-                    "
-                >
-                    E: {{ $topRightEmail }}
-                </div>
+                    ">
+                        E: {{ $topRightEmail }}
+                    </div>
 
-            </td>
+                </td>
 
-        </tr>
-    </table>
-
-
-    <!-- ========================================================= -->
-    <!-- TITLE -->
-    <!-- ========================================================= -->
-
-    <div
-        style="
+            </tr>
+        </table><!-- ========================================================= --> <!-- TITLE -->
+        <!-- ========================================================= -->
+        <div
+            style="
             margin-top:18px;
             margin-bottom:12px;
             font-size:20pt;
             font-weight:bold;
             color:#111;
             letter-spacing:0.3px;
-        "
-    >
-        QUOTATION
-    </div>
-
-
-    <!-- ========================================================= -->
-    <!-- QUOTATION META -->
-    <!-- ========================================================= -->
-
-    <table
+        ">
+            QUOTATION
+        </div><!-- ========================================================= --> <!-- QUOTATION META -->
+        <!-- ========================================================= -->
+           <table
         style="
             width:100%;
             border-collapse:collapse;
@@ -338,388 +287,104 @@
             </td>
 
         </tr>
-    </table>
-
-
-    <!-- ========================================================= -->
-    <!-- QUOTATION TO -->
-    <!-- ========================================================= -->
-
-    <table
-        style="
-            width:100%;
-            border-collapse:collapse;
-            border:1px solid #000;
-            margin-top:8px;
-        "
-        cellpadding="0"
-        cellspacing="0"
-    >
-
-        <tr>
-
-            <td
-                colspan="2"
-                style="
-                    background:#666;
-                    color:#fff;
-                    font-weight:bold;
-                    padding:5px 8px;
-                    font-size:9pt;
-                "
-            >
-                Quotation to:
-            </td>
-
-        </tr>
-
-        <tr>
-
-            <!-- CUSTOMER ADDRESS -->
-            <td
-                style="
-                    width:55%;
-                    vertical-align:top;
-                    padding:7px 8px;
-                    font-size:8.5pt;
-                    line-height:1.45;
-                    border-right:1px solid #000;
-                "
-            >
-
-                <div style="font-weight:bold;">
-                    {{ $custName ?: 'Storm buckets' }}
-                </div>
-                <div>
-                    {{ $custAddressLine1 }}
-                </div>
-
-                <div>
-                    {{ $custAddressLine2 }}
-                </div>
-
-                <div>
-                    {{ $custAddressLine3 }}
-                </div>
-
-            </td>
-
-
-            <!-- CUSTOMER CONTACT -->
-            <td
-                style="
-                    width:45%;
-                    vertical-align:top;
-                    padding:7px 8px;
-                    font-size:8.5pt;
-                    line-height:1.45;
-                "
-            >
-
-                <div>
-                    Tel.:
-                    {{ $reseller->phone ?? '+31404021009' }}
-                </div>
-
-                <div>
-                    Email:
-                    {{ $reseller->email ?? 'john@dtmedia.nl' }}
-                </div>
-
-                    <div style="height:5mm;"></div>
-                @php
-                    $vat = $resellerMeta['vat_number']
-                        ?? 'NL811021774B01';
-                @endphp
-
-
-                @if ($vat)
-                    <div style="margin-top:4px;">
-                        VAT: {{ $vat }}
-                    </div>
-                @endif
-
-            </td>
-
-        </tr>
-
-    </table>
-
-
-    <!-- ========================================================= -->
-    <!-- ITEMS -->
-    <!-- ========================================================= -->
-
-    <table
-        style="width:100%;  border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"  cellspacing="0" >
-        <thead>
-
+    </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
+        <!-- ========================================================= -->
+        <table style=" width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
+            cellspacing="0">
             <tr>
-
-                <!-- PRODUCT CODE -->
-                <th
-                    style="
-                        background:#666;
-                        color:#fff;
-                        font-size:7.5pt;
-                        font-weight:bold;
-                        padding:5px 6px;
-                        text-align:left;
-                        border-right:1px solid #000;
-                        width:15%;
-                    "
-                >
-                    Product code
-                </th>
-
-
-                <!-- PRODUCT NAME -->
-                <th
-                    style="
-                        background:#666;
-                        color:#fff;
-                        font-size:7.5pt;
-                        font-weight:bold;
-                        padding:5px 6px;
-                        text-align:left;
-                        border-right:1px solid #000;
-                        width:39.5%;
-                    "
-                >
-                    Product name
-                </th>
-
-
-                <!-- UNIT PRICE -->
-                <th
-                    style="
-                        background:#666;
-                        color:#fff;
-                        font-size:7.5pt;
-                        font-weight:bold;
-                        padding:5px 6px;
-                        text-align:right;
-                        border-right:1px solid #000;
-                        width:15%;
-                    "
-                >
-                    Unit price
-                </th>
-
-
-                <!-- QUANTITY -->
-                <th
-                    style="
-                        background:#666;
-                        color:#fff;
-                        font-size:7.5pt;
-                        font-weight:bold;
-                        padding:5px 6px;
-                        text-align:center;
-                        border-right:1px solid #000;
-                        width:10%;
-                    "
-                >
-                    Qty
-                </th>
-
-
-                <!-- TOTAL -->
-                <th
-                    style="
-                        background:#666;
-                        color:#fff;
-                        font-size:7.5pt;
-                        font-weight:bold;
-                        padding:5px 6px;
-                        text-align:right;
-                             width:20%;
-                    "
-                >
-                    Total
-                </th>
-
+                <td colspan="2"
+                    style=" background:#666; color:#fff; font-weight:bold; padding:5px 8px; font-size:9pt; "> Quotation
+                    to: </td>
             </tr>
-
-        </thead>
-
-
-        <tbody>
-
-            <!-- ================================================= -->
-            <!-- ACTUAL ITEMS -->
-            <!-- ================================================= -->
-
-            @foreach ($quotation->items as $item)
-
-                @php
-                    $p = (float) str_replace(
-                        [','],
-                        '',
-                        (string) (
-                            $item->getAttributes()['price']
-                            ?? $item->price
-                        )
-                    );
-                    $total = $p * (int) $item->quantity;
-                @endphp
-
-                <tr>
-
-                    <!-- PRODUCT CODE -->
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                        "
-                    >
-                        {{ $item->product->product_code ?? ($item->product_code ?? '') }}
-                    </td>
-
-
-                    <!-- PRODUCT NAME -->
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                        "
-                    >
-                        {{ $item->product->product_title ?? ($item->product_title ?? '') }}
-                    </td>
-
-
-                    <!-- UNIT PRICE -->
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            text-align:right;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                            white-space:nowrap;
-                        "
-                    >
-                        {{ $currency }}
-                        {{ number_format($p, 2, '.', ',') }}
-                    </td>
-
-
-                    <!-- QUANTITY -->
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            text-align:center;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                        "
-                    >
-                        {{ $item->quantity }}
-                    </td>
-
-
-                    <!-- TOTAL -->
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            text-align:right;
-                            border-bottom:1px solid #000;
-                            white-space:nowrap;
-                        "
-                    >
-                        {{ $currency }}
-                        {{ number_format($total, 2, '.', ',') }}
-                    </td>
-
+            <tr> <!-- CUSTOMER ADDRESS -->
+                <td
+                    style=" width:55%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:1px solid #000; ">
+                    <div style="font-weight:bold;"> {{ $custName ?: 'Storm buckets' }} </div>
+                    <div> {{ $custAddressLine1 }} </div>
+                    <div> {{ $custAddressLine2 }} </div>
+                    <div> {{ $custAddressLine3 }} </div>
+                </td> <!-- CUSTOMER CONTACT -->
+                <td style=" width:45%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
+                    <div> Tel.: {{ $reseller->phone ?? '+31404021009' }} </div>
+                    <div> Email: {{ $reseller->email ?? 'john@dtmedia.nl' }} </div>
+                    <div style="height:5mm;"></div> @php $vat = $resellerMeta['vat_number'] ?? 'NL811021774B01'; @endphp @if ($vat)
+                        <div style="margin-top:4px;"> VAT: {{ $vat }} </div>
+                    @endif
+                </td>
+            </tr>
+        </table> <!-- ========================================================= --> <!-- ITEMS -->
+        <!-- ========================================================= -->
+        <table style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
+            cellspacing="0">
+            <thead>
+                <tr> <!-- PRODUCT CODE -->
+                    <th
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:10%; ">
+                        Product code </th> <!-- PRODUCT NAME -->
+                    <th
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:21%; ">
+                        Product name </th> <!-- UNIT PRICE -->
+                    <th
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:10%; ">
+                        Unit price </th> <!-- QUANTITY -->
+                    <th
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:5%; ">
+                        Qty </th> <!-- TOTAL -->
+                    <th
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:10%; ">
+                        Total </th>
                 </tr>
-
-            @endforeach
-
-
-            <!-- ================================================= -->
-            <!-- EMPTY ROWS -->
-            <!-- ================================================= -->
-
-            @for ($i = count($quotation->items); $i < 10; $i++)
-
-                <tr>
-
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                            height:14px;
-                        "
-                    >
-                        &nbsp;
-                    </td>
-
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                        "
-                    >
-                        &nbsp;
-                    </td>
-
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            text-align:right;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                        "
-                    >
-                        &nbsp;
-                    </td>
-
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            text-align:center;
-                            border-right:1px solid #000;
-                            border-bottom:1px solid #000;
-                        "
-                    >
-                        &nbsp;
-                    </td>
-
-                    <td
-                        style="
-                            padding:5px 6px;
-                            font-size:7.5pt;
-                            text-align:right;
-                            border-bottom:1px solid #000;
-                        "
-                    >
-                        &nbsp;
-                    </td>
-
-                </tr>
-
-            @endfor
-
-        </tbody>
-
-    </table>
-
-
-    <!-- ========================================================= -->
-    <!-- TOTALS -->
-    <!-- ========================================================= -->
-        <table align="right" style="width:45%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
+            </thead>
+            <tbody> <!-- ================================================= --> <!-- ACTUAL ITEMS -->
+                <!-- ================================================= -->
+                @foreach ($quotation->items as $item)
+                    @php
+                        $p = (float) str_replace([','], '', (string) ($item->getAttributes()['price'] ?? $item->price));
+                        $total = $p * (int) $item->quantity;
+                    @endphp <tr> <!-- PRODUCT CODE -->
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            {{ $item->product->product_code ?? ($item->product_code ?? '') }} </td>
+                        <!-- PRODUCT NAME -->
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            {{ $item->product->product_title ?? ($item->product_title ?? '') }} </td>
+                        <!-- UNIT PRICE -->
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-right:1px solid #000; border-bottom:1px solid #000; white-space:nowrap; ">
+                            {{ $currency }} {{ number_format($p, 2, '.', ',') }} </td> <!-- QUANTITY -->
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; text-align:center; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            {{ $item->quantity }} </td> <!-- TOTAL -->
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-bottom:1px solid #000; white-space:nowrap; ">
+                            {{ $currency }} {{ number_format($total, 2, '.', ',') }} </td>
+                    </tr>
+                @endforeach <!-- ================================================= -->
+                <!-- EMPTY ROWS -->
+                <!-- ================================================= -->
+                @for ($i = count($quotation->items); $i < 20; $i++)
+                    <tr>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; height:14px; ">
+                            &nbsp; </td>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; text-align:center; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                        <td style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                    </tr>
+                @endfor
+            </tbody>
+        </table> <!-- ========================================================= --> <!-- TOTALS -->
+        <!-- ========================================================= -->
+                   <table align="right" style="width:45%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
             cellspacing="0">
             <tr>
                 <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:</td>
@@ -737,9 +402,7 @@
                     {{ number_format($grandTotal, 2, '.', ',') }}</td>
             </tr>
         </table>
-
-</div>
-
+    </div>
 </body>
 
 </html>

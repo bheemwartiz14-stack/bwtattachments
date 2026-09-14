@@ -24,6 +24,7 @@ class UpdateProductRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                 'regex:/^ST\.CDHL\.(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$/',
                 Rule::unique('products', 'product_code')
                     ->ignore($this->route('product')),
             ],
@@ -48,7 +49,7 @@ class UpdateProductRequest extends FormRequest
             'stick_width' => ['nullable', 'string'],
             'pin_center' => ['nullable', 'string'],
             'cutting_edge_thickness' => ['nullable', 'string'],
-            'ddp_price' => ['nullable', 'string'],
+            'ddp_price' => ['nullable', 'string','regex:/^\d{1,4}(\.\d{1,2})?$/',],
             'ddp_price_rmb' => ['nullable', 'numeric', 'min:0'],
             'product_feature_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'product_gallery_images' => ['nullable', 'array'],
@@ -71,6 +72,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'product_title.required' => 'Please enter the product title.',
             'product_code.required' => 'Please enter the product code.',
+            'product_code.regex' => 'The product code must be in the format ST.CDHL.001 to ST.CDHL.999.',
             'product_code.unique' => 'This product code already exists.',
             'product_description.required' => 'Please enter the product description.',
 
@@ -91,7 +93,7 @@ class UpdateProductRequest extends FormRequest
             'pin_center.string' => 'Pin center must be a valid value.',
             'cutting_edge_thickness.string' => 'Cutting edge thickness must be a valid value.',
             'ddp_price.string' => 'DDP price must be a valid value.',
-
+            'ddp_price.regex' => 'The DDP price must be a maximum of 4 digits before the decimal point and 2 digits after it (e.g., 9999.99).',
             'product_feature_image.image' => 'Feature image must be an image file.',
             'product_gallery_images.*.image' => 'Each gallery image must be a valid image.',
             'product_pdf.mimes' => 'Only PDF files are allowed.',

@@ -211,24 +211,36 @@
         });
     }
 
-    function getQtyVal(el){ if(!el) return 1; if(el.tagName==='INPUT') return parseInt(el.value)||1; return parseInt(el.textContent)||1; }
-    function setQtyVal(el,val){ if(!el) return; if(el.tagName==='INPUT') el.value=val; else el.textContent=val; }
+    function getQtyVal(el) { if (!el) return 1; if (el.tagName === 'INPUT') return parseInt(el.value) || 1; return parseInt(el.textContent) || 1; }
+    function setQtyVal(el, val) { if (!el) return; if (el.tagName === 'INPUT') el.value = val; else el.textContent = val; }
     // Direct input change sync
-   window.toggleQuoteItem = async function (btn) {
-        if(btn.dataset.loading==='true') return;
+    window.toggleQuoteItem = async function (btn) {
+        if (btn.dataset.loading === 'true') return;
         var productId = btn.dataset.quote;
         if (!productId) return;
         var qtyEl2 = document.getElementById('qty-' + productId);
         var selectedQty = qtyEl2 ? getQtyVal(qtyEl2) : 1;
-        selectedQty = Math.min(50, Math.max(1, selectedQty));
-        var url = (window.APP_CONFIG?.appUrl||'') + '/quote-cart/quantity/' + productId;
-        if(!window.APP_CONFIG?.appUrl) url='/quote-cart/quantity/'+productId;
-        var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')||'';
-        btn.dataset.loading='true'; btn.disabled=true;
+        if (selectedQty < 1) {
+            selectedQty = 1;
+        }
+        if (selectedQty > 999) {
+            if (window.showToast) {
+                window.showToast(
+                    'Quantity cannot be more than 999.',
+                    'error'
+                );
+            }
+            return;
+        }
+        console.log('selectedQty',selectedQty);
+        var url = (window.APP_CONFIG?.appUrl || '') + '/quote-cart/quantity/' + productId;
+        if (!window.APP_CONFIG?.appUrl) url = '/quote-cart/quantity/' + productId;
+        var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        btn.dataset.loading = 'true'; btn.disabled = true;
         try {
             var response = await fetch(url, {
                 method: 'POST',
-                headers: {'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':csrfToken,'X-Requested-With':'XMLHttpRequest'},
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'X-Requested-With': 'XMLHttpRequest' },
                 body: JSON.stringify({ _token: csrfToken, quantity: selectedQty }),
                 credentials: 'same-origin'
             });
@@ -236,78 +248,78 @@
                 throw new Error((await response.text()) || 'Request failed');
             }
             var data = await response.json();
-            if (data.success===false) {throw new Error(data.message || 'Failed to update quantity' );}
+            if (data.success === false) { throw new Error(data.message || 'Failed to update quantity'); }
             var cartCount = data.cartCount ?? data.count ?? 0;
             var newQty = 1;
             var qEl = document.getElementById(`qty-${productId}`);
             if (qEl) { setQtyVal(qEl, newQty); }
-            btn.dataset.added='true';
-           // Update cart badge
-           updateCartBadge(cartCount);
-           var headerCountEl = document.querySelector('[data-cart-header-count]');
-           if (headerCountEl) {
-               headerCountEl.textContent =
-                   `${cartCount} ${cartCount === 1 ? 'item' : 'items'}`;
-           }
+            btn.dataset.added = 'true';
+            // Update cart badge
+            updateCartBadge(cartCount);
+            var headerCountEl = document.querySelector('[data-cart-header-count]');
+            if (headerCountEl) {
+                headerCountEl.textContent =
+                    `${cartCount} ${cartCount === 1 ? 'item' : 'items'}`;
+            }
 
-           // --------------------------------
-           // Show quantity wrapper
-           // --------------------------------
+            // --------------------------------
+            // Show quantity wrapper
+            // --------------------------------
 
-           var cardQtyWrap =
-               document.getElementById('qty-wrap-' + productId);
+            var cardQtyWrap =
+                document.getElementById('qty-wrap-' + productId);
 
-           if (cardQtyWrap) {
-               cardQtyWrap.classList.remove('hidden');
-               cardQtyWrap.classList.add('flex');
-           }
+            if (cardQtyWrap) {
+                cardQtyWrap.classList.remove('hidden');
+                cardQtyWrap.classList.add('flex');
+            }
 
-           // --------------------------------
-           // Update button
-           // --------------------------------
+            // --------------------------------
+            // Update button
+            // --------------------------------
 
-           btn.textContent = 'Add To Cart';
+            btn.textContent = 'Add To Cart';
 
-           btn.classList.remove(
-               'bg-bwtblue',
-               'hover:bg-bwtblue2',
-               'bg-blue-400',
-               'hover:bg-blue-500'
-           );
+            btn.classList.remove(
+                'bg-bwtblue',
+                'hover:bg-bwtblue2',
+                'bg-blue-400',
+                'hover:bg-blue-500'
+            );
 
-           btn.classList.add(
-               'bg-green-600',
-               'hover:bg-green-700'
-           );
+            btn.classList.add(
+                'bg-green-600',
+                'hover:bg-green-700'
+            );
 
-           // --------------------------------
-           // Success Toast
-           // --------------------------------
+            // --------------------------------
+            // Success Toast
+            // --------------------------------
 
-           if (window.showToast) {
-               window.showToast(
-                   data.message || 'Quantity updated successfully',
-                   'success'
-               );
-           }
+            if (window.showToast) {
+                window.showToast(
+                    data.message || 'Quantity updated successfully',
+                    'success'
+                );
+            }
 
-       } catch (e) {
+        } catch (e) {
 
-           console.error('Quantity update error:', e);
+            console.error('Quantity update error:', e);
 
-           if (window.showToast) {
-               window.showToast(
-                   e.message || 'Failed to update quantity',
-                   'error'
-               );
-           }
+            if (window.showToast) {
+                window.showToast(
+                    e.message || 'Failed to update quantity',
+                    'error'
+                );
+            }
 
-       } finally {
+        } finally {
 
-           btn.dataset.loading = 'false';
-           btn.disabled = false;
-       }
-};
+            btn.dataset.loading = 'false';
+            btn.disabled = false;
+        }
+    };
 
     /* ---------- HELPERS ---------- */
     function setVal(id, val) {

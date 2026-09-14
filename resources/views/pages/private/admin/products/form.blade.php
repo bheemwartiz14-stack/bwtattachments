@@ -61,7 +61,7 @@
                         <x-forms.input name="product_title" label="Product Name" required :value="$product->product_title ?? ''"
                             placeholder="Enter Product Name" />
                         <x-forms.input name="product_code" label="Product Code" required :value="$product->product_code ?? ''"
-                            placeholder="Enter product code" />
+                            placeholder="ST.CDHL.001" />
 
                         <x-forms.select name="category_id" label="Category" required :options="$categories ?? []" :value="$product->category_id ?? ''"
                             placeholder="Select Category" />
@@ -85,8 +85,12 @@
                             <p id="currency-rate-hint" class="mt-1 text-xs text-gray-500 dark:text-neutral-400">Loading
                                 exchange rate...</p>
                         </div>
-                        <x-forms.currency name="ddp_price" label="DDP Price (EUR)" :value="$product->ddp_price ?? ''" placeholder="0.00"
-                            readonly />
+                        <div>
+                            <x-forms.currency name="ddp_price" label="DDP Price (EUR)" :value="$product->ddp_price ?? ''"
+                                placeholder="0.00" readonly />
+                            <p id="ddp_price-rate-hint" class="mt-1 text-xs text-gray-500 dark:text-neutral-400">
+                            </p>
+                        </div>
                         <x-forms.toggle name="status" label="Product Status" :checked="$product->status ?? true" description="Active" />
                     </div>
                 </div>
