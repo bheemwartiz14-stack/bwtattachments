@@ -85,88 +85,233 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Order {{ $order->order_number }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 13mm;
+        }
+    </style>
 </head>
 
 <body
-    style=" margin:0; padding:0; background:#fff; color:#000; font-family:Helvetica,Arial,sans-serif; font-size:9pt; line-height:1.4; ">
-    <div style=" width:100%; margin:0; padding:0; ">
-        {{-- TOP SECTION: LOGOS + RECIPIENT CONTACT --}}
-        <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
-            <tr> <!-- LEFT SIDE -->
-                <td style=" width:72%; vertical-align:top; padding-right:10px; ">
-                    <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td style=" padding:4px 8px; vertical-align:top; ">
-                                <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
-                                    <tr> <!-- SENDER LOGO -->
-                                        <td style=" width:50%; vertical-align:middle; text-align:left; height:46px; ">
-                                            @if ($recipientLogoBase64)
-                                                <img src="{{ $recipientLogoBase64 }}"
-                                                    style="height:42px; width:auto; max-width:190px; object-fit:contain; " />
-                                            @endif
+    style="
+        margin:0;
+        padding:0;
+        background:#fff;
+        color:#000;
+        font-family:Helvetica,Arial,sans-serif;
+        font-size:9pt;
+        line-height:1.4;
+    ">
 
-                                            @if ($senderLogoBase64)
-                                                <img src="{{ $senderLogoBase64 }}"
-                                                    style="height:42px; width:auto; max-width:190px; object-fit:contain;" />
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td> <!-- RIGHT SIDE CONTACT -->
+    <div style=" width:100%; margin:0; padding:0; "> <!-- ========================================================= -->
+        <!-- TOP SECTION: LOGOS + RECIPIENT CONTACT -->
+        <!-- ========================================================= -->
+        <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+            <tr>
+
+                <!-- LEFT SIDE -->
                 <td
                     style="
-                                                    width:28%; vertical-align:top; text-align:right; padding-left:10px; ">
-                    <div style=" font-size:9pt; font-weight:bold; color:#000; line-height:1.35; "> {{ $topRightName }}
-                    </div>
-                    <div style=" font-size:8.5pt; color:#000; line-height:1.35; "> {{ $topRightStreet }} </div>
-                    <div style=" font-size:8.5pt; color:#000; line-height:1.35; "> {{ $topRightCity }} </div>
-                    <div style=" font-size:8.5pt; color:#000; line-height:1.35; "> {{ $topRightCountry }} </div>
-                    <div style=" font-size:8.5pt; color:#000; line-height:1.35; margin-top:4px; "> T:
-                        {{ $topRightPhone }} </div>
-                    <div style=" font-size:8.5pt; color:#000; line-height:1.35; "> E: {{ $topRightEmail }} </div>
-                </td>
-            </tr>
-        </table>
+                    width:72%;
+                    vertical-align:top;
+                    padding-right:10px;
+                ">
 
-        {{-- TITLE --}}
-        <div
-            style=" margin-top:18px; margin-bottom:12px; font-size:20pt; font-weight:bold; color:#111; letter-spacing:0.3px; ">
-            ORDER </div>
-        {{-- QUOTATION META --}}
-        <table style=" width:100%; border-collapse:collapse; border:1px solid #000; " cellpadding="0" cellspacing="0">
-            <tr>
+                    <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+                        <tr>
+
+                            <td
+                                style="
+                                padding:4px 8px;
+                                vertical-align:top;
+                            ">
+
+                                <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
+                                    <tr>
+
+                                        <!-- SENDER LOGO -->
+                                        <td
+                                            style="
+                                            width:50%;
+                                            vertical-align:middle;
+                                            text-align:left;
+                                            height:46px;
+                                        ">
+                                            @if ($senderLogoBase64)
+                                                <img src="{{ $senderLogoBase64 }}"
+                                                    style="
+                                                    height:42px;
+                                                    width:auto;
+                                                    max-width:190px;
+                                                    object-fit:contain;
+                                                " />
+                                            @endif
+                                            @if ($recipientLogoBase64)
+                                                <img src="{{ $recipientLogoBase64 }}"
+                                                    style="
+                                                    height:42px;
+                                                    width:auto;
+                                                    max-width:190px;
+                                                    object-fit:contain;
+                                                " />
+                                            @endif
+                                        </td>
+
+                                    </tr>
+                                </table>
+
+                            </td>
+
+                        </tr>
+                    </table>
+
+                </td>
+
+                <!-- RIGHT SIDE CONTACT -->
                 <td
-                    style=" width:55%; border-right:1px solid #000; padding:5px 8px; font-size:8.5pt; background:#fff; ">
-                    <span style="font-weight:bold;"> Order No.: </span> {{ $order->order_number }}
+                    style="
+                    width:28%;
+                    vertical-align:top;
+                    text-align:right;
+                    padding-left:10px;
+                ">
+
+                    <div
+                        style="
+                        font-size:9pt;
+                        font-weight:bold;
+                        color:#000;
+                        line-height:1.35;
+                    ">
+                        {{ $topRightName }}
+                    </div>
+
+                    <div
+                        style="
+                        font-size:8.5pt;
+                        color:#000;
+                        line-height:1.35;
+                    ">
+                        {{ $topRightStreet }}
+                    </div>
+
+                    <div
+                        style="
+                        font-size:8.5pt;
+                        color:#000;
+                        line-height:1.35;
+                    ">
+                        {{ $topRightCity }}
+                    </div>
+
+                    <div
+                        style="
+                        font-size:8.5pt;
+                        color:#000;
+                        line-height:1.35;
+                    ">
+                        {{ $topRightCountry }}
+                    </div>
+
+                    <div
+                        style="
+                        font-size:8.5pt;
+                        color:#000;
+                        line-height:1.35;
+                        margin-top:4px;
+                    ">
+                        T: {{ $topRightPhone }}
+                    </div>
+
+                    <div
+                        style="
+                        font-size:8.5pt;
+                        color:#000;
+                        line-height:1.35;
+                    ">
+                        E: {{ $topRightEmail }}
+                    </div>
+
                 </td>
-                <td style=" width:45%; padding:5px 8px; font-size:8.5pt; background:#fff; "> <span
-                        style="font-weight:bold;"> Order date: </span> {{ $order->created_at->format('d M Y') }}
-                </td>
+
             </tr>
-        </table>
-        {{-- QUOTATION TO  --}}
+        </table><!-- ========================================================= --> <!-- TITLE -->
+        <!-- ========================================================= -->
+        <div
+            style="
+            margin-top:18px;
+            margin-bottom:12px;
+            font-size:20pt;
+            font-weight:bold;
+            color:#111;
+            letter-spacing:0.3px;
+        ">
+            ORDER
+        </div><!-- ========================================================= --> <!-- QUOTATION META -->
+        <!-- ========================================================= -->
+           <table
+        style="
+            width:100%;
+            border-collapse:collapse;
+            border:1px solid #000;
+        "
+        cellpadding="0"
+        cellspacing="0"
+    >
+        <tr>
+
+            <td
+                style="
+                    width:65%;
+                    border-right:1px solid #000;
+                    padding:5px 8px;
+                    font-size:8.5pt;
+                    background:#fff;
+                "
+            >
+                <span style="font-weight:bold;">
+                    Order No.:
+                </span>
+
+                {{ $order->order_number }}
+            </td>
+
+            <td
+                style="
+                    width:35%;
+                    padding:5px 8px;
+                    font-size:8.5pt;
+                    background:#fff;
+                "
+            >
+                <span style="font-weight:bold;">
+                    Order date:
+                </span>
+
+                {{ $order->created_at->format('d M Y') }}
+            </td>
+
+        </tr>
+    </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
+        <!-- ========================================================= -->
         <table style=" width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
             cellspacing="0">
             <tr>
                 <td colspan="2"
-                    style=" background:#666; color:#fff; font-weight:bold; padding:5px 8px; font-size:9pt; "> Quotation
+                    style=" background:#666; color:#fff; font-weight:bold; padding:5px 8px; font-size:9pt; "> Order
                     to: </td>
             </tr>
             <tr> <!-- CUSTOMER ADDRESS -->
                 <td
-                    style=" width:55%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:1px solid #000; ">
-                    <div style="font-weight:bold;"> {{ $recipient?->name ?? 'Admin' }} </div>
-                    <div> {{ $recipientMeta['address'] ?? '' }} </div>
-                    <div> {{ $recipientMeta['postal_code'] ?? '' }} {{ $recipientMeta['city'] ?? '' }}</div>
+                    style=" width:65%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:1px solid #000; ">
+                    <div style="font-weight:bold;">  {{ $recipient?->name ?? 'Admin' }} </div>
+                    <div>{{ $recipientMeta['address'] ?? '' }}  </div>
+                    <div>  {{ $recipientMeta['postal_code'] ?? '' }} {{ $recipientMeta['city'] ?? '' }} </div>
                     <div> {{ $recipientMeta['country'] ?? '' }} </div>
                 </td> <!-- CUSTOMER CONTACT -->
-                <td style=" width:45%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
+                <td style=" width:35%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
                     <div> Tel.: {{ $reseller->phone ?? '+31404021009' }} </div>
                     <div> Email: {{ $reseller->email ?? 'john@dtmedia.nl' }} </div>
                     <div style="height:5mm;"></div> @php $vat = $resellerMeta['vat_number'] ?? 'NL811021774B01'; @endphp @if ($vat)
@@ -174,32 +319,32 @@
                     @endif
                 </td>
             </tr>
-        </table>
-        {{-- ITEMS --}}
-        <table style="width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
+        </table> <!-- ========================================================= --> <!-- ITEMS -->
+        <!-- ========================================================= -->
+        <table style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
             cellspacing="0">
             <thead>
                 <tr> <!-- PRODUCT CODE -->
                     <th
                         style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:15%; ">
-                         Product code </th> <!-- PRODUCT NAME -->
+                        Product code </th> <!-- PRODUCT NAME -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:39.5%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:50%; ">
                         Product name </th> <!-- UNIT PRICE -->
                     <th
                         style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:15%; ">
                         Unit price </th> <!-- QUANTITY -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:10%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:5%; ">
                         Qty </th> <!-- TOTAL -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:20%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:15%; ">
                         Total </th>
                 </tr>
             </thead>
             <tbody> <!-- ================================================= --> <!-- ACTUAL ITEMS -->
                 <!-- ================================================= -->
-                @foreach ($order->items as $item)
+                 @foreach ($order->items as $item)
                     @php
                         $p = (float) str_replace([','], '', (string) ($item->getAttributes()['price'] ?? $item->price));
                         $total = $p * (int) $item->quantity;
@@ -222,38 +367,39 @@
                             style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-bottom:1px solid #000; white-space:nowrap; ">
                             {{ $currency }} {{ number_format($total, 2, '.', ',') }} </td>
                     </tr>
-                    @endforeach <!-- ================================================= --> <!-- EMPTY ROWS -->
-                    <!-- ================================================= -->
-                    @for ($i = count($order->items); $i < 10; $i++)
-                        <tr>
-                            <td
-                                style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; height:14px; ">
-                                &nbsp; </td>
-                            <td
-                                style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; ">
-                                &nbsp; </td>
-                            <td
-                                style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-right:1px solid #000; border-bottom:1px solid #000; ">
-                                &nbsp; </td>
-                            <td
-                                style=" padding:5px 6px; font-size:7.5pt; text-align:center; border-right:1px solid #000; border-bottom:1px solid #000; ">
-                                &nbsp; </td>
-                            <td
-                                style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-bottom:1px solid #000; ">
-                                &nbsp; </td>
-                        </tr>
-                    @endfor
+                @endforeach <!-- ================================================= -->
+                <!-- EMPTY ROWS -->
+                <!-- ================================================= -->
+                 @for ($i = count($order->items); $i < 10; $i++)
+                    <tr>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; height:14px; ">
+                            &nbsp; </td>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                        <td
+                            style=" padding:5px 6px; font-size:7.5pt; text-align:center; border-right:1px solid #000; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                        <td style=" padding:5px 6px; font-size:7.5pt; text-align:right; border-bottom:1px solid #000; ">
+                            &nbsp; </td>
+                    </tr>
+                @endfor
             </tbody>
-        </table>
-              <table align="right" style="width:45%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
+        </table> <!-- ========================================================= --> <!-- TOTALS -->
+        <!-- ========================================================= -->
+                   <table align="right" style="width:35%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
             cellspacing="0">
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">{{ $currency }}&nbsp;
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:57%;">Sub total:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:43%;">{{ $currency }}&nbsp;
                     {{ number_format($subTotal, 2, '.', ',') }}</td>
             </tr>
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
                 <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">{{ $currency }}&nbsp;
                     {{ number_format($taxAmount, 2, '.', ',') }}</td>
             </tr>
@@ -263,7 +409,6 @@
                     {{ number_format($grandTotal, 2, '.', ',') }}</td>
             </tr>
         </table>
-
     </div>
 </body>
 

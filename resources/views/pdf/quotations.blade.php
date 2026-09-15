@@ -257,7 +257,7 @@
 
             <td
                 style="
-                    width:55%;
+                    width:65%;
                     border-right:1px solid #000;
                     padding:5px 8px;
                     font-size:8.5pt;
@@ -273,7 +273,7 @@
 
             <td
                 style="
-                    width:45%;
+                    width:35%;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
@@ -298,13 +298,13 @@
             </tr>
             <tr> <!-- CUSTOMER ADDRESS -->
                 <td
-                    style=" width:55%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:1px solid #000; ">
+                    style=" width:65%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:1px solid #000; ">
                     <div style="font-weight:bold;"> {{ $custName ?: 'Storm buckets' }} </div>
                     <div> {{ $custAddressLine1 }} </div>
                     <div> {{ $custAddressLine2 }} </div>
                     <div> {{ $custAddressLine3 }} </div>
                 </td> <!-- CUSTOMER CONTACT -->
-                <td style=" width:45%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
+                <td style=" width:35%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
                     <div> Tel.: {{ $reseller->phone ?? '+31404021009' }} </div>
                     <div> Email: {{ $reseller->email ?? 'john@dtmedia.nl' }} </div>
                     <div style="height:5mm;"></div> @php $vat = $resellerMeta['vat_number'] ?? 'NL811021774B01'; @endphp @if ($vat)
@@ -319,19 +319,19 @@
             <thead>
                 <tr> <!-- PRODUCT CODE -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:10%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:15%; ">
                         Product code </th> <!-- PRODUCT NAME -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:21%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:50%; ">
                         Product name </th> <!-- UNIT PRICE -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:10%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:15%; ">
                         Unit price </th> <!-- QUANTITY -->
                     <th
                         style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:5%; ">
                         Qty </th> <!-- TOTAL -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:10%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:15%; ">
                         Total </th>
                 </tr>
             </thead>
@@ -384,15 +384,15 @@
             </tbody>
         </table> <!-- ========================================================= --> <!-- TOTALS -->
         <!-- ========================================================= -->
-                   <table align="right" style="width:45%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
+                   <table align="right" style="width:35%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
             cellspacing="0">
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">{{ $currency }}&nbsp;
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:57%;">Sub total:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:43%;">{{ $currency }}&nbsp;
                     {{ number_format($subTotal, 2, '.', ',') }}</td>
             </tr>
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
                 <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">{{ $currency }}&nbsp;
                     {{ number_format($taxAmount, 2, '.', ',') }}</td>
             </tr>
