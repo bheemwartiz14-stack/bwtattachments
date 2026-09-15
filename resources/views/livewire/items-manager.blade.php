@@ -132,27 +132,36 @@
                         @if($added)
                             <button type="button" disabled
                                 class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-sm opacity-50 cursor-default mb-0.5">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-200 text-sm font-bold text-slate-600 shadow-sm dark:from-neutral-800 dark:to-neutral-700 dark:text-neutral-300">
+                                    {{ strtoupper(substr($product->product_title, 0, 1)) }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-slate-900 dark:text-white">{{ $product->product_title }}</p>
+                                    <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{{ $product->product_code ?? '' }}{{ $product->category ? ' · ' . $product->category->name : '' }}</p>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($price, 2) }}</span>
+                                <span class="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-medium shadow-sm bg-slate-100 text-slate-500 dark:bg-neutral-800 dark:text-neutral-400">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    Added
+                                </span>
+                            </button>
                         @else
                             <button type="button" wire:click="addItem('{{ $product->id }}')"
                                 class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-sm transition-all hover:bg-slate-50 hover:shadow-sm mb-0.5 dark:hover:bg-neutral-800">
-                        @endif
-                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-200 text-sm font-bold text-slate-600 shadow-sm dark:from-neutral-800 dark:to-neutral-700 dark:text-neutral-300">
-                                {{ strtoupper(substr($product->product_title, 0, 1)) }}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-slate-900 dark:text-white">{{ $product->product_title }}</p>
-                                <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{{ $product->product_code ?? '' }}{{ $product->category ? ' · ' . $product->category->name : '' }}</p>
-                            </div>
-                            <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($price, 2) }}</span>
-                            <span class="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-medium shadow-sm {{ $added ? 'bg-slate-100 text-slate-500 dark:bg-neutral-800 dark:text-neutral-400' : 'bg-emerald-600 text-white hover:bg-emerald-700' }}">
-                                @if($added)
-                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                @else
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-200 text-sm font-bold text-slate-600 shadow-sm dark:from-neutral-800 dark:to-neutral-700 dark:text-neutral-300">
+                                    {{ strtoupper(substr($product->product_title, 0, 1)) }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-slate-900 dark:text-white">{{ $product->product_title }}</p>
+                                    <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">{{ $product->product_code ?? '' }}{{ $product->category ? ' · ' . $product->category->name : '' }}</p>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ config('app.currency_symbol') }}{{ number_format($price, 2) }}</span>
+                                <span class="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-medium shadow-sm bg-emerald-600 text-white hover:bg-emerald-700">
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                                @endif
-                                {{ $added ? 'Added' : 'Add' }}
-                            </span>
-                        </button>
+                                    Add
+                                </span>
+                            </button>
+                        @endif
                     @empty
                         <div class="px-4 py-12 text-center">
                             <svg class="mx-auto h-10 w-10 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
