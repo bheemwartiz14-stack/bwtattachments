@@ -135,7 +135,7 @@
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
-                                                    height:42px;
+                                                    height:52px;
                                                     width:auto;
                                                     max-width:190px;
                                                     object-fit:contain;
@@ -144,7 +144,7 @@
                                             @if ($resellerLogoBase64)
                                                 <img src="{{ $resellerLogoBase64 }}"
                                                     style="
-                                                    height:42px;
+                                                    height:52px;
                                                     width:auto;
                                                     max-width:190px;
                                                     object-fit:contain;
@@ -257,7 +257,7 @@
 
             <td
                 style="
-                    width:65%;
+                    width:72%;
                     border-right:1px solid #000;
                     padding:5px 8px;
                     font-size:8.5pt;
@@ -273,7 +273,7 @@
 
             <td
                 style="
-                    width:35%;
+                    width:28%;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
@@ -298,13 +298,13 @@
             </tr>
             <tr> <!-- CUSTOMER ADDRESS -->
                 <td
-                    style=" width:65%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:1px solid #000; ">
+                    style=" width:50%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:0px solid #000; ">
                     <div style="font-weight:bold;"> {{ $custName ?: 'Storm buckets' }} </div>
                     <div> {{ $custAddressLine1 }} </div>
                     <div> {{ $custAddressLine2 }} </div>
                     <div> {{ $custAddressLine3 }} </div>
                 </td> <!-- CUSTOMER CONTACT -->
-                <td style=" width:35%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
+                <td style=" width:50%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
                     <div> Tel.: {{ $reseller->phone ?? '+31404021009' }} </div>
                     <div> Email: {{ $reseller->email ?? 'john@dtmedia.nl' }} </div>
                     <div style="height:5mm;"></div> @php $vat = $resellerMeta['vat_number'] ?? 'NL811021774B01'; @endphp @if ($vat)
@@ -319,19 +319,19 @@
             <thead>
                 <tr> <!-- PRODUCT CODE -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:15%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:12%; ">
                         Product code </th> <!-- PRODUCT NAME -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:50%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:60%; ">
                         Product name </th> <!-- UNIT PRICE -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:15%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:12%; ">
                         Unit price </th> <!-- QUANTITY -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:5%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:4%; ">
                         Qty </th> <!-- TOTAL -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:15%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:12%; ">
                         Total </th>
                 </tr>
             </thead>
@@ -384,7 +384,7 @@
             </tbody>
         </table> <!-- ========================================================= --> <!-- TOTALS -->
         <!-- ========================================================= -->
-                   <table align="right" style="width:35%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
+                   <table align="right" style="width:28%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
             cellspacing="0">
             <tr>
                 <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:57%;">Sub total:</td>
@@ -406,3 +406,5 @@
 </body>
 
 </html>
+
+
