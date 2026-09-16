@@ -58,7 +58,7 @@
                     $optionName = $option;
                     $isoId = $key;
                 }
-                $isSelected = $multiple ? in_array($optionValue, (array) $selected) : $selected == $optionName;
+                $isSelected = $multiple ? in_array($optionValue, (array) $selected) : ($selected == $optionValue || $selected == $optionName);
             @endphp
 
             <option value="{{ $optionValue }}" data-iso-id="{{ $isoId }}" data-name="{{ $optionName }}"

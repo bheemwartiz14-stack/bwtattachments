@@ -32,10 +32,15 @@ class ProfileController extends Controller
             'avatarId' => $avatar?->id,
         ];
         $meta = $user->userMeta?->metadata ?? [];
-        $viewData['company_name'] = $meta['wholesale_company_name'] ?? '';
-        $logo = $user->getFirstMedia('wholesale_client_logo');
+        $viewData['meta'] = $meta;
+        $viewData['company_name'] = $meta['wholesale_company_name'] ?? ($meta['company_name'] ?? '');
+        $viewData['country_name'] = $user->country ?? ($meta['country'] ?? '');
+        $viewData['country_code'] = $user->country_code ?? ($meta['country_code'] ?? '');
+        $logo = $user->getFirstMedia('wholesale_client_logo')
+            ?? $user->userMeta?->getFirstMedia('wholesale_client_logo');
         $viewData['logo'] = $logo?->getUrl();
         $viewData['logo_id'] = $logo?->id;
+        $viewData['logo_url'] = $logo?->getUrl();
         $viewData['prefix'] = 'client';
         $viewData['breadcrumbLabel'] = 'Wholesaler Portal';
         $viewData['breadcrumbRoute'] = 'client.dashboard';
@@ -104,7 +109,7 @@ class ProfileController extends Controller
         $this->profileService->deleteWholesaleClientLogo($request->user());
 
         return redirect()
-            ->route('client.profile.edit', ['tab' => 'company'])
+            ->route('client.profile.edit', ['tab' => 'personal'])
             ->with('success', 'Company logo removed successfully.');
     }
 }

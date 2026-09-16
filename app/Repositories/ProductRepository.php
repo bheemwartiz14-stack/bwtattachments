@@ -60,7 +60,7 @@ class ProductRepository
     public function filterProducts( array $filters = []){
         // dd($filters);
         $userId = $filters['user_id'] ?? null;
-        $perPage = isset($filters['perPage']) && in_array((int) $filters['perPage'], [25, 50, 75, 100], true) ? (int) $filters['perPage']: 28;
+        $perPage = isset($filters['perPage']) && in_array((int) $filters['perPage'], [100, 200, 300, 400, 500], true) ? (int) $filters['perPage']: 100;
         $query = $this->model->query()->with(self::RELATIONS)->where('status', 1);
         if (!empty($filters['search'])) {
         $query->where(function ($q) use ($filters) {

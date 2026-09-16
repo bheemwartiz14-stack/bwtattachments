@@ -220,13 +220,19 @@
                     pwd.value = s;
                 }
             })();
-            $('#vat_id').on('change', function() {
-                const $selectedOption = $(this).find('option:selected');
-                const selectedName = $selectedOption.data('name') || '';
-                const countryCode = $selectedOption.data('iso-id') || '';
-                $('#country_code').val(countryCode);
-                $('#country_name').val(selectedName);
-            });
+            function syncWholesalerCountry() {
+                var $select = $('#vat_id');
+                if (!$select.length) return;
+                var $selectedOption = $select.find('option:selected');
+                if (!$selectedOption.length || !$selectedOption.val()) return;
+                $('#country_code').val($selectedOption.data('iso-id') || '');
+                $('#country_name').val($selectedOption.data('name') || '');
+            }
+            // Delegated binding survives wire:navigate DOM swaps; namespaced so
+            // re-executed scripts don't stack duplicate handlers.
+            $(document).off('change.wholesaler-country', '#vat_id').on('change.wholesaler-country', '#vat_id', syncWholesalerCountry);
+            document.addEventListener('livewire:navigated', syncWholesalerCountry);
+            syncWholesalerCountry();
         </script>
     @endpush
 </x-layouts.app>

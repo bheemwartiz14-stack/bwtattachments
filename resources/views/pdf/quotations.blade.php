@@ -118,7 +118,7 @@
 
                             <td
                                 style="
-                                padding:4px 8px;
+                                padding:4px 8px 4px 8px;
                                 vertical-align:top;
                             ">
 
@@ -131,23 +131,23 @@
                                             width:50%;
                                             vertical-align:middle;
                                             text-align:left;
-                                            height:86px;
+                                            height:55px;
                                         ">
                                             {{-- @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
-                                                    height:72px;
+                                                    height:55px;
                                                     width:auto;
-                                                    max-width:290px;
+                                                    max-width:220px;
                                                     object-fit:contain;
                                                 " />
                                             @endif --}}
                                             @if ($resellerLogoBase64)
                                                 <img src="{{ $resellerLogoBase64 }}"
                                                     style="
-                                                    height:72px;
+                                                    height:55px;
                                                     width:auto;
-                                                    max-width:290px;
+                                                    max-width:220px;
                                                     object-fit:contain;
                                                 " />
                                             @endif

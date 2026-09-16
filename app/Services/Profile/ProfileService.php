@@ -70,17 +70,40 @@ class ProfileService
         $meta = $user->userMeta()->firstOrNew();
         $metadata = $meta->metadata ?? [];
         $metadata['client_name'] = $data[$nameField] ?? ($metadata['client_name'] ?? '');
+        // Company details (editable from Personal Information tab for wholesalers).
+        // canonical key for wholesalers is wholesale_company_name, keep company_name in sync for BC.
+        if (array_key_exists('company_name', $data)) {
+            $metadata['company_name'] = $data['company_name'] ?? '';
+            if ($type === 'wholesale') {
+                $metadata['wholesale_company_name'] = $data['company_name'] ?? '';
+            }
+        }
+        foreach (['vat_number', 'address', 'postal_code', 'city'] as $key) {
+            if (array_key_exists($key, $data)) {
+                $metadata[$key] = $data[$key] ?? '';
+            }
+        }
+        if (array_key_exists('country_name', $data)) {
+            $metadata['country'] = $data['country_name'] ?? '';
+        }
+        if (array_key_exists('country_code', $data)) {
+            $metadata['country_code'] = $data['country_code'] ?? '';
+        }
         $meta->metadata = $metadata;
         $meta->user()->associate($user);
         $meta->save();
 
-        if (isset($data[$logoField]) && $data[$logoField] instanceof UploadedFile) {
-            if ($type === 'wholesale') {
-                $meta->clearMediaCollection('wholesale_client_logo');
-                $meta->addMedia($data[$logoField])->toMediaCollection('wholesale_client_logo');
-            } else {
-                $user->clearMediaCollection('retailer_client_logo');
-                $user->addMedia($data[$logoField])->toMediaCollection('retailer_client_logo');
+        $logoFile = $data[$logoField] ?? null;
+        if (! $logoFile instanceof UploadedFile) {
+            $logoFile = $this->resolveTempFile($data[$logoField . '_temp'] ?? null);
+        }
+        if ($logoFile) {
+            // Canonical storage is the User model (matches admin CRUD, profile edit read,
+            // and PDF/email logo lookups). Clear legacy meta copy as well.
+            $user->clearMediaCollection($logoField);
+            $user->addMedia($logoFile)->toMediaCollection($logoField);
+            if ($type === 'wholesale' && $meta->exists) {
+                $meta->clearMediaCollection($logoField);
             }
         }
     }
@@ -126,6 +149,7 @@ class ProfileService
     public function deleteWholesaleClientLogo(User $user): User
     {
         try {
+            $user->clearMediaCollection('wholesale_client_logo');
             $meta = $user->userMeta;
             if ($meta) {
                 $meta->clearMediaCollection('wholesale_client_logo');

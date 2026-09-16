@@ -204,29 +204,17 @@
                                 <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                             {{-- Custom logo upload --}}
-                            <div x-show="weldingLogo === 'custom'" x-transition x-cloak class="mt-4"
+                              <div x-show="weldingLogo === 'custom'" x-transition x-cloak class="mt-4"
                                 id="welding-logo-upload" @click="uploadError = ''" @drop="uploadError = ''">
-                                <x-forms.file-upload-dropzone name="welding_logo_file"
-                                    label="Upload your vectorised weldable logo"
+                                <x-forms.file-upload-dropzone name="welding_logo_file" label=""
                                     accept=".ai,.eps,.pdf,.svg,.cdr,.dxf,.dwg" :maxSize="10485760" accent="blue"
-                                    hint="AI, EPS, PDF, SVG, CDR, DXF, DWG (Max. 10MB)" />
+                                    hint="Upload your vectorised weldable logo in any vector format like ai, eps, pdf, svg,cdr, dxf or dwg-file" />
                                 <p x-show="uploadError" x-cloak x-text="uploadError" role="alert"
                                     class="mt-2 text-xs font-medium text-red-600 dark:text-red-400"></p>
                                 @error('welding_logo_file_temp')
                                     <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">{{ $message }}
                                     </p>
                                 @enderror
-                                <div
-                                    class="mt-3 flex gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-blue-800 dark:border-blue-900/50 dark:bg-blue-950/40 dark:text-blue-300">
-                                    <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                    </svg>
-                                    <p>Upload your vectorised weldable logo in any vector format like ai, eps,
-                                        pdf, svg, cdr, dxf or dwg-file. The logo must be in a vector format
-                                        suitable for cutting from a steel plate. Word files are not accepted.</p>
-                                </div>
                             </div>
                         </div>
 

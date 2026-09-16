@@ -29,15 +29,7 @@
                         </svg>
                         Personal Information
                     </a>
-                    @if ($hasCompany)
-                        <a href="{{ route($prefix . '.profile.edit', ['tab' => 'company']) }}"
-                            wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'company' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
-                            <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
-                            </svg>
-                            Company Details
-                        </a>
-                    @endif
+                    {{-- Company Details merged into Personal Information --}}
                     {{-- <a href="{{ route($prefix . '.profile.edit', ['tab' => 'pricing']) }}"
                        wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'pricing' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
                         <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -61,9 +53,9 @@
                     <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                         <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
                             <h2 class="text-base font-semibold text-slate-900 dark:text-white">Personal Information</h2>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Update your name, phone number, and profile photo</p>
+                            <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Update your name, phone number, profile photo and company details</p>
                         </div>
-                        <form method="POST" action="{{ route($prefix . '.profile.update') }}">
+                        <form method="POST" action="{{ route($prefix . '.profile.update') }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="p-8 space-y-8">
@@ -126,6 +118,58 @@
                                         :value="$user->phone"
                                     />
                                 </div>
+
+                                <hr class="border-slate-200 dark:border-neutral-800">
+
+                                <div>
+                                    <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Company Details</h3>
+                                    <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Your registered business information</p>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row items-start gap-6">
+                                    @if ($logo ?? null)
+                                        <div class="shrink-0">
+                                            <img src="{{ $logo }}" alt="Company Logo"
+                                                class="h-24 w-24 rounded-xl border border-slate-200 object-contain p-3 dark:border-neutral-700">
+                                        </div>
+                                    @else
+                                        <div class="shrink-0 flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900">
+                                            <svg class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
+                                            </svg>
+                                        </div>
+                                    @endif
+                                    <div class="min-w-0 flex-1 space-y-3">
+                                        <div>
+                                            <p class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-neutral-500">Company Logo</p>
+                                            <p class="text-base font-semibold text-slate-900 dark:text-white mt-0.5">{{ $company_name ?? 'N/A' }}</p>
+                                        </div>
+                                        @if ($roleLabel ?? null)
+                                            <div>
+                                                <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                                    <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                                                    {{ $roleLabel }}
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                    <x-forms.input name="company_name" label="Company Name" placeholder="Test Corp Ltd"
+                                        :value="$company_name ?? ($meta['company_name'] ?? '')" :required="true"
+                                        :error="$errors->first('company_name')" />
+                                    <x-forms.input name="vat_number" label="VAT Number" placeholder="GB123456789"
+                                        :value="$meta['vat_number'] ?? ''" :required="true" :error="$errors->first('vat_number')" />
+                                    <x-forms.input name="address" label="Address" placeholder="123 Business Street"
+                                        :value="$meta['address'] ?? ''" :required="true" :error="$errors->first('address')" />
+                                    <x-forms.input name="postal_code" label="Postal Code" placeholder="SW1A 1AA"
+                                        :value="$meta['postal_code'] ?? ''" :required="true" :error="$errors->first('postal_code')" />
+                                    <x-forms.input name="city" label="City" placeholder="London"
+                                        :value="$meta['city'] ?? ''" :required="true" :error="$errors->first('city')" />
+                                    <x-forms.input name="country_name" label="Country" :value="$country_name" readonly />
+                                    <x-forms.input name="country_code" :value="$country_code" hidden />
+                                </div>
                                 <input type="hidden" name="avatar_temp" id="avatar_temp" value="">
                             </div>
                             <div class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/50 px-8 py-5 dark:border-neutral-800 dark:bg-black/50">
@@ -133,44 +177,6 @@
                                     icon='<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>' />
                             </div>
                         </form>
-                    </div>
-
-                @elseif($activeTab === 'company' && $hasCompany)
-                    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                        <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Company Details</h2>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Your registered business information</p>
-                        </div>
-                        <div class="p-8">
-                            <div class="flex flex-col sm:flex-row items-start gap-6">
-                                @if ($logo ?? null)
-                                    <div class="shrink-0">
-                                        <img src="{{ $logo }}" alt="Company Logo"
-                                            class="h-24 w-24 rounded-xl border border-slate-200 object-contain p-3 dark:border-neutral-700">
-                                    </div>
-                                @else
-                                    <div class="shrink-0 flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900">
-                                        <svg class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
-                                        </svg>
-                                    </div>
-                                @endif
-                                <div class="min-w-0 flex-1 space-y-3">
-                                    <div>
-                                        <p class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-neutral-500">Company Name</p>
-                                        <p class="text-base font-semibold text-slate-900 dark:text-white mt-0.5">{{ $company_name ?? 'N/A' }}</p>
-                                    </div>
-                                    @if ($roleLabel)
-                                        <div>
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                                                {{ $roleLabel }}
-                                            </span>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                 @elseif($activeTab === 'pricing')

@@ -2,7 +2,7 @@
     <div x-data="{
         localCategory: '{{ $category }}',
         localSortBy: '{{ $sort_by !== '' ? $sort_by : 'price_low_high' }}',
-        localPagination: '{{ $perPage !== '' ? $perPage : '25' }}',
+        localPagination: '{{ $perPage !== '' ? $perPage : '100' }}',
         localSubcategory: '{{ $subcategory }}',
         localConnection: '{{ $connection }}',
         localMinWeight: 10,
@@ -86,7 +86,7 @@
         resetLocals() {
             this.localCategory = '';
             this.localSortBy = 'price_low_high';
-            this.localPagination = '25';
+            this.localPagination = '100';
             this.localSubcategory = '';
             this.localConnection = '';
             this.localMinWeight = 10;
@@ -225,13 +225,13 @@
                     </div>
                 </div>
 
-                <!-- Per page -->
+                <!-- Rows per page -->
                 <div class="lg:col-span-3">
                     <label for="perPage" class="block text-xs font-medium text-gray-500 mb-1.5">
-                        Per page
+                        Rows per page
                     </label>
                     <div class="relative">
-                        <select id="perPage" x-model="localPagination"
+                        <select id="perPage" x-model="localPagination" @change="applyFilters()"
                             class="block h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:border-bwtblue focus:ring-2 focus:ring-bwtblue/20 focus:outline-none transition-colors">
                             @foreach ($pageOptions as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
@@ -271,8 +271,16 @@
                 @endforeach
             </div>
 
-            <div class="mt-6">
-                {{ $products->links() }}
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+                <p class="text-xs text-slate-500">
+                    Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of {{ $products->total() }} results
+                    ({{ $products->perPage() }} rows per page)
+                </p>
+                @if ($products->hasPages())
+                    <div>
+                        {{ $products->links() }}
+                    </div>
+                @endif
             </div>
         @endif
     </div>

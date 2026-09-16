@@ -13,12 +13,9 @@
         ['label' => $isEdit ? 'Edit' : 'New'],
     ]" />
     <div class="space-y-4">
-        <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Customer"
-
-            icon="heroicon-o-users" />
+        <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Customer" icon="heroicon-o-users" />
         @if ($errors->any())
-            <div
-                class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/50 dark:bg-red-900/20">
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/50 dark:bg-red-900/20">
                 <div class="flex items-start gap-3">
                     <svg class="mt-0.5 h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
@@ -46,7 +43,7 @@
             @if ($isEdit)
                 @method('PUT')
             @endif
-                <input type="hidden" id="country_code" name="country_code"
+            <input type="hidden" id="country_code" name="country_code"
                 value="{{ old('country_code', $user->country_code ?? '') }}">
             <input type="hidden" id="country_name" name="country" value="{{ old('country', $user->country ?? '') }}">
 
@@ -79,7 +76,7 @@
                             :required="true" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
                             :required="true" :error="$errors->first('city')" />
-                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('country', $user->country ?? null)"
+                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('vat_id', $user->vat_id ?? ($user->country ?? null))"
                             placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
@@ -103,8 +100,8 @@
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
                         <x-forms.input name="name" label="Full Name" placeholder="John Doe" :value="$isEdit ? $user->name : ''"
                             :required="true" :error="$errors->first('name')" />
-                        <x-forms.email name="email" label="Email Address"    placeholder="retailer@company.com"
-                            :value="$isEdit ? $user->email : ''" :required="!$isEdit"  :error="$errors->first('email')" />
+                        <x-forms.email name="email" label="Email Address" placeholder="retailer@company.com"
+                            :value="$isEdit ? $user->email : ''" :required="!$isEdit" :error="$errors->first('email')" />
                         <x-forms.phone name="phone" label="Phone Number" placeholder="Enter phone number"
                             :value="$isEdit ? $user->phone : ''" :required="true" :error="$errors->first('phone')" />
                         <div class="lg:col-span-2">
@@ -201,13 +198,22 @@
 
     @push('scripts')
         <script>
-          $('#vat_id').on('change', function() {
-                const $selectedOption = $(this).find('option:selected');
-                const selectedName = $selectedOption.data('name') || '';
-                const countryCode = $selectedOption.data('iso-id') || '';
+            function syncCustomerCountry() {
+                var $select = $('#vat_id');
+                if (!$select.length) return;
+                var $selectedOption = $select.find('option:selected');
+                if (!$selectedOption.length || !$selectedOption.val()) return;
+                var selectedName = $selectedOption.data('name') || '';
+                var countryCode = $selectedOption.data('iso-id') || '';
+                console.log('selectedName', selectedName, 'countryCode', countryCode);
                 $('#country_code').val(countryCode);
                 $('#country_name').val(selectedName);
-            });
+            }
+            // Delegated binding survives wire:navigate DOM swaps; namespaced so
+            // re-executed scripts don't stack duplicate handlers.
+            $(document).off('change.customer-country', '#vat_id').on('change.customer-country', '#vat_id', syncCustomerCountry);
+            document.addEventListener('livewire:navigated', syncCustomerCountry);
+            syncCustomerCountry();
         </script>
     @endpush
 </x-layouts.app>

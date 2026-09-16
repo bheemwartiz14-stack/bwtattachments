@@ -36,11 +36,17 @@ class ManageAdminProductController extends Controller
 
     public function index(Request $request): View
     {
+        $perPage = (int) $request->query('per_page', 100);
+        if (! in_array($perPage, [100, 200, 300, 400, 500], true)) {
+            $perPage = 100;
+        }
+
         return view('pages.private.admin.products.index', [
             'products' => $this->productService->paginate(
-                (int) $request->query('per_page', 15),
+                $perPage,
                 $request->only(['search', 'category', 'subcategory', 'connection', 'machine_class', 'status'])
             ),
+            'perPage' => $perPage,
             'categories' => $this->categoryService->getAll(),
             'subcategories' => $this->subcategoryService->getAll(),
             'connections' => $this->connectionService->getAll(),

@@ -83,12 +83,13 @@
                         <option value="draft" @selected(request('status') === 'draft')>Draft</option>
                         <option value="hidden" @selected(request('status') === 'hidden')>Hidden</option>
                     </select>
-                    <select name="per_page"
+                    <select name="per_page" onchange="this.form.submit()" title="Rows per page"
                         class="block w-auto rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
-                        <option value="15" @selected(request('per_page', 15) == 15)>15</option>
-                        <option value="25" @selected(request('per_page') == 25)>25</option>
-                        <option value="50" @selected(request('per_page') == 50)>50</option>
-                        <option value="100" @selected(request('per_page') == 100)>100</option>
+                        <option value="100" @selected(request('per_page', 100) == 100)>100 / page</option>
+                        <option value="200" @selected(request('per_page') == 200)>200 / page</option>
+                        <option value="300" @selected(request('per_page') == 300)>300 / page</option>
+                        <option value="400" @selected(request('per_page') == 400)>400 / page</option>
+                        <option value="500" @selected(request('per_page') == 500)>500 / page</option>
                     </select>
                 </div>
                 <div class="flex items-center gap-2">
@@ -207,17 +208,31 @@
                     </tbody>
                 </table>
             </div>
-            @if (isset($products) && $products->hasPages())
-                <div class="border-t border-slate-100 px-5 py-4 dark:border-neutral-800">
-                    {{ $products->withQueryString()->links() }}
-                </div>
-            @elseif(isset($products) && $products->total() > 0)
-                <div class="border-t border-slate-100 px-5 py-4 dark:border-neutral-800">
+            @if (isset($products) && $products->total() > 0)
+                <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-4 dark:border-neutral-800">
                     <p class="text-xs text-slate-400 dark:text-neutral-500">
                         Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
                         {{ $products->total() }} results
                     </p>
+                    <form method="GET" action="{{ route('reseller.products.index') }}" class="flex items-center gap-2">
+                        @foreach(['search', 'category', 'subcategory', 'connection', 'machine_class', 'status'] as $key)
+                            @if(request()->filled($key))
+                                <input type="hidden" name="{{ $key }}" value="{{ request($key) }}">
+                            @endif
+                        @endforeach
+                        <label for="footer_per_page" class="text-xs font-medium text-slate-500 dark:text-neutral-400">Rows per page</label>
+                        <select id="footer_per_page" name="per_page" onchange="this.form.submit()" class="block w-auto rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
+                            @foreach([100, 200, 300, 400, 500] as $size)
+                                <option value="{{ $size }}" @selected(($perPage ?? request('per_page', 100)) == $size)>{{ $size }}</option>
+                            @endforeach
+                        </select>
+                    </form>
                 </div>
+                @if($products->hasPages())
+                    <div class="border-t border-slate-100 px-5 py-4 dark:border-neutral-800">
+                        {{ $products->withQueryString()->links() }}
+                    </div>
+                @endif
             @endif
         </div>
     </div>

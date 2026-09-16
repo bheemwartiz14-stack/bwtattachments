@@ -29,15 +29,7 @@
                         </svg>
                         Personal Information
                     </a>
-                    <a href="{{ route($prefix . '.profile.edit', ['tab' => 'company']) }}" wire:navigate
-                        class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'company' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
-                        </svg>
-                        Company Information
-                    </a>
+                    {{-- Company Information merged into Personal Information --}}
                     <a href="{{ route($prefix . '.profile.edit', ['tab' => 'security']) }}" wire:navigate
                         class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all {{ $activeTab === 'security' ? 'bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-900/20 dark:text-emerald-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white' }}">
                         <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -58,7 +50,7 @@
                         <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
                             <h2 class="text-base font-semibold text-slate-900 dark:text-white">Personal Information</h2>
                             <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Update your name, phone number,
-                                and profile photo</p>
+                                profile photo and company details</p>
                         </div>
                         <form method="POST" action="{{ route($prefix . '.profile.update') }}" enctype="multipart/form-data">
                             @csrf
@@ -115,29 +107,16 @@
                                         :required="true" :disabled="true" />
                                     <x-forms.phone name="phone" label="Phone" :value="$user->phone" />
                                 </div>
-                                <input type="hidden" name="avatar_temp" id="avatar_temp" value="">
-                            </div>
-                            <div
-                                class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/50 px-8 py-5 dark:border-neutral-800 dark:bg-black/50">
-                                <x-ui.button type="submit" variant="primary" label="Save Changes"
-                                    icon='<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>' />
-                            </div>
-                        </form>
-                    </div>
-                @elseif($activeTab === 'company')
-                    <div
-                        class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-                        <div class="border-b border-slate-100 px-8 py-6 dark:border-neutral-800">
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">Company Information</h2>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Update your company name, VAT
-                                number, business address, and location details.</p>
-                        </div>
-                        <form method="POST" action="{{ route($prefix . '.profile.update') }}" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="p-8 space-y-8">
-                                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
+                                <hr class="border-slate-200 dark:border-neutral-800">
+
+                                <div>
+                                    <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Company Details</h3>
+                                    <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Your registered business
+                                        information</p>
+                                </div>
+
+                                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                     <x-forms.input name="company_name" label="Company Name"
                                         placeholder="Test Corp Ltd" :value="$company_name ?? ($meta['company_name'] ?? '')" :required="true"
                                         :error="$errors->first('company_name')" />
@@ -152,10 +131,11 @@
                                     <x-forms.input name="country_name" label="Country" :value="$country_name" readonly />
                                     <x-forms.input name="country_code" :value="$country_code" hidden />
                                 </div>
+                                <input type="hidden" name="avatar_temp" id="avatar_temp" value="">
                             </div>
                             <div
                                 class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/50 px-8 py-5 dark:border-neutral-800 dark:bg-black/50">
-                                <x-ui.button type="submit" variant="primary" label="Update"
+                                <x-ui.button type="submit" variant="primary" label="Save Changes"
                                     icon='<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>' />
                             </div>
                         </form>

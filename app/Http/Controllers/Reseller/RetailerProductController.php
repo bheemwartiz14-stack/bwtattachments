@@ -25,7 +25,10 @@ class RetailerProductController extends Controller
         $categories = $this->categoryService->getAll();
         $subcategories = $this->subcategoryService->getAll();
         $connections = $this->connectionService->getAll();
-        $per_page = (int) $request->query('per_page', 15);
+        $perPage = (int) $request->query('per_page', 100);
+        if (! in_array($perPage, [100, 200, 300, 400, 500], true)) {
+            $perPage = 100;
+        }
         $filter = array_merge(
             $request->only([
                 'search',
@@ -36,8 +39,8 @@ class RetailerProductController extends Controller
                 'status',
             ])
         );
-        $products = $this->productService->paginate($per_page, $filter);
-        return view('pages.private.reseller.products.index', compact('products', 'categories', 'subcategories', 'connections'));
+        $products = $this->productService->paginate($perPage, $filter);
+        return view('pages.private.reseller.products.index', compact('products', 'categories', 'subcategories', 'connections', 'perPage'));
     }
 
     public function show(string $id): View

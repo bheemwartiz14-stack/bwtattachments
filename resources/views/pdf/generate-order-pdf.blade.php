@@ -99,7 +99,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Order {{ $order->order_number }}</title>
+     <title>Order {{ $order->order_number }}</title>
     <style>
         @page {
             size: A4;
@@ -138,7 +138,7 @@
 
                             <td
                                 style="
-                                padding:4px 8px;
+                                padding:4px 8px 4px 8px;
                                 vertical-align:top;
                             ">
 
@@ -151,23 +151,23 @@
                                             width:50%;
                                             vertical-align:middle;
                                             text-align:left;
-                                            height:86px;
+                                            height:55px;
                                         ">
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
-                                                    height:72px;
+                                                    height:55px;
                                                     width:auto;
-                                                    max-width:290px;
+                                                    max-width:220px;
                                                     object-fit:contain;
                                                 " />
                                             @endif
                                             {{-- @if ($recipientLogoBase64)
                                                 <img src="{{ $recipientLogoBase64 }}"
                                                     style="
-                                                    height:72px;
+                                                    height:55px;
                                                     width:auto;
-                                                    max-width:290px;
+                                                    max-width:220px;
                                                     object-fit:contain;
                                                 " />
                                             @endif --}}
@@ -265,46 +265,50 @@
             ORDER
         </div><!-- ========================================================= --> <!-- QUOTATION META -->
         <!-- ========================================================= -->
-        <table
-            style="
+           <table
+        style="
             width:100%;
             border-collapse:collapse;
             border:1px solid #000;
         "
-            cellpadding="0" cellspacing="0">
-            <tr>
+        cellpadding="0"
+        cellspacing="0"
+    >
+        <tr>
 
-                <td
-                    style="
+            <td
+                style="
                     width:72%;
                     border-right:1px solid #000;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
-                ">
-                    <span style="font-weight:bold;">
-                        Order No.:
-                    </span>
+                "
+            >
+                <span style="font-weight:bold;">
+                    Order No.:
+                </span>
 
-                    {{ $order->order_number }}
-                </td>
+                 {{ $order->order_number }}
+            </td>
 
-                <td
-                    style="
+            <td
+                style="
                     width:28%;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
-                ">
-                    <span style="font-weight:bold;">
-                        Quote date:
-                    </span>
+                "
+            >
+                <span style="font-weight:bold;">
+                    Order date:
+                </span>
 
-                    {{ $order->created_at->format('d M Y') }}
-                </td>
+                {{ $order->created_at->format('d M Y') }}
+            </td>
 
-            </tr>
-        </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
+        </tr>
+    </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
         <!-- ========================================================= -->
         <table style=" width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
             cellspacing="0">
@@ -331,9 +335,8 @@
             </tr>
         </table> <!-- ========================================================= --> <!-- ITEMS -->
         <!-- ========================================================= -->
-        <table
-            style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; "
-            cellpadding="0" cellspacing="0">
+        <table style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
+            cellspacing="0">
             <thead>
                 <tr> <!-- PRODUCT CODE -->
                     <th
@@ -402,26 +405,20 @@
             </tbody>
         </table> <!-- ========================================================= --> <!-- TOTALS -->
         <!-- ========================================================= -->
-        <table align="right"
-            style="width:28%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;"
-            cellpadding="0" cellspacing="0">
+                   <table align="right" style="width:28%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
+            cellspacing="0">
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:
-                </td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">
-                    {{ $currency }}&nbsp;
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">{{ $currency }}&nbsp;
                     {{ number_format($subTotal, 2, '.', ',') }}</td>
             </tr>
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT
-                    {{ $vatPerc }}%:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">
-                    {{ $currency }}&nbsp;
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">{{ $currency }}&nbsp;
                     {{ number_format($taxAmount, 2, '.', ',') }}</td>
             </tr>
             <tr>
-                <td style="border:1px solid #000;padding:5px 6px; text-align:right;font-weight:700; font-size:7.5pt;">
-                    Grand total:</td>
+                <td style="border:1px solid #000;padding:5px 6px; text-align:right;font-weight:700; font-size:7.5pt;">Grand total:</td>
                 <td style="border:1px solid #000;padding:5px 6px;text-align:right;font-weight:700;font-size:7.5pt;">
                     {{ number_format($grandTotal, 2, '.', ',') }}</td>
             </tr>

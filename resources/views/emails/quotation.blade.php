@@ -28,6 +28,10 @@
     $appUrl = config('app.url');
     $appName = config('app.name');
     $senderName = config('mail.from.name', $appName);
+    $recipientName = $quotation->contact_name ?? $quotation->user?->name ?? 'Valued Customer';
+    $recipientFirstName = trim(explode(' ', $recipientName)[0] ?? $recipientName) ?: 'Valued Customer';
+    $customMessage = $quotation->quotation_email_message
+        ?? ((!empty($quotation->notes) && strip_tags($quotation->notes) !== '') ? strip_tags($quotation->notes) : 'All attachments need to be CAT yellow if possible');
 @endphp
 
 @include('emails.partials.header', [
@@ -41,16 +45,18 @@
 <tr>
   <td class="fluid-padding" style="padding:36px 40px 6px 40px;">
     <p style="margin:0 0 16px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; line-height:24px; color:#4b5563;">
-      Dear <strong style="color:#111827;">{{ $quotation->contact_name ?? $quotation->user?->name ?? 'Valued Customer' }}</strong>,
+      Dear <strong style="color:#111827;">{{ $recipientFirstName }}</strong>,
     </p>
     <p style="margin:0 0 8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; line-height:24px; color:#4b5563;">
-      Thank you for your interest. Please find your quotation from <strong>{{ $companyName }}</strong> below.
+      This is an automated generated email from bwtattachments.com
+    </p>
+    <p style="margin:0 0 8px 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; line-height:24px; color:#4b5563;">
+      You have received a new quotation {{ $quotation->quotation_number }} from <strong>{{ $companyName }}</strong>.
     </p>
   </td>
 </tr>
 
 <!-- Custom Email Message -->
-@if(!empty($quotation->quotation_email_message))
 <tr>
   <td class="fluid-padding" style="padding:22px 40px 6px 40px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#eef2ff; border-radius:14px; border:1px solid #e0e7ff;">
@@ -59,7 +65,7 @@
           <table role="presentation" cellpadding="0" cellspacing="0" border="0">
             <tr>
               <td style="font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:22px; color:#4338ca; white-space:normal;">
-                {!! nl2br(e($quotation->quotation_email_message)) !!}
+                {!! nl2br(e($customMessage)) !!}
               </td>
             </tr>
           </table>
@@ -68,7 +74,6 @@
     </table>
   </td>
 </tr>
-@endif
 
 <!-- Sender Company Info -->
 <tr>
@@ -195,6 +200,9 @@
   <td class="fluid-padding" style="padding:22px 40px 40px 40px;">
     <p style="margin:0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:14px; line-height:22px; color:#4b5563;">
       If you have any questions or require further information, please feel free to contact us. We would be happy to assist you.
+    </p>
+    <p style="margin:12px 0 0 0; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; line-height:18px; color:#9ca3af;">
+      This is an automated email, please do not reply directly. PDF attached.
     </p>
   </td>
 </tr>

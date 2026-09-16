@@ -33,10 +33,14 @@ class ProfileController extends Controller
 
         $meta = $user->userMeta?->metadata ?? [];
 
+        $viewData['meta'] = $meta;
         $viewData['company_name'] = $meta['company_name'] ?? '';
+        $viewData['country_name'] = $user->country ?? ($meta['country'] ?? '');
+        $viewData['country_code'] = $user->country_code ?? ($meta['country_code'] ?? '');
         $logo = $user->getFirstMedia('retailer_client_logo');
         $viewData['logo'] = $logo?->getUrl();
         $viewData['logo_id'] = $logo?->id;
+        $viewData['logo_url'] = $logo?->getUrl();
 
         $viewData['prefix'] = 'reseller';
         $viewData['breadcrumbLabel'] = 'Reseller Portal';
@@ -112,7 +116,7 @@ class ProfileController extends Controller
         $this->profileService->deleteRetailerClientLogo($request->user());
 
         return redirect()
-            ->route('reseller.profile.edit', ['tab' => 'company'])
+            ->route('reseller.profile.edit', ['tab' => 'personal'])
             ->with('success', 'Company logo removed successfully.');
     }
 }
