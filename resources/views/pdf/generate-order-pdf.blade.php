@@ -1,7 +1,7 @@
 @php
     $sender = $order->fromUser ?? ($order->user ?? null);
-    $recipient = $order->toUser ?? null;
     $senderMeta = $sender?->userMeta?->metadata ?? [];
+    $recipient = $order->toUser ?? null;
     $recipientMeta = $recipient?->userMeta?->metadata ?? [];
     $senderRole = $sender?->roles->first()?->name;
     $senderLogoPath = match (strtolower($senderRole ?? '')) {
@@ -10,58 +10,73 @@
         'customer' => $sender?->getFirstMediaPath('customer_logo', 'large'),
         default => null,
     };
-    //  Convert Sender Logo to Base64
+    // Fetch the senderLogoBase64 and senderCompany name of sender
     $senderLogoBase64 = '';
+    $senderLogoPath = '';
+    $senderCompany = '';
+    if ($senderRole === 'Wholesaler') {
+        $senderLogoPath = $sender?->getFirstMediaPath('wholesale_client_logo');
+        $senderCompany = $senderMeta['wholesale_company_name'] ?? ($senderMeta['company_name'] ?? '');
+    } elseif ($senderRole === 'Reseller') {
+        $senderLogoPath = $sender?->getFirstMediaPath('retailer_client_logo');
+        $senderCompany = $senderMeta['company_name'] ?? ($senderMeta['retailer_client_name'] ?? '');
+    } else {
+        $senderCompany = $senderMeta['company_name'] ?? '';
+    }
     if ($senderLogoPath && file_exists($senderLogoPath)) {
-        $extension = strtolower(pathinfo($senderLogoPath, PATHINFO_EXTENSION));
-        $mimeTypes = [
-            'jpg' => 'image/jpeg',
-            'jpeg' => 'image/jpeg',
-            'png' => 'image/png',
-            'gif' => 'image/gif',
-            'webp' => 'image/webp',
-            'svg' => 'image/svg+xml',
-        ];
-        $mimeType = $mimeTypes[$extension] ?? 'image/png';
+        $type = pathinfo($senderLogoPath, PATHINFO_EXTENSION);
+        $type = $type ?: 'png';
+
         $data = @file_get_contents($senderLogoPath);
-        if ($data !== false) {
-            $senderLogoBase64 = 'data:' . $mimeType . ';base64,' . base64_encode($data);
+
+        if ($data) {
+            $senderLogoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
     }
-    // Recipient Logo
-    $recipientLogoPath =
-        $recipient?->getFirstMediaPath('retailer_client_logo') ?:
-        $recipient?->getFirstMediaPath('wholesale_client_logo');
+    // Fetch the senderLogoBase64 and senderCompany name of reciever
+    $recieverRole = $recipient?->roles->first()?->name;
+    $recieverLogoPath = match (strtolower($senderRole ?? '')) {
+        'wholesaler' => $sender?->getFirstMediaPath('wholesale_client_logo', 'original'),
+        'reseller' => $sender?->getFirstMediaPath('retailer_client_logo', 'large'),
+        'customer' => $sender?->getFirstMediaPath('customer_logo', 'large'),
+        default => null,
+    };
     $recipientLogoBase64 = '';
-
+    $recipientLogoPath = '';
+    $recipientCompany = '';
+    if ($recieverRole === 'Wholesaler') {
+        $recipientLogoPath = $recipient?->getFirstMediaPath('wholesale_client_logo');
+        $recipientCompany = $recipientMeta['wholesale_company_name'] ?? ($recipientMeta['company_name'] ?? '');
+    } elseif ($recieverRole === 'Reseller') {
+        $recipientLogoPath = $recipient?->getFirstMediaPath('retailer_client_logo');
+        $recipientrCompany = $recipientMeta['company_name'] ?? ($recipientMeta['retailer_client_name'] ?? '');
+    } else {
+        $recipientCompany = $recipientMeta['company_name'] ?? '';
+    }
     if ($recipientLogoPath && file_exists($recipientLogoPath)) {
-        $extension = strtolower(pathinfo($recipientLogoPath, PATHINFO_EXTENSION));
-        $mimeTypes = [
-            'jpg' => 'image/jpeg',
-            'jpeg' => 'image/jpeg',
-            'png' => 'image/png',
-            'gif' => 'image/gif',
-            'webp' => 'image/webp',
-            'svg' => 'image/svg+xml',
-        ];
-        $mimeType = $mimeTypes[$extension] ?? 'image/png';
+        $type = pathinfo($recipientLogoBase64, PATHINFO_EXTENSION);
+        $type = $type ?: 'png';
+
         $data = @file_get_contents($recipientLogoPath);
-        if ($data !== false) {
-            $recipientLogoBase64 = 'data:' . $mimeType . ';base64,' . base64_encode($data);
+
+        if ($data) {
+            $recipientLogoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Sender Details
-    |--------------------------------------------------------------------------
-    */
-    $topRightName = $sender?->name ?? 'Admin';
+    // Sender Details
+    $topRightName = $senderCompany ?: 'Reseller name';
     $topRightStreet = $senderMeta['address'] ?? 'Street name';
     $topRightCity = trim(($senderMeta['postal_code'] ?? '1234AB') . ' ' . ($senderMeta['city'] ?? 'Place'));
     $topRightCountry = $senderMeta['country'] ?? 'Country';
     $topRightPhone = $sender?->phone ?? ($senderMeta['phone'] ?? '+31620315250');
     $topRightEmail = $sender?->email ?? 'admin@bwt.com';
+
+    // Recievner details
+    $custName = $recipientCompany ?: 'Reseller name';
+    $custAddressLine1 = $resellerMeta['address'] ?? 'Korte kerkstraat 6';
+    $custAddressLine2 = trim(($resellerMeta['postal_code'] ?? '5524AX') . ' ' . ($resellerMeta['city'] ?? 'Steensel'));
+    $custAddressLine3 = $resellerMeta['country'] ?? 'The Netherlands';
 
     /*
     |--------------------------------------------------------------------------
@@ -79,7 +94,6 @@
     $currency = config('app.currency_symbol', '€');
     $show_pdf = $order->show_logo_on_pdf;
 @endphp
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -137,26 +151,26 @@
                                             width:50%;
                                             vertical-align:middle;
                                             text-align:left;
-                                            height:46px;
+                                            height:86px;
                                         ">
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
-                                                    height:42px;
+                                                    height:72px;
                                                     width:auto;
-                                                    max-width:190px;
+                                                    max-width:290px;
                                                     object-fit:contain;
                                                 " />
                                             @endif
-                                            @if ($recipientLogoBase64)
+                                            {{-- @if ($recipientLogoBase64)
                                                 <img src="{{ $recipientLogoBase64 }}"
                                                     style="
-                                                    height:42px;
+                                                    height:72px;
                                                     width:auto;
-                                                    max-width:190px;
+                                                    max-width:290px;
                                                     object-fit:contain;
                                                 " />
-                                            @endif
+                                            @endif --}}
                                         </td>
 
                                     </tr>
@@ -251,67 +265,63 @@
             ORDER
         </div><!-- ========================================================= --> <!-- QUOTATION META -->
         <!-- ========================================================= -->
-           <table
-        style="
+        <table
+            style="
             width:100%;
             border-collapse:collapse;
             border:1px solid #000;
         "
-        cellpadding="0"
-        cellspacing="0"
-    >
-        <tr>
+            cellpadding="0" cellspacing="0">
+            <tr>
 
-            <td
-                style="
-                    width:65%;
+                <td
+                    style="
+                    width:72%;
                     border-right:1px solid #000;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
-                "
-            >
-                <span style="font-weight:bold;">
-                    Order No.:
-                </span>
+                ">
+                    <span style="font-weight:bold;">
+                        Order No.:
+                    </span>
 
-                {{ $order->order_number }}
-            </td>
+                    {{ $order->order_number }}
+                </td>
 
-            <td
-                style="
-                    width:35%;
+                <td
+                    style="
+                    width:28%;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
-                "
-            >
-                <span style="font-weight:bold;">
-                    Order date:
-                </span>
+                ">
+                    <span style="font-weight:bold;">
+                        Quote date:
+                    </span>
 
-                {{ $order->created_at->format('d M Y') }}
-            </td>
+                    {{ $order->created_at->format('d M Y') }}
+                </td>
 
-        </tr>
-    </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
+            </tr>
+        </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
         <!-- ========================================================= -->
         <table style=" width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
             cellspacing="0">
             <tr>
                 <td colspan="2"
-                    style=" background:#666; color:#fff; font-weight:bold; padding:5px 8px; font-size:9pt; "> Order
+                    style=" background:#666; color:#fff; font-weight:bold; padding:5px 8px; font-size:9pt; "> Quotation
                     to: </td>
             </tr>
             <tr> <!-- CUSTOMER ADDRESS -->
                 <td
-                    style=" width:65%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:1px solid #000; ">
-                    <div style="font-weight:bold;">  {{ $recipient?->name ?? 'Admin' }} </div>
-                    <div>{{ $recipientMeta['address'] ?? '' }}  </div>
-                    <div>  {{ $recipientMeta['postal_code'] ?? '' }} {{ $recipientMeta['city'] ?? '' }} </div>
-                    <div> {{ $recipientMeta['country'] ?? '' }} </div>
+                    style=" width:50%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; border-right:0px solid #000; ">
+                    <div style="font-weight:bold;"> {{ $custName ?: 'Storm buckets' }} </div>
+                    <div> {{ $custAddressLine1 }} </div>
+                    <div> {{ $custAddressLine2 }} </div>
+                    <div> {{ $custAddressLine3 }} </div>
                 </td> <!-- CUSTOMER CONTACT -->
-                <td style=" width:35%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
+                <td style=" width:50%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
                     <div> Tel.: {{ $reseller->phone ?? '+31404021009' }} </div>
                     <div> Email: {{ $reseller->email ?? 'john@dtmedia.nl' }} </div>
                     <div style="height:5mm;"></div> @php $vat = $resellerMeta['vat_number'] ?? 'NL811021774B01'; @endphp @if ($vat)
@@ -321,30 +331,31 @@
             </tr>
         </table> <!-- ========================================================= --> <!-- ITEMS -->
         <!-- ========================================================= -->
-        <table style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
-            cellspacing="0">
+        <table
+            style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; "
+            cellpadding="0" cellspacing="0">
             <thead>
                 <tr> <!-- PRODUCT CODE -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:15%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:12%; ">
                         Product code </th> <!-- PRODUCT NAME -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:50%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:left; border-right:1px solid #000; width:60%; ">
                         Product name </th> <!-- UNIT PRICE -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:15%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:12%; ">
                         Unit price </th> <!-- QUANTITY -->
                     <th
                         style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:5%; ">
                         Qty </th> <!-- TOTAL -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:15%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:11%; ">
                         Total </th>
                 </tr>
             </thead>
             <tbody> <!-- ================================================= --> <!-- ACTUAL ITEMS -->
                 <!-- ================================================= -->
-                 @foreach ($order->items as $item)
+                @foreach ($order->items as $item)
                     @php
                         $p = (float) str_replace([','], '', (string) ($item->getAttributes()['price'] ?? $item->price));
                         $total = $p * (int) $item->quantity;
@@ -370,7 +381,7 @@
                 @endforeach <!-- ================================================= -->
                 <!-- EMPTY ROWS -->
                 <!-- ================================================= -->
-                 @for ($i = count($order->items); $i < 10; $i++)
+                @for ($i = count($order->items); $i < 20; $i++)
                     <tr>
                         <td
                             style=" padding:5px 6px; font-size:7.5pt; border-right:1px solid #000; border-bottom:1px solid #000; height:14px; ">
@@ -391,20 +402,26 @@
             </tbody>
         </table> <!-- ========================================================= --> <!-- TOTALS -->
         <!-- ========================================================= -->
-                   <table align="right" style="width:35%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
-            cellspacing="0">
+        <table align="right"
+            style="width:28%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;"
+            cellpadding="0" cellspacing="0">
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:57%;">Sub total:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:43%;">{{ $currency }}&nbsp;
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:
+                </td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">
+                    {{ $currency }}&nbsp;
                     {{ number_format($subTotal, 2, '.', ',') }}</td>
             </tr>
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">{{ $currency }}&nbsp;
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT
+                    {{ $vatPerc }}%:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">
+                    {{ $currency }}&nbsp;
                     {{ number_format($taxAmount, 2, '.', ',') }}</td>
             </tr>
             <tr>
-                <td style="border:1px solid #000;padding:5px 6px; text-align:right;font-weight:700; font-size:7.5pt;">Grand total:</td>
+                <td style="border:1px solid #000;padding:5px 6px; text-align:right;font-weight:700; font-size:7.5pt;">
+                    Grand total:</td>
                 <td style="border:1px solid #000;padding:5px 6px;text-align:right;font-weight:700;font-size:7.5pt;">
                     {{ number_format($grandTotal, 2, '.', ',') }}</td>
             </tr>

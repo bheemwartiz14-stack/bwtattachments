@@ -50,14 +50,15 @@
     }
 
     // Top-right company block
-    $topRightName = $baseresaller->name ?? ($senderCompany ?: 'Reseller name');
+    $topRightName = $senderCompany ?: 'Reseller name';
     $topRightStreet = $baseresallerMeta['address'] ?? 'Street name';
     $topRightCity = trim(($baseresallerMeta['postal_code'] ?? '1234AB') . ' ' . ($resellerMeta['city'] ?? 'Place'));
     $topRightCountry = $baseresallerMeta['country'] ?? 'Country';
     $topRightPhone = $baseresallerMeta->phone ?? ($resellerMeta['phone'] ?? '+31620315250');
     $topRightEmail = $baseresallerMeta->email ?? 'john@unit84.com';
     // Quotation recipient block
-    $custName = $reseller->name ?? '';
+    // $custName = $reseller->name ?? '';
+    $custName = $resellerMeta['company_name'] ?? '';
     $custAddressLine1 = $resellerMeta['address'] ?? 'Korte kerkstraat 6';
     $custAddressLine2 = trim(($resellerMeta['postal_code'] ?? '5524AX') . ' ' . ($resellerMeta['city'] ?? 'Steensel'));
     $custAddressLine3 = $resellerMeta['country'] ?? 'The Netherlands';
@@ -130,23 +131,23 @@
                                             width:50%;
                                             vertical-align:middle;
                                             text-align:left;
-                                            height:46px;
+                                            height:86px;
                                         ">
-                                            @if ($senderLogoBase64)
+                                            {{-- @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
-                                                    height:52px;
+                                                    height:72px;
                                                     width:auto;
-                                                    max-width:190px;
+                                                    max-width:290px;
                                                     object-fit:contain;
                                                 " />
-                                            @endif
+                                            @endif --}}
                                             @if ($resellerLogoBase64)
                                                 <img src="{{ $resellerLogoBase64 }}"
                                                     style="
-                                                    height:52px;
+                                                    height:72px;
                                                     width:auto;
-                                                    max-width:190px;
+                                                    max-width:290px;
                                                     object-fit:contain;
                                                 " />
                                             @endif
@@ -328,10 +329,10 @@
                         style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; border-right:1px solid #000; width:12%; ">
                         Unit price </th> <!-- QUANTITY -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:4%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:center; border-right:1px solid #000; width:5%; ">
                         Qty </th> <!-- TOTAL -->
                     <th
-                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:12%; ">
+                        style=" background:#666; color:#fff; font-size:7.5pt; font-weight:bold; padding:5px 6px; text-align:right; width:11%; ">
                         Total </th>
                 </tr>
             </thead>
@@ -387,8 +388,8 @@
                    <table align="right" style="width:28%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
             cellspacing="0">
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:57%;">Sub total:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:43%;">{{ $currency }}&nbsp;
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:</td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">{{ $currency }}&nbsp;
                     {{ number_format($subTotal, 2, '.', ',') }}</td>
             </tr>
             <tr>
@@ -406,5 +407,3 @@
 </body>
 
 </html>
-
-
