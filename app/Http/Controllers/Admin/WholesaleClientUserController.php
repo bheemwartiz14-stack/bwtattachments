@@ -37,17 +37,13 @@ class WholesaleClientUserController extends Controller
     public function store(StoreWholesaleClientUserRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $this->wholesaleClientUserServices->create($data);
-        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesaler  created successfully.');
+        $wholeseller = $this->wholesaleClientUserServices->create($data);
+       return redirect()->route('admin.wholeseller.show', ['wholeseller' => $wholeseller->id])->with('success', 'Wholesaler created successfully.');
     }
     public function show(string $id): View
     {
         $user = $this->wholesaleClientUserServices->findById($id);
-        $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10)
-        ,'orders' => fn ($q) => $q->latest()->take(10)
-        ],
-        );
-        // dd($user);
+        $user->load(['userMeta', 'userMargin', 'quotations' => fn ($q) => $q->latest()->take(10),'orders' => fn ($q) => $q->latest()->take(10)],);
         return view('pages.private.admin.wholesale-client-users.show', compact('user'));
     }
 
@@ -65,8 +61,7 @@ class WholesaleClientUserController extends Controller
     {
         $data = $request->validated();
         $this->wholesaleClientUserServices->update($id, $request->validated());
-        return redirect()->route('admin.wholeseller.index')->with('success', 'Wholesaler updated successfully.');
-    }
+        return redirect()->route('admin.wholeseller.show', ['wholeseller' => $id])->with('success', 'Wholesaler updated successfully.');    }
 
     public function destroy(string $id): RedirectResponse
     {

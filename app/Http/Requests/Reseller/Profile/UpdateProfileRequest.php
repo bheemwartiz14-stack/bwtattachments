@@ -19,13 +19,13 @@ class UpdateProfileRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'avatar_temp' => ['nullable', 'string'],
-            'country_name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'country_code' => ['sometimes', 'nullable', 'string', 'max:10'],
-            'company_name' => ['sometimes', 'required', 'string', 'max:255'],
+            'country_name' => ['sometimes', 'string', 'max:255'],
+            'country_code' => ['nullable',  'string', 'max:10'],
+            'company_name' => ['nullable', 'string', 'max:255'],
             'vat_number' => ['sometimes', 'required', 'string', 'max:50'],
             'address' => ['sometimes', 'required', 'string', 'max:255'],
             'postal_code' => ['sometimes', 'required', 'string', 'max:20'],
-            'city' => ['sometimes', 'required', 'string', 'max:100'],
+            'city' => ['nullable','string', 'max:100'],
         ];
     }
 }

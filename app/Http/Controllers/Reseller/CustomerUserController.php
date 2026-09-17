@@ -48,8 +48,8 @@ class CustomerUserController extends Controller
     public function store(StoreCustomerClientUserRequest $request)
     {
         $data = $request->validated();
-        $response = $this->customerService->create($data);
-        return redirect()->route('reseller.customer-users.index') ->with('success', 'Customer account created successfully.');
+        $customer = $this->customerService->create($data);
+        return redirect()->route('reseller.customer-users.show', ['customer_user' => $customer->id])->with('success', 'Customer updated successfully.');
     }
     /**
      * Display the specified resource.
@@ -81,7 +81,7 @@ class CustomerUserController extends Controller
     {
         $data = $request->validated();
         $this->customerService->update($id, $request->validated());
-        return redirect()->route('reseller.customer-users.index') ->with('success', 'Customer account Updated successfully.');
+        return redirect()->route('reseller.customer-users.show', ['customer_user' => $id])->with('success', 'Customer Updated successfully.');
     }
 
     /**

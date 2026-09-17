@@ -26,9 +26,9 @@ class UpdateProfileRequest extends FormRequest
             'country_code' => ['sometimes' ],
             'company_name' => ['sometimes', 'required', 'string', 'max:255'],
             'vat_number' => ['sometimes', 'required', 'string', 'max:50'],
-            'address' => ['sometimes', 'required', 'string', 'max:255'],
-            'postal_code' => ['sometimes', 'required', 'string', 'max:20'],
-            'city' => ['sometimes','string', 'max:100'],
+            'address' => ['sometimes','string', 'max:255'],
+            'postal_code' => ['nullable',  'string', 'max:20'],
+            'city' => ['nullable','string', 'max:100'],
             'company_logo' => ['nullable', 'file', 'extensions:jpeg,png,jpg,webp', 'max:10240'],
             'company_logo_temp' => ['nullable', 'string'],
         ];

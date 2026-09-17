@@ -187,6 +187,76 @@ $(document).on('click', '[data-view-toggle]', function() {
     $(target + '-' + view).removeClass('hidden');
 });
 
+// Country sync (vat_id select -> hidden country_code / country_name mirrors)
+// Centralized: delegated bindings survive wire:navigate DOM swaps and are
+// bound once (no per-page inline scripts needed).
+window.syncVatCountry = function() {
+    var $select = $('#vat_id');
+    if (!$select.length) {
+        return;
+    }
+    var $selectedOption = $select.find('option:selected');
+    var value = $select.val();
+    if (!value || !$selectedOption.length) {
+        $('#country_code').val('');
+        $('#country_name').val('');
+        return;
+    }
+    $('#country_code').val($selectedOption.data('iso-id') || '');
+    $('#country_name').val($selectedOption.data('name') || '');
+};
+
+// Remove any legacy inline handlers, then bind once (delegated).
+$(document)
+    .off('change.vat-country', '#vat_id')
+    .off('select2:clear.vat-country', '#vat_id');
+
+// Country changed
+$(document).on(
+    'change.vat-country',
+    '#vat_id',
+    window.syncVatCountry
+);
+
+// Select2 clear (x) clicked
+$(document).on(
+    'select2:clear.vat-country',
+    '#vat_id',
+    window.syncVatCountry
+);
+
+document.addEventListener('livewire:navigated', window.syncVatCountry);
+
+$(function() {
+    window.syncVatCountry();
+});
+
+// Username auto-slug (name -> username), only on forms that have a username field.
+$(document).off('input.username-slug', '#name').on('input.username-slug', '#name', function() {
+    var $username = $('#username');
+    if (!$username.length) return;
+    const name = $(this).val();
+    $username.val(name.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-'));
+});
+
+// Password auto-fill for empty password inputs (create forms).
+window.autofillPasswordInputs = function() {
+    document.querySelectorAll('[data-password-input]').forEach(function(pwd) {
+        if (pwd && !pwd.value) {
+            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
+            var s = '';
+            for (var i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)];
+            pwd.value = s;
+        }
+    });
+};
+
+$(function() {
+    window.autofillPasswordInputs();
+});
+
+document.addEventListener('livewire:navigated', window.autofillPasswordInputs);
+
 // Select All text on focus
 $(document).on('focus', 'input[data-select-all]', function() {
     $(this).select();

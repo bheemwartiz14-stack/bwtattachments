@@ -32,75 +32,22 @@ class UpdateWholesaleClientUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'email' => [
-                'nullable',
-                'email',
-            ],
-            'password' => [
-                'nullable',
-                'string',
-                'min:8',
-            ],
-            'wholesale_company_name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'phone' => [
-                'required',
-                'regex:/^[0-9+\-\s()]{10,20}$/',
-            ],
-            'address' => [
-                'required',
-                'string',
-                'max:500',
-            ],
-
-            'postal_code' => [
-                'required',
-                'string',
-                'max:20',
-            ],
-
-            'city' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'vat_id' => [ 'required','string'],
-            'country_code' => ['sometimes' ],
-            'country' => ['sometimes' ],
-            'website' => [
-                'nullable',
-                'url',
-                'max:255',
-            ],
-
-            'vat_number' => [
-                'required',
-                'string',
-                'max:50',
-            ],
-
-            'commission_percentage' => [
-                'required',
-                'numeric',
-                'between:0,100',
-                'decimal:0,2',
-            ],
-
-            'wholesale_client_logo' => [
-                'nullable',
-                'image',
-                'mimes:jpeg,jpg,png,webp',
-                'max:2048',
-            ],
-             'wholesale_client_logo_temp' => ['nullable', 'string'],
+            'name' => [ 'required','string','max:255', ],
+            'email' => ['nullable', 'email',],
+            'password' => [  'nullable', 'string','min:8', ],
+            'wholesale_company_name' => ['required','string','max:255',],
+            'phone' => [ 'required','regex:/^[0-9+\-\s()]{10,20}$/',],
+            'address' => [ 'required','string', 'max:500', ],
+            'postal_code' => ['nullable','max:20',],
+            'city' => ['nullable','max:255',],
+            'vat_id' => ['nullable','string'],
+            'country_code' => ['nullable', 'max:3', ],
+            'country' => ['nullable', 'max:255',],
+            'website' => [ 'nullable','url', 'max:255',],
+            'vat_number' => ['required', 'string','max:50', ],
+            'commission_percentage' => ['required', 'numeric','between:0,100', 'decimal:0,2',],
+            'wholesale_client_logo' => [ 'nullable','image','mimes:jpeg,jpg,png,webp','max:2048', ],
+            'wholesale_client_logo_temp' => ['nullable', 'string'],
         ];
     }
 
@@ -118,19 +65,10 @@ class UpdateWholesaleClientUserRequest extends FormRequest
 
             'phone.required' => 'The phone number is required.',
             'phone.regex' => 'Please enter a valid phone number.',
-
             'address.required' => 'The company address is required.',
-
-            'postal_code.required' => 'The postal code is required.',
-
-            'city.required' => 'The city is required.',
-
-            'vat_id.required' => 'The country is required.',
-
             'website.url' => 'Please enter a valid website URL.',
 
             'vat_number.required' => 'The VAT number is required.',
-
             'commission_percentage.required' => 'The commission percentage is required.',
             'commission_percentage.numeric' => 'The commission percentage must be a number.',
             'commission_percentage.between' => 'The commission percentage must be between 0 and 100.',

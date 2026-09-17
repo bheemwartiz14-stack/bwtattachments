@@ -25,13 +25,13 @@ class UpdateRetailerClientUserRequest extends FormRequest
             'company_name' => ['required', 'string', 'max:255'],
             'vat_number' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'max:20'],
-            'city' => ['required', 'string', 'max:255'],
-            'vat_id' => [ 'required','string'],
-            'country_code' => ['sometimes' ],
-            'country' => ['sometimes' ],
+            'postal_code' => ['nullable', 'string', 'max:20'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'vat_id' => [ 'nullable','string'],
+            'country_code' => ['nullable' ],
+            'country' => ['nullable' ],
             'website' => ['nullable', 'url', 'max:255'],
-             'retailer_client_logo_temp' => ['nullable', 'string'],
+            'retailer_client_logo_temp' => ['nullable', 'string'],
         ];
     }
 }

@@ -48,7 +48,6 @@
             <input type="hidden" id="country_code" name="country_code"
                 value="{{ old('country_code', $user->country_code ?? '') }}">
             <input type="hidden" id="country_name" name="country" value="{{ old('country', $user->country ?? '') }}">
-
             <div
                 class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                 <div class="flex items-center gap-3 border-b border-slate-100 px-8 py-5 dark:border-neutral-800">
@@ -74,9 +73,9 @@
                         <x-forms.input name="address" label="Address" placeholder="123 Business Street"
                             :value="$meta['address'] ?? ''" :required="true" :error="$errors->first('address')" />
                         <x-forms.input name="postal_code" label="Postal Code" placeholder="SW1A 1AA" :value="$meta['postal_code'] ?? ''"
-                            :required="true" :error="$errors->first('postal_code')" />
+                            :required="false" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
-                            :required="true" :error="$errors->first('city')" />
+                            :required="false" :error="$errors->first('city')" />
                         <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('country', $user->country ?? null)"
                             placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
@@ -209,36 +208,4 @@
             </div>
         </form>
     </div>
-
-    @push('scripts')
-        <script>
-            $('#name').on('input', function() {
-                const name = $(this).val();
-                const username = name.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-');
-                $('#username').val(username);
-            });
-            (function() {
-                var pwd = document.querySelector('[data-password-input]');
-                if (pwd && !pwd.value) {
-                    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
-                    var s = '';
-                    for (var i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)];
-                    pwd.value = s;
-                }
-            })();
-            function syncResellerCountry() {
-                var $select = $('#vat_id');
-                if (!$select.length) return;
-                var $selectedOption = $select.find('option:selected');
-                if (!$selectedOption.length || !$selectedOption.val()) return;
-                $('#country_code').val($selectedOption.data('iso-id') || '');
-                $('#country_name').val($selectedOption.data('name') || '');
-            }
-            // Delegated binding survives wire:navigate DOM swaps; namespaced so
-            // re-executed scripts don't stack duplicate handlers.
-            $(document).off('change.reseller-country', '#vat_id').on('change.reseller-country', '#vat_id', syncResellerCountry);
-            document.addEventListener('livewire:navigated', syncResellerCountry);
-            syncResellerCountry();
-        </script>
-    @endpush
 </x-layouts.app>

@@ -8,7 +8,7 @@
 
     <div class="space-y-6">
         <x-ui.hero title="Profile Settings"
-           
+
             icon="heroicon-o-user" />
 
         @if (session('success'))
@@ -158,9 +158,9 @@
                                     <x-forms.input name="address" label="Address" placeholder="123 Business Street"
                                         :value="$meta['address'] ?? ''" :required="true" :error="$errors->first('address')" />
                                     <x-forms.input name="postal_code" label="Postal Code" placeholder="SW1A 1AA"
-                                        :value="$meta['postal_code'] ?? ''" :required="true" :error="$errors->first('postal_code')" />
+                                        :value="$meta['postal_code'] ?? ''" :required="false" :error="$errors->first('postal_code')" />
                                     <x-forms.input name="city" label="City" placeholder="London"
-                                        :value="$meta['city'] ?? ''" :required="true" :error="$errors->first('city')" />
+                                        :value="$meta['city'] ?? ''" :required="false" :error="$errors->first('city')" />
                                     <x-forms.input name="country_name" label="Country" :value="$country_name" readonly />
                                     <x-forms.input name="country_code" :value="$country_code" hidden />
                                 </div>

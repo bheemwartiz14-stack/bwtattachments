@@ -73,9 +73,9 @@
                         <x-forms.input name="address" label="Address" placeholder="123 Business Street"
                             :value="$meta['address'] ?? ''" :required="true" :error="$errors->first('address')" />
                         <x-forms.input name="postal_code" label="Postal Code" placeholder="SW1A 1AA" :value="$meta['postal_code'] ?? ''"
-                            :required="true" :error="$errors->first('postal_code')" />
+                            :required="false" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
-                            :required="true" :error="$errors->first('city')" />
+                            :required="false" :error="$errors->first('city')" />
                         <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('vat_id', $user->vat_id ?? ($user->country ?? null))"
                             placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
@@ -195,25 +195,4 @@
             </div>
         </form>
     </div>
-
-    @push('scripts')
-        <script>
-            function syncCustomerCountry() {
-                var $select = $('#vat_id');
-                if (!$select.length) return;
-                var $selectedOption = $select.find('option:selected');
-                if (!$selectedOption.length || !$selectedOption.val()) return;
-                var selectedName = $selectedOption.data('name') || '';
-                var countryCode = $selectedOption.data('iso-id') || '';
-                console.log('selectedName', selectedName, 'countryCode', countryCode);
-                $('#country_code').val(countryCode);
-                $('#country_name').val(selectedName);
-            }
-            // Delegated binding survives wire:navigate DOM swaps; namespaced so
-            // re-executed scripts don't stack duplicate handlers.
-            $(document).off('change.customer-country', '#vat_id').on('change.customer-country', '#vat_id', syncCustomerCountry);
-            document.addEventListener('livewire:navigated', syncCustomerCountry);
-            syncCustomerCountry();
-        </script>
-    @endpush
 </x-layouts.app>

@@ -201,8 +201,7 @@
                         <x-forms.input name="reference" label="Reference" placeholder="e.g. PO-12345" />
                         <x-forms.input name="issue_date" id="issue_date" label="Issue Date" type="date"
                             :value="now()->format('Y-m-d')" min="{{ now()->format('Y-m-d') }}" />
-                        <x-forms.input name="valid_until" id="valid_until" label="Valid Until" type="date"
-                            min="{{ now()->format('Y-m-d') }}" />
+                        <x-forms.input name="valid_until" id="valid_until" label="Valid Until" type="date" min="{{ now()->format('Y-m-d') }}" />
                         <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="0">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Margin (%)</label>
