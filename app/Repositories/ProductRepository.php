@@ -81,23 +81,20 @@ class ProductRepository
         //if (!empty($filters['machine_weight'])) {
         //     $query->where('machine_weight', $filters['machine_weight']);
         // }
-       if (!empty($filters['machine_weight'])) {
-                [$minWeight, $maxWeight] = array_map(
-                    'intval',
-                    explode('-', $filters['machine_weight'])
-                );
+      if (!empty($filters['machine_weight'])) {
+            [$minWeight, $maxWeight] = array_map(
+                'intval',
+                explode('-', $filters['machine_weight'])
+            );
 
-                $query->where(function ($q) use ($minWeight, $maxWeight) {
-                    $q->whereRaw(
-                        'CAST(SUBSTRING_INDEX(machine_class, "-", 1) AS UNSIGNED) <= ?',
-                        [$maxWeight]
-                    )
-                    ->whereRaw(
-                        'CAST(SUBSTRING_INDEX(machine_class, "-", -1) AS UNSIGNED) >= ?',
-                        [$minWeight]
-                    );
-                });
-}
+            $query->whereRaw(
+                'CAST(SUBSTRING_INDEX(machine_class, "-", 1) AS UNSIGNED) >= ?',
+                [$minWeight]
+            )->whereRaw(
+                'CAST(SUBSTRING_INDEX(machine_class, "-", -1) AS UNSIGNED) <= ?',
+                [$maxWeight]
+            );
+        }
         if (!empty($filters['sort_by'])) {
             $this->applySorting( $query, $filters['sort_by'] );
         } else {
