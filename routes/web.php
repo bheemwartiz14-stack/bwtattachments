@@ -89,8 +89,9 @@ Route::get('/categories', [PublicCategoryController::class, 'index'])->name('pub
 Route::get('/categories/{category:slug}', [PublicCategoryController::class, 'show'])->name('public.categories.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('public.contact.index');
 Route::get('/reseller-program', [ResellerProgramController::class, 'index'])->name('public.reseller-program.index');
-Route::get('/cart', [UserProductController::class, 'cart'])->name('public.cart.index')->middleware('auth');
-// Guest-only routes
+Route::get('/cart', [UserProductController::class, 'cart'])
+    ->name('public.cart.index')
+    ->middleware(['auth', 'role:Wholesaler|Reseller']);// Guest-only routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.attempt');
