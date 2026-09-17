@@ -26,7 +26,7 @@ class CustomerService
             $user = $this->userService->create($data);
             $this->processMetaAndMargin($user, $data, $plainPassword);
             $user->load(['userMeta']);
-            event(new WelcomeOnboardingUser($user, $plainPassword, 'customer'));
+            // event(new WelcomeOnboardingUser($user, $plainPassword, 'customer'));
             return $user;
         });
     }
