@@ -17,18 +17,28 @@ class VatRateService
         return VatRate::query()->orderBy('country')->get()->toArray();
     }
 
-    public function getTransactionVatCountryInfo(User $buyer, User  $seller){
-         if ( $buyer->country_code !== $seller->country_code ) {
-            return [
-                'iso_code' => '',
-                'standard_vat_rate' => 0,
-            ];
-        }else{
-            $vatCountry = VatRate::query()->where('iso_code', $buyer->country_code)->first();
-            return [
-                'iso_code' => $vatCountry->iso_code,
-                'standard_vat_rate' => $vatCountry->standard_vat_rate,
-                ];
+    public function getTransactionVatCountryInfo(?User $buyer, ?User $seller): array
+    {
+        $default = [
+            'iso_code' => '',
+            'standard_vat_rate' => 0,
+        ];
+
+        $buyerCode = $buyer?->country_code;
+        $sellerCode = $seller?->country_code;
+
+        if (! $buyerCode || ! $sellerCode || $buyerCode !== $sellerCode) {
+            return $default;
         }
+
+        $vatCountry = VatRate::query()->where('iso_code', $buyerCode)->first();
+        if (! $vatCountry) {
+            return $default;
+        }
+
+        return [
+            'iso_code' => $vatCountry->iso_code,
+            'standard_vat_rate' => $vatCountry->standard_vat_rate,
+        ];
     }
 }

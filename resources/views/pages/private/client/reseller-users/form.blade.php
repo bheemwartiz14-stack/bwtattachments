@@ -45,6 +45,8 @@
             @if ($isEdit)
                 @method('PUT')
             @endif
+            <input type="hidden" name="parent_id" value="{{ auth()->id() }}">
+            <input type="hidden" name="roles" value="{{ $userRole ?? 'Reseller' }}">
             <input type="hidden" id="country_code" name="country_code"
                 value="{{ old('country_code', $user->country_code ?? '') }}">
             <input type="hidden" id="country_name" name="country" value="{{ old('country', $user->country ?? '') }}">
@@ -76,7 +78,7 @@
                             :required="false" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
                             :required="false" :error="$errors->first('city')" />
-                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('country', $user->country ?? null)"
+                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('vat_id', $user->vat_id ?? ($user->country ?? null))"
                             placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
@@ -110,48 +112,45 @@
                         <x-forms.input name="username" id="username" label="Username"
                             placeholder="Auto-generated from name" :value="$isEdit ? $user->username : ''" :readonly="$isEdit"
                             :required="true" :error="$errors->first('username')" :hint="$isEdit ? 'Username cannot be changed' : ''" />
-                        <div class="lg:col-span-2">
-                            <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-3">
-                                @if (!$isEdit)
-                                    <div>
-                                        <x-forms.password name="password" label="Password" :required="true"
-                                            :showGenerator="false" :error="$errors->first('password')" />
-                                    </div>
-                                @endif
+                        @if (!$isEdit)
+                            <x-forms.password name="password" label="Password" :required="true" :showGenerator="false"
+                                :error="$errors->first('password')" />
+                        @endif
+                        <div>
+                            <div class="flex flex-wrap gap-x-4 gap-y-4">
                                 <div>
-                                    <input type="hidden" name="parent_id" value="{{ auth()->id() }}">
-                                    <label
-                                        class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Wholesale</label>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">
+                                        Wholesale
+                                    </label>
+
                                     <div
-                                        class="inline-flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm dark:border-neutral-700 dark:bg-neutral-800">
-                                        <svg class="h-5 w-5 shrink-0 text-slate-500 dark:text-neutral-400"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                            stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                        <span
-                                            class="font-semibold text-slate-800 dark:text-neutral-200">{{ auth()->user()->name }}</span>
+                                        class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                                        <x-heroicon-o-building-office-2
+                                            class="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-neutral-400" />
+
+                                        <span class="font-semibold text-slate-800 dark:text-neutral-200">
+                                            {{ auth()->user()->name }}
+                                        </span>
                                     </div>
                                 </div>
                                 <div>
-                                    <input type="hidden" name="roles" value="{{ $userRole ?? 'Reseller' }}">
-                                    <label
-                                        class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Role</label>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">
+                                        Role
+                                    </label>
+
                                     <div
-                                        class="inline-flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm dark:border-emerald-800 dark:bg-emerald-900/20">
-                                        <svg class="h-5 w-5 text-emerald-600 shrink-0 dark:text-emerald-400"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                            stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                                        </svg>
-                                        <span
-                                            class="font-semibold text-emerald-800 dark:text-emerald-300">{{ $userRole ?? 'Reseller' }}</span>
+                                        class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400">
+                                        <x-heroicon-o-shield-check
+                                            class="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+
+                                        <span class="font-semibold text-emerald-800 dark:text-emerald-300">
+                                            {{ $userRole ?? 'Reseller' }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -208,4 +207,5 @@
             </div>
         </form>
     </div>
+    {{-- Country sync is centralized in resources/js/app.js --}}
 </x-layouts.app>

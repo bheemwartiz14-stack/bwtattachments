@@ -18,7 +18,6 @@ class TermController extends Controller
     public function index(): View
     {
         $terms = $this->termService->getAll();
-
         return view('pages.private.admin.terms.index', compact('terms'));
     }
 

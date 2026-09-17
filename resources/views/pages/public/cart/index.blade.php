@@ -27,7 +27,10 @@
                     </div>
                   <livewire:order-items-manager :productIds="$cartIds" :vatList="$vatList" />
                     <div
-                        class="flex flex-col-reverse gap-3 border-t border-slate-200 bg-white px-4 py-4 sm:flex-row sm:justify-end dark:border-neutral-800 dark:bg-neutral-900">
+                        class="mt-4 flex flex-col-reverse gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-900">
+                        <p class="text-xs text-slate-400 dark:text-neutral-500">
+                            Shipping and taxes are calculated at the quotation stage.
+                        </p>
                         <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                             <a href="{{ route('public.home.index') }}" wire:navigate
                                 class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">

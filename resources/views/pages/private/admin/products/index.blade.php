@@ -155,11 +155,6 @@
                                     <div class="flex flex-col items-center justify-center px-5 py-16 text-center">
                                         <svg class="h-12 w-12 text-slate-300 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                                         <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">No Products Found</h3>
-                                        <p class="mt-1 text-sm text-slate-500 dark:text-neutral-400">Get started by creating a new product.</p>
-                                        <a href="{{ route('admin.products.create') }}" wire:navigate class="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                                            Add Product
-                                        </a>
                                     </div>
                                 </td>
                             </tr>

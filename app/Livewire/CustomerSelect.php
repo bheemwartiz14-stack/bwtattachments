@@ -15,14 +15,19 @@ class CustomerSelect extends Component
 
     public ?string $selectedId = null;
 
+    public string $placeholder = 'Search for a customer...';
+
     public Collection $users;
     protected VatRateService $vatRateService;
     public function boot(VatRateService $vatRateService): void
     {
         $this->vatRateService = $vatRateService;
     }
-    public function mount(?string $selectedId = null): void
+    public function mount(?string $selectedId = null, ?string $placeholder = null): void
     {
+        if ($placeholder) {
+            $this->placeholder = $placeholder;
+        }
         if ($selectedId) {
             $this->selectedId = $selectedId;
             $customer = $this->users->firstWhere('id', $selectedId);

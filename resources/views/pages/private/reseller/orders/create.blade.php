@@ -40,7 +40,7 @@
         @csrf
         <input type="hidden" id="form-action" name="action" value="draft">
         <input type="hidden" id="user_id" name="order_from_user_id" value="{{ $user->id }}">
-        <input type="hidden" id="order_to_user_id" name="order_to_user_id" value="{{ $wholesallerUser->id }}">
+        <input type="hidden" id="order_to_user_id" name="order_to_user_id" value="{{ $wholesallerUser?->id }}">
         <input type="hidden" id="items-json" name="items"
             value="{{ old('items', json_encode($cartItemsJson ?? $cartIds)) }}">
         <input type="hidden" id="margin_percentage_hidden" name="margin_percentage" value="{{ $usermargin }}">
@@ -234,9 +234,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Send To</h2>
-                        <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Wholesaler notification
-                            recipient</p>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Send To Wholesaller Account</h2>
                     </div>
                 </div>
                 <div class="p-6 flex-1">

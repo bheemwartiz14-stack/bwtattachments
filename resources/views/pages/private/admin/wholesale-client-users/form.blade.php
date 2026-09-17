@@ -53,6 +53,8 @@
             @if ($isEdit)
                 @method('PUT')
             @endif
+            <input type="hidden" name="role" value="{{ $roles->first()->name ?? 'Wholesaler' }}">
+
             <input type="hidden" id="country_code" name="country_code"
                 value="{{ old('country_code', $user->country_code ?? '') }}">
             <input type="hidden" id="country_name" name="country" value="{{ old('country', $user->country ?? '') }}">
@@ -84,7 +86,7 @@
                             :required="false" minlength="1" maxlength="8" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
                             :required="false" :error="$errors->first('city')" />
-                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('country', $user->country ?? null)"
+                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('vat_id', $user->vat_id ?? ($user->country ?? null))"
                             placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
@@ -126,18 +128,24 @@
                         @endif
 
                         <div>
-                            <input type="hidden" name="role" value="{{ $roles->first()->name ?? 'Wholesaler' }}">
-                            <label
-                                class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Role</label>
-                            <div
-                                class="inline-flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm dark:border-emerald-800 dark:bg-emerald-900/20">
-                                <svg class="h-5 w-5 text-emerald-600 shrink-0 dark:text-emerald-400" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                                </svg>
-                                <span
-                                    class="font-semibold text-emerald-800 dark:text-emerald-300">{{ $roles->first()->name ?? 'Wholesaler' }}</span>
+                            <div class="flex flex-wrap gap-x-4 gap-y-4">
+
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">
+                                        Role
+                                    </label>
+
+                                    <div
+                                        class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400">
+                                        <x-heroicon-o-shield-check
+                                            class="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+
+                                        <span class="font-semibold text-emerald-800 dark:text-emerald-300">
+                                            {{ $userRole ?? 'Wholesaler' }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

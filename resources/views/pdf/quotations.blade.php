@@ -1,20 +1,21 @@
 @php
     $sender = $quotation->user;
+
     $parent = $quotation->user->parent;
     $reseller = $quotation->reseller ?? null;
-    $role = $parent?->roles->first()?->name;
+    $role = $sender?->roles->first()?->name;
     // Reseller / recipient
-    $role = $parent?->roles->first()?->name;
+    $role = $sender?->roles->first()?->name;
     $senderMeta = $sender?->userMeta?->metadata ?? [];
     // Sender logo
     $senderLogoPath = '';
     $senderLogoBase64 = '';
     $senderCompany = '';
     if ($role === 'Wholesaler') {
-        $senderLogoPath = $parent?->getFirstMediaPath('wholesale_client_logo');
+        $senderLogoPath = $sender?->getFirstMediaPath('wholesale_client_logo');
         $senderCompany = $senderMeta['wholesale_company_name'] ?? ($senderMeta['company_name'] ?? '');
     } elseif ($role === 'Reseller') {
-        $senderLogoPath = $parent?->getFirstMediaPath('retailer_client_logo');
+        $senderLogoPath = $sender?->getFirstMediaPath('retailer_client_logo');
         $senderCompany = $senderMeta['company_name'] ?? ($senderMeta['retailer_client_name'] ?? '');
     } else {
         $senderCompany = $senderMeta['company_name'] ?? '';
@@ -50,12 +51,12 @@
     }
 
     // Top-right company block
-    $topRightName = $senderCompany ?: 'Reseller name';
-    $topRightStreet = $baseresallerMeta['address'] ?? 'Street name';
-    $topRightCity = trim(($baseresallerMeta['postal_code'] ?? '1234AB') . ' ' . ($resellerMeta['city'] ?? 'Place'));
-    $topRightCountry = $baseresallerMeta['country'] ?? 'Country';
-    $topRightPhone = $baseresallerMeta->phone ?? ($resellerMeta['phone'] ?? '+31620315250');
-    $topRightEmail = $baseresallerMeta->email ?? 'john@unit84.com';
+    $topRightName = $senderCompany ?: '';
+    $topRightStreet = $senderMeta['address'] ?? '';
+    $topRightCity = trim(($senderMeta['postal_code'] ?? '') . ' ' . ($resellerMeta['city'] ?? ''));
+    $topRightCountry = $senderMeta['country'] ?? 'Country';
+    $topRightPhone = $sender->phone ?? ($resellerMeta['phone'] ?? '+31620315250');
+    $topRightEmail = $sender->email ?? '';
     // Quotation recipient block
     // $custName = $reseller->name ?? '';
     $custName = $resellerMeta['company_name'] ?? '';
@@ -133,7 +134,7 @@
                                             text-align:left;
                                             height:55px;
                                         ">
-                                            {{-- @if ($senderLogoBase64)
+                                            @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
                                                     height:55px;
@@ -141,8 +142,8 @@
                                                     max-width:220px;
                                                     object-fit:contain;
                                                 " />
-                                            @endif --}}
-                                            @if ($resellerLogoBase64)
+                                            @endif
+                                            {{-- @if ($resellerLogoBase64)
                                                 <img src="{{ $resellerLogoBase64 }}"
                                                     style="
                                                     height:55px;
@@ -150,7 +151,7 @@
                                                     max-width:220px;
                                                     object-fit:contain;
                                                 " />
-                                            @endif
+                                            @endif --}}
                                         </td>
 
                                     </tr>

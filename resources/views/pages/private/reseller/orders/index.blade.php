@@ -9,7 +9,7 @@
     @endif
 
     <div class="space-y-6">
-        <x-ui.hero title="My Orders" icon="heroicon-o-document-text">
+        <x-ui.hero title="My Orders" icon="heroicon-o-shopping-bag">
             <x-slot:actions>
                 <a href="{{ route('public.home.index') }}" wire:navigate
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:bg-emerald-400 hover:shadow-emerald-400/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900">
@@ -24,7 +24,7 @@
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-slate-100 bg-white dark:border-neutral-800 dark:bg-neutral-900/50">
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Quotation #</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Order Number #</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Date</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Items</th>
                             <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500">Total</th>
@@ -81,13 +81,16 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-16 text-center">
-                                    <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                    <p class="mt-4 text-sm font-medium text-gray-500 dark:text-neutral-400">No orders yet</p>
-                                    <p class="mt-1 text-sm text-gray-400 dark:text-neutral-500">Create your first order to get started</p>
-                                    <a href="{{ route('reseller.orders.create') }}"  wire:navigate class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                                        Create order
-                                    </a>
+                                    <div class="flex flex-col items-center justify-center">
+                                        <div
+                                            class="flex items-center justify-center w-14 h-14 rounded-full bg-slate-100 dark:bg-neutral-800">
+                                            <x-heroicon-o-shopping-bag
+                                                class="w-7 h-7 text-slate-500 dark:text-neutral-400" />
+                                        </div>
+                                        <h3 class="mt-4 text-sm font-semibold text-gray-900 dark:text-white">
+                                            No orders yet
+                                        </h3>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse

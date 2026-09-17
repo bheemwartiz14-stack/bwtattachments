@@ -38,7 +38,7 @@ class ResallerOrderManagemntController extends Controller
         $user = $this->userService->getAuthenticatedUser();
         $meta = $this->userService->getAuthenticatedUserMetadata();
         $orderNumber = $this->orderServices->generateOrderNumber();
-        $wholesallerUser = $this->userService->getParentUser();
+        $wholesallerUser = $this->userService->getParentUser() ?? $this->userService->getAdminUser();
         $vatList =$this->vatRateService->getTransactionVatCountryInfo($user, $wholesallerUser);
         $cartIds = $this->userProductService->getQuotationProductIds($user);
         $usermargin = $user?->userMargin?->margin_value ?? 0;

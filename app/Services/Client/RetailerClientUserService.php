@@ -6,6 +6,7 @@ namespace App\Services\Client;
 use App\Data\UserData;
 use App\Events\UpdateUserMargins;
 use App\Events\WelcomeOnboardingUser;
+use App\Models\VatRate;
 use App\Services\UserService;
 use App\Traits\ExtractsUserMeta;
 use App\Traits\ResolvesTempFiles;
@@ -23,6 +24,7 @@ class RetailerClientUserService
     public function create(array $data): Model
     {
         return DB::transaction(function () use ($data) {
+            $this->normalizeCountryFromVatId($data);
             $plainPassword = $data['password'] ?? '';
             $user = $this->userService->create($data);
             $this->processMetaAndMargin($user, $data, $plainPassword);
@@ -35,6 +37,7 @@ class RetailerClientUserService
     public function update(string|int $id, array $data): Model
     {
         return DB::transaction(function () use ($id, $data) {
+            $this->normalizeCountryFromVatId($data);
             $user = $this->userService->update($id, $data);
             $this->processMetaAndMargin($user, $data);
             return $user;
@@ -70,6 +73,23 @@ class RetailerClientUserService
             $user->addMedia($logo)->toMediaCollection('retailer_client_logo');
         }
         $this->dispatchMarginEvent($user, (float) $margin);
+    }
+
+    /**
+     * The country select (vat_id) is the source of truth. Hidden
+     * country/country_code inputs are only JS mirrors and can go stale,
+     * so always derive them from the selected VAT rate before persisting.
+     */
+    private function normalizeCountryFromVatId(array &$data): void
+    {
+        if (empty($data['vat_id'])) {
+            return;
+        }
+        $vatRate = VatRate::query()->find($data['vat_id']);
+        if ($vatRate) {
+            $data['country'] = $vatRate->country;
+            $data['country_code'] = $vatRate->iso_code;
+        }
     }
 
     private function dispatchMarginEvent(Model $user, float $margin): void

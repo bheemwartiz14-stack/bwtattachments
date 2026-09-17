@@ -204,7 +204,7 @@
                                 id="welding-logo-upload" @click="uploadError = ''" @drop="uploadError = ''">
                                 <x-forms.file-upload-dropzone name="welding_logo_file" label=""
                                     accept=".ai,.eps,.pdf,.svg,.cdr,.dxf,.dwg" :maxSize="10485760" accent="blue"
-                                    hint="Upload your vectorised weldable logo in any vector format like ai, eps, pdf, svg,cdr, dxf or dwg-file" />
+                                    hint="Upload your vectorised weldable logo in any vector format like ai, eps, pdf, svg, cdr, dxf or dwg-file" />
                                 <p x-show="uploadError" x-cloak x-text="uploadError" role="alert"
                                     class="mt-2 text-xs font-medium text-red-600 dark:text-red-400"></p>
                                 @error('welding_logo_file_temp')
@@ -230,9 +230,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Send To</h2>
-                        <p class="mt-0.5 text-xs text-slate-500 dark:text-neutral-400">Wholesaler notification
-                            recipient</p>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Send To Admin</h2>
                     </div>
                 </div>
                 <div class="p-6 flex-1">
@@ -307,7 +305,7 @@
                     </div>
                     <div>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">Items</h2>
-                        <p class="text-xs text-slate-500 dark:text-neutral-400">Add products to your Order</p>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400">Add products to your order</p>
                     </div>
                 </div>
             </div>
