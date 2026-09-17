@@ -101,7 +101,6 @@ class StoreWholesaleClientUserRequest extends FormRequest
                 'exists:vat_rates,id',
             ],
             'country_code' => [
-                'required',
                 'string',
                 'max:3',
             ],
@@ -173,14 +172,9 @@ class StoreWholesaleClientUserRequest extends FormRequest
             'vat_id.required' => 'Please select a country.',
             'vat_id.uuid' => 'The selected VAT rate is invalid.',
             'vat_id.exists' => 'The selected country is invalid.',
-
-            'country_code.required' => 'The country code is required.',
             'country.required' => 'The country is required.',
-
             'website.url' => 'Please enter a valid website URL.',
-
             'vat_number.required' => 'The VAT number is required.',
-
             'commission_percentage.numeric' =>
                 'The commission percentage must be a number.',
 

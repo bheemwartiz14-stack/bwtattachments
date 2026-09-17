@@ -38,7 +38,7 @@ class UpdateCustomerClientUserRequest extends FormRequest
             'country_code' => ['sometimes' ],
             'country' => ['sometimes' ],
             'website' => ['nullable', 'url', 'max:255'],
-                 'customer_logo_temp' => ['nullable', 'string'],
+            'customer_logo_temp' => ['nullable', 'string'],
         ];
     }
 }
