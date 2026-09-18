@@ -221,7 +221,7 @@
                                         label="New Password"
                                         placeholder="Enter new password"
                                         :required="true"
-                                        :showGenerator="true"
+                                        :showGenerator="false"
                                         :showCopy="true"
                                     />
 
