@@ -222,7 +222,7 @@
                                         placeholder="Enter new password"
                                         :required="true"
                                         :showGenerator="false"
-                                        :showCopy="true"
+                                        :showCopy="false"
                                     />
 
                                     <x-forms.password
