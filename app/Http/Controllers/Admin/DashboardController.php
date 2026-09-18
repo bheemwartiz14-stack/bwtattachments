@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $totalProducts = Product::count();
         $totalCategories = Category::count();
         $totalSubcategories = Subcategory::count();
-        $totalClients = User::role('Wholesaler')->where('created_at', '>=', Carbon::now()->startOfMonth())->count();
+        $totalClients = User::role('Wholesaler')->count();
         $recentProducts = Product::latest()->limit(3)->get();
         $totalOrder = Order::count();
         $totalUsers = User::count();
@@ -32,9 +32,9 @@ class DashboardController extends Controller
             'new_categories' => Category::where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
             'total_subcategories' => $totalSubcategories,
             'active_clients' => $totalClients,
-            'new_clients' => User::role('Wholesaler')->where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
+            'new_clients' => User::role('Wholesaler')->count(),
             'total_order' => $totalOrder,
-            'total_users' => User::role('Wholesaler')->where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
+            'total_users' => User::role('Wholesaler')->count(),
             'active_users' => User::where('status', true)->count(),
         ];
         return view('pages.private.admin.dashboard', compact('stats','recentProducts'));
