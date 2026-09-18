@@ -70,7 +70,7 @@
                     <label class="block text-xs font-medium text-slate-500 dark:text-neutral-400 mb-1">Machine Class
                         (t)</label>
                     <input type="text" name="machine_class" value="{{ request('machine_class') }}"
-                        placeholder="e.g. 22, 30, 45"
+                        placeholder="e.g. 15-30"
                         class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500">
                 </div>
             </div>
@@ -81,7 +81,6 @@
                         <option value="">All Status</option>
                         <option value="published" @selected(request('status') === 'published')>Published</option>
                         <option value="draft" @selected(request('status') === 'draft')>Draft</option>
-                        <option value="hidden" @selected(request('status') === 'hidden')>Hidden</option>
                     </select>
                     <select name="per_page" onchange="this.form.submit()" title="Rows per page"
                         class="block w-auto rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
