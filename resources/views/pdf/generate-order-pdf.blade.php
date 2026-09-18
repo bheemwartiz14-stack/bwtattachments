@@ -1,8 +1,10 @@
 @php
     $sender = $order->fromUser ?? ($order->user ?? null);
     $senderMeta = $sender?->userMeta?->metadata ?? [];
+
     $recipient = $order->toUser ?? null;
     $recipientMeta = $recipient?->userMeta?->metadata ?? [];
+
     $senderRole = $sender?->roles->first()?->name;
     $senderLogoPath = match (strtolower($senderRole ?? '')) {
         'wholesaler' => $sender?->getFirstMediaPath('wholesale_client_logo', 'original'),
@@ -74,9 +76,9 @@
 
     // Recievner details
     $custName = $recipientCompany ?: 'Reseller name';
-    $custAddressLine1 = $resellerMeta['address'] ?? 'Korte kerkstraat 6';
-    $custAddressLine2 = trim(($resellerMeta['postal_code'] ?? '5524AX') . ' ' . ($resellerMeta['city'] ?? 'Steensel'));
-    $custAddressLine3 = $resellerMeta['country'] ?? 'The Netherlands';
+    $custAddressLine1 = $recipientMeta['address'] ?? '';
+    $custAddressLine2 = trim(($recipientMeta['postal_code'] ?? '5524AX') . ' ' . ($recipientMeta['city'] ?? 'Steensel'));
+    $custAddressLine3 = $recipientMeta['country'] ?? 'The Netherlands';
 
     /*
     |--------------------------------------------------------------------------
@@ -326,9 +328,9 @@
                     <div> {{ $custAddressLine3 }} </div>
                 </td> <!-- CUSTOMER CONTACT -->
                 <td style=" width:50%; vertical-align:top; padding:7px 8px; font-size:8.5pt; line-height:1.45; ">
-                    <div> Tel.: {{ $reseller->phone ?? '+31404021009' }} </div>
-                    <div> Email: {{ $reseller->email ?? 'john@dtmedia.nl' }} </div>
-                    <div style="height:5mm;"></div> @php $vat = $resellerMeta['vat_number'] ?? 'NL811021774B01'; @endphp @if ($vat)
+                    <div> Tel.: {{ $recipient->phone ?? '+31404021009' }} </div>
+                    <div> Email: {{ $recipient->email ?? 'john@dtmedia.nl' }} </div>
+                    <div style="height:5mm;"></div> @php $vat = $recipientMeta['vat_number'] ?? 'NL811021774B01'; @endphp @if ($vat)
                         <div style="margin-top:4px;"> VAT: {{ $vat }} </div>
                     @endif
                 </td>
