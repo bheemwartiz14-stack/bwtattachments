@@ -198,7 +198,7 @@ class ProductRepository
                 $q->where('status', 0);
             }
         })
-        ->oldest()
+        ->latest()
         ->paginate($perPage);
 }
 

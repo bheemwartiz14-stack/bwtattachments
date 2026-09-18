@@ -82,7 +82,7 @@
                             <tr>
                                 <td colspan="6" class="px-6 py-16 text-center">
                                     <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-neutral-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                    <p class="mt-4 text-sm font-medium text-gray-500 dark:text-neutral-400">No orders yet</p>
+                                    <p class="mt-4 text-sm font-medium text-gray-500 dark:text-neutral-400">No orders found</p>
                                     <p class="mt-1 text-sm text-gray-400 dark:text-neutral-500">Create your first order to get started</p>
                                     <a href="{{ route('customer.orders.create') }}"  wire:navigate class="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-rose-900/30 dark:text-rose-300 dark:hover:bg-rose-900/50">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>

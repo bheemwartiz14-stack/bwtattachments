@@ -123,7 +123,7 @@
                             :required="true" :error="$errors->first('username')" :hint="$isEdit ? 'Username cannot be changed' : ''" />
 
                         @if (!$isEdit)
-                            <x-forms.password name="password" label="Password" :required="true" :showGenerator="true"
+                            <x-forms.password name="password" label="Password" :required="true" :showGenerator="false"
                                 :showToggle="true" :showCopy="false" :hint="$isEdit ? 'Password cannot be changed after creation' : ''" />
                         @endif
 

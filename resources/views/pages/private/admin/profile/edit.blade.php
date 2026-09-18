@@ -156,11 +156,9 @@
                                     <x-forms.password name="current_password" label="Current Password"
                                         placeholder="Enter current password" :required="true" :showGenerator="false"
                                         :showCopy="false" />
-
                                     <x-forms.password name="password" label="New Password"
-                                        placeholder="Enter new password" :required="true" :showGenerator="true"
-                                        :showCopy="true" />
-
+                                        placeholder="Enter new password" :required="true" :showGenerator="false"
+                                        :showCopy="false" />
                                     <x-forms.password name="password_confirmation" label="Confirm Password"
                                         placeholder="Confirm new password" :required="true" :showGenerator="false"
                                         :showToggle="true" :showCopy="false" />

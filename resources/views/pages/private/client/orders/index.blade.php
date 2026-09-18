@@ -52,7 +52,9 @@
                         @forelse($orders ?? [] as $quotation)
                             @php
                                 $isOrder = isset($quotation->order_number);
-                                $rawGrand = $quotation->getAttributes()['grand_total'] ?? ($quotation->attributesToArray()['grand_total'] ?? 0);
+                                $rawGrand =
+                                    $quotation->getAttributes()['grand_total'] ??
+                                    ($quotation->attributesToArray()['grand_total'] ?? 0);
                             @endphp
                             <tr class="transition-colors hover:bg-rose-50 dark:hover:bg-neutral-900/50">
                                 <td class="px-6 py-4">
@@ -123,8 +125,9 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                                 </svg>
-                                                Send
+                                                {{ $statusValue === 'sent' ? 'Resend' : 'Send' }}
                                             </button>
+
                                         </form>
 
                                     </div>
@@ -140,7 +143,7 @@
                                                 class="w-7 h-7 text-slate-500 dark:text-neutral-400" />
                                         </div>
                                         <h3 class="mt-4 text-sm font-semibold text-gray-900 dark:text-white">
-                                            No orders yet
+                                            No orders found
                                         </h3>
                                     </div>
                                 </td>

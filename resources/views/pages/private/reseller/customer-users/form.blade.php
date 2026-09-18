@@ -108,7 +108,7 @@
                             <div class="flex flex-wrap gap-x-4 gap-y-4">
                                 <div>
                                     <input type="hidden" name="parent_id" value="{{ auth()->id() }}">
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Wholesale</label>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-neutral-300 mb-1.5">Reseller</label>
                                     <div
                                         class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
                                         <x-heroicon-o-building-office-2

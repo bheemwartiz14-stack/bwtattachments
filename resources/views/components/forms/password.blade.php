@@ -9,9 +9,9 @@
     'readonly' => false,
     'error' => null,
     'hint' => '',
-    'showGenerator' => true,
+    'showGenerator' => '',
     'showToggle' => true,
-    'showCopy' => true,
+    'showCopy' => '',
     'wrapperClass' => '',
 ])
 

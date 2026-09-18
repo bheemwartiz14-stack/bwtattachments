@@ -239,23 +239,6 @@ $(document).off('input.username-slug', '#name').on('input.username-slug', '#name
     $username.val(name.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().replace(/\s+/g, '-'));
 });
 
-// Password auto-fill for empty password inputs (create forms).
-window.autofillPasswordInputs = function() {
-    document.querySelectorAll('[data-password-input]').forEach(function(pwd) {
-        if (pwd && !pwd.value) {
-            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
-            var s = '';
-            for (var i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)];
-            pwd.value = s;
-        }
-    });
-};
-
-$(function() {
-    window.autofillPasswordInputs();
-});
-
-document.addEventListener('livewire:navigated', window.autofillPasswordInputs);
 
 // Select All text on focus
 $(document).on('focus', 'input[data-select-all]', function() {

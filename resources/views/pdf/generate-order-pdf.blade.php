@@ -130,7 +130,7 @@
                     style="
                     width:72%;
                     vertical-align:top;
-                    padding-right:10px;
+                    padding-right:0px;
                 ">
 
                     <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
@@ -138,7 +138,7 @@
 
                             <td
                                 style="
-                                padding:4px 8px 4px 8px;
+                                padding:4px 8px 4px 0px;
                                 vertical-align:top;
                             ">
 
@@ -149,17 +149,17 @@
                                         <td
                                             style="
                                             width:50%;
-                                            vertical-align:middle;
+                                            vertical-align:left;
                                             text-align:left;
-                                            height:55px;
+                                            height:55px; padding:0px; margin-left:-8px;
                                         ">
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
                                                     height:55px;
                                                     width:auto;
-                                                    max-width:220px;
-                                                    object-fit:contain;
+                                                    max-width:220px; margin-left:-10px;
+
                                                 " />
                                             @endif
                                             {{-- @if ($recipientLogoBase64)
@@ -167,8 +167,8 @@
                                                     style="
                                                     height:55px;
                                                     width:auto;
-                                                    max-width:220px;
-                                                    object-fit:contain;
+                                                    max-width:220px;margin-left:-10px;
+
                                                 " />
                                             @endif --}}
                                         </td>

@@ -25,14 +25,6 @@
         <x-ui.hero title="Order {{ $displayNumber }}" icon="heroicon-o-document-text"
             subtitle="View order details">
             <x-slot:actions>
-                <form action="{{ route('reseller.orders.download', $order) }}" method="GET" class="inline">
-                    <x-ui.button type="submit" variant="secondary" label="Download PDF">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </x-ui.button>
-                </form>
                 <a href="{{ route('reseller.orders.index') }}" wire:navigate
                     class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
                     Back to Orders

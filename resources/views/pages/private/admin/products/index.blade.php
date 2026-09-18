@@ -59,7 +59,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-500 dark:text-neutral-400 mb-1">Machine Class (t)</label>
-                    <input type="text" name="machine_class" value="{{ request('machine_class') }}" placeholder="e.g. 22, 30, 45" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500">
+                    <input type="text" name="machine_class" value="{{ request('machine_class') }}" placeholder="e.g.15-30" class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500">
                 </div>
             </div>
             <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
@@ -68,7 +68,6 @@
                         <option value="">All Status</option>
                         <option value="published" @selected(request('status') === 'published')>Published</option>
                         <option value="draft" @selected(request('status') === 'draft')>Draft</option>
-                        <option value="hidden" @selected(request('status') === 'hidden')>Hidden</option>
                     </select>
                     <select name="per_page" onchange="this.form.submit()" title="Rows per page" class="block w-auto rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-black transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
                         <option value="100" @selected(request('per_page', 100) == 100)>100 / page</option>
@@ -79,7 +78,7 @@
                     </select>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-emerald-600 dark:hover:bg-emerald-700">
+                    <button type="submit" class="cursor-pointer inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-emerald-600 dark:hover:bg-emerald-700">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                         Filter
                     </button>

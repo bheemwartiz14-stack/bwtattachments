@@ -134,7 +134,7 @@
                             $specs = [
                                 'weight' => [
                                     'label' => 'Weight (kg)',
-                                    'placeholder' => 'e.g. 1.5 or 1.5-2.0',
+                                    'placeholder' => 'e.g. 2500',
                                     'type' => 'text',
                                 ],
                                 'width' => [
@@ -149,7 +149,7 @@
                                 ],
                                 'machine_class' => [
                                     'label' => 'Machine class (t)',
-                                    'placeholder' => 'e.g. 20 or 20-30',
+                                    'placeholder' => 'e.g. 20-30',
                                     'type' => 'text',
                                 ],
                                 'cutting_edge_thickness' => [
