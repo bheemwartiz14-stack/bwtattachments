@@ -80,7 +80,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title> Quotation {{ $quotation->quotation_number }} </title>
+     <title> Quotation {{ $quotation->quotation_number }} </title>
     <style>
         @page {
             size: A4;
@@ -111,7 +111,7 @@
                     style="
                     width:72%;
                     vertical-align:top;
-                    padding-right:10px;
+                    padding-right:0px;
                 ">
 
                     <table style="width:100%;border-collapse:collapse;" cellpadding="0" cellspacing="0">
@@ -130,26 +130,26 @@
                                         <td
                                             style="
                                             width:50%;
-                                            vertical-align:middle;
+                                            vertical-align:left;
                                             text-align:left;
-                                            height:55px;
+                                            height:55px; padding:0px; margin-left:-6px;
                                         ">
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
                                                     height:55px;
                                                     width:auto;
-                                                    max-width:220px;
-                                                    object-fit:contain;
+                                                    max-width:220px; margin-left:-8px;
+
                                                 " />
                                             @endif
-                                            {{-- @if ($resellerLogoBase64)
-                                                <img src="{{ $resellerLogoBase64 }}"
+                                            {{-- @if ($recipientLogoBase64)
+                                                <img src="{{ $recipientLogoBase64 }}"
                                                     style="
                                                     height:55px;
                                                     width:auto;
-                                                    max-width:220px;
-                                                    object-fit:contain;
+                                                    max-width:220px;margin-left:-10px;
+
                                                 " />
                                             @endif --}}
                                         </td>
@@ -267,7 +267,7 @@
                 "
             >
                 <span style="font-weight:bold;">
-                    Quote No.:
+                    Quotation No.:
                 </span>
 
                 {{ $quotation->quotation_number }}
@@ -282,7 +282,7 @@
                 "
             >
                 <span style="font-weight:bold;">
-                    Quote date:
+                    Quotation date:
                 </span>
 
                 {{ $quotation->created_at->format('d M Y') }}
@@ -394,7 +394,7 @@
                     {{ number_format($subTotal, 2, '.', ',') }}</td>
             </tr>
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">VAT {{ $vatPerc }}%: </td>
+                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
                 <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">{{ $currency }}&nbsp;
                     {{ number_format($taxAmount, 2, '.', ',') }}</td>
             </tr>

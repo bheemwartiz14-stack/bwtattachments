@@ -151,14 +151,14 @@
                                             width:50%;
                                             vertical-align:left;
                                             text-align:left;
-                                            height:55px; padding:0px; margin-left:-8px;
+                                            height:55px; padding:0px; margin-left:-6px;
                                         ">
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
                                                     height:55px;
                                                     width:auto;
-                                                    max-width:220px; margin-left:-10px;
+                                                    max-width:220px; margin-left:-8px;
 
                                                 " />
                                             @endif
