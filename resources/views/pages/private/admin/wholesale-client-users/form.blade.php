@@ -1,29 +1,47 @@
 @php
-    $isEdit = isset($user);
-    $meta = $isEdit ? $user->userMeta?->metadata ?? [] : [];
-    $wholesaleCompanyName = $meta['wholesale_company_name'] ?? '';
-    $wholesaleClientName = $meta['client_name'] ?? '';
-    $Margin = (float) ($isEdit ? $user->userMargin?->margin_value ?? 0 : 0);
-    if ($isEdit) {
-        $logoMedia = $user->getFirstMedia('wholesale_client_logo');
-        $logoUrl = $logoMedia?->getUrl();
-        $logoId = $logoMedia?->id;
-    } else {
-        $logoUrl = null;
-        $logoId = null;
-    }
-@endphp
+$isEdit = isset($user);
+$roleName = ucfirst(strtolower( $user->roles->first()?->name ?? 'customer'));
+$meta = $isEdit? ($user->userMeta?->metadata ?? []) : [];
+// Company name
+$wholesaleCompanyName = match ($roleName) {
+ 'Wholesaler' => $meta['wholesale_company_name'] ?? '',
+    'Reseller'   => $meta['company_name'] ?? '',
+    default      => $meta['company_name'] ?? '',
+};
+$wholesaleClientName = $meta['client_name'] ?? '';
+$commission = $isEdit ? $user->userMargin?->margin_value ?? '' : '';
+// Logo
+$mediaCollection = match ($roleName) {
+    'Wholesaler' => 'wholesale_client_logo',
+    'Reseller'   => 'retailer_client_logo',
+    default      => 'customer_logo',
+};
+$logoUrl = null;
+$logoId = null;
 
+if ($isEdit) {
+    $logoMedia = $user->getFirstMedia($mediaCollection);
+
+    $logoUrl = $logoMedia?->getUrl();
+    $logoId = $logoMedia?->id;
+}
+@endphp
 <x-layouts.app>
-    <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} Wholeseller - BWT</x-slot:title>
+    <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} {{ $roleName ?? 'Wholesaler' }} - BWT</x-slot:title>
     <x-breadcrumb :items="[
         ['label' => 'Admin Portal', 'url' => route('admin.dashboard')],
-        ['label' => 'Manage Wholesalers', 'url' => route('admin.wholeseller.index')],
-        ['label' => $isEdit ? 'Edit Wholesaler' : 'Add Wholesaler'],
+        [
+            'label' => 'Manage Wholesaler',
+            'url' => route('admin.wholeseller.index'),
+        ],
+        [
+            'label' => $isEdit ? 'Edit ' . ($roleName ?? 'Wholesaler') : 'Add ' . ($roleName ?? 'Wholesaler'),
+        ],
     ]" />
 
     <div class="space-y-6">
-        <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} Wholesaler" icon="heroicon-o-building-storefront" />
+        <x-ui.hero title="{{ $isEdit ? 'Edit' : 'Add' }} {{ $roleName ?? 'Wholesaler' }}"
+            icon="heroicon-o-building-storefront" />
 
         @if ($errors->any())
             <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 dark:border-red-900/50 dark:bg-red-900/20">
@@ -164,15 +182,15 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesaler Profile Details
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">
+                            {{ $roleName ?? 'Wholesaler' }} Profile Details
                         </h2>
                         <p class="text-xs text-slate-500 dark:text-neutral-400">Logo and branding</p>
                     </div>
                 </div>
                 <div class="p-8">
-                    <x-forms.image-dropzone name="wholesale_client_logo" :existingImageUrl="$logoUrl" :existingImageId="$logoId"
-                        label="Wholesaler Logo" accept="image/jpeg,image/png,image/webp"
-                        hint="PNG, JPG or WebP (Max. 2MB)" />
+                    <x-forms.image-dropzone :name="$mediaCollection" :existingImageUrl="$logoUrl" :existingImageId="$logoId" :label="($user->roles->first()?->name ?? 'Wholesaler') . ' Logo'"
+                        accept="image/jpeg,image/png,image/webp" hint="PNG, JPG or WebP (Max. 2MB)" />
                 </div>
             </div>
 
@@ -184,16 +202,17 @@
                         @svg('heroicon-o-percent-badge', 'h-5 w-5 text-emerald-600 dark:text-emerald-400')
                     </div>
                     <div>
-                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Wholesaler Margin
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">
+                            {{ $roleName ?? 'Wholesaler' }} Margin
                             Settings</h2>
                         <p class="text-xs text-slate-500 dark:text-neutral-400">Configure the default margin percentage
-                            for this Wholesaler account.</p>
+                            for this {{ $roleName ?? 'Wholesaler' }} account.</p>
                     </div>
                 </div>
                 <div class="p-8">
                     <div class="max-w-xs">
                         <x-forms.input name="commission_percentage" id="commission_percentage" type="number"
-                            label="Default Margin Percentage (%)" placeholder="0.00" :value="old('commission_percentage', $Margin ?? '')"
+                            label="Default Margin Percentage (%)" placeholder="0.00" :value="old('commission_percentage', $commission ?? '')"
                             min="0" max="100" step="0.01" append="%" :error="$errors->first('commission_percentage')"
                             hint="Enter a value between 0% and 100%." />
                     </div>
@@ -204,8 +223,14 @@
                 <a href="{{ route('admin.wholeseller.index') }}"
                     class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Cancel</a>
                 <x-ui.button type="submit" variant="primary"
-                    icon='<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path stroke-linecap="round" stroke-linejoin="round" d="M19 8v6m-3-3h6" /></svg>'
-                    label="{{ $isEdit ? 'Update Wholesaler' : 'Create Wholesaler' }}" />
+                    icon='<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 8v6m-3-3h6" />
+    </svg>'
+                    :label="$isEdit
+                        ? 'Update ' . ($roleName ?? 'Wholesaler')
+                        : 'Create ' . ($roleNamee ?? 'Wholesaler')" />
             </div>
         </form>
     </div>

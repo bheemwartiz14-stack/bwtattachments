@@ -47,11 +47,17 @@ class WholesaleClientUserServices
             $user = $this->userService->update($id, $data);
             [$meta, $margin] = $this->extract($data);
             $this->saveMeta($user, $meta);
-            $this->saveMargin($user, (float) $margin, 'Wholesaler');
-            $logo = $this->resolveTempImage($data, 'wholesale_client_logo');
+            $roleName = $user->roles->first()?->name;
+            [$role, $roleLogo] = match ($roleName) {
+                'Wholesaler' => ['Wholesaler', 'wholesale_client_logo'],
+                'Reseller'   => ['retailer', 'retailer_client_logo'],
+                default      => ['customer', 'customer_logo'],
+            };
+            $this->saveMargin($user, (float) $margin, $role);
+            $logo = $this->resolveTempImage($data, $roleLogo);
             if ($logo) {
-                $user->clearMediaCollection('wholesale_client_logo');
-                $user->addMedia($logo)->toMediaCollection('wholesale_client_logo');
+                $user->clearMediaCollection($roleLogo);
+                $user->addMedia($logo)->toMediaCollection($roleLogo);
             }
             $this->dispatchMarginEvent($user, (float) $margin);
             return $user;

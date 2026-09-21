@@ -47,7 +47,9 @@ class UpdateWholesaleClientUserRequest extends FormRequest
             'vat_number' => ['required', 'string','max:50', ],
             'commission_percentage' => ['required', 'numeric','between:0,100', 'decimal:0,2',],
             'wholesale_client_logo' => [ 'nullable','image','mimes:jpeg,jpg,png,webp','max:2048', ],
-            'wholesale_client_logo_temp' => ['nullable', 'string'],
+            'wholesale_client_logo_temp' => ['nullable'],
+            'retailer_client_logo_temp' => ['nullable'],
+            'customer_logo_temp' => ['nullable'],
         ];
     }
 

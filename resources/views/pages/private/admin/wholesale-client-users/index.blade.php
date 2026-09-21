@@ -192,7 +192,6 @@
                                 </div>
                                 <div class="flex shrink-0 items-center gap-1">
 
-                                    @if ($roleName === 'Wholesaler')
                                         <a href="{{ route('admin.wholeseller.edit', $user) }}" wire:navigate
                                             title="Edit"
                                             class="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-white">
@@ -216,7 +215,6 @@
                                                 </svg>
                                             </button>
                                         </form>
-                                    @endif
                                 </div>
                             </div>
                         @endforeach

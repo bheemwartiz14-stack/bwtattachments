@@ -77,7 +77,9 @@
     // Recievner details
     $custName = $recipientCompany ?: 'Reseller name';
     $custAddressLine1 = $recipientMeta['address'] ?? '';
-    $custAddressLine2 = trim(($recipientMeta['postal_code'] ?? '5524AX') . ' ' . ($recipientMeta['city'] ?? 'Steensel'));
+    $custAddressLine2 = trim(
+        ($recipientMeta['postal_code'] ?? '5524AX') . ' ' . ($recipientMeta['city'] ?? 'Steensel'),
+    );
     $custAddressLine3 = $recipientMeta['country'] ?? 'The Netherlands';
 
     /*
@@ -101,7 +103,7 @@
 
 <head>
     <meta charset="UTF-8">
-     <title>Order {{ $order->order_number }}</title>
+    <title>Order {{ $order->order_number }}</title>
     <style>
         @page {
             size: A4;
@@ -153,14 +155,14 @@
                                             width:50%;
                                             vertical-align:left;
                                             text-align:left;
-                                            height:55px; padding:0px; margin-left:-6px;
+                                            height:55px; padding:0px; margin-left:0px;
                                         ">
                                             @if ($senderLogoBase64)
                                                 <img src="{{ $senderLogoBase64 }}"
                                                     style="
                                                     height:55px;
                                                     width:auto;
-                                                    max-width:220px; margin-left:-8px;
+                                                    max-width:220px; margin-left:0px;
 
                                                 " />
                                             @endif
@@ -169,7 +171,7 @@
                                                     style="
                                                     height:55px;
                                                     width:auto;
-                                                    max-width:220px;margin-left:-10px;
+                                                    max-width:220px;margin-left:0px;
 
                                                 " />
                                             @endif --}}
@@ -267,57 +269,53 @@
             ORDER
         </div><!-- ========================================================= --> <!-- QUOTATION META -->
         <!-- ========================================================= -->
-           <table
-        style="
+        <table
+            style="
             width:100%;
             border-collapse:collapse;
             border:1px solid #000;
         "
-        cellpadding="0"
-        cellspacing="0"
-    >
-        <tr>
+            cellpadding="0" cellspacing="0">
+            <tr>
 
-            <td
-                style="
+                <td
+                    style="
                     width:72%;
                     border-right:1px solid #000;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
-                "
-            >
-                <span style="font-weight:bold;">
-                    Order No.:
-                </span>
+                ">
+                    <span style="font-weight:bold;">
+                        Order No.:
+                    </span>
 
-                 {{ $order->order_number }}
-            </td>
+                    {{ $order->order_number }}
+                </td>
 
-            <td
-                style="
+                <td
+                    style="
                     width:28%;
                     padding:5px 8px;
                     font-size:8.5pt;
                     background:#fff;
-                "
-            >
-                <span style="font-weight:bold;">
-                    Order date:
-                </span>
+                ">
+                    <span style="font-weight:bold;">
+                        Order date:
+                    </span>
 
-                {{ $order->created_at->format('d M Y') }}
-            </td>
+                    {{ $order->created_at->format('d M Y') }}
+                </td>
 
-        </tr>
-    </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
+            </tr>
+        </table> <!-- ========================================================= --> <!-- QUOTATION TO -->
         <!-- ========================================================= -->
         <table style=" width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
             cellspacing="0">
             <tr>
                 <td colspan="2"
-                    style=" background:#666; color:#fff; font-weight:bold; padding:5px 8px; font-size:9pt; "> Quotation
-                    to: </td>
+                    style=" background:#666; color:#fff; font-weight:bold; padding:5px 8px; font-size:9pt; "> Order to:
+                </td>
             </tr>
             <tr> <!-- CUSTOMER ADDRESS -->
                 <td
@@ -337,8 +335,9 @@
             </tr>
         </table> <!-- ========================================================= --> <!-- ITEMS -->
         <!-- ========================================================= -->
-        <table style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; " cellpadding="0"
-            cellspacing="0">
+        <table
+            style=" table-layout:fixed; width:100%; border-collapse:collapse; border:1px solid #000; margin-top:8px; "
+            cellpadding="0" cellspacing="0">
             <thead>
                 <tr> <!-- PRODUCT CODE -->
                     <th
@@ -407,23 +406,80 @@
             </tbody>
         </table> <!-- ========================================================= --> <!-- TOTALS -->
         <!-- ========================================================= -->
-                   <table align="right" style="width:28%;border-collapse:collapse;font-size:7.5pt;margin-top:4mm;  border:1px solid #000;" cellpadding="0"
-            cellspacing="0">
+        <table align="right"
+            style="width:28%; border-collapse:collapse; font-size:7.5pt; margin-top:4mm; border:1px solid #000;"
+            cellpadding="0" cellspacing="0">
+
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">Sub total:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;width:50%;">{{ $currency }}&nbsp;
-                    {{ number_format($subTotal, 2, '.', ',') }}</td>
+                <td
+                    style="
+            border:1px solid #000;
+            font-size:7.5pt;
+            padding:5px 6px;
+            text-align:left;
+            width:50%;
+        ">
+                    Sub total:
+                </td>
+
+                <td
+                    style="
+            border:1px solid #000;
+            font-size:7.5pt;
+            padding:5px 6px;
+            text-align:right;
+            width:50%;
+        ">
+                    {{ $currency }}&nbsp;{{ number_format($subTotal, 2, '.', ',') }}
+                </td>
             </tr>
+
             <tr>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px d6px;text-align:right;">VAT {{ $vatPerc }}%:</td>
-                <td style="border:1px solid #000;font-size:7.5pt;padding:5px 6px;text-align:right;">{{ $currency }}&nbsp;
-                    {{ number_format($taxAmount, 2, '.', ',') }}</td>
+                <td
+                    style="
+            border:1px solid #000;
+            font-size:7.5pt;
+            padding:5px 6px;
+            text-align:left;
+        ">
+                    VAT {{ $vatPerc }}%:
+                </td>
+
+                <td
+                    style="
+            border:1px solid #000;
+            font-size:7.5pt;
+            padding:5px 6px;
+            text-align:right;
+        ">
+                    {{ $currency }}&nbsp;{{ number_format($taxAmount, 2, '.', ',') }}
+                </td>
             </tr>
+
             <tr>
-                <td style="border:1px solid #000;padding:5px 6px; text-align:right;font-weight:700; font-size:7.5pt;">Grand total:</td>
-                <td style="border:1px solid #000;padding:5px 6px;text-align:right;font-weight:700;font-size:7.5pt;">
-                    {{ number_format($grandTotal, 2, '.', ',') }}</td>
+                <td
+                    style="
+            border:1px solid #000;
+            padding:5px 6px;
+            text-align:left;
+            font-weight:700;
+            font-size:7.5pt;
+        ">
+                    Total:
+                </td>
+
+                <td
+                    style="
+            border:1px solid #000;
+            padding:5px 6px;
+            text-align:right;
+            font-weight:700;
+            font-size:7.5pt;
+        ">
+                    {{ $currency }}&nbsp;{{ number_format($grandTotal, 2, '.', ',') }}
+                </td>
             </tr>
+
         </table>
     </div>
 </body>

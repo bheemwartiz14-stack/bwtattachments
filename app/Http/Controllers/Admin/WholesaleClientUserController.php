@@ -49,19 +49,25 @@ class WholesaleClientUserController extends Controller
 
     public function edit(string $id): View
     {
+
         $user = $this->wholesaleClientUserServices->findById($id);
         $userRole = $user->roles->first()?->name;
         $roles = $this->roleService->getByNames(['Wholesale']);
         $vatcountries = $this->vatRateService->options();
-        // dd($vatcountries);
         return view('pages.private.admin.wholesale-client-users.form', compact('user', 'roles', 'userRole','vatcountries'));
     }
 
     public function update(UpdateWholesaleClientUserRequest $request, string $id): RedirectResponse
     {
+        $user = $this->wholesaleClientUserServices->findById($id);
         $data = $request->validated();
         $this->wholesaleClientUserServices->update($id, $request->validated());
-        return redirect()->route('admin.wholeseller.show', ['wholeseller' => $id])->with('success', 'Wholesaler updated successfully.');    }
+        $roleName = ucfirst(strtolower($user->roles->first()?->name ?? 'customer'));
+      return redirect()
+    ->route('admin.wholeseller.index')
+    ->with('success', $roleName . ' updated successfully.');
+
+        }
 
     public function destroy(string $id): RedirectResponse
     {

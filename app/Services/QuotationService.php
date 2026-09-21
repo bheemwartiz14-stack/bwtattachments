@@ -52,6 +52,15 @@ class QuotationService
 
     public function delete(string $id): bool
     {
+        $quotation = $this->quotationRepository->findById($id);
+        if (!$quotation) {
+            return false;
+        }
+        if ($quotation->pdf_file) {
+            Storage::disk('public')->delete($quotation->pdf_file);
+        }
+         $quotation->items()->delete();
+
         return $this->quotationRepository->delete($id);
     }
 

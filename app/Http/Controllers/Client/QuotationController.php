@@ -142,4 +142,20 @@ class QuotationController extends Controller
 
         return back()->with('success', "Quotation status updated to " . ucfirst($status) . ".");
     }
+     public function destroy(string $id): RedirectResponse
+    {
+        $quotation = $this->quotationService->findById($id);
+
+        if ($quotation->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $this->quotationService->delete($id);
+
+        return redirect()
+        ->route('client.quotations.index')
+        ->with('success', 'Quotation deleted successfully.');
+    }
+
+
 }
