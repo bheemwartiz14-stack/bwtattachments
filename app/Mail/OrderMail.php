@@ -66,8 +66,14 @@ class OrderMail extends Mailable
             ->as("{$this->order->order_number}.pdf")
             ->withMime('application/pdf');
     }
-    // Order logo/file
-    if (!empty($this->order->orderfilepath) && $disk->exists($this->order->orderfilepath)) {
+    // Order logo/file — only a custom logo is ever attached.
+    // The standard B-logo already lives with BWT, so it is only
+    // mentioned in the email text, never sent as a file.
+    if (
+        ($this->order->orderlogotype ?? null) === 'custom'
+        && !empty($this->order->orderfilepath)
+        && $disk->exists($this->order->orderfilepath)
+    ) {
         $attachments[] = Attachment::fromPath(
             $disk->path($this->order->orderfilepath)
         )

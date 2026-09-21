@@ -35,16 +35,17 @@ class OrderServices
 
     public function create(array $data): Model
     {
-      $orderlogotype = $data['orderlogotype'] ?? null;
+        $orderlogotype = $data['orderlogotype'] ?? null;
         // The form submits a full URL; normalize to a public-disk-relative
         // path (what copyFile() and OrderMail expect).
         $orderfilepath = $this->toPublicDiskPath($data['orderfilepath'] ?? null);
-        if (!$orderlogotype || !$orderfilepath || $orderlogotype === 'none') {
+        // Only a custom logo is ever stored/sent. The standard B-logo lives
+        // with BWT already, so "big" (and "none") never produce a file.
+        if ($orderlogotype !== 'custom' || !$orderfilepath) {
+            $data['orderlogotype'] = $orderlogotype ?: 'none';
             $data['orderfilepath'] = '';
         } else {
-            $filename = $orderlogotype === 'big'
-                ? "orders/{$data['order_number']}/{$data['order_number']}_Big_logo.jpeg"
-                : "orders/{$data['order_number']}/{$data['order_number']}_" . basename($orderfilepath);
+            $filename = "orders/{$data['order_number']}/{$data['order_number']}_" . basename($orderfilepath);
             $data['orderfilepath'] = $this->fileService->copyFile(
                 $orderfilepath,
                 $filename

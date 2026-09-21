@@ -4,6 +4,15 @@
     $companyName = $meta['wholesale_company_name'] ?? ($meta['company_name'] ?? $sender?->name ?? 'Test Company Limited');
     $recipientName = $order->toUser?->name ?? 'John';
     $recipientFirstName = trim(explode(' ', $recipientName)[0] ?? $recipientName) ?: 'John';
+    $logoType = $order->orderlogotype ?? 'big';
+    $logoHasFile = !empty($order->orderfilepath);
+    $logoLabel = match ($logoType) {
+        'none' => 'No logo',
+        'custom' => $logoHasFile
+            ? 'Custom logo (file attached)'
+            : 'Custom logo – logo file to follow (customer may send it after the order confirmation)',
+        default => 'B-logo (standard BWT logo)',
+    };
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -24,6 +33,8 @@
                         <p style="margin:0 0 16px 0;">This is an automated generated email from bwtattachments.com</p>
 
                         <p style="margin:0 0 16px 0;">You have received a new order from <strong>{{ $companyName }}</strong></p>
+
+                        <p style="margin:0 0 16px 0;">Welding logo: <strong>{{ $logoLabel }}</strong></p>
 
                         @if(!empty($order->order_email_message))
                             <p style="margin:0 0 16px 0; white-space:pre-line;">{{ $order->order_email_message }}</p>
