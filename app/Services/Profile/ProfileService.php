@@ -36,7 +36,7 @@ class ProfileService
                     $this->updateClientProfile($user, $data, 'wholesale');
                 }
 
-                if ($user->hasRole('Retailer')) {
+                if ($user->hasRole('Reseller') || $user->hasRole('Retailer')) {
                     $this->updateClientProfile($user, $data, 'retailer');
                 }
 

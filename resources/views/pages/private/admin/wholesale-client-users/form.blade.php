@@ -1,30 +1,36 @@
 @php
-$isEdit = isset($user);
-$roleName = ucfirst(strtolower( $user->roles->first()?->name ?? 'customer'));
-$meta = $isEdit? ($user->userMeta?->metadata ?? []) : [];
-// Company name
-$wholesaleCompanyName = match ($roleName) {
- 'Wholesaler' => $meta['wholesale_company_name'] ?? '',
-    'Reseller'   => $meta['company_name'] ?? '',
-    default      => $meta['company_name'] ?? '',
-};
-$wholesaleClientName = $meta['client_name'] ?? '';
-$commission = $isEdit ? $user->userMargin?->margin_value ?? '' : '';
-// Logo
-$mediaCollection = match ($roleName) {
-    'Wholesaler' => 'wholesale_client_logo',
-    'Reseller'   => 'retailer_client_logo',
-    default      => 'customer_logo',
-};
-$logoUrl = null;
-$logoId = null;
+    $isEdit = isset($user);
+    $roleName = ucfirst(strtolower($user->roles->first()?->name ?? 'customer'));
+    $meta = $isEdit ? $user->userMeta?->metadata ?? [] : [];
+    // Company name
 
-if ($isEdit) {
-    $logoMedia = $user->getFirstMedia($mediaCollection);
+    $mact_Detauils = match ($roleName) {
+        'Wholesaler' => 'wholesale_company_name',
+        'Reseller' => 'company_name',
+        default => 'company_name',
+    };
+    $wholesaleCompanyName = match ($roleName) {
+        'Wholesaler' => $meta['wholesale_company_name'] ?? '',
+        'Reseller' => $meta['company_name'] ?? '',
+        default => $meta['company_name'] ?? '',
+    };
+    $wholesaleClientName = $meta['client_name'] ?? '';
+    $commission = $isEdit ? $user->userMargin?->margin_value ?? '' : '';
+    // Logo
+    $mediaCollection = match ($roleName) {
+        'Wholesaler' => 'wholesale_client_logo',
+        'Reseller' => 'retailer_client_logo',
+        default => 'customer_logo',
+    };
+    $logoUrl = null;
+    $logoId = null;
 
-    $logoUrl = $logoMedia?->getUrl();
-    $logoId = $logoMedia?->id;
-}
+    if ($isEdit) {
+        $logoMedia = $user->getFirstMedia($mediaCollection);
+
+        $logoUrl = $logoMedia?->getUrl();
+        $logoId = $logoMedia?->id;
+    }
 @endphp
 <x-layouts.app>
     <x-slot:title>{{ $isEdit ? 'Edit' : 'Add' }} {{ $roleName ?? 'Wholesaler' }} - BWT</x-slot:title>
@@ -94,8 +100,8 @@ if ($isEdit) {
                 </div>
                 <div class="p-8">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2">
-                        <x-forms.input name="wholesale_company_name" label="Company Name" placeholder="Test Corp Ltd"
-                            :value="$wholesaleCompanyName" :required="true" :error="$errors->first('wholesale_company_name')" />
+                        <x-forms.input :name="$mact_Detauils" label="Company Name" placeholder="Test Corp Ltd"
+                            :value="$wholesaleCompanyName" :required="true" :error="$errors->first($mact_Detauils)" />
                         <x-forms.input name="vat_number" label="VAT Number" placeholder="GB123456789" :value="$meta['vat_number'] ?? ''"
                             :required="true" :error="$errors->first('vat_number')" />
                         <x-forms.input name="address" label="Address" placeholder="123 Business Street"

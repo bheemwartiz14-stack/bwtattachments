@@ -45,14 +45,16 @@ class WholesaleClientUserServices
         return DB::transaction(function () use ($id, $data) {
             $this->normalizeCountryFromVatId($data);
             $user = $this->userService->update($id, $data);
-            [$meta, $margin] = $this->extract($data);
-            $this->saveMeta($user, $meta);
             $roleName = $user->roles->first()?->name;
-            [$role, $roleLogo] = match ($roleName) {
-                'Wholesaler' => ['Wholesaler', 'wholesale_client_logo'],
-                'Reseller'   => ['retailer', 'retailer_client_logo'],
-                default      => ['customer', 'customer_logo'],
+            [$role, $roleLogo, $companyNameField] = match ($roleName) {
+                'Wholesaler' => ['Wholesaler', 'wholesale_client_logo', 'wholesale_company_name'],
+                'Reseller'   => ['retailer', 'retailer_client_logo', 'company_name'],
+                default      => ['customer', 'customer_logo', 'company_name'],
             };
+            [$meta, $margin] = $this->extract($data,$companyNameField);
+            $this->saveMeta($user, $meta);
+
+
             $this->saveMargin($user, (float) $margin, $role);
             $logo = $this->resolveTempImage($data, $roleLogo);
             if ($logo) {
