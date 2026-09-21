@@ -7,11 +7,9 @@
     $logoType = $order->orderlogotype ?? 'big';
     $logoHasFile = !empty($order->orderfilepath);
     $logoLabel = match ($logoType) {
-        'none' => 'No logo',
-        'custom' => $logoHasFile
-            ? 'Custom logo (file attached)'
-            : 'Custom logo – logo file to follow (customer may send it after the order confirmation)',
-        default => 'B-logo (standard BWT logo)',
+        'none' => 'No Logo on all attachments',
+        'custom'  =>'Custom logo on all attachments',
+        default => 'B-Logo on all attachments',
     };
 @endphp
 <!DOCTYPE html>
@@ -32,10 +30,8 @@
 
                         <p style="margin:0 0 16px 0;">This is an automated generated email from bwtattachments.com</p>
 
-                        <p style="margin:0 0 16px 0;">You have received a new order from <strong>{{ $companyName }}</strong></p>
-
-                        <p style="margin:0 0 16px 0;">Welding logo: <strong>{{ $logoLabel }}</strong></p>
-
+                        <p style="margin:0 0 16px 0;">You have received a new order from <strong>{{ $companyName }}. </strong></p>
+                        <p style="margin:0 0 16px 0;"><strong>{{ $logoLabel }}</strong></p>
                         @if(!empty($order->order_email_message))
                             <p style="margin:0 0 16px 0; white-space:pre-line;">{{ $order->order_email_message }}</p>
                         @elseif(!empty($order->notes) && strip_tags($order->notes) !== '')
