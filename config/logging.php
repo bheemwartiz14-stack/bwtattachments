@@ -123,6 +123,14 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        'email' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/email.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'tap' => [App\Logging\EmailLogFormatter::class],
+            'replace_placeholders' => true,
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

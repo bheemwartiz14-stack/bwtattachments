@@ -107,8 +107,10 @@ class ItemsManager extends Component
         $this->search = '';
     }
 
-    public function removeItem(int $index): void
+    public function removeItem(int|string $index): void
     {
+        $index = (int) $index;
+
         if (isset($this->items[$index])) {
             array_splice($this->items, $index, 1);
 
@@ -116,8 +118,13 @@ class ItemsManager extends Component
         }
     }
 
-    public function updateQty(int $index, int $value): void
+    public function updateQty(int|string $index, int|string $value): void
     {
+        $index = (int) $index;
+        // Input arrives as string from the browser; "" (cleared field)
+        // casts to 0 and is clamped to 1 below.
+        $value = (int) $value;
+
         if (isset($this->items[$index])) {
             $this->items[$index]['quantity'] = min(
                 999,
@@ -128,8 +135,11 @@ class ItemsManager extends Component
         }
     }
 
-    public function updatePrice(int $index, float $value): void
+    public function updatePrice(int|string $index, float|string $value): void
     {
+        $index = (int) $index;
+        $value = (float) $value;
+
         if (isset($this->items[$index])) {
             $this->items[$index]['price'] = max(0, $value);
 

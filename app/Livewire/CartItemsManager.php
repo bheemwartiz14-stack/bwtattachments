@@ -86,8 +86,9 @@ class CartItemsManager extends Component
         $this->dispatchItemsUpdated(); $this->dispatchCartUpdated(); $this->showModal = false; $this->search = '';
     }
 
-    public function removeItem(int $index): void
+    public function removeItem(int|string $index): void
     {
+        $index = (int) $index;
         if (! isset($this->items[$index])) return;
         $item = $this->items[$index];
         if (Auth::check() && ! empty($item['product_id'])) {
@@ -97,8 +98,10 @@ class CartItemsManager extends Component
         $this->dispatchItemsUpdated(); $this->dispatchCartUpdated();
     }
 
-    public function updateQty(int $index, int $value): void
+    public function updateQty(int|string $index, int|string $value): void
     {
+        $index = (int) $index;
+        $value = (int) $value;
         if (! isset($this->items[$index])) return;
         $quantity = min(50, max(1, $value));
         $this->items[$index]['quantity'] = $quantity;
@@ -175,7 +178,7 @@ class CartItemsManager extends Component
             }
         } catch (\Throwable $e) { report($e); }
     }
-    public function updatePrice(int $index, float $value): void { if (isset($this->items[$index])) { $this->items[$index]['price'] = max(0, $value); $this->dispatchItemsUpdated(); } }
+    public function updatePrice(int|string $index, float|string $value): void { $index = (int) $index; $value = (float) $value; if (isset($this->items[$index])) { $this->items[$index]['price'] = max(0, $value); $this->dispatchItemsUpdated(); } }
     #[On('countryChanged')] public function updateCountry($country): void { $this->deliveryCountry = is_array($country) ? ($country['country'] ?? 'NL') : $country; $this->dispatchItemsUpdated(); }
     #[On('customerIdChanged')] public function updateCustomerId($id): void { $this->customerId = is_array($id) ? ($id['id'] ?? null) : $id; $this->recalculatePrices(); }
     #[On('customerCleared')] public function onCustomerCleared(): void { $this->customerId = null; $this->recalculatePrices(); }

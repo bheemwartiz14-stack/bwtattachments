@@ -10,6 +10,7 @@ use App\Events\UpdateUserMargins;
 use App\Events\WelcomeOnboardingUser;
 use App\Events\ProductPriceHierarchyProcessing;
 use App\Listeners\GenerateQuotationPdf;
+use App\Listeners\LogOutgoingEmail;
 use App\Listeners\OnboardingListener;
 use App\Listeners\RecalculateProductMargins;
 use App\Listeners\SendContactMessageMail;
@@ -52,6 +53,14 @@ class EventServiceProvider extends ServiceProvider
 
         OrderEmailRequested::class => [
             SendOrderEmail::class,
+        ],
+
+        // Global email.log trigger: logs EVERY outgoing mail in the project.
+        \Illuminate\Mail\Events\MessageSending::class => [
+            LogOutgoingEmail::class,
+        ],
+        \Illuminate\Mail\Events\MessageSent::class => [
+            LogOutgoingEmail::class,
         ],
 
     ];
