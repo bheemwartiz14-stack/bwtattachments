@@ -26,10 +26,10 @@ class ProductService
         return [
             ['value' => 'price_low_high', 'name' => 'Price (Low-High)'],
             ['value' => 'price_high_low', 'name' => 'Price (High-Low)'],
+            ['value' => 'product_code_low_high', 'name' => 'Product code (Low-High)'],
+            ['value' => 'product_code_high_low', 'name' => 'Product code (High-Low)'],
             // ['value' => 'manufacture_year_high_low', 'name' => 'Manufacture year (High-Low)'],
             // ['value' => 'manufacture_year_low_high', 'name' => 'Manufacture year (Low-High)'],
-            ['value' => 'newest', 'name' => 'Newest first'],
-            ['value' => 'oldest', 'name' => 'Oldest first'],
         ];
     }
 

@@ -98,26 +98,36 @@ class ProductRepository
         if (!empty($filters['sort_by'])) {
             $this->applySorting( $query, $filters['sort_by'] );
         } else {
-            $query->orderBy('products.created_at', 'desc');
+            $this->orderByProductCode($query, 'ASC');
         }
 
         return $query->paginate($perPage);
 }
 
+    /**
+     * Default product ordering: product code low to high,
+     * so e.g. ST.CDHL.001 is always on top. NULL/empty codes sort last.
+     */
+    private function orderByProductCode(Builder $query, string $dir = 'ASC'): void
+    {
+        $dir = strtoupper($dir) === 'DESC' ? 'DESC' : 'ASC';
+        $query->orderByRaw("NULLIF(products.product_code, '') IS NULL, products.product_code {$dir}");
+    }
+
     private  function applySorting(Builder $query, string $sortBy): void
     {
-        $allowed = ['newest', 'oldest', 'manufacture_year_high_low', 'manufacture_year_low_high', 'price_high_low', 'price_low_high'];
+        $allowed = ['product_code_low_high', 'product_code_high_low', 'manufacture_year_high_low', 'manufacture_year_low_high', 'price_high_low', 'price_low_high'];
         if (! in_array($sortBy, $allowed, true)) {
-            $query->orderBy('products.created_at', 'desc');
+            $this->orderByProductCode($query, 'ASC');
             return;
         }
         $userId = auth()->id();
         switch ($sortBy) {
-            case 'newest':
-                $query->latest('products.created_at');
+            case 'product_code_low_high':
+                $this->orderByProductCode($query, 'ASC');
                 break;
-            case 'oldest':
-                $query->orderBy('products.created_at', 'asc');
+            case 'product_code_high_low':
+                $this->orderByProductCode($query, 'DESC');
                 break;
             case 'manufacture_year_high_low':
                 $query->orderByRaw('products.manufacture_year IS NULL, products.manufacture_year DESC');
@@ -198,7 +208,7 @@ class ProductRepository
                 $q->where('status', 0);
             }
         })
-        ->latest()
+        ->orderByRaw("NULLIF(products.product_code, '') IS NULL, products.product_code ASC")
         ->paginate($perPage);
 }
 
@@ -342,7 +352,7 @@ class ProductRepository
             ->when(!empty($filters['machine_class']), fn ($q) =>
                 $q->where('machine_class', $filters['machine_class'])
             )
-            ->latest()
+            ->orderByRaw("NULLIF(products.product_code, '') IS NULL, products.product_code ASC")
             ->paginate($perPage);
     }
 }

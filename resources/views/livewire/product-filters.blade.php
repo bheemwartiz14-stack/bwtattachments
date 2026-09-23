@@ -1,7 +1,7 @@
 <div>
     <div x-data="{
         localCategory: '{{ $category }}',
-        localSortBy: '{{ $sort_by !== '' ? $sort_by : 'price_low_high' }}',
+        localSortBy: '{{ $sort_by !== '' ? $sort_by : 'product_code_low_high' }}',
         localPagination: '{{ $perPage !== '' ? $perPage : '100' }}',
         localSubcategory: '{{ $subcategory }}',
         localConnection: '{{ $connection }}',
