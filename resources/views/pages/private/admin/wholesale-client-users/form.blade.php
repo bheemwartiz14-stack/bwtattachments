@@ -1,6 +1,6 @@
 @php
     $isEdit = isset($user);
-    $roleName = ucfirst(strtolower($user->roles->first()?->name ?? 'customer'));
+    $roleName = $isEdit ? ucfirst(strtolower($user->roles->first()?->name ?? 'customer')) : 'Wholesaler';
     $meta = $isEdit ? $user->userMeta?->metadata ?? [] : [];
     // Company name
 
@@ -77,11 +77,11 @@
             @if ($isEdit)
                 @method('PUT')
             @endif
-            <input type="hidden" name="role" value="{{ $roles->first()->name ?? 'Wholesaler' }}">
+            <input type="hidden" name="role" value="{{ $roles->first()?->name ?? 'Wholesaler' }}">
 
             <input type="hidden" id="country_code" name="country_code"
-                value="{{ old('country_code', $user->country_code ?? '') }}">
-            <input type="hidden" id="country_name" name="country" value="{{ old('country', $user->country ?? '') }}">
+                value="{{ old('country_code', ($user ?? null)?->country_code ?? '') }}">
+            <input type="hidden" id="country_name" name="country" value="{{ old('country', ($user ?? null)?->country ?? '') }}">
             <div
                 class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                 <div class="flex items-center gap-3 border-b border-slate-100 px-8 py-5 dark:border-neutral-800">
@@ -110,7 +110,7 @@
                             :required="false" minlength="1" maxlength="8" :error="$errors->first('postal_code')" />
                         <x-forms.input name="city" label="City" placeholder="London" :value="$meta['city'] ?? ''"
                             :required="false" :error="$errors->first('city')" />
-                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('vat_id', $user->vat_id ?? ($user->country ?? null))"
+                        <x-forms.select2form name="vat_id" label="Country" :options="$vatcountries" :selected="old('vat_id', ($user ?? null)?->vat_id ?? (($user ?? null)?->country ?? null))"
                             placeholder="Select Country" :select2="true" :required="true" :error="$errors->first('country')" />
                         <x-forms.url name="website" label="Website" type="url" placeholder="https://abcd.com"
                             :value="$meta['website'] ?? ''" :required="false" :hint="'Optional'" :error="$errors->first('website')" />
@@ -166,7 +166,7 @@
                                             class="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
 
                                         <span class="font-semibold text-emerald-800 dark:text-emerald-300">
-                                            {{ $userRole ?? 'Wholesaler' }}
+                                            {{ $userRole ?? $roleName ?? 'Wholesaler' }}
                                         </span>
                                     </div>
                                 </div>
@@ -195,7 +195,7 @@
                     </div>
                 </div>
                 <div class="p-8">
-                    <x-forms.image-dropzone :name="$mediaCollection" :existingImageUrl="$logoUrl" :existingImageId="$logoId" :label="($user->roles->first()?->name ?? 'Wholesaler') . ' Logo'"
+                    <x-forms.image-dropzone :name="$mediaCollection" :existingImageUrl="$logoUrl" :existingImageId="$logoId" :label="($roleName ?? 'Wholesaler') . ' Logo'"
                         accept="image/jpeg,image/png,image/webp" hint="PNG, JPG or WebP (Max. 2MB)" />
                 </div>
             </div>
@@ -236,7 +236,7 @@
     </svg>'
                     :label="$isEdit
                         ? 'Update ' . ($roleName ?? 'Wholesaler')
-                        : 'Create ' . ($roleNamee ?? 'Wholesaler')" />
+                        : 'Create ' . ($roleName ?? 'Wholesaler')" />
             </div>
         </form>
     </div>
