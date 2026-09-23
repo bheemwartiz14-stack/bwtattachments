@@ -24,7 +24,7 @@ class StoreCustomerClientUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{10,20}$/'],
             'parent_id' => ['required', 'string', 'exists:users,id'],
             'roles' => ['required', 'string'],
