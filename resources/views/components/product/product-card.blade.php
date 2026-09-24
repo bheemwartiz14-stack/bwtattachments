@@ -59,17 +59,17 @@
                     <div>
                         <p class="text-gray-500">Weight:</p>
                         <p class="font-semibold">
-                            {{ rtrim(rtrim(number_format($product->weight, 2, '.', ''), '0'), '.') }} kg</p>
+                            {{ rtrim(rtrim(format_number($product->weight), '0'), '.') }} kg</p>
                     </div>
                     <div>
                         <p class="text-gray-500">Width:</p>
                         <p class="font-semibold">
-                            {{ rtrim(rtrim(number_format($product->width, 2, '.', ''), '0'), '.') }} mm</p>
+                            {{ rtrim(rtrim(format_number($product->width), '0'), '.') }} mm</p>
                     </div>
                     <div>
                         <p class="text-gray-500">Volume:</p>
                         <p class="font-semibold">
-                            {{ rtrim(rtrim(number_format($product->volume, 2, '.', ''), '0'), '.') }} m³</p>
+                            {{ rtrim(rtrim(format_number($product->volume), '0'), '.') }} m³</p>
                     </div>
             </div>
 
