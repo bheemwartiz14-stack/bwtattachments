@@ -23,6 +23,10 @@ class OrderMail extends Mailable
     public function __construct(
         public Order $order,
     ) {
+        $this->order->loadMissing([
+            'items.product',
+            'user.userMeta',
+        ]);
     }
 
     /**
@@ -40,11 +44,6 @@ class OrderMail extends Mailable
      */
     public function content(): Content
     {
-        $this->order->loadMissing([
-            'items.product',
-            'user.userMeta',
-        ]);
-
         return new Content(
             view: 'emails.order',
             text: 'emails.order-text',
@@ -58,11 +57,9 @@ class OrderMail extends Mailable
 {
     $disk = Storage::disk('public');
     $attachments = [];
-    // Order PDF
+    // Order PDF — resolved through the storage disk, never a raw path.
     if (!empty($this->order->pdf_file) && $disk->exists($this->order->pdf_file)) {
-        $attachments[] = Attachment::fromPath(
-            $disk->path($this->order->pdf_file)
-        )
+        $attachments[] = Attachment::fromStorageDisk('public', $this->order->pdf_file)
             ->as("{$this->order->order_number}.pdf")
             ->withMime('application/pdf');
     }
@@ -74,9 +71,7 @@ class OrderMail extends Mailable
         && !empty($this->order->orderfilepath)
         && $disk->exists($this->order->orderfilepath)
     ) {
-        $attachments[] = Attachment::fromPath(
-            $disk->path($this->order->orderfilepath)
-        )
+        $attachments[] = Attachment::fromStorageDisk('public', $this->order->orderfilepath)
             ->as(basename($this->order->orderfilepath))
             ->withMime($disk->mimeType($this->order->orderfilepath));
     }

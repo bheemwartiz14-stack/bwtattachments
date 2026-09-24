@@ -70,7 +70,18 @@ class LogOutgoingEmail
 
         $lines[] = '--------------------------------------------------';
 
-        Log::channel('email')->info(implode("\n", $lines));
+        // Email logging must never break the request (e.g. unwritable
+        // log file). Best effort: try the email channel, fall back to
+        // the default channel, and swallow failures otherwise.
+        try {
+            Log::channel('email')->info(implode("\n", $lines));
+        } catch (\Throwable $e) {
+            try {
+                Log::warning('Could not write to email.log: '.$e->getMessage());
+            } catch (\Throwable $ignored) {
+                // intentionally ignored: logging must not throw
+            }
+        }
     }
 
     /**

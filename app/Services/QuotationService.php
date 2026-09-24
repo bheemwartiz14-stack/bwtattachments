@@ -12,6 +12,7 @@ use App\Repositories\QuotationRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -162,12 +163,36 @@ class QuotationService
         );
     }
 
-    public function sendEmail(Quotation $quotation): void
+    /**
+     * Send the quotation email synchronously (no queue service in use).
+     * Returns false when the address is invalid or sending failed,
+     * so controllers can show a friendly error instead of a 500.
+     */
+    public function sendEmail(Quotation $quotation): bool
     {
         $to = $quotation->contact_email ?: $quotation->reseller?->email;
 
-        if ($to) {
+        if (empty($to) || ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+            Log::warning('Invalid email address for quotation mail', [
+                'quotation_id' => $quotation->id,
+                'to' => $to,
+            ]);
+
+            return false;
+        }
+
+        try {
             Mail::to($to)->send(new QuotationMail($quotation));
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Quotation mail failed', [
+                'quotation_id' => $quotation->id,
+                'to' => $to,
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
         }
     }
 }

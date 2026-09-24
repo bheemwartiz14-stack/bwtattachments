@@ -11,6 +11,7 @@ use App\Repositories\OrderRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Services\FileService;
@@ -85,10 +86,55 @@ class OrderServices
 
         return $path;
     }
-      public function sendEmail(Order $order): void
-    {
-        // Dispatch new listener SendOrderEmail which does Mail::to($to)->send(new OrderMail($order))
-        event(new \App\Events\OrderEmailRequested($order));
+      /**
+       * Resolve a validated recipient for the order email.
+       * Sanitizes line breaks and falls back to the admin address.
+       * Returns null when no usable address exists.
+       */
+      public function resolveEmailRecipient(Order $order): ?string
+      {
+          // Sanitize recipient (avoid line-break injection)
+          $rawTo = $order->toUser?->email ?? \App\Models\User::role('Admin')->first()?->email;
+          $to = is_string($rawTo) ? trim(str_replace(["\r", "\n"], '', $rawTo)) : $rawTo;
+          if (! $to || ! filter_var($to, FILTER_VALIDATE_EMAIL)) {
+              $fallback = \App\Models\User::role('Admin')->first()?->email;
+              $fallback = is_string($fallback) ? trim(str_replace(["\r", "\n"], '', $fallback)) : $fallback;
+              $to = filter_var($fallback, FILTER_VALIDATE_EMAIL) ? $fallback : null;
+          }
+
+          return $to;
+      }
+
+      /**
+       * Dispatch the order email (sent synchronously, no queue service
+       * in use). Returns false when the address is invalid or sending
+       * failed, so controllers can show a friendly error instead of
+       * a 500 or a false success message.
+       */
+      public function sendEmail(Order $order): bool
+      {
+        $orderNumber = $order->order_number ?? $order->id;
+
+        if ($this->resolveEmailRecipient($order) === null) {
+            Log::warning("Order email skipped: no recipient email found for order {$orderNumber}.");
+
+            return false;
+        }
+
+        try {
+            // Dispatch new listener SendOrderEmail which does Mail::to($to)->send(new OrderMail($order))
+            event(new \App\Events\OrderEmailRequested($order));
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Order email failed', [
+                'order_id' => $order->id,
+                'order_number' => $orderNumber,
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
     public function findById(string $id): Model
     {

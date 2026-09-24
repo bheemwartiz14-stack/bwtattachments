@@ -82,7 +82,10 @@ class ResallerOrderManagemntController extends Controller
             $this->orderServices->generateOrderPdf($order);
         }
         if ($action === 'send') {
-            $this->orderServices->sendEmail($order);
+            if (! $this->orderServices->sendEmail($order)) {
+                $this->orderServices->update($order->id, ['status' => 'draft']);
+                return redirect()->route('reseller.orders.index')->withErrors(['email' => 'Order saved, but the email could not be sent. Please try again.']);
+            }
         }
         session()->forget('quotation_cart_'.(string) $request->user()->id);
         $message = match ($action) {
@@ -122,7 +125,9 @@ class ResallerOrderManagemntController extends Controller
             abort(403);
         }
         $this->orderServices->generateOrderPdf($order);
-        $this->orderServices->sendEmail($order);
+        if (! $this->orderServices->sendEmail($order)) {
+            return back()->withErrors(['email' => 'Email could not be sent. Please try again.']);
+        }
         $this->orderServices->update($id, ['status' => 'sent']);
         return back()->with('success', 'Order sent successfully.');
     }

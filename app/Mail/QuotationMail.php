@@ -18,7 +18,13 @@ class QuotationMail extends Mailable
 
     public function __construct(
         public Quotation $quotation,
-    ) {}
+    ) {
+        $this->quotation->loadMissing([
+            'items.product',
+            'user.userMeta',
+            'reseller.userMeta',
+        ]);
+    }
 
     public function envelope(): Envelope
     {
@@ -29,12 +35,6 @@ class QuotationMail extends Mailable
 
     public function content(): Content
     {
-        $this->quotation->loadMissing([
-            'items.product',
-            'user.userMeta',
-            'reseller.userMeta',
-        ]);
-
         return new Content(
             view: 'emails.quotation',
         );
@@ -42,14 +42,16 @@ class QuotationMail extends Mailable
 
     public function attachments(): array
     {
-        $path = Storage::disk('public')->path($this->quotation->pdf_file);
+        if (empty($this->quotation->pdf_file)) {
+            return [];
+        }
 
-        if (!file_exists($path)) {
+        if (! Storage::disk('public')->exists($this->quotation->pdf_file)) {
             return [];
         }
 
         return [
-            Attachment::fromPath($path)
+            Attachment::fromStorageDisk('public', $this->quotation->pdf_file)
                 ->as("{$this->quotation->quotation_number}.pdf")
                 ->withMime('application/pdf'),
         ];

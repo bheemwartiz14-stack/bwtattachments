@@ -58,7 +58,10 @@ class CustomerQuotationController extends Controller
         }
         if ($request->input('action') === 'send') {
             $quotation->load('reseller');
-            $this->quotationService->sendEmail($quotation);
+            if (! $this->quotationService->sendEmail($quotation)) {
+                return redirect()->route('reseller.quotations.show', $quotation->id)
+                    ->withErrors(['email' => 'Quotation saved, but the email could not be sent. Please try again.']);
+            }
         }
 
         $message = match ($request->input('action')) {
@@ -108,7 +111,9 @@ class CustomerQuotationController extends Controller
 
         $quotation->load('reseller');
         $this->quotationService->generatePdf($quotation);
-        $this->quotationService->sendEmail($quotation);
+        if (! $this->quotationService->sendEmail($quotation)) {
+            return back()->withErrors(['email' => 'Email could not be sent. Please try again.']);
+        }
         $this->quotationService->update($id, ['status' => 'sent']);
 
         return back()->with('success', 'Quotation sent successfully.');
