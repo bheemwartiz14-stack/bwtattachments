@@ -16,7 +16,7 @@ class UpdateRetailerClientUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255','unique:users,email'],
             'username' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8'],
             'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{10,20}$/'],

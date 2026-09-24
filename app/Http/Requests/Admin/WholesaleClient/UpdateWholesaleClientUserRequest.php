@@ -33,7 +33,7 @@ class UpdateWholesaleClientUserRequest extends FormRequest
     {
         return [
             'name' => [ 'required','string','max:255', ],
-            'email' => ['nullable', 'email',],
+            'email' => ['nullable', 'email','unique:users,email'],
             'password' => [  'nullable', 'string','min:8', ],
             'wholesale_company_name' => ['nullable'],
             'company_name' => ['nullable'],
