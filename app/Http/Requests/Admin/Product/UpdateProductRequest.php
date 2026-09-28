@@ -24,7 +24,6 @@ class UpdateProductRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                 'regex:/^ST\.\.(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$/',
                 Rule::unique('products', 'product_code')
                     ->ignore($this->route('product')),
             ],
