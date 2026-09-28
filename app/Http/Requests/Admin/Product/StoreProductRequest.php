@@ -20,7 +20,7 @@ class StoreProductRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^ST\.CDHL\.(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$/',
+                'regex:/^ST\.\.(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$/',
                 'unique:products,product_code',
             ],
             'drawing_number' => ['nullable', 'string', 'max:255'],
