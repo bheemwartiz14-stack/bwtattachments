@@ -4,6 +4,7 @@ namespace App\Http\Requests\Reseller\Customer;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCustomerClientUserRequest extends FormRequest
 {
@@ -25,7 +26,11 @@ class UpdateCustomerClientUserRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email'],
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId),
+            ],
             'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{10,20}$/'],
             'retailer_client_logo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'commission_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],

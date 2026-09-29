@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace App\Http\Requests\Client\Retailer;
+use Illuminate\Validation\Rule;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,7 +17,11 @@ class UpdateRetailerClientUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email'],
+             'email' => [
+                'nullable',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId),
+            ],
             'username' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8'],
             'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{10,20}$/'],
