@@ -32,6 +32,9 @@ class UpdateWholesaleClientUserRequest extends FormRequest
      */
     public function rules(): array
     {
+          $userId = $this->route('wholesaleClient')
+            ?? $this->route('id')
+            ?? $this->route('user');
         return [
             'name' => [ 'required','string','max:255', ],
               'email' => [

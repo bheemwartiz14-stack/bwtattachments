@@ -23,6 +23,9 @@ class UpdateCustomerClientUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('customer')
+            ?? $this->route('id')
+            ?? $this->route('user');
 
         return [
             'name' => ['required', 'string', 'max:255'],

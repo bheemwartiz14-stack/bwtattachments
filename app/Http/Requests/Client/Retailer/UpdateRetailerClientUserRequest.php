@@ -15,6 +15,10 @@ class UpdateRetailerClientUserRequest extends FormRequest
 
     public function rules(): array
     {
+        $userId = $this->route('retailerClient')
+            ?? $this->route('id')
+            ?? $this->route('user')
+            ?? auth()->id();
         return [
             'name' => ['required', 'string', 'max:255'],
              'email' => [
