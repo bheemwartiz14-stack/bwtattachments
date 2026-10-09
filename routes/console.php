@@ -9,7 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('products:update-prices-by-role')
-    ->everyMinute()
+    ->dailyAt('02:30')
     ->withoutOverlapping(10)
-    ->runInBackground()
-    ->onOneServer();
+    ->runInBackground();
