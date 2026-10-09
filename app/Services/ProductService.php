@@ -151,6 +151,20 @@ class ProductService
         return $this->productRepository->paginateActiveProductsForUser($filters, $perPage, $userId);
     }
 
+    public function AutomaticUpdateProductPrice($productList){
+        $mainPrice = $productList->ddp_price;
+        $product_id = $productList->id;
+        $wholesalers = $this->userServices->getWholesalerHierarchyWithMargins();
+        $displayData = [
+            'product_id' => $productList->id,
+            'main_price' => $productList->ddp_price,
+            'users' => WholesalerHierarchyResource::collection(
+                $this->userServices->getWholesalerHierarchyWithMargins()
+            )->resolve(),
+        ];
+        event(new ProductPriceHierarchyProcessing($displayData));
+    }
+
     private function updateProductPrices($productList){
         $mainPrice = $productList->ddp_price;
         $product_id = $productList->id;
